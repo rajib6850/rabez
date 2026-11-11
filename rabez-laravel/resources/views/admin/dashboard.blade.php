@@ -2898,7 +2898,7 @@
                     </div>
                     <div class="adm-field">
                       <label class="adm-label">Server-Side CAPI Access Token</label>
-                      <input type="password" class="adm-input" placeholder="EAABw..." value="EAABw_sample_capi_token_rabez">
+                      <input type="password" class="adm-input" placeholder="EAABw..." value="">
                       <span class="adm-cell-sub">Server events bypass ad-blockers and iOS privacy restrictions with 100% accuracy.</span>
                     </div>
                   </div>

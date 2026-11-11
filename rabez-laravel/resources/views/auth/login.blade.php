@@ -255,42 +255,6 @@
     .btn-submit:active {
       transform: translateY(0);
     }
-    /* Demo Credentials Callout */
-    .demo-box {
-      margin-top: 22px;
-      padding: 12px 14px;
-      border-radius: 10px;
-      background: rgba(255, 255, 255, 0.03);
-      border: 1px dashed rgba(255, 255, 255, 0.12);
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-    }
-    .demo-info {
-      font-size: 12px;
-      line-height: 1.45;
-      color: var(--text-muted);
-    }
-    .demo-info strong {
-      color: #E5E7EB;
-      font-family: 'JetBrains Mono', monospace;
-    }
-    .btn-fill-demo {
-      background: rgba(255, 255, 255, 0.08);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      color: #fff;
-      font-size: 11.5px;
-      font-weight: 600;
-      padding: 6px 10px;
-      border-radius: 6px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: background 0.15s ease;
-    }
-    .btn-fill-demo:hover {
-      background: rgba(255, 255, 255, 0.16);
-    }
     .auth-footer {
       text-align: center;
       margin-top: 24px;
@@ -401,17 +365,6 @@
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
         </button>
       </form>
-
-      {{-- Demo Pill --}}
-      <div class="demo-box">
-        <div class="demo-info">
-          <div>Admin: <strong>admin@rabez.shop</strong></div>
-          <div>Password: <strong>admin1234</strong></div>
-        </div>
-        <button type="button" class="btn-fill-demo js-fill-demo" title="Auto fill demo admin credentials">
-          Fill Demo
-        </button>
-      </div>
     </div>
 
     <div class="auth-footer">
@@ -436,13 +389,6 @@
           : `<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>`;
       });
     }
-
-    // Demo Fill
-    document.querySelector('.js-fill-demo')?.addEventListener('click', () => {
-      document.getElementById('login-email').value = 'admin@rabez.shop';
-      document.getElementById('login-password').value = 'admin1234';
-      document.getElementById('login-email').focus();
-    });
   </script>
 </body>
 </html>

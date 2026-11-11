@@ -227,14 +227,17 @@ class StorefrontController extends Controller
 
     public function trackOrder(Request $request)
     {
-        $query = $request->get('order', 'RBZ-10024');
-        $clean = strtoupper(trim($query));
+        $query = $request->get('order', '');
+        $order = null;
 
-        $order = Order::with('items')
-            ->where('order_number', $clean)
-            ->orWhere('customer_phone', $clean)
-            ->latest()
-            ->first();
+        if (!empty($query)) {
+            $clean = strtoupper(trim($query));
+            $order = Order::with('items')
+                ->where('order_number', $clean)
+                ->orWhere('customer_phone', $clean)
+                ->latest()
+                ->first();
+        }
 
         $settings = Setting::pluck('value', 'key')->toArray();
 
