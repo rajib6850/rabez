@@ -1,0 +1,257 @@
+/* ==========================================================================
+   02. BASE RESET, TYPOGRAPHY & ELEMENTOR CONTAINER HELPERS
+   ========================================================================== */
+
+*, *::before, *::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  font-size: 16px;
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--rabez-font-sans);
+  font-size: 1rem;
+  font-weight: 400;
+  line-height: 1.6;
+  color: var(--rabez-text-main);
+  background-color: var(--rabez-bg);
+  -webkit-font-smoothing: antialiased;
+  overflow-x: hidden;
+}
+
+img, svg, video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+  transition: color 0.2s var(--rabez-ease);
+}
+
+ul, ol {
+  list-style: none;
+}
+
+button, input, select, textarea {
+  font-family: inherit;
+  font-size: inherit;
+  color: inherit;
+  background: none;
+  border: none;
+}
+
+button {
+  cursor: pointer;
+}
+
+/* --- Editorial Sportswear Headings --- */
+h1, h2, h3, h4, h5, h6,
+.rabez-heading {
+  font-family: var(--rabez-font-display);
+  font-weight: 700;
+  text-transform: uppercase;
+  line-height: 1.12;
+  letter-spacing: 0.02em;
+  color: var(--rabez-text-main);
+}
+
+/* --- Main Container Structure --- */
+.rabez-container {
+  width: 100%;
+  max-width: var(--rabez-container-width);
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--rabez-gutter);
+  padding-right: var(--rabez-gutter);
+}
+
+.rabez-section {
+  padding-top: 64px;
+  padding-bottom: 64px;
+}
+
+.rabez-section--sm {
+  padding-top: 52px;
+  padding-bottom: 52px;
+}
+
+.rabez-section--alt {
+  background-color: var(--rabez-bg-alt);
+  border-top: 1px solid var(--rabez-border);
+  border-bottom: 1px solid var(--rabez-border);
+}
+
+.rabez-section--dark {
+  background-color: var(--rabez-black);
+  color: var(--rabez-text-light);
+}
+
+/* --- Section Header Pattern --- */
+.rabez-section-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 24px;
+}
+
+.rabez-eyebrow {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  font-family: var(--rabez-font-sans);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--rabez-text-main);
+  margin-bottom: 8px;
+}
+
+.rabez-eyebrow::before {
+  content: "";
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background-color: var(--rabez-neon);
+  border-radius: 1px;
+}
+
+.rabez-section--dark .rabez-eyebrow {
+  color: var(--rabez-neon);
+}
+
+.rabez-section-title {
+  font-size: clamp(2rem, 3.6vw, 2.85rem);
+  letter-spacing: 0.015em;
+}
+
+.rabez-section--dark .rabez-section-title {
+  color: #FFFFFF;
+}
+
+.rabez-section-sub {
+  font-size: 0.95rem;
+  color: var(--rabez-text-muted);
+  max-width: 520px;
+}
+
+/* --- Buttons (Clean Athletic Geometry) --- */
+.rabez-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 46px;
+  padding: 0 24px;
+  font-family: var(--rabez-font-sans);
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  border-radius: var(--rabez-radius-xs);
+  transition: all 0.2s var(--rabez-ease);
+  white-space: nowrap;
+  user-select: none;
+}
+
+/* Primary Neon Button: Pitch Black text on #04F404 for 12:1 AAA Contrast! */
+.rabez-btn--primary {
+  background-color: var(--rabez-neon);
+  color: #080A09;
+  border: 1px solid var(--rabez-neon);
+}
+
+.rabez-btn--primary:hover {
+  background-color: var(--rabez-neon-hover);
+  border-color: var(--rabez-neon-hover);
+  transform: translateY(-1px);
+}
+
+/* Dark Button: Pitch Black with Neon Hover */
+.rabez-btn--dark {
+  background-color: var(--rabez-black);
+  color: #FFFFFF;
+  border: 1px solid var(--rabez-black);
+}
+
+.rabez-btn--dark:hover {
+  background-color: var(--rabez-neon);
+  color: #080A09;
+  border-color: var(--rabez-neon);
+}
+
+/* Outline Button */
+.rabez-btn--outline {
+  background-color: transparent;
+  color: var(--rabez-text-main);
+  border: 1px solid var(--rabez-border-strong);
+}
+
+.rabez-btn--outline:hover {
+  border-color: var(--rabez-black);
+  background-color: var(--rabez-black);
+  color: #FFFFFF;
+}
+
+.rabez-btn--outline-light {
+  background-color: transparent;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.28);
+}
+
+.rabez-btn--outline-light:hover {
+  border-color: var(--rabez-neon);
+  color: var(--rabez-neon);
+}
+
+.rabez-btn--sm {
+  min-height: 38px;
+  padding: 0 16px;
+  font-size: 0.78rem;
+}
+
+.rabez-btn--full {
+  width: 100%;
+}
+
+/* --- Screen Reader & Accessibility --- */
+.screen-reader-text {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@media (max-width: 768px) {
+  .rabez-section,
+  .rabez-section--sm {
+    padding-top: 40px;
+    padding-bottom: 40px;
+  }
+  .rabez-section-head {
+    margin-bottom: 18px;
+    gap: 12px;
+  }
+  .rabez-container,
+  .e-con-inner {
+    padding-left: 18px;
+    padding-right: 18px;
+  }
+}
+

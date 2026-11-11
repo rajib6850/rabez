@@ -1,0 +1,32 @@
+# Dependencies
+/rabez-laravel/vendor/
+/rabez-laravel/node_modules/
+
+# Environment files
+/rabez-laravel/.env
+/rabez-laravel/.env.backup
+/rabez-laravel/.env.production
+
+# Laravel Storage & Framework Cache
+/rabez-laravel/storage/*.key
+/rabez-laravel/storage/framework/cache/data/*
+/rabez-laravel/storage/framework/sessions/*
+/rabez-laravel/storage/framework/views/*
+/rabez-laravel/storage/logs/*.log
+/rabez-laravel/storage/pail/*
+/rabez-laravel/public/hot
+
+# Keep empty gitkeep in storage dirs
+!/rabez-laravel/storage/framework/cache/.gitkeep
+!/rabez-laravel/storage/framework/sessions/.gitkeep
+!/rabez-laravel/storage/framework/views/.gitkeep
+!/rabez-laravel/storage/logs/.gitkeep
+
+# IDEs & System files
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+.DS_Store
+Thumbs.db
+*.log

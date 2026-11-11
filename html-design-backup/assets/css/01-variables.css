@@ -1,0 +1,63 @@
+/* ==========================================================================
+   01. RABEZ GLOBAL DESIGN TOKENS (assets/css/01-variables.css)
+   Brand Identity: RABEZ – Wear What You Stand For (https://rabez.shop/)
+   ========================================================================== */
+
+:root {
+  /* --- Official Brand Colors --- */
+  --rabez-neon: #04F404;              /* Primary Brand Neon Green */
+  --rabez-neon-hover: #03D403;        /* Slightly deeper neon for hover states */
+  --rabez-neon-deep: #008A00;         /* High-contrast pitch green for text on light backgrounds */
+  --rabez-neon-tint: rgba(4, 244, 4, 0.10);
+  --rabez-neon-glow: rgba(4, 244, 4, 0.24);
+
+  --rabez-black: #0A0C0B;             /* Pitch Black header/footer/hero surface */
+  --rabez-dark-card: #121614;         /* Elevated dark surface */
+  --rabez-dark-border: #222824;       /* Subtle border on dark backgrounds */
+
+  --rabez-espresso: #3E2723;          /* Secondary brand token */
+  --rabez-slate: #334862;             /* Accent slate */
+
+  /* --- Clean Daylight Storefront Surfaces --- */
+  --rabez-bg: #FFFFFF;                /* Main canvas */
+  --rabez-bg-alt: #F6F7F5;            /* Soft Alabaster section contrast */
+  --rabez-bg-card: #FFFFFF;
+  --rabez-bg-media: #F1F2EF;          /* Product image frame background */
+
+  /* --- Text Hierarchy --- */
+  --rabez-text-main: #111111;         /* Crisp primary text */
+  --rabez-text-body: #3D4340;         /* Comfortable reading body copy */
+  --rabez-text-muted: #6E7672;        /* Secondary metadata, SKU, counts */
+  --rabez-text-light: #F5F7F6;        /* Text on dark pitch surfaces */
+
+  /* --- Borders & Dividers --- */
+  --rabez-border: #E4E7E4;
+  --rabez-border-strong: #C9CFCB;
+
+  /* --- Status & Semantic Colors --- */
+  --rabez-success: #65CA00;
+  --rabez-danger: #C92A2A;
+  --rabez-warning: #F59F00;
+
+  /* --- Typography (Editorial Jersey Store + Red Hat Text) --- */
+  --rabez-font-display: 'Barlow Condensed', 'Oswald', sans-serif;
+  --rabez-font-sans: 'Red Hat Text', -apple-system, BlinkMacSystemFont, sans-serif;
+  --rabez-font-mono: 'JetBrains Mono', monospace;
+
+  /* --- Layout & Spacing --- */
+  --rabez-container-width: 1320px;
+  --rabez-gutter: 32px;
+  --rabez-radius-xs: 3px;
+  --rabez-radius-sm: 6px;
+  --rabez-radius-md: 10px;
+  --rabez-radius-lg: 14px;
+
+  /* --- Shadows (Subtle, Editorial) --- */
+  --rabez-shadow-sm: 0 2px 8px rgba(10, 12, 11, 0.04);
+  --rabez-shadow-md: 0 10px 28px rgba(10, 12, 11, 0.08);
+  --rabez-shadow-lg: 0 20px 44px rgba(10, 12, 11, 0.14);
+
+  /* --- Transitions --- */
+  --rabez-ease: cubic-bezier(0.22, 1, 0.36, 1);
+}
+

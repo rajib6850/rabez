@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Pitch Black Shield Circle with Neon Green Stripes -->
+  <circle cx="60" cy="60" r="56" fill="#0A0C0B" stroke="#04F404" stroke-width="5"/>
+  <!-- Jersey Silhouette Icon inside All Kits Badge -->
+  <path d="M40 32 L50 35 Q60 39 70 35 L80 32 L96 48 L86 64 L76 58 L76 88 H44 L44 58 L34 64 L24 48 Z" fill="#FFFFFF"/>
+  <!-- Three Neon Green Stripes -->
+  <rect x="51" y="46" width="4" height="34" rx="1" fill="#04F404"/>
+  <rect x="58" y="46" width="4" height="34" rx="1" fill="#04F404"/>
+  <rect x="65" y="46" width="4" height="34" rx="1" fill="#04F404"/>
+</svg>
+

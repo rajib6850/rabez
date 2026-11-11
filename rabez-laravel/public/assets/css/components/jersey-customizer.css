@@ -1,0 +1,162 @@
+/* ==========================================================================
+   ELEMENTOR WIDGET: Custom Name & Number Back Print Preview (widget-jersey-customizer.css)
+   Clean, Interactive Jersey Personalization + Bulk Turf Team Order Widget
+   ========================================================================== */
+
+.rabez-customizer {
+  display: grid;
+  grid-template-columns: 1.08fr 0.92fr;
+  gap: 36px;
+  align-items: stretch;
+  background-color: var(--rabez-dark-card);
+  border: 1px solid var(--rabez-dark-border);
+  border-radius: var(--rabez-radius-md);
+  padding: 36px;
+}
+
+.rabez-customizer__form {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.rabez-field-row {
+  display: grid;
+  grid-template-columns: 1fr 140px;
+  gap: 18px;
+}
+
+.rabez-field label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: #B4BDB8;
+  margin-bottom: 9px;
+}
+
+.rabez-field input,
+.rabez-field select {
+  width: 100%;
+  height: 50px;
+  padding: 0 16px;
+  background-color: #0A0C0B;
+  border: 1px solid #2C3430;
+  border-radius: var(--rabez-radius-xs);
+  color: #FFFFFF;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.rabez-field input:focus,
+.rabez-field select:focus {
+  outline: none;
+  border-color: var(--rabez-neon);
+}
+
+.rabez-kit-color-options {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.rabez-kit-swatch {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 13px;
+  background-color: #0A0C0B;
+  border: 1px solid #2C3430;
+  border-radius: var(--rabez-radius-xs);
+  font-size: 0.78rem;
+  font-weight: 600;
+  color: #D2D8D4;
+  cursor: pointer;
+}
+
+.rabez-kit-swatch.is-active {
+  border-color: var(--rabez-neon);
+  color: var(--rabez-neon);
+}
+
+.rabez-kit-swatch__circle {
+  width: 14px;
+  height: 14px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+}
+
+/* --- Live Visual Jersey Back Preview --- */
+.rabez-jersey-preview-stage {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  background-color: #0A0C0B;
+  border: 1px solid var(--rabez-dark-border);
+  border-radius: var(--rabez-radius-md);
+  padding: 32px 24px;
+  position: relative;
+}
+
+.rabez-jersey-svg-wrap {
+  position: relative;
+  width: 260px;
+  height: 300px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rabez-jersey-svg-wrap svg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 16px 28px rgba(0, 0, 0, 0.5));
+}
+
+.rabez-jersey-back-overlay {
+  position: absolute;
+  top: 66px;
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  pointer-events: none;
+  width: 150px;
+}
+
+.rabez-jersey-back-name {
+  font-family: var(--rabez-font-display);
+  font-size: 1.35rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  margin-bottom: 6px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.rabez-jersey-back-num {
+  font-family: var(--rabez-font-display);
+  font-size: 5.4rem;
+  font-weight: 800;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+}
+
+.rabez-preview-caption {
+  margin-top: 16px;
+  font-size: 0.78rem;
+  color: #8F9994;
+  text-align: center;
+}
+
+@media (max-width: 900px) {
+  .rabez-customizer {
+    grid-template-columns: 1fr;
+    padding: 24px 18px;
+  }
+}
+

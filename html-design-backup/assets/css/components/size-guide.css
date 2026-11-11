@@ -1,0 +1,181 @@
+/* ==========================================================================
+   ELEMENTOR WIDGET: Official RABEZ Size Guide (widget-size-guide.css)
+   Player Edition (36-44" Chest) & Retro Edition (38-46" Chest)
+   ========================================================================== */
+
+.rabez-size-guide-box {
+  background-color: #FFFFFF;
+  border: 1px solid var(--rabez-border);
+  border-radius: var(--rabez-radius-md);
+  padding: 28px 32px;
+}
+
+.rabez-size-guide-head {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 20px;
+}
+
+.rabez-fit-tabs {
+  display: inline-flex;
+  background-color: var(--rabez-bg-alt);
+  border: 1px solid var(--rabez-border);
+  border-radius: var(--rabez-radius-xs);
+  padding: 4px;
+}
+
+.rabez-fit-tab {
+  padding: 9px 18px;
+  font-size: 0.82rem;
+  font-weight: 700;
+  color: var(--rabez-text-body);
+  border-radius: 3px;
+  transition: all 0.18s ease;
+  cursor: pointer;
+}
+
+.rabez-fit-tab.is-active {
+  background-color: var(--rabez-black);
+  color: var(--rabez-neon);
+}
+
+.rabez-size-panel-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.12fr) minmax(0, 0.88fr);
+  gap: 40px;
+  align-items: center;
+}
+
+.rabez-size-table-wrap {
+  width: 100%;
+  overflow-x: auto;
+}
+
+.rabez-size-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: center;
+  font-size: 0.96rem;
+  border: 1px solid var(--rabez-border);
+  border-radius: var(--rabez-radius-sm);
+  overflow: hidden;
+}
+
+.rabez-size-table th {
+  background-color: var(--rabez-black);
+  color: var(--rabez-neon);
+  font-family: var(--rabez-font-display);
+  font-size: 1.05rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 14px 16px;
+  white-space: nowrap;
+  border-right: 1px solid #222824;
+}
+
+.rabez-size-table th:last-child {
+  border-right: none;
+}
+
+.rabez-size-table td {
+  padding: 13px 16px;
+  border-bottom: 1px solid var(--rabez-border);
+  border-right: 1px solid var(--rabez-border);
+  color: var(--rabez-text-body);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+.rabez-size-table td:last-child {
+  border-right: none;
+}
+
+.rabez-size-table tr:nth-child(even) td {
+  background-color: #FAFBF9;
+}
+
+.rabez-size-table tr:hover td {
+  background-color: #F0F5F0;
+}
+
+.rabez-size-table td strong {
+  color: var(--rabez-text-main);
+  font-family: var(--rabez-font-display);
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+
+.rabez-size-note {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background-color: #0D100E;
+  color: #E2EAE5;
+  font-size: 0.8rem;
+  font-weight: 600;
+  padding: 9px 14px;
+  border-radius: 6px;
+  border-left: 3px solid var(--rabez-neon);
+}
+
+.rabez-size-note strong {
+  color: var(--rabez-neon);
+}
+
+.rabez-size-visual {
+  border-radius: var(--rabez-radius-sm);
+  overflow: hidden;
+  border: 1px solid var(--rabez-border);
+  background-color: #0A0C0B;
+}
+
+.rabez-size-visual img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+@media (max-width: 900px) {
+  .rabez-size-panel-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+  .rabez-size-visual {
+    max-width: 420px;
+    margin: 0 auto;
+  }
+}
+
+@media (max-width: 640px) {
+  .rabez-size-guide-box {
+    padding: 16px 14px;
+  }
+  .rabez-fit-tabs {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    width: 100%;
+  }
+  .rabez-fit-tab {
+    padding: 9px 8px;
+    font-size: 0.76rem;
+    text-align: center;
+  }
+  .rabez-size-table {
+    font-size: 0.88rem;
+  }
+  .rabez-size-table th,
+  .rabez-size-table td {
+    padding: 10px 10px;
+  }
+  .rabez-size-note {
+    width: 100%;
+    font-size: 0.75rem;
+    padding: 8px 10px;
+  }
+}

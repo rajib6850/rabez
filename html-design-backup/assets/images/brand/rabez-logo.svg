@@ -1,0 +1,43 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 130" fill="none" role="img" aria-label="RABEZ - Wear What you stand for.">
+  <!-- Circular R Emblem -->
+  <g transform="translate(8, 6)">
+    <!-- Left white arc -->
+    <path d="M22 25 C5 42, 5 74, 22 92 L22 25 Z" fill="#FFFFFF"/>
+    <!-- Three Neon Green Vertical Stripes inside R -->
+    <rect x="27" y="18" width="9" height="80" rx="1" fill="#04F404"/>
+    <rect x="40" y="18" width="9" height="82" rx="1" fill="#04F404"/>
+    <rect x="53" y="18" width="9" height="84" rx="1" fill="#04F404"/>
+    <!-- Main R stem, bowl, and diagonal leg -->
+    <path d="M12 4 H76 C100 4, 114 17, 114 36 C114 52, 102 64, 83 70 L118 112 L66 85 L66 73 L95 92 L70 63 L66 61 V48 C84 44, 94 38, 94 29 C94 21, 86 16, 72 16 H23 L12 4 Z" fill="#FFFFFF"/>
+    <!-- Right & Bottom circular arcs -->
+    <path d="M115 26 C125 45, 123 70, 109 87 L101 76 C112 63, 115 44, 115 26 Z" fill="#FFFFFF"/>
+    <path d="M62 103 C75 103, 88 99, 98 92 L90 86 C82 93, 72 99, 62 103 Z" fill="#FFFFFF"/>
+  </g>
+
+  <!-- A with Neon Green Triangle -->
+  <g transform="translate(126, 36)">
+    <path d="M35 2 C39 2, 42 4, 45 8 L78 56 H63 L36 16 L9 56 H-6 L27 8 C30 4, 32 2, 35 2 Z" fill="#FFFFFF"/>
+    <polygon points="36,26 55,52 17,52" fill="#04F404"/>
+  </g>
+
+  <!-- B -->
+  <g transform="translate(212, 36)">
+    <path fill-rule="evenodd" clip-rule="evenodd" d="M0 2 H48 C61 2, 69 9, 69 18 C69 24, 65 28, 59 30 C67 32, 72 37, 72 44 C72 54, 63 58, 49 58 H0 V2 Z M16 14 V24 H45 C50 24, 53 22, 53 19 C53 16, 50 14, 45 14 H16 Z M16 35 V46 H47 C53 46, 56 44, 56 40.5 C56 37, 53 35, 47 35 H16 Z" fill="#FFFFFF"/>
+  </g>
+
+  <!-- E -->
+  <g transform="translate(294, 36)">
+    <path d="M18 2 H68 L58 14 H20 C16 14, 15 16, 15 20 V23 H56 L47 35 H15 V40 C15 44, 17 46, 21 46 H60 L51 58 H16 C5 58, 0 52, 0 41 V19 C0 8, 6 2, 18 2 Z" fill="#FFFFFF"/>
+  </g>
+
+  <!-- Z in Neon Green -->
+  <g transform="translate(358, 36)">
+    <path d="M8 2 H52 C56 2, 58 6, 55 9 L23 44 H55 L48 58 H2 C-2 58, -4 54, -1 50 L31 15 H1 L8 2 Z" fill="#04F404"/>
+  </g>
+
+  <!-- Slogan Bar: Wear What you stand for. -->
+  <rect x="24" y="114" width="48" height="5" rx="2.5" fill="#04F404"/>
+  <text x="210" y="121" text-anchor="middle" fill="#FFFFFF" font-family="'Red Hat Text', 'Plus Jakarta Sans', sans-serif" font-size="15.5" font-weight="500" letter-spacing="1.6">Wear What you stand for.</text>
+  <rect x="348" y="114" width="48" height="5" rx="2.5" fill="#04F404"/>
+</svg>
+

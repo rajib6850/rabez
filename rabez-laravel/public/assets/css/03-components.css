@@ -1,0 +1,199 @@
+/* ==========================================================================
+   03. RABEZ STORE COMPONENTS (assets/css/03-components.css)
+   Reusable Product Grid, Price Formatting, Badges, Size Swatches & Toast Notices
+   ========================================================================== */
+
+.rabez-products-grid,
+.woocommerce ul.products,
+.woocommerce-page ul.products {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 30px 24px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.rabez-products-grid.columns-3,
+.woocommerce ul.products.columns-3 {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.rabez-products-grid li.product,
+.woocommerce ul.products li.product {
+  margin: 0;
+  width: 100%;
+  float: none;
+}
+
+/* --- Price Formatting (BDT ৳) --- */
+.price,
+.woocommerce-Price-amount {
+  font-family: var(--rabez-font-sans);
+  font-weight: 700;
+  color: var(--rabez-text-main);
+  font-variant-numeric: tabular-nums;
+}
+
+.price del,
+.price del .woocommerce-Price-amount {
+  color: var(--rabez-text-muted);
+  font-weight: 400;
+  text-decoration: line-through;
+  margin-right: 6px;
+  font-size: 0.88em;
+}
+
+.price ins {
+  text-decoration: none;
+}
+
+.woocommerce-Price-currencySymbol {
+  font-weight: 700;
+}
+
+/* --- WooCommerce Badges (Sale, New, Player Edition) --- */
+.woocommerce span.onsale,
+.rabez-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 4px 9px;
+  font-family: var(--rabez-font-sans);
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  border-radius: 2px;
+}
+
+.rabez-badge--neon {
+  background-color: var(--rabez-neon);
+  color: #080A09;
+}
+
+.rabez-badge--dark {
+  background-color: var(--rabez-black);
+  color: #FFFFFF;
+}
+
+.rabez-badge--sale,
+.woocommerce span.onsale {
+  background-color: var(--rabez-danger);
+  color: #FFFFFF;
+}
+
+.rabez-badge--retro {
+  background-color: var(--rabez-espresso);
+  color: #FFFFFF;
+}
+
+/* --- Variable Product Size Swatches (pa_size: S, M, L, XL, XXL) --- */
+.rabez-size-swatches,
+.woocommerce .variations .rabez-variation-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rabez-size-swatch {
+  min-width: 34px;
+  height: 30px;
+  padding: 0 8px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--rabez-font-sans);
+  font-size: 0.74rem;
+  font-weight: 700;
+  color: var(--rabez-text-main);
+  background-color: #FFFFFF;
+  border: 1px solid var(--rabez-border-strong);
+  border-radius: 2px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.rabez-size-swatch:hover:not(:disabled) {
+  border-color: var(--rabez-black);
+}
+
+.rabez-size-swatch.is-selected,
+.rabez-size-swatch[aria-pressed="true"] {
+  background-color: var(--rabez-black);
+  color: var(--rabez-neon);
+  border-color: var(--rabez-black);
+}
+
+.rabez-size-swatch:disabled,
+.rabez-size-swatch.is-out-of-stock {
+  opacity: 0.35;
+  text-decoration: line-through;
+  cursor: not-allowed;
+}
+
+/* --- Toast Notification (WooCommerce Added to Cart Notice) --- */
+.rabez-wc-notice {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  z-index: 9999;
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background-color: var(--rabez-black);
+  color: #FFFFFF;
+  border-left: 4px solid var(--rabez-neon);
+  padding: 14px 18px;
+  border-radius: var(--rabez-radius-sm);
+  box-shadow: var(--rabez-shadow-lg);
+  transform: translateY(120%);
+  opacity: 0;
+  transition: all 0.3s var(--rabez-ease);
+  max-width: 380px;
+}
+
+.rabez-wc-notice.is-visible {
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.rabez-wc-notice__title {
+  font-size: 0.85rem;
+  font-weight: 600;
+}
+
+.rabez-wc-notice__sub {
+  font-size: 0.76rem;
+  color: #A3ACA7;
+}
+
+@media (max-width: 1024px) {
+  .rabez-products-grid,
+  .woocommerce ul.products,
+  .woocommerce-page ul.products,
+  .woocommerce ul.products.columns-3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px 18px;
+  }
+}
+
+@media (max-width: 768px) {
+  .rabez-products-grid,
+  .woocommerce ul.products,
+  .woocommerce-page ul.products,
+  .woocommerce ul.products.columns-3 {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px 12px;
+  }
+}
+
+@media (max-width: 480px) {
+  .rabez-products-grid,
+  .woocommerce ul.products,
+  .woocommerce-page ul.products {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 12px 8px;
+  }
+}
+

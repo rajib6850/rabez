@@ -1,0 +1,2459 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RABEZ Admin – Dashboard</title>
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="theme-color" content="#0B0D0C">
+  <link rel="icon" type="image/jpeg" href="assets/images/brand/rabez-emblem.jpg">
+  <link rel="apple-touch-icon" href="assets/images/brand/rabez-emblem.jpg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="assets/css/01-variables.css">
+  <link rel="stylesheet" href="assets/css/02-base-reset.css">
+
+  <style>
+    /* ==========================================================================
+       RABEZ ADMIN — Clean Modern Dashboard
+       Inter typeface • Sentence case • Neutral surfaces • Neon used only as accent
+       ========================================================================== */
+    :root {
+      --adm-bg: #F6F7F6;
+      --adm-surface: #FFFFFF;
+      --adm-subtle: #FAFBFA;
+      --adm-border: #E6E9E7;
+      --adm-border-strong: #D5DAD7;
+      --adm-text: #111412;
+      --adm-text-2: #4B524E;
+      --adm-muted: #7A827E;
+      --adm-ink: #0B0D0C;
+      --adm-brand: #04F404;
+      --adm-radius: 12px;
+    }
+
+    body.adm {
+      font-family: "Inter", system-ui, -apple-system, "Segoe UI", sans-serif;
+      font-size: 14px;
+      line-height: 1.5;
+      background: var(--adm-bg);
+      color: var(--adm-text);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .adm h1, .adm h2, .adm h3, .adm h4 {
+      font-family: inherit;
+      text-transform: none;
+      letter-spacing: -0.01em;
+      line-height: 1.3;
+      font-weight: 600;
+      color: var(--adm-text);
+    }
+
+    .num { font-variant-numeric: tabular-nums; }
+
+    /* ---------- Layout ---------- */
+    .adm-layout {
+      display: grid;
+      grid-template-columns: 248px minmax(0, 1fr);
+      min-height: 100vh;
+    }
+
+    /* ---------- Sidebar ---------- */
+    .adm-sidebar {
+      position: sticky;
+      top: 0;
+      height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background: var(--adm-ink);
+      border-right: 1px solid #161A18;
+      padding: 18px 12px;
+      overflow-y: auto;
+    }
+
+    .adm-brand {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 2px 8px 16px;
+    }
+
+    .adm-brand img { height: 30px; width: auto; }
+
+    .adm-brand__tag {
+      font-size: 11px;
+      font-weight: 500;
+      color: #8B938F;
+      border: 1px solid #262B28;
+      border-radius: 6px;
+      padding: 2px 7px;
+    }
+
+    .adm-nav-group { margin-top: 18px; }
+
+    .adm-nav-label {
+      font-size: 11px;
+      font-weight: 600;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: #59615D;
+      padding: 0 10px 6px;
+    }
+
+    .adm-nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      width: 100%;
+      height: 36px;
+      padding: 0 10px;
+      margin-bottom: 2px;
+      border-radius: 8px;
+      color: #A3ABA7;
+      font-size: 13.5px;
+      font-weight: 500;
+      text-align: left;
+      transition: background 0.15s ease, color 0.15s ease;
+    }
+
+    .adm-nav-item svg { width: 17px; height: 17px; flex-shrink: 0; }
+    .adm-nav-item:hover { background: rgba(255, 255, 255, 0.04); color: #FFFFFF; }
+    .adm-nav-item.is-active { background: rgba(255, 255, 255, 0.08); color: #FFFFFF; }
+    .adm-nav-item.is-active svg { color: var(--adm-brand); }
+
+    .adm-nav-count {
+      margin-left: auto;
+      font-size: 11.5px;
+      font-weight: 500;
+      color: #8B938F;
+      background: rgba(255, 255, 255, 0.06);
+      padding: 0 7px;
+      line-height: 20px;
+      border-radius: 999px;
+    }
+
+    .adm-sidebar__foot {
+      margin-top: auto;
+      padding: 14px;
+      border: 1px solid #1C211E;
+      border-radius: 10px;
+      background: #111412;
+    }
+
+    .adm-sidebar__foot-title { color: #FFFFFF; font-size: 13px; font-weight: 600; }
+    .adm-sidebar__foot-sub { color: #7D8581; font-size: 12px; margin: 2px 0 10px; }
+
+    .adm-sidebar__link {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 32px;
+      border-radius: 7px;
+      background: rgba(255, 255, 255, 0.06);
+      color: #FFFFFF;
+      font-size: 12.5px;
+      font-weight: 500;
+    }
+
+    .adm-sidebar__link:hover { background: rgba(255, 255, 255, 0.1); }
+
+    /* ---------- Main + Topbar ---------- */
+    .adm-main { min-width: 0; display: flex; flex-direction: column; }
+
+    .adm-topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 0 28px;
+      background: rgba(255, 255, 255, 0.9);
+      backdrop-filter: blur(10px);
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .adm-topbar__left { display: flex; align-items: center; gap: 12px; min-width: 0; }
+    .adm-topbar__menu, .adm-topbar__logo { display: none; }
+    .adm-topbar__title { font-size: 17px; font-weight: 600; letter-spacing: -0.01em; }
+
+    .adm-topbar__sub {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 12.5px;
+      color: var(--adm-muted);
+    }
+
+    .adm-live {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #16A34A;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.15);
+    }
+
+    .adm-topbar__actions { display: flex; align-items: center; gap: 8px; }
+
+    .adm-avatar {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: var(--adm-ink);
+      color: var(--adm-brand);
+      font-size: 12px;
+      font-weight: 600;
+      display: grid;
+      place-items: center;
+      margin-left: 4px;
+    }
+
+    .adm-content {
+      width: 100%;
+      max-width: 1320px;
+      padding: 24px 28px 48px;
+    }
+
+    .adm-panel { display: none; }
+    .adm-panel.is-active { display: block; }
+
+    /* ---------- Buttons ---------- */
+    .adm-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 14px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      font-size: 13px;
+      font-weight: 500;
+      white-space: nowrap;
+      transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    }
+
+    .adm-btn svg { width: 15px; height: 15px; }
+    .adm-btn--primary { background: var(--adm-ink); color: #FFFFFF; }
+    .adm-btn--primary:hover { background: #262B28; }
+    .adm-btn--secondary { background: #FFFFFF; border-color: var(--adm-border-strong); color: var(--adm-text); }
+    .adm-btn--secondary:hover { background: var(--adm-subtle); border-color: #BFC6C2; }
+    .adm-btn--brand { background: var(--adm-brand); color: var(--adm-ink); }
+    .adm-btn--brand:hover { background: #03DA03; }
+    .adm-btn--sm { height: 30px; padding: 0 10px; font-size: 12.5px; border-radius: 7px; }
+    .adm-btn--block { width: 100%; }
+    .adm-btn[disabled] { opacity: 0.55; cursor: default; }
+
+    .adm-icon-btn {
+      width: 30px;
+      height: 30px;
+      display: inline-grid;
+      place-items: center;
+      border-radius: 7px;
+      border: 1px solid var(--adm-border);
+      color: var(--adm-text-2);
+      background: #FFFFFF;
+      transition: background 0.15s ease;
+    }
+
+    .adm-icon-btn svg { width: 15px; height: 15px; }
+    .adm-icon-btn:hover { background: var(--adm-subtle); color: var(--adm-text); }
+
+    /* ---------- KPI ---------- */
+    .adm-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+      margin-bottom: 20px;
+    }
+
+    .adm-kpi {
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: var(--adm-radius);
+      padding: 16px 18px;
+    }
+
+    .adm-kpi__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--adm-muted);
+    }
+
+    .adm-kpi__icon {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: #F3F5F4;
+      color: var(--adm-text-2);
+      display: grid;
+      place-items: center;
+    }
+
+    .adm-kpi__icon svg { width: 15px; height: 15px; }
+
+    .adm-kpi__value {
+      margin-top: 8px;
+      font-size: 26px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+      line-height: 1.2;
+      font-variant-numeric: tabular-nums;
+    }
+
+    .adm-kpi__foot { margin-top: 4px; font-size: 12.5px; color: var(--adm-muted); }
+    .adm-up { color: #15803D; font-weight: 500; }
+
+    /* ---------- Card ---------- */
+    .adm-card {
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: var(--adm-radius);
+      overflow: hidden;
+    }
+
+    .adm-card + .adm-card { margin-top: 20px; }
+
+    .adm-card__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 12px;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .adm-card__title { font-size: 15px; font-weight: 600; }
+    .adm-card__desc { margin-top: 2px; font-size: 13px; color: var(--adm-muted); }
+    .adm-card__body { padding: 20px; }
+
+    /* ---------- Tabs + Toolbar ---------- */
+    .adm-tabs {
+      display: flex;
+      gap: 4px;
+      padding: 0 16px;
+      border-bottom: 1px solid var(--adm-border);
+      overflow-x: auto;
+      scrollbar-width: none;
+    }
+
+    .adm-tabs::-webkit-scrollbar { display: none; }
+
+    .adm-tab {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 46px;
+      padding: 0 10px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--adm-muted);
+      white-space: nowrap;
+    }
+
+    .adm-tab:hover { color: var(--adm-text); }
+    .adm-tab.is-active { color: var(--adm-text); }
+
+    .adm-tab.is-active::after {
+      content: "";
+      position: absolute;
+      left: 8px;
+      right: 8px;
+      bottom: -1px;
+      height: 2px;
+      border-radius: 2px;
+      background: var(--adm-ink);
+    }
+
+    .adm-tab__count {
+      font-size: 11.5px;
+      line-height: 18px;
+      padding: 0 6px;
+      border-radius: 999px;
+      background: #F1F3F2;
+      color: var(--adm-text-2);
+    }
+
+    .adm-tab.is-active .adm-tab__count { background: var(--adm-ink); color: #FFFFFF; }
+
+    .adm-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 10px;
+      padding: 12px 20px;
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .adm-toolbar__group { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+
+    .adm-search { position: relative; width: 280px; max-width: 100%; }
+
+    .adm-search svg {
+      position: absolute;
+      left: 11px;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 15px;
+      height: 15px;
+      color: var(--adm-muted);
+      pointer-events: none;
+    }
+
+    .adm-search input {
+      width: 100%;
+      height: 36px;
+      padding: 0 12px 0 33px;
+      border: 1px solid var(--adm-border-strong);
+      border-radius: 8px;
+      background: #FFFFFF;
+      font-size: 13px;
+      color: var(--adm-text);
+    }
+
+    .adm-search input:focus,
+    .adm-input:focus,
+    .adm-select:focus,
+    .adm-textarea:focus {
+      outline: none;
+      border-color: var(--adm-ink);
+      box-shadow: 0 0 0 3px rgba(11, 13, 12, 0.07);
+    }
+
+    .adm-filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }
+
+    .adm-filter-chip {
+      height: 30px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid var(--adm-border-strong);
+      font-size: 12.5px;
+      font-weight: 500;
+      color: var(--adm-text-2);
+      background: #FFFFFF;
+    }
+
+    .adm-filter-chip:hover { border-color: #BFC6C2; color: var(--adm-text); }
+    .adm-filter-chip.is-active { background: var(--adm-ink); border-color: var(--adm-ink); color: #FFFFFF; }
+
+    /* ---------- Shared cells ---------- */
+    .adm-cell-main { font-size: 13.5px; font-weight: 500; color: var(--adm-text); }
+    .adm-cell-sub { font-size: 12.5px; color: var(--adm-muted); margin-top: 1px; }
+    .adm-list-head-row { font-size: 12px; font-weight: 500; color: var(--adm-muted); background: var(--adm-subtle); }
+
+    .adm-empty {
+      padding: 48px 20px;
+      text-align: center;
+      font-size: 13.5px;
+      color: var(--adm-muted);
+    }
+
+    /* ---------- Chips ---------- */
+    .adm-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 24px;
+      padding: 0 9px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 500;
+      white-space: nowrap;
+    }
+
+    .adm-chip::before {
+      content: "";
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: currentColor;
+    }
+
+    .adm-chip--plain::before { display: none; }
+    .adm-chip--pending { background: #FFF7E6; color: #B45309; }
+    .adm-chip--printing { background: #F4F0FF; color: #6D28D9; }
+    .adm-chip--shipped { background: #EFF4FF; color: #1D4ED8; }
+    .adm-chip--delivered { background: #ECFDF3; color: #15803D; }
+    .adm-chip--neutral { background: #F1F3F2; color: #4B524E; }
+    .adm-chip--danger { background: #FEF2F2; color: #B91C1C; }
+
+    .adm-risk { display: flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 500; color: #15803D; }
+    .adm-risk__bar { width: 44px; height: 4px; border-radius: 4px; background: #EEF0EF; overflow: hidden; }
+    .adm-risk__bar span { display: block; height: 100%; background: #16A34A; border-radius: 4px; }
+    .adm-risk--warn { color: #B91C1C; }
+    .adm-risk--warn .adm-risk__bar span { background: #DC2626; }
+
+    .adm-code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12px;
+      background: #F3F5F4;
+      color: var(--adm-text-2);
+      padding: 2px 6px;
+      border-radius: 5px;
+    }
+
+    /* ---------- Orders list ---------- */
+    .adm-order-head,
+    .adm-order-row {
+      display: grid;
+      grid-template-columns: minmax(120px, 1fr) minmax(170px, 1.4fr) minmax(130px, 1.1fr) 104px 116px 112px 116px;
+      gap: 16px;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .adm-order-head { height: 40px; border-bottom: 1px solid var(--adm-border); }
+
+    .adm-order-row {
+      min-height: 68px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--adm-border);
+      cursor: pointer;
+      transition: background 0.12s ease;
+    }
+
+    .adm-order-row:hover { background: var(--adm-subtle); }
+    .adm-order-row:last-child { border-bottom: none; }
+    .adm-order-row .c-actions { display: flex; justify-content: flex-end; gap: 6px; }
+
+    .adm-thumbs { display: flex; align-items: center; }
+
+    .adm-thumbs img {
+      width: 32px;
+      height: 38px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 2px solid #FFFFFF;
+      box-shadow: 0 0 0 1px var(--adm-border);
+      margin-left: -10px;
+    }
+
+    .adm-thumbs img:first-child { margin-left: 0; }
+    .adm-thumbs__text { margin-left: 10px; font-size: 12.5px; color: var(--adm-muted); }
+
+    /* ---------- Products list ---------- */
+    .adm-prod-head,
+    .adm-prod-row {
+      display: grid;
+      grid-template-columns: minmax(240px, 2fr) 120px minmax(210px, 1.3fr) 110px 96px 40px;
+      gap: 16px;
+      align-items: center;
+      padding: 0 20px;
+    }
+
+    .adm-prod-head { height: 40px; border-bottom: 1px solid var(--adm-border); }
+
+    .adm-prod-row {
+      min-height: 72px;
+      padding-top: 12px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .adm-prod-row:last-child { border-bottom: none; }
+    .adm-prod-cell { display: flex; align-items: center; gap: 12px; min-width: 0; }
+
+    .adm-prod-cell img {
+      width: 40px;
+      height: 48px;
+      object-fit: cover;
+      border-radius: 7px;
+      border: 1px solid var(--adm-border);
+      flex-shrink: 0;
+    }
+
+    .adm-prod-cell .adm-cell-main {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .adm-sizes { display: flex; gap: 5px; flex-wrap: wrap; }
+
+    .adm-size {
+      min-width: 34px;
+      height: 28px;
+      padding: 0 8px;
+      border-radius: 6px;
+      border: 1px solid var(--adm-border-strong);
+      background: #FFFFFF;
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--adm-text);
+      transition: all 0.12s ease;
+    }
+
+    .adm-size:hover { border-color: var(--adm-ink); }
+
+    .adm-size.is-out {
+      background: #F6F7F6;
+      border-style: dashed;
+      color: #A9AFAC;
+      text-decoration: line-through;
+    }
+
+    /* ---------- Forms ---------- */
+    .adm-split {
+      display: grid;
+      grid-template-columns: minmax(0, 1.6fr) minmax(0, 1fr);
+      gap: 20px;
+      align-items: start;
+    }
+
+    .adm-split > .adm-card + .adm-card { margin-top: 0; }
+
+    .adm-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+    .adm-field { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+    .adm-field--full { grid-column: 1 / -1; }
+    .adm-label { font-size: 13px; font-weight: 500; color: var(--adm-text); }
+    .adm-hint { font-size: 12px; color: var(--adm-muted); }
+
+    .adm-input,
+    .adm-select,
+    .adm-textarea {
+      width: 100%;
+      height: 38px;
+      padding: 0 12px;
+      border: 1px solid var(--adm-border-strong);
+      border-radius: 8px;
+      background: #FFFFFF;
+      font-size: 13.5px;
+      color: var(--adm-text);
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .adm-select {
+      appearance: none;
+      -webkit-appearance: none;
+      padding-right: 32px;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%237A827E' stroke-width='2'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      cursor: pointer;
+    }
+
+    .adm-input-row { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+    .adm-form__actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: 8px; padding-top: 4px; }
+
+    .adm-dropzone {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+      padding: 24px 16px;
+      border: 1px dashed var(--adm-border-strong);
+      border-radius: 10px;
+      background: var(--adm-subtle);
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.15s ease, background 0.15s ease;
+    }
+
+    .adm-dropzone:hover { border-color: var(--adm-ink); background: #FFFFFF; }
+
+    .adm-dropzone__icon {
+      width: 36px;
+      height: 36px;
+      border-radius: 9px;
+      background: #FFFFFF;
+      border: 1px solid var(--adm-border);
+      display: grid;
+      place-items: center;
+      color: var(--adm-text-2);
+      margin-bottom: 6px;
+    }
+
+    .adm-dropzone__icon svg { width: 18px; height: 18px; }
+
+    /* ---------- Simple lists & tables ---------- */
+    .adm-rows > div {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 12px 0;
+      border-bottom: 1px solid var(--adm-border);
+      font-size: 13px;
+    }
+
+    .adm-rows > div:first-child { padding-top: 0; }
+    .adm-rows > div:last-child { border-bottom: none; padding-bottom: 0; }
+
+    .adm-table-wrap { overflow-x: auto; }
+    .adm-table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+
+    .adm-table th {
+      text-align: left;
+      padding: 10px 20px;
+      background: var(--adm-subtle);
+      border-bottom: 1px solid var(--adm-border);
+      font-size: 12px;
+      font-weight: 500;
+      color: var(--adm-muted);
+      white-space: nowrap;
+    }
+
+    .adm-table td {
+      padding: 14px 20px;
+      border-bottom: 1px solid var(--adm-border);
+      vertical-align: middle;
+      white-space: nowrap;
+    }
+
+    .adm-table tr:last-child td { border-bottom: none; }
+
+    /* ---------- Print queue ---------- */
+    .adm-print-row {
+      display: grid;
+      grid-template-columns: 44px minmax(0, 1fr) 210px auto;
+      gap: 16px;
+      align-items: center;
+      padding: 16px 20px;
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .adm-print-row:last-child { border-bottom: none; }
+
+    .adm-print-row img {
+      width: 44px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 7px;
+      border: 1px solid var(--adm-border);
+    }
+
+    .adm-print-label {
+      padding: 8px 12px;
+      border: 1px solid var(--adm-border);
+      border-radius: 8px;
+      background: var(--adm-subtle);
+      text-align: center;
+    }
+
+    .adm-print-label__cap { font-size: 11px; color: var(--adm-muted); }
+
+    .adm-print-label__text {
+      font-family: "Barlow Condensed", sans-serif;
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.06em;
+      line-height: 1.2;
+      color: var(--adm-text);
+    }
+
+    /* ---------- Callout ---------- */
+    .adm-callout {
+      padding: 14px;
+      border-radius: 10px;
+      border: 1px solid #CDEFD8;
+      background: #F3FCF6;
+    }
+
+    .adm-callout--warn { border-color: #F7D4D4; background: #FEF6F6; }
+
+    /* ---------- Dashboard 7-Day Chart ---------- */
+    .adm-chart {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 12px;
+      align-items: end;
+      height: 148px;
+      padding: 12px 4px 0;
+    }
+
+    .adm-chart__col {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      height: 100%;
+      justify-content: flex-end;
+    }
+
+    .adm-chart__val {
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--adm-muted);
+      font-variant-numeric: tabular-nums;
+    }
+
+    .adm-chart__bar {
+      width: 100%;
+      max-width: 34px;
+      border-radius: 6px 6px 3px 3px;
+      background: #E8ECEA;
+      transition: background 0.15s ease;
+    }
+
+    .adm-chart__col:hover .adm-chart__bar {
+      background: #C8D0CC;
+    }
+
+    .adm-chart__col.is-today .adm-chart__bar {
+      background: var(--adm-ink);
+    }
+
+    .adm-chart__col.is-today .adm-chart__val,
+    .adm-chart__col.is-today .adm-chart__day {
+      color: var(--adm-text);
+      font-weight: 600;
+    }
+
+    .adm-chart__day {
+      font-size: 11.5px;
+      color: var(--adm-muted);
+    }
+
+    /* ---------- Drawer ---------- */
+    .adm-backdrop {
+      position: fixed;
+      inset: 0;
+      z-index: 1000;
+      background: rgba(11, 13, 12, 0.32);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.2s ease;
+    }
+
+    .adm-drawer {
+      position: fixed;
+      top: 0;
+      right: 0;
+      bottom: 0;
+      z-index: 1001;
+      width: 440px;
+      max-width: 100%;
+      display: flex;
+      flex-direction: column;
+      background: #FFFFFF;
+      border-left: 1px solid var(--adm-border);
+      transform: translateX(100%);
+      transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    body.is-drawer-open .adm-backdrop,
+    body.is-nav-open .adm-backdrop { opacity: 1; pointer-events: auto; }
+    body.is-drawer-open .adm-drawer { transform: translateX(0); }
+
+    .adm-drawer__head {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .adm-drawer__body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 20px;
+      display: grid;
+      align-content: start;
+      gap: 22px;
+    }
+
+    .adm-drawer__foot {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+      padding: 14px 20px;
+      border-top: 1px solid var(--adm-border);
+    }
+
+    .adm-section-label { font-size: 12px; font-weight: 500; color: var(--adm-muted); margin-bottom: 8px; }
+
+    .adm-kv {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 4px 0;
+      font-size: 13px;
+      color: var(--adm-text-2);
+    }
+
+    .adm-kv strong { color: var(--adm-text); font-weight: 500; }
+
+    .adm-kv--total {
+      margin-top: 6px;
+      padding-top: 10px;
+      border-top: 1px solid var(--adm-border);
+      font-size: 14px;
+      color: var(--adm-text);
+      font-weight: 600;
+    }
+
+    .adm-kv--total strong { font-weight: 600; }
+
+    .adm-item {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 10px 0;
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .adm-item:last-child { border-bottom: none; }
+
+    .adm-item img {
+      width: 44px;
+      height: 52px;
+      object-fit: cover;
+      border-radius: 8px;
+      border: 1px solid var(--adm-border);
+      flex-shrink: 0;
+    }
+
+    .adm-quick-actions { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+
+    /* ---------- Toast ---------- */
+    .adm-toast {
+      position: fixed;
+      left: 50%;
+      bottom: 24px;
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      max-width: calc(100% - 32px);
+      padding: 12px 16px;
+      border-radius: 10px;
+      background: var(--adm-ink);
+      color: #FFFFFF;
+      font-size: 13px;
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transform: translate(-50%, 12px);
+      transition: opacity 0.2s ease, transform 0.2s ease;
+    }
+
+    .adm-toast.is-visible { opacity: 1; transform: translate(-50%, 0); }
+    .adm-toast__dot { width: 8px; height: 8px; border-radius: 50%; background: var(--adm-brand); flex-shrink: 0; }
+    .adm-toast__sub { color: #A3ABA7; font-size: 12.5px; }
+
+    /* ---------- Bottom nav (mobile) ---------- */
+    .adm-bottom-nav { display: none; }
+
+    /* ==========================================================================
+       RESPONSIVE
+       ========================================================================== */
+    @media (max-width: 1180px) {
+      .adm-order-head { display: none; }
+      .adm-order-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+          "id status"
+          "cust total"
+          "items items"
+          "risk actions";
+        gap: 10px 16px;
+        padding-top: 16px;
+        padding-bottom: 16px;
+      }
+      .adm-order-row .c-id { grid-area: id; }
+      .adm-order-row .c-cust { grid-area: cust; }
+      .adm-order-row .c-items { grid-area: items; }
+      .adm-order-row .c-total { grid-area: total; text-align: right; }
+      .adm-order-row .c-risk { grid-area: risk; }
+      .adm-order-row .c-status { grid-area: status; justify-self: end; }
+      .adm-order-row .c-actions { grid-area: actions; }
+
+      .adm-prod-head { display: none; }
+      .adm-prod-row {
+        grid-template-columns: minmax(0, 1fr) auto;
+        grid-template-areas:
+          "prod price"
+          "sizes sizes"
+          "cat stock";
+        gap: 10px 16px;
+        padding-top: 14px;
+        padding-bottom: 14px;
+      }
+      .adm-prod-row .c-prod { grid-area: prod; }
+      .adm-prod-row .c-cat { grid-area: cat; }
+      .adm-prod-row .c-sizes { grid-area: sizes; }
+      .adm-prod-row .c-price { grid-area: price; text-align: right; }
+      .adm-prod-row .c-stock { grid-area: stock; justify-self: end; }
+      .adm-prod-row .c-link { display: none; }
+
+      .adm-split { grid-template-columns: 1fr; }
+    }
+
+    @media (max-width: 960px) {
+      body.adm { padding-bottom: 68px; }
+      .adm-layout { grid-template-columns: 1fr; }
+
+      .adm-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        z-index: 1100;
+        width: 272px;
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+
+      body.is-nav-open .adm-sidebar { transform: translateX(0); }
+
+      .adm-topbar {
+        height: 56px;
+        padding: 0 14px;
+        background: var(--adm-ink);
+        border-bottom: 1px solid #1A1F1C;
+      }
+
+      .adm-topbar__menu {
+        display: inline-grid;
+        place-items: center;
+        width: 34px;
+        height: 34px;
+        border-radius: 8px;
+        color: #FFFFFF;
+        background: rgba(255, 255, 255, 0.06);
+      }
+
+      .adm-topbar__menu svg { width: 18px; height: 18px; }
+      .adm-topbar__logo { display: block; height: 24px; width: auto; }
+      .adm-topbar__heading { display: none; }
+      .adm-topbar__actions .adm-btn--secondary,
+      .adm-topbar__actions .adm-avatar { display: none; }
+
+      .adm-content { padding: 16px 14px 32px; }
+      .adm-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
+      .adm-kpi { padding: 14px; }
+      .adm-kpi__value { font-size: 22px; }
+
+      .adm-mobile-title {
+        display: block !important;
+        font-size: 18px;
+        font-weight: 600;
+        letter-spacing: -0.01em;
+        margin-bottom: 12px;
+      }
+
+      .adm-bottom-nav {
+        position: fixed;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        z-index: 900;
+        display: grid;
+        grid-template-columns: repeat(5, 1fr);
+        padding: 6px 6px 8px;
+        background: var(--adm-ink);
+        border-top: 1px solid #1A1F1C;
+      }
+
+      .adm-bottom-btn {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 3px;
+        padding: 6px 2px;
+        border-radius: 8px;
+        font-size: 11px;
+        font-weight: 500;
+        color: #8B938F;
+      }
+
+      .adm-bottom-btn svg { width: 19px; height: 19px; }
+      .adm-bottom-btn.is-active { color: #FFFFFF; background: rgba(255, 255, 255, 0.06); }
+      .adm-bottom-btn.is-active svg { color: var(--adm-brand); }
+
+      .adm-toast { bottom: 84px; }
+    }
+
+    @media (max-width: 640px) {
+      .adm-form { grid-template-columns: 1fr; }
+      .adm-toolbar { padding: 12px 14px; }
+      .adm-toolbar__group, .adm-search { width: 100%; }
+      .adm-toolbar__group .adm-btn { flex: 1; }
+      .adm-card__head, .adm-card__body { padding-left: 14px; padding-right: 14px; }
+      .adm-order-row, .adm-prod-row { padding-left: 14px; padding-right: 14px; }
+      .adm-tabs { padding: 0 8px; }
+      .adm-print-row {
+        grid-template-columns: 44px minmax(0, 1fr);
+        padding: 14px;
+      }
+      .adm-print-row .adm-print-label,
+      .adm-print-row .adm-btn { grid-column: 1 / -1; }
+      .adm-table th, .adm-table td { padding-left: 14px; padding-right: 14px; }
+      .adm-drawer { width: 100%; }
+    }
+  </style>
+</head>
+<body class="adm">
+
+  <div class="adm-layout">
+    <!-- ======================================================================
+         SIDEBAR
+         ====================================================================== -->
+    <aside class="adm-sidebar" aria-label="Admin navigation">
+      <div class="adm-brand">
+        <a href="index.html" aria-label="RABEZ store home">
+          <img src="assets/images/brand/rabez-neon-logo.png" alt="RABEZ">
+        </a>
+        <span class="adm-brand__tag">Admin</span>
+      </div>
+
+      <div class="adm-nav-group" style="margin-top:6px;">
+        <button type="button" class="adm-nav-item is-active js-tab" data-tab="dashboard">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+          <span>Dashboard</span>
+        </button>
+      </div>
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">Sales</div>
+        <button type="button" class="adm-nav-item js-tab" data-tab="orders">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/><polyline points="3.27 6.96 12 12.01 20.73 6.96"/><line x1="12" y1="22.08" x2="12" y2="12"/></svg>
+          <span>Orders</span>
+          <span class="adm-nav-count js-order-count">4</span>
+        </button>
+        <button type="button" class="adm-nav-item js-tab" data-tab="print-queue">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
+          <span>Print queue</span>
+          <span class="adm-nav-count js-print-count">2</span>
+        </button>
+        <button type="button" class="adm-nav-item js-tab" data-tab="pos-order">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <span>Manual order</span>
+        </button>
+      </div>
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">Catalog</div>
+        <button type="button" class="adm-nav-item js-tab" data-tab="products">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+          <span>Products</span>
+          <span class="adm-nav-count js-prod-count">18</span>
+        </button>
+        <button type="button" class="adm-nav-item js-tab" data-tab="add-product">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="3"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+          <span>Add product</span>
+        </button>
+        <button type="button" class="adm-nav-item js-tab" data-tab="categories">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/></svg>
+          <span>Categories</span>
+          <span class="adm-nav-count">5</span>
+        </button>
+      </div>
+
+      <div class="adm-nav-group">
+        <div class="adm-nav-label">Store</div>
+        <button type="button" class="adm-nav-item js-tab" data-tab="customers">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+          <span>Customers</span>
+        </button>
+        <button type="button" class="adm-nav-item js-tab" data-tab="settings">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </button>
+      </div>
+
+      <div class="adm-sidebar__foot">
+        <div class="adm-sidebar__foot-title">rabez.shop</div>
+        <div class="adm-sidebar__foot-sub">Store is live &middot; Barishal</div>
+        <a href="index.html" class="adm-sidebar__link">
+          View storefront
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M7 17L17 7"/><polyline points="7 7 17 7 17 17"/></svg>
+        </a>
+      </div>
+    </aside>
+
+    <!-- ======================================================================
+         MAIN
+         ====================================================================== -->
+    <div class="adm-main">
+      <header class="adm-topbar">
+        <div class="adm-topbar__left">
+          <button type="button" class="adm-topbar__menu js-nav-toggle" aria-label="Open menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg>
+          </button>
+          <img src="assets/images/brand/rabez-neon-logo.png" alt="RABEZ" class="adm-topbar__logo">
+          <div class="adm-topbar__heading">
+            <h1 class="adm-topbar__title js-page-title">Dashboard</h1>
+            <div class="adm-topbar__sub">
+              <span class="adm-live"></span>
+              <span class="js-page-sub">Store overview &amp; live activity</span>
+            </div>
+          </div>
+        </div>
+        <div class="adm-topbar__actions">
+          <button type="button" class="adm-btn adm-btn--secondary js-tab" data-tab="pos-order">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            New order
+          </button>
+          <button type="button" class="adm-btn adm-btn--primary js-tab" data-tab="add-product">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            Add product
+          </button>
+          <span class="adm-avatar" title="RABEZ Admin">RZ</span>
+        </div>
+      </header>
+
+      <main class="adm-content">
+        <h2 class="adm-mobile-title js-page-title" style="display:none;">Dashboard</h2>
+
+        <!-- ==================================================================
+             DASHBOARD (OVERVIEW)
+             ================================================================== -->
+        <section class="adm-panel is-active" data-panel="dashboard">
+          <div class="adm-kpis">
+            <div class="adm-kpi">
+              <div class="adm-kpi__head">
+                <span>Revenue today</span>
+                <span class="adm-kpi__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
+              </div>
+              <div class="adm-kpi__value">৳ 8,420</div>
+              <div class="adm-kpi__foot"><span class="adm-up">+18%</span> vs yesterday</div>
+            </div>
+            <div class="adm-kpi">
+              <div class="adm-kpi__head">
+                <span>Open orders</span>
+                <span class="adm-kpi__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg></span>
+              </div>
+              <div class="adm-kpi__value js-kpi-open">3</div>
+              <div class="adm-kpi__foot js-kpi-open-sub">2 ready to ship</div>
+            </div>
+            <div class="adm-kpi">
+              <div class="adm-kpi__head">
+                <span>COD with courier</span>
+                <span class="adm-kpi__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
+              </div>
+              <div class="adm-kpi__value">৳ 14,850</div>
+              <div class="adm-kpi__foot">Settles in 2–3 days</div>
+            </div>
+            <div class="adm-kpi">
+              <div class="adm-kpi__head">
+                <span>Products live</span>
+                <span class="adm-kpi__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span>
+              </div>
+              <div class="adm-kpi__value js-kpi-products">18</div>
+              <div class="adm-kpi__foot">Jerseys &amp; winter hoodies</div>
+            </div>
+          </div>
+
+          <div class="adm-split" style="margin-bottom:20px;">
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Revenue &middot; Last 7 days</h2>
+                  <p class="adm-card__desc">Total ৳ 54,200 across 42 orders</p>
+                </div>
+                <span class="adm-chip adm-chip--delivered">+24% this week</span>
+              </div>
+              <div class="adm-card__body">
+                <div class="adm-chart">
+                  <div class="adm-chart__col">
+                    <span class="adm-chart__val">6.2k</span>
+                    <div class="adm-chart__bar" style="height:52%;"></div>
+                    <span class="adm-chart__day">Fri</span>
+                  </div>
+                  <div class="adm-chart__col">
+                    <span class="adm-chart__val">9.1k</span>
+                    <div class="adm-chart__bar" style="height:76%;"></div>
+                    <span class="adm-chart__day">Sat</span>
+                  </div>
+                  <div class="adm-chart__col">
+                    <span class="adm-chart__val">7.4k</span>
+                    <div class="adm-chart__bar" style="height:62%;"></div>
+                    <span class="adm-chart__day">Sun</span>
+                  </div>
+                  <div class="adm-chart__col">
+                    <span class="adm-chart__val">5.8k</span>
+                    <div class="adm-chart__bar" style="height:48%;"></div>
+                    <span class="adm-chart__day">Mon</span>
+                  </div>
+                  <div class="adm-chart__col">
+                    <span class="adm-chart__val">10.1k</span>
+                    <div class="adm-chart__bar" style="height:86%;"></div>
+                    <span class="adm-chart__day">Tue</span>
+                  </div>
+                  <div class="adm-chart__col">
+                    <span class="adm-chart__val">7.2k</span>
+                    <div class="adm-chart__bar" style="height:60%;"></div>
+                    <span class="adm-chart__day">Wed</span>
+                  </div>
+                  <div class="adm-chart__col is-today">
+                    <span class="adm-chart__val">8.4k</span>
+                    <div class="adm-chart__bar" style="height:72%;"></div>
+                    <span class="adm-chart__day">Today</span>
+                  </div>
+                </div>
+
+                <div class="adm-rows" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--adm-border);">
+                  <div><span>Website COD</span><strong class="num">৳ 28,450 (52%)</strong></div>
+                  <div><span>Facebook &amp; WhatsApp</span><strong class="num">৳ 18,300 (34%)</strong></div>
+                  <div><span>Barishal showroom</span><strong class="num">৳ 7,450 (14%)</strong></div>
+                </div>
+              </div>
+            </div>
+
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Top selling items</h2>
+                  <p class="adm-card__desc">Most ordered this week</p>
+                </div>
+                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-tab" data-tab="products">All products</button>
+              </div>
+              <div class="adm-card__body" style="padding-top:10px; padding-bottom:10px;">
+                <div class="adm-item">
+                  <img src="assets/images/products/real-madrid-home-hs.jpg" alt="Real Madrid">
+                  <div style="flex:1; min-width:0;">
+                    <div class="adm-cell-main">Real Madrid 26/27 Home Half Sleeve</div>
+                    <div class="adm-cell-sub">16 sold &middot; ৳ 1,150</div>
+                  </div>
+                  <span class="adm-cell-main num">৳ 18,400</span>
+                </div>
+                <div class="adm-item">
+                  <img src="assets/images/products/messi-barca-arg-hoodie.jpg" alt="Messi Winter Hoodie">
+                  <div style="flex:1; min-width:0;">
+                    <div class="adm-cell-main">Messi #10 Barca × Argentina Hoodie</div>
+                    <div class="adm-cell-sub">11 sold &middot; ৳ 1,450</div>
+                  </div>
+                  <span class="adm-cell-main num">৳ 15,950</span>
+                </div>
+                <div class="adm-item">
+                  <img src="assets/images/products/messi-celebration-fs.jpg" alt="Messi Celebration">
+                  <div style="flex:1; min-width:0;">
+                    <div class="adm-cell-main">Messi Celebration Full Sleeve</div>
+                    <div class="adm-cell-sub">9 sold &middot; ৳ 1,300</div>
+                  </div>
+                  <span class="adm-cell-main num">৳ 11,700</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="adm-card">
+            <div class="adm-card__head">
+              <div>
+                <h2 class="adm-card__title">Recent orders</h2>
+                <p class="adm-card__desc">Click any order to view details or book courier.</p>
+              </div>
+              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-tab" data-tab="orders">View all orders</button>
+            </div>
+            <div class="adm-order-head adm-list-head-row">
+              <span>Order</span>
+              <span>Customer</span>
+              <span>Items</span>
+              <span>Total</span>
+              <span>Delivery rate</span>
+              <span>Status</span>
+              <span></span>
+            </div>
+            <div id="adm-recent-orders"></div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             ORDERS
+             ================================================================== -->
+        <section class="adm-panel" data-panel="orders">
+          <div class="adm-card">
+            <div class="adm-tabs" role="tablist">
+              <button type="button" class="adm-tab is-active js-order-filter" data-status="all">All <span class="adm-tab__count" data-count="all">0</span></button>
+              <button type="button" class="adm-tab js-order-filter" data-status="Pending">Pending <span class="adm-tab__count" data-count="Pending">0</span></button>
+              <button type="button" class="adm-tab js-order-filter" data-status="Printing">Printing <span class="adm-tab__count" data-count="Printing">0</span></button>
+              <button type="button" class="adm-tab js-order-filter" data-status="Shipped">In courier <span class="adm-tab__count" data-count="Shipped">0</span></button>
+              <button type="button" class="adm-tab js-order-filter" data-status="Delivered">Delivered <span class="adm-tab__count" data-count="Delivered">0</span></button>
+            </div>
+            <div class="adm-toolbar">
+              <label class="adm-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="search" class="js-order-search" placeholder="Search order, name or phone">
+              </label>
+              <div class="adm-toolbar__group">
+                <button type="button" class="adm-btn adm-btn--secondary js-bulk-book">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                  Book all pending
+                </button>
+              </div>
+            </div>
+
+            <div class="adm-order-head adm-list-head-row">
+              <span>Order</span>
+              <span>Customer</span>
+              <span>Items</span>
+              <span>Total</span>
+              <span>Delivery rate</span>
+              <span>Status</span>
+              <span></span>
+            </div>
+            <div id="adm-orders"></div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             PRODUCTS
+             ================================================================== -->
+        <section class="adm-panel" data-panel="products">
+          <div class="adm-card">
+            <div class="adm-toolbar">
+              <div class="adm-filter-chips">
+                <button type="button" class="adm-filter-chip is-active js-cat-filter" data-cat="all">All</button>
+                <button type="button" class="adm-filter-chip js-cat-filter" data-cat="half-sleeve">Half sleeve</button>
+                <button type="button" class="adm-filter-chip js-cat-filter" data-cat="full-sleeve">Full sleeve</button>
+                <button type="button" class="adm-filter-chip js-cat-filter" data-cat="winter-hoodie">Winter hoodies</button>
+              </div>
+              <label class="adm-search">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                <input type="search" class="js-prod-search" placeholder="Search product or SKU">
+              </label>
+            </div>
+
+            <div class="adm-prod-head adm-list-head-row">
+              <span>Product</span>
+              <span>Category</span>
+              <span>Sizes in stock (tap to toggle)</span>
+              <span>Inventory</span>
+              <span style="text-align:right;">Price</span>
+              <span></span>
+            </div>
+            <div id="adm-products"></div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             ADD PRODUCT
+             ================================================================== -->
+        <section class="adm-panel" data-panel="add-product">
+          <div class="adm-split">
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Product details</h2>
+                  <p class="adm-card__desc">Sizes and price fill in automatically based on the category.</p>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <form id="adm-add-form" class="adm-form">
+                  <div class="adm-field adm-field--full">
+                    <span class="adm-label">Photo</span>
+                    <label class="adm-dropzone" for="adm-photo">
+                      <input type="file" id="adm-photo" accept="image/*" hidden>
+                      <div id="adm-photo-preview" style="display:flex; flex-direction:column; align-items:center;">
+                        <span class="adm-dropzone__icon">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                        </span>
+                        <span class="adm-cell-main">Take a photo or upload</span>
+                        <span class="adm-hint">JPG, PNG or WebP &middot; up to 5 MB</span>
+                      </div>
+                    </label>
+                  </div>
+
+                  <div class="adm-field adm-field--full">
+                    <label class="adm-label" for="adm-name">Title</label>
+                    <input type="text" id="adm-name" class="adm-input" required placeholder="e.g. Real Madrid #7 Winter Fleece Hoodie">
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="adm-cat">Category</label>
+                    <select id="adm-cat" class="adm-select">
+                      <option value="half-sleeve">Jersey — Half sleeve</option>
+                      <option value="full-sleeve">Jersey — Full sleeve</option>
+                      <option value="winter-hoodie" selected>Winter hoodie</option>
+                      <option value="footwear">Boots / Turf shoes</option>
+                      <option value="tracksuit">Tracksuit</option>
+                    </select>
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="adm-club">Club / Team</label>
+                    <select id="adm-club" class="adm-select">
+                      <option value="real-madrid">Real Madrid</option>
+                      <option value="barcelona">FC Barcelona</option>
+                      <option value="argentina">Argentina</option>
+                      <option value="arsenal">Arsenal</option>
+                      <option value="man-utd">Manchester United</option>
+                      <option value="bayern">Bayern Munich</option>
+                      <option value="liverpool">Liverpool</option>
+                      <option value="bangladesh">Bangladesh</option>
+                    </select>
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="adm-price">Sale price (৳)</label>
+                    <input type="number" id="adm-price" class="adm-input num" value="1450" required>
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="adm-reg-price">Regular price (৳) <span class="adm-hint">optional</span></label>
+                    <input type="number" id="adm-reg-price" class="adm-input num" value="1690">
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="adm-sku">SKU</label>
+                    <input type="text" id="adm-sku" class="adm-input" placeholder="e.g. HOODIE-RMA-07">
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="adm-fabric">Fabric</label>
+                    <input type="text" id="adm-fabric" class="adm-input" placeholder="e.g. 320 GSM brushed fleece">
+                  </div>
+
+                  <div class="adm-field adm-field--full">
+                    <span class="adm-label">Sizes in stock</span>
+                    <div class="adm-sizes" id="adm-new-sizes"></div>
+                    <span class="adm-hint">Tap a size to mark it out of stock.</span>
+                  </div>
+
+                  <div class="adm-form__actions">
+                    <button type="reset" class="adm-btn adm-btn--secondary">Clear</button>
+                    <button type="submit" class="adm-btn adm-btn--primary">Publish product</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Default pricing</h2>
+                  <p class="adm-card__desc">Applied when you pick a category.</p>
+                </div>
+              </div>
+              <div class="adm-card__body adm-rows">
+                <div><div><div class="adm-cell-main">Half sleeve jersey</div><div class="adm-cell-sub">S – XXL</div></div><strong class="num">৳ 1,150</strong></div>
+                <div><div><div class="adm-cell-main">Full sleeve jersey</div><div class="adm-cell-sub">S – XXL</div></div><strong class="num">৳ 1,300</strong></div>
+                <div><div><div class="adm-cell-main">Winter hoodie</div><div class="adm-cell-sub">S – XXL &middot; 320 GSM</div></div><strong class="num">৳ 1,450</strong></div>
+                <div><div><div class="adm-cell-main">Boots / Turf shoes</div><div class="adm-cell-sub">EU 39 – 44</div></div><strong class="num">৳ 2,450</strong></div>
+                <div><div><div class="adm-cell-main">Custom name &amp; number</div><div class="adm-cell-sub">Add-on</div></div><strong class="num">+ ৳ 250</strong></div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             CATEGORIES
+             ================================================================== -->
+        <section class="adm-panel" data-panel="categories">
+          <div class="adm-card">
+            <div class="adm-card__head">
+              <div>
+                <h2 class="adm-card__title">Categories</h2>
+                <p class="adm-card__desc">Each category has its own size set and default price.</p>
+              </div>
+              <button type="button" class="adm-btn adm-btn--primary adm-btn--sm js-toast-btn" data-title="New category" data-sub="Category form will connect to the Laravel backend">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                New category
+              </button>
+            </div>
+            <div class="adm-table-wrap">
+              <table class="adm-table">
+                <thead>
+                  <tr><th>Name</th><th>Slug</th><th>Sizes</th><th>Default price</th><th>Products</th><th>Status</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="adm-cell-main">Half sleeve jerseys</td><td><span class="adm-code">half-sleeve</span></td><td>S, M, L, XL, XXL</td><td class="num">৳ 1,150</td><td class="num">10</td><td><span class="adm-chip adm-chip--delivered">Live</span></td></tr>
+                  <tr><td class="adm-cell-main">Full sleeve jerseys</td><td><span class="adm-code">full-sleeve</span></td><td>S, M, L, XL, XXL</td><td class="num">৳ 1,300</td><td class="num">5</td><td><span class="adm-chip adm-chip--delivered">Live</span></td></tr>
+                  <tr><td class="adm-cell-main">Winter hoodies</td><td><span class="adm-code">winter-hoodie</span></td><td>S, M, L, XL, XXL</td><td class="num">৳ 1,450</td><td class="num">3</td><td><span class="adm-chip adm-chip--delivered">Live</span></td></tr>
+                  <tr><td class="adm-cell-main">Boots &amp; turf shoes</td><td><span class="adm-code">footwear</span></td><td>39, 40, 41, 42, 43, 44</td><td class="num">৳ 2,450</td><td class="num">0</td><td><span class="adm-chip adm-chip--neutral">Draft</span></td></tr>
+                  <tr><td class="adm-cell-main">Tracksuits</td><td><span class="adm-code">tracksuit</span></td><td>M, L, XL, XXL</td><td class="num">৳ 1,850</td><td class="num">0</td><td><span class="adm-chip adm-chip--neutral">Draft</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             PRINT QUEUE
+             ================================================================== -->
+        <section class="adm-panel" data-panel="print-queue">
+          <div class="adm-card">
+            <div class="adm-card__head">
+              <div>
+                <h2 class="adm-card__title">Print queue</h2>
+                <p class="adm-card__desc">Check spelling and number before heat-pressing.</p>
+              </div>
+              <span class="adm-chip adm-chip--printing js-print-chip">2 waiting</span>
+            </div>
+            <div>
+              <div class="adm-print-row">
+                <img src="assets/images/products/real-madrid-home-hs.jpg" alt="Real Madrid home jersey">
+                <div>
+                  <div class="adm-cell-main">Real Madrid 26/27 Home Half Sleeve &middot; XL</div>
+                  <div class="adm-cell-sub">#RBZ-10025 &middot; Mehedi Hasan, Rajshahi</div>
+                </div>
+                <div class="adm-print-label">
+                  <div class="adm-print-label__cap">Back print</div>
+                  <div class="adm-print-label__text">BELLINGHAM &middot; 5</div>
+                </div>
+                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-mark-printed">Mark as printed</button>
+              </div>
+              <div class="adm-print-row">
+                <img src="assets/images/products/messi-barca-arg-hoodie.jpg" alt="Messi winter hoodie">
+                <div>
+                  <div class="adm-cell-main">Messi #10 Barca × Argentina Winter Hoodie &middot; L</div>
+                  <div class="adm-cell-sub">#RBZ-10028 &middot; Rafsan Jani, Dhaka</div>
+                </div>
+                <div class="adm-print-label">
+                  <div class="adm-print-label__cap">Back print</div>
+                  <div class="adm-print-label__text">MESSI &middot; 10</div>
+                </div>
+                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-mark-printed">Mark as printed</button>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             MANUAL / POS ORDER
+             ================================================================== -->
+        <section class="adm-panel" data-panel="pos-order">
+          <div class="adm-split">
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Create order</h2>
+                  <p class="adm-card__desc">For Facebook, WhatsApp or showroom orders.</p>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <form id="adm-pos-form" class="adm-form">
+                  <div class="adm-field">
+                    <label class="adm-label" for="pos-phone">Phone</label>
+                    <input type="tel" id="pos-phone" class="adm-input num" required value="01715889900" placeholder="01XXXXXXXXX">
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label" for="pos-name">Customer name</label>
+                    <input type="text" id="pos-name" class="adm-input" required placeholder="Full name">
+                  </div>
+                  <div class="adm-field adm-field--full">
+                    <label class="adm-label" for="pos-address">Delivery address</label>
+                    <input type="text" id="pos-address" class="adm-input" required placeholder="House, road, area, district">
+                  </div>
+                  <div class="adm-field adm-field--full">
+                    <label class="adm-label" for="pos-product">Product</label>
+                    <select id="pos-product" class="adm-select"></select>
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label" for="pos-size">Size</label>
+                    <select id="pos-size" class="adm-select">
+                      <option>S</option><option>M</option><option selected>L</option><option>XL</option><option>XXL</option>
+                    </select>
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label" for="pos-zone">Delivery zone</label>
+                    <select id="pos-zone" class="adm-select">
+                      <option value="70">Inside Dhaka — ৳ 70</option>
+                      <option value="130">Outside Dhaka — ৳ 130</option>
+                      <option value="0">Showroom pickup — ৳ 0</option>
+                    </select>
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label" for="pos-print">Name &amp; number <span class="adm-hint">+ ৳ 250, optional</span></label>
+                    <input type="text" id="pos-print" class="adm-input" placeholder="e.g. RONALDO 7">
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label" for="pos-source">Channel</label>
+                    <select id="pos-source" class="adm-select">
+                      <option>Facebook</option>
+                      <option>WhatsApp</option>
+                      <option>Showroom</option>
+                    </select>
+                  </div>
+                  <div class="adm-form__actions">
+                    <button type="reset" class="adm-btn adm-btn--secondary">Clear</button>
+                    <button type="submit" class="adm-btn adm-btn--primary">Create &amp; book Steadfast</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Delivery history</h2>
+                  <p class="adm-card__desc js-pos-phone-label">01715889900</p>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <div class="adm-callout" style="margin-bottom:16px;">
+                  <div style="display:flex; justify-content:space-between; align-items:center;">
+                    <span class="adm-cell-main">Safe for COD</span>
+                    <span class="adm-cell-main num" style="color:#15803D;">95%</span>
+                  </div>
+                  <div class="adm-cell-sub">19 of 20 parcels delivered</div>
+                </div>
+                <div class="adm-rows">
+                  <div><span>Steadfast</span><span class="num">11 / 11</span></div>
+                  <div><span>Pathao</span><span class="num">6 / 7</span></div>
+                  <div><span>RedX</span><span class="num">2 / 2</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             CUSTOMERS
+             ================================================================== -->
+        <section class="adm-panel" data-panel="customers">
+          <div class="adm-card">
+            <div class="adm-card__head">
+              <div>
+                <h2 class="adm-card__title">Check a phone number</h2>
+                <p class="adm-card__desc">See courier delivery history before sending a COD parcel.</p>
+              </div>
+            </div>
+            <div class="adm-card__body">
+              <form class="js-check-form" style="display:flex; gap:8px; flex-wrap:wrap; max-width:520px;">
+                <input type="tel" class="adm-input num js-check-phone" style="flex:1; min-width:200px;" value="01911002233" placeholder="01XXXXXXXXX">
+                <button type="submit" class="adm-btn adm-btn--primary">Check</button>
+              </form>
+              <div class="js-check-result" style="margin-top:14px; max-width:520px;"></div>
+            </div>
+          </div>
+
+          <div class="adm-card">
+            <div class="adm-card__head">
+              <h2 class="adm-card__title">Recent customers</h2>
+            </div>
+            <div class="adm-table-wrap">
+              <table class="adm-table">
+                <thead>
+                  <tr><th>Customer</th><th>Phone</th><th>Location</th><th>Orders</th><th>Spent</th><th>Delivery rate</th></tr>
+                </thead>
+                <tbody>
+                  <tr><td class="adm-cell-main">Tanvir Ahmed</td><td class="num">01712345678</td><td>Dhanmondi, Dhaka</td><td class="num">3</td><td class="num">৳ 4,970</td><td><span class="adm-risk"><span class="adm-risk__bar"><span style="width:94%"></span></span>94%</span></td></tr>
+                  <tr><td class="adm-cell-main">Mehedi Hasan</td><td class="num">01819223344</td><td>Boalia, Rajshahi</td><td class="num">2</td><td class="num">৳ 2,680</td><td><span class="adm-risk"><span class="adm-risk__bar"><span style="width:89%"></span></span>89%</span></td></tr>
+                  <tr><td class="adm-cell-main">Sabbir Rahman</td><td class="num">01612359652</td><td>College Avenue, Barishal</td><td class="num">5</td><td class="num">৳ 6,350</td><td><span class="adm-risk"><span class="adm-risk__bar"><span style="width:100%"></span></span>100%</span></td></tr>
+                  <tr><td class="adm-cell-main">Ariful Islam</td><td class="num">01911002233</td><td>Chawkbazar, Chattogram</td><td class="num">1</td><td class="num">৳ 1,430</td><td><span class="adm-risk adm-risk--warn"><span class="adm-risk__bar"><span style="width:38%"></span></span>38%</span></td></tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             SETTINGS
+             ================================================================== -->
+        <section class="adm-panel" data-panel="settings">
+          <div class="adm-split">
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Delivery &amp; courier</h2>
+                  <p class="adm-card__desc">Shipping fees and courier API credentials.</p>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <form class="adm-form js-settings-form">
+                  <div class="adm-field">
+                    <label class="adm-label">Inside Dhaka (৳)</label>
+                    <input type="number" class="adm-input num" value="70">
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label">Outside Dhaka (৳)</label>
+                    <input type="number" class="adm-input num" value="130">
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label">Name &amp; number print (৳)</label>
+                    <input type="number" class="adm-input num" value="250">
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label">Free delivery above (৳)</label>
+                    <input type="number" class="adm-input num" value="3500">
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label">Steadfast API key</label>
+                    <input type="password" class="adm-input" value="sf_live_rabez_9928174x">
+                  </div>
+                  <div class="adm-field">
+                    <label class="adm-label">Pathao store ID</label>
+                    <input type="text" class="adm-input" value="PTH-BARISHAL-1042">
+                  </div>
+                  <div class="adm-form__actions">
+                    <button type="submit" class="adm-btn adm-btn--primary">Save changes</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Coupons</h2>
+                  <p class="adm-card__desc">3 active</p>
+                </div>
+                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-toast-btn" data-title="New coupon" data-sub="Coupon form will connect to the Laravel backend">New</button>
+              </div>
+              <div class="adm-card__body adm-rows">
+                <div><div><span class="adm-code">RABEZ10</span><div class="adm-cell-sub" style="margin-top:4px;">৳ 100 off on 2+ items</div></div><span class="adm-chip adm-chip--delivered">Active</span></div>
+                <div><div><span class="adm-code">WINTER100</span><div class="adm-cell-sub" style="margin-top:4px;">৳ 100 off winter hoodies</div></div><span class="adm-chip adm-chip--delivered">Active</span></div>
+                <div><div><span class="adm-code">BARISHALFREE</span><div class="adm-cell-sub" style="margin-top:4px;">Free showroom pickup</div></div><span class="adm-chip adm-chip--delivered">Active</span></div>
+              </div>
+            </div>
+
+            <div class="adm-card" style="grid-column: 1 / -1;">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Meta / Facebook Pixel &amp; CAPI</h2>
+                  <p class="adm-card__desc">Browser Pixel tracking &amp; Server-Side Conversions API for iOS 14+ ad campaigns.</p>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <form class="adm-form js-pixel-settings-form">
+                  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+                    <div class="adm-field">
+                      <label class="adm-label">Meta Pixel ID</label>
+                      <input type="text" class="adm-input js-pixel-id-input" placeholder="e.g. 1029384756102" value="">
+                      <span class="adm-cell-sub">Fires PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase events.</span>
+                    </div>
+                    <div class="adm-field">
+                      <label class="adm-label">Server-Side CAPI Access Token</label>
+                      <input type="password" class="adm-input" placeholder="EAABw..." value="EAABw_sample_capi_token_rabez">
+                      <span class="adm-cell-sub">Server events bypass ad-blockers and iOS privacy restrictions with 100% accuracy.</span>
+                    </div>
+                  </div>
+                  <div class="adm-form__actions" style="margin-top:14px;">
+                    <button type="submit" class="adm-btn adm-btn--primary">Save Tracking Settings</button>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <!-- ========================================================================
+       ORDER DETAIL DRAWER
+       ======================================================================== -->
+  <div class="adm-backdrop js-backdrop"></div>
+  <aside class="adm-drawer" aria-label="Order details">
+    <div class="adm-drawer__head">
+      <div>
+        <div class="adm-cell-sub js-d-date">—</div>
+        <h2 style="font-size:18px; margin-top:2px;" class="js-d-id">Order</h2>
+        <div style="margin-top:8px;" class="js-d-status"></div>
+      </div>
+      <button type="button" class="adm-icon-btn js-drawer-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="adm-drawer__body js-d-body"></div>
+    <div class="adm-drawer__foot js-d-foot"></div>
+  </aside>
+
+  <!-- ========================================================================
+       MOBILE BOTTOM NAV
+       ======================================================================== -->
+  <nav class="adm-bottom-nav" aria-label="Mobile navigation">
+    <button type="button" class="adm-bottom-btn is-active js-tab" data-tab="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
+      Dashboard
+    </button>
+    <button type="button" class="adm-bottom-btn js-tab" data-tab="orders">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      Orders
+    </button>
+    <button type="button" class="adm-bottom-btn js-tab" data-tab="products">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg>
+      Products
+    </button>
+    <button type="button" class="adm-bottom-btn js-tab" data-tab="add-product">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="3" width="18" height="18" rx="4"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+      Add
+    </button>
+    <button type="button" class="adm-bottom-btn js-tab" data-tab="pos-order">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+      New order
+    </button>
+  </nav>
+
+  <div class="adm-toast js-toast" role="status" aria-live="polite">
+    <span class="adm-toast__dot"></span>
+    <div>
+      <div class="js-toast-title"></div>
+      <div class="adm-toast__sub js-toast-sub"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/analytics.js"></script>
+  <script src="assets/js/products-data.js"></script>
+  <script>
+    (function () {
+      "use strict";
+
+      /* ---------- Helpers ---------- */
+      const $ = (s, root = document) => root.querySelector(s);
+      const $$ = (s, root = document) => Array.from(root.querySelectorAll(s));
+      const money = (n) => "৳ " + Number(n).toLocaleString("en-IN");
+      const city = (addr) => (addr.split(",").pop() || "").trim();
+
+      const STATUS = {
+        Pending: { label: "Pending", cls: "pending" },
+        Printing: { label: "Printing", cls: "printing" },
+        Shipped: { label: "In courier", cls: "shipped" },
+        Delivered: { label: "Delivered", cls: "delivered" }
+      };
+
+      const ICON = {
+        truck: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>',
+        phone: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>',
+        chat: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>',
+        file: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>',
+        chevron: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="9 18 15 12 9 6"/></svg>',
+        external: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M7 17L17 7"/><polyline points="7 7 17 7 17 17"/></svg>'
+      };
+
+      /* ---------- Toast ---------- */
+      let toastTimer;
+      function toast(title, sub) {
+        $(".js-toast-title").textContent = title;
+        $(".js-toast-sub").textContent = sub || "";
+        $(".js-toast").classList.add("is-visible");
+        clearTimeout(toastTimer);
+        toastTimer = setTimeout(() => $(".js-toast").classList.remove("is-visible"), 2800);
+      }
+
+      /* ---------- Data ---------- */
+      let orders = [
+        {
+          id: "RBZ-10024", date: "12 min ago", source: "Website",
+          customer: "Tanvir Ahmed", phone: "01712345678",
+          address: "House 14, Road 6, Dhanmondi, Dhaka", zone: "Inside Dhaka",
+          ratio: 94, parcels: "17 of 18", status: "Pending",
+          courier: "", consignment: "", subtotal: 2600, shipping: 70, total: 2670,
+          items: [
+            { name: "Real Madrid 26/27 Home Half Sleeve", size: "L", qty: 1, price: 1150, print: "", img: "assets/images/products/real-madrid-home-hs.jpg" },
+            { name: "Messi #10 Barca × Argentina Winter Hoodie", size: "L", qty: 1, price: 1450, print: "", img: "assets/images/products/messi-barca-arg-hoodie.jpg" }
+          ]
+        },
+        {
+          id: "RBZ-10025", date: "42 min ago", source: "Facebook",
+          customer: "Mehedi Hasan", phone: "01819223344",
+          address: "Sadhur More, Boalia, Rajshahi", zone: "Outside Dhaka",
+          ratio: 89, parcels: "8 of 9", status: "Printing",
+          courier: "Pathao", consignment: "PTH-551209", subtotal: 1400, shipping: 130, total: 1530,
+          items: [
+            { name: "Real Madrid 26/27 Home Half Sleeve", size: "XL", qty: 1, price: 1400, print: "BELLINGHAM 5", img: "assets/images/products/real-madrid-home-hs.jpg" }
+          ]
+        },
+        {
+          id: "RBZ-10026", date: "2 hours ago", source: "WhatsApp",
+          customer: "Ariful Islam", phone: "01911002233",
+          address: "Chawkbazar, Chattogram", zone: "Outside Dhaka",
+          ratio: 38, parcels: "3 of 8", status: "Pending",
+          courier: "", consignment: "", subtotal: 1300, shipping: 130, total: 1430,
+          items: [
+            { name: "Messi Celebration Kit Full Sleeve", size: "L", qty: 1, price: 1300, print: "", img: "assets/images/products/messi-celebration-fs.jpg" }
+          ]
+        },
+        {
+          id: "RBZ-10027", date: "Yesterday", source: "Showroom",
+          customer: "Sabbir Rahman", phone: "01612359652",
+          address: "Road-10, College Avenue, Barishal", zone: "Barishal",
+          ratio: 100, parcels: "14 of 14", status: "Shipped",
+          courier: "Steadfast", consignment: "SF-88410082", subtotal: 1150, shipping: 70, total: 1220,
+          items: [
+            { name: "Barcelona Home Half Sleeve Jersey", size: "M", qty: 1, price: 1150, print: "", img: "assets/images/products/barcelona-home-hs.jpg" }
+          ]
+        }
+      ];
+
+      const products = window.RABEZ_PRODUCTS || [];
+      let orderFilter = "all";
+      let orderQuery = "";
+      let prodFilter = "all";
+      let prodQuery = "";
+      let openOrderId = null;
+      let uploadedImage = "assets/images/products/messi-barca-arg-hoodie.jpg";
+
+      /* ---------- Tabs ---------- */
+      const PAGES = {
+        "dashboard": ["Dashboard", "Store overview & live activity"],
+        "orders": ["Orders", "Steadfast & Pathao connected"],
+        "products": ["Products", "Manage stock by size"],
+        "add-product": ["Add product", "Publish to the storefront"],
+        "categories": ["Categories", "Size sets & default prices"],
+        "print-queue": ["Print queue", "Custom name & number"],
+        "pos-order": ["New order", "Facebook, WhatsApp or showroom"],
+        "customers": ["Customers", "Courier delivery history"],
+        "settings": ["Settings", "Delivery, coupons & API"]
+      };
+
+      function showTab(key) {
+        $$(".js-tab").forEach((b) => {
+          if (b.classList.contains("adm-nav-item") || b.classList.contains("adm-bottom-btn")) {
+            b.classList.toggle("is-active", b.dataset.tab === key);
+          }
+        });
+        $$(".adm-panel").forEach((p) => p.classList.toggle("is-active", p.dataset.panel === key));
+        const page = PAGES[key] || PAGES.dashboard;
+        $$(".js-page-title").forEach((el) => (el.textContent = page[0]));
+        $(".js-page-sub").textContent = page[1];
+        document.body.classList.remove("is-nav-open");
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
+
+      /* ---------- Orders ---------- */
+      function riskHTML(o) {
+        const warn = o.ratio < 60;
+        return `<span class="adm-risk ${warn ? "adm-risk--warn" : ""}"><span class="adm-risk__bar"><span style="width:${o.ratio}%"></span></span>${o.ratio}%</span>`;
+      }
+
+      function chipHTML(status) {
+        const s = STATUS[status];
+        return `<span class="adm-chip adm-chip--${s.cls}">${s.label}</span>`;
+      }
+
+      function orderRowHTML(o) {
+        const thumbs = o.items.slice(0, 3).map((i) => `<img src="${i.img}" alt="">`).join("");
+        const count = o.items.reduce((s, i) => s + i.qty, 0);
+        let action = "";
+        if (o.status === "Pending" && o.ratio >= 60) {
+          action = `<button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-book" data-id="${o.id}" data-courier="Steadfast">Book</button>`;
+        } else if (o.status === "Pending") {
+          action = `<a href="tel:${o.phone}" class="adm-btn adm-btn--secondary adm-btn--sm js-stop">Call first</a>`;
+        }
+        return `
+          <div class="adm-order-row js-order-row" data-id="${o.id}">
+            <div class="c-id">
+              <div class="adm-cell-main">#${o.id}</div>
+              <div class="adm-cell-sub">${o.date} &middot; ${o.source}</div>
+            </div>
+            <div class="c-cust">
+              <div class="adm-cell-main">${o.customer}</div>
+              <div class="adm-cell-sub num">${o.phone} &middot; ${city(o.address)}</div>
+            </div>
+            <div class="c-items">
+              <div class="adm-thumbs">${thumbs}<span class="adm-thumbs__text">${count} ${count > 1 ? "items" : "item"}</span></div>
+            </div>
+            <div class="c-total">
+              <div class="adm-cell-main num">${money(o.total)}</div>
+              <div class="adm-cell-sub">COD</div>
+            </div>
+            <div class="c-risk">${riskHTML(o)}</div>
+            <div class="c-status">${chipHTML(o.status)}</div>
+            <div class="c-actions">
+              ${action}
+              <span class="adm-icon-btn" aria-hidden="true">${ICON.chevron}</span>
+            </div>
+          </div>`;
+      }
+
+      function renderOrders() {
+        const counts = { all: orders.length, Pending: 0, Printing: 0, Shipped: 0, Delivered: 0 };
+        orders.forEach((o) => counts[o.status]++);
+        $$("[data-count]").forEach((el) => (el.textContent = counts[el.dataset.count]));
+        $$(".js-order-count").forEach((el) => (el.textContent = counts.Pending + counts.Printing));
+
+        const open = counts.Pending + counts.Printing;
+        $$(".js-kpi-open").forEach((el) => (el.textContent = open));
+        const readyCount = orders.filter((o) => o.status === "Pending" && o.ratio >= 60).length;
+        $$(".js-kpi-open-sub").forEach((el) => (el.textContent = `${readyCount} ready to ship`));
+
+        const recentRoot = $("#adm-recent-orders");
+        if (recentRoot) {
+          recentRoot.innerHTML = orders.slice(0, 4).map(orderRowHTML).join("");
+        }
+
+        let list = orders.slice();
+        if (orderFilter !== "all") list = list.filter((o) => o.status === orderFilter);
+        if (orderQuery) {
+          const q = orderQuery.toLowerCase();
+          list = list.filter((o) => o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q) || o.phone.includes(q));
+        }
+
+        const root = $("#adm-orders");
+        if (!list.length) {
+          root.innerHTML = `<div class="adm-empty">No orders here yet.</div>`;
+          return;
+        }
+
+        root.innerHTML = list.map(orderRowHTML).join("");
+      }
+
+      function bookOrder(id, courier) {
+        const o = orders.find((x) => x.id === id);
+        if (!o) return;
+        o.courier = courier;
+        o.consignment = courier === "Steadfast"
+          ? "SF-" + Math.floor(88400000 + Math.random() * 90000)
+          : "PTH-" + Math.floor(550000 + Math.random() * 9000);
+        o.status = "Shipped";
+        renderOrders();
+        if (openOrderId === id) openDrawer(id);
+        toast(`Booked with ${courier}`, `#${o.id} · ${o.consignment}`);
+      }
+
+      /* ---------- Drawer ---------- */
+      function openDrawer(id) {
+        const o = orders.find((x) => x.id === id);
+        if (!o) return;
+        openOrderId = id;
+
+        $(".js-d-date").textContent = `${o.date} · ${o.source}`;
+        $(".js-d-id").textContent = `#${o.id}`;
+        $(".js-d-status").innerHTML = chipHTML(o.status);
+
+        const items = o.items.map((i) => `
+          <div class="adm-item">
+            <img src="${i.img}" alt="">
+            <div style="flex:1; min-width:0;">
+              <div class="adm-cell-main">${i.name}</div>
+              <div class="adm-cell-sub">Size ${i.size} &middot; Qty ${i.qty}${i.print ? ` &middot; Print: ${i.print}` : ""}</div>
+            </div>
+            <div class="adm-cell-main num">${money(i.price * i.qty)}</div>
+          </div>`).join("");
+
+        const warn = o.ratio < 60;
+
+        $(".js-d-body").innerHTML = `
+          <div>
+            <div class="adm-section-label">Customer</div>
+            <div class="adm-cell-main">${o.customer}</div>
+            <div class="adm-cell-sub num">${o.phone}</div>
+            <div class="adm-cell-sub">${o.address}</div>
+            <div class="adm-quick-actions" style="margin-top:12px;">
+              <a href="tel:${o.phone}" class="adm-btn adm-btn--secondary adm-btn--sm">${ICON.phone} Call</a>
+              <a href="https://api.whatsapp.com/send/?phone=88${o.phone}" target="_blank" rel="noopener" class="adm-btn adm-btn--secondary adm-btn--sm">${ICON.chat} WhatsApp</a>
+              <a href="track-order.html?order=${o.id}" class="adm-btn adm-btn--secondary adm-btn--sm">${ICON.file} Invoice</a>
+            </div>
+          </div>
+
+          <div class="adm-callout ${warn ? "adm-callout--warn" : ""}">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="adm-cell-main">${warn ? "High return risk" : "Safe for COD"}</span>
+              ${riskHTML(o)}
+            </div>
+            <div class="adm-cell-sub">${o.parcels} parcels delivered${warn ? " · ask for delivery fee in advance" : ""}</div>
+          </div>
+
+          <div>
+            <div class="adm-section-label">Items</div>
+            ${items}
+          </div>
+
+          <div>
+            <div class="adm-section-label">Payment</div>
+            <div class="adm-kv"><span>Subtotal</span><strong class="num">${money(o.subtotal)}</strong></div>
+            <div class="adm-kv"><span>Delivery (${o.zone})</span><strong class="num">${money(o.shipping)}</strong></div>
+            <div class="adm-kv adm-kv--total"><span>Collect on delivery</span><strong class="num">${money(o.total)}</strong></div>
+          </div>
+
+          <div>
+            <div class="adm-section-label">Courier</div>
+            ${o.consignment
+              ? `<div class="adm-kv"><span>${o.courier}</span><strong class="num">${o.consignment}</strong></div>`
+              : `<div class="adm-cell-sub">Not booked yet.</div>`}
+          </div>
+
+          <div class="adm-field">
+            <label class="adm-label" for="d-status">Status</label>
+            <select id="d-status" class="adm-select js-d-status-select" data-id="${o.id}">
+              ${Object.keys(STATUS).map((k) => `<option value="${k}" ${o.status === k ? "selected" : ""}>${STATUS[k].label}</option>`).join("")}
+            </select>
+          </div>`;
+
+        const booked = !!o.consignment;
+        $(".js-d-foot").innerHTML = `
+          <button type="button" class="adm-btn adm-btn--secondary js-book" data-id="${o.id}" data-courier="Pathao" ${booked ? "disabled" : ""}>Book Pathao</button>
+          <button type="button" class="adm-btn adm-btn--primary js-book" data-id="${o.id}" data-courier="Steadfast" ${booked ? "disabled" : ""}>${ICON.truck} ${booked ? "Booked" : "Book Steadfast"}</button>`;
+
+        document.body.classList.add("is-drawer-open");
+      }
+
+      function closeOverlays() {
+        document.body.classList.remove("is-drawer-open", "is-nav-open");
+        openOrderId = null;
+      }
+
+      /* ---------- Products ---------- */
+      function sizesFor(p) {
+        return p.sleeve === "footwear" ? ["39", "40", "41", "42", "43", "44"] : ["S", "M", "L", "XL", "XXL"];
+      }
+
+      function renderProducts() {
+        $$(".js-prod-count").forEach((el) => (el.textContent = products.length));
+        $$(".js-kpi-products").forEach((el) => (el.textContent = products.length));
+
+        let list = products.slice();
+        if (prodFilter !== "all") list = list.filter((p) => p.sleeve === prodFilter);
+        if (prodQuery) {
+          const q = prodQuery.toLowerCase();
+          list = list.filter((p) => p.name.toLowerCase().includes(q) || (p.sku || "").toLowerCase().includes(q));
+        }
+
+        const root = $("#adm-products");
+        if (!list.length) {
+          root.innerHTML = `<div class="adm-empty">No products match your search.</div>`;
+          return;
+        }
+
+        root.innerHTML = list.map((p) => {
+          const all = sizesFor(p);
+          const inStock = all.filter((s) => p.sizes.includes(s)).length;
+          const stock = inStock === 0
+            ? `<span class="adm-chip adm-chip--danger">Sold out</span>`
+            : inStock < all.length
+              ? `<span class="adm-chip adm-chip--pending">${inStock} of ${all.length}</span>`
+              : `<span class="adm-chip adm-chip--delivered">In stock</span>`;
+          const sizes = all.map((s) => `<button type="button" class="adm-size ${p.sizes.includes(s) ? "" : "is-out"} js-size" data-id="${p.id}" data-size="${s}">${s}</button>`).join("");
+          return `
+            <div class="adm-prod-row">
+              <div class="adm-prod-cell c-prod">
+                <img src="${p.image}" alt="" loading="lazy">
+                <div style="min-width:0;">
+                  <div class="adm-cell-main">${p.name}</div>
+                  <div class="adm-cell-sub">${p.sku || "—"} &middot; ${p.clubLabel || ""}</div>
+                </div>
+              </div>
+              <div class="c-cat"><span class="adm-chip adm-chip--neutral adm-chip--plain">${p.sleeveLabel}</span></div>
+              <div class="c-sizes"><div class="adm-sizes">${sizes}</div></div>
+              <div class="c-stock">${stock}</div>
+              <div class="c-price adm-cell-main num" style="text-align:right;">${money(p.price)}</div>
+              <div class="c-link" style="text-align:right;"><a href="product.html?id=${p.id}" class="adm-icon-btn" title="View on store">${ICON.external}</a></div>
+            </div>`;
+        }).join("");
+
+        const pos = $("#pos-product");
+        const current = pos.value;
+        pos.innerHTML = products.map((p) => `<option value="${p.id}">${p.name} — ${money(p.price)}</option>`).join("");
+        if (current) pos.value = current;
+      }
+
+      /* ---------- Add product sizes ---------- */
+      function renderNewSizes(cat) {
+        const list = cat === "footwear" ? ["39", "40", "41", "42", "43", "44"] : ["S", "M", "L", "XL", "XXL"];
+        $("#adm-new-sizes").innerHTML = list.map((s) => `<button type="button" class="adm-size js-new-size" data-size="${s}">${s}</button>`).join("");
+      }
+
+      /* ---------- Events ---------- */
+      document.addEventListener("click", (e) => {
+        const t = e.target;
+
+        const tab = t.closest(".js-tab");
+        if (tab) { showTab(tab.dataset.tab); return; }
+
+        if (t.closest(".js-nav-toggle")) { document.body.classList.add("is-nav-open"); return; }
+        if (t.closest(".js-backdrop") || t.closest(".js-drawer-close")) { closeOverlays(); return; }
+
+        const book = t.closest(".js-book");
+        if (book) { e.stopPropagation(); bookOrder(book.dataset.id, book.dataset.courier); return; }
+
+        if (t.closest(".js-stop")) { e.stopPropagation(); return; }
+
+        const row = t.closest(".js-order-row");
+        if (row) { openDrawer(row.dataset.id); return; }
+
+        const filter = t.closest(".js-order-filter");
+        if (filter) {
+          $$(".js-order-filter").forEach((b) => b.classList.toggle("is-active", b === filter));
+          orderFilter = filter.dataset.status;
+          renderOrders();
+          return;
+        }
+
+        if (t.closest(".js-bulk-book")) {
+          const ready = orders.filter((o) => o.status === "Pending" && o.ratio >= 60);
+          if (!ready.length) { toast("Nothing to book", "No safe pending orders right now"); return; }
+          ready.forEach((o) => {
+            o.courier = "Steadfast";
+            o.consignment = "SF-" + Math.floor(88400000 + Math.random() * 90000);
+            o.status = "Shipped";
+          });
+          renderOrders();
+          toast(`${ready.length} order${ready.length > 1 ? "s" : ""} booked`, "Sent to Steadfast");
+          return;
+        }
+
+        const cat = t.closest(".js-cat-filter");
+        if (cat) {
+          $$(".js-cat-filter").forEach((b) => b.classList.toggle("is-active", b === cat));
+          prodFilter = cat.dataset.cat;
+          renderProducts();
+          return;
+        }
+
+        const size = t.closest(".js-size");
+        if (size) {
+          const p = products.find((x) => String(x.id) === size.dataset.id);
+          if (!p) return;
+          const s = size.dataset.size;
+          if (p.sizes.includes(s)) {
+            p.sizes = p.sizes.filter((x) => x !== s);
+            toast(`Size ${s} marked sold out`, p.name);
+          } else {
+            p.sizes.push(s);
+            toast(`Size ${s} back in stock`, p.name);
+          }
+          renderProducts();
+          return;
+        }
+
+        const newSize = t.closest(".js-new-size");
+        if (newSize) { newSize.classList.toggle("is-out"); return; }
+
+        const printed = t.closest(".js-mark-printed");
+        if (printed) {
+          printed.outerHTML = `<span class="adm-chip adm-chip--delivered">Printed</span>`;
+          const left = $$(".js-mark-printed").length;
+          $(".js-print-chip").textContent = left ? `${left} waiting` : "All done";
+          $(".js-print-count").textContent = left;
+          toast("Marked as printed", "Ready for packing");
+          return;
+        }
+
+        const tb = t.closest(".js-toast-btn");
+        if (tb) { toast(tb.dataset.title, tb.dataset.sub); return; }
+      });
+
+      document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeOverlays(); });
+
+      document.addEventListener("change", (e) => {
+        if (e.target.matches(".js-d-status-select")) {
+          const o = orders.find((x) => x.id === e.target.dataset.id);
+          if (!o) return;
+          o.status = e.target.value;
+          renderOrders();
+          $(".js-d-status").innerHTML = chipHTML(o.status);
+          toast(`#${o.id} updated`, `Status: ${STATUS[o.status].label}`);
+        }
+
+        if (e.target.id === "adm-cat") {
+          const cat = e.target.value;
+          renderNewSizes(cat);
+          const prices = { "half-sleeve": 1150, "full-sleeve": 1300, "winter-hoodie": 1450, "footwear": 2450, "tracksuit": 1850 };
+          $("#adm-price").value = prices[cat] || 1150;
+        }
+      });
+
+      $(".js-order-search").addEventListener("input", (e) => { orderQuery = e.target.value.trim(); renderOrders(); });
+      $(".js-prod-search").addEventListener("input", (e) => { prodQuery = e.target.value.trim(); renderProducts(); });
+      $("#pos-phone").addEventListener("input", (e) => { $(".js-pos-phone-label").textContent = e.target.value || "—"; });
+
+      $("#adm-photo").addEventListener("change", (e) => {
+        const file = e.target.files && e.target.files[0];
+        if (!file) return;
+        const reader = new FileReader();
+        reader.onload = (ev) => {
+          uploadedImage = ev.target.result;
+          $("#adm-photo-preview").innerHTML = `
+            <img src="${uploadedImage}" alt="" style="width:88px; height:104px; object-fit:cover; border-radius:8px; border:1px solid #E6E9E7; margin-bottom:8px;">
+            <span class="adm-cell-main">${file.name}</span>
+            <span class="adm-hint">Tap to replace</span>`;
+        };
+        reader.readAsDataURL(file);
+      });
+
+      $("#adm-add-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const cat = $("#adm-cat").value;
+        const clubSel = $("#adm-club");
+        const labels = { "half-sleeve": "Half Sleeve", "full-sleeve": "Full Sleeve", "winter-hoodie": "Winter Hoodie", "footwear": "Boots", "tracksuit": "Tracksuit" };
+        const sizes = $$(".js-new-size:not(.is-out)").map((b) => b.dataset.size);
+        const price = Number($("#adm-price").value) || 1450;
+        const p = {
+          id: Date.now(),
+          sku: $("#adm-sku").value.trim() || "RBZ-" + Math.floor(100 + Math.random() * 900),
+          name: $("#adm-name").value.trim(),
+          club: clubSel.value,
+          clubLabel: clubSel.options[clubSel.selectedIndex].text,
+          sleeve: cat,
+          sleeveLabel: labels[cat],
+          price,
+          regularPrice: Number($("#adm-reg-price").value) || price,
+          image: uploadedImage,
+          sizes: sizes.length ? sizes : ["M", "L", "XL"]
+        };
+        products.unshift(p);
+        renderProducts();
+        showTab("products");
+        toast("Product published", p.name);
+        e.target.reset();
+        renderNewSizes("winter-hoodie");
+      });
+
+      $("#adm-pos-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const p = products.find((x) => String(x.id) === $("#pos-product").value) || products[0];
+        const shipping = Number($("#pos-zone").value);
+        const print = $("#pos-print").value.trim();
+        const unit = p.price + (print ? 250 : 0);
+        const zoneLabel = { 70: "Inside Dhaka", 130: "Outside Dhaka", 0: "Showroom pickup" }[shipping];
+        const o = {
+          id: "RBZ-" + Math.floor(10030 + Math.random() * 900),
+          date: "Just now",
+          source: $("#pos-source").value,
+          customer: $("#pos-name").value.trim(),
+          phone: $("#pos-phone").value.trim(),
+          address: $("#pos-address").value.trim(),
+          zone: zoneLabel,
+          ratio: 95, parcels: "19 of 20",
+          status: "Shipped",
+          courier: "Steadfast",
+          consignment: "SF-" + Math.floor(88400000 + Math.random() * 90000),
+          subtotal: unit, shipping, total: unit + shipping,
+          items: [{ name: p.name, size: $("#pos-size").value, qty: 1, price: unit, print, img: p.image }]
+        };
+        orders.unshift(o);
+        renderOrders();
+        showTab("orders");
+        toast(`Order #${o.id} created`, `Steadfast · ${o.consignment}`);
+        e.target.reset();
+      });
+
+      $(".js-check-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        const phone = $(".js-check-phone").value.trim();
+        const known = orders.find((o) => o.phone === phone);
+        const ratio = known ? known.ratio : 92;
+        const parcels = known ? known.parcels : "11 of 12";
+        const warn = ratio < 60;
+        $(".js-check-result").innerHTML = `
+          <div class="adm-callout ${warn ? "adm-callout--warn" : ""}">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="adm-cell-main num">${phone}</span>
+              <span class="adm-risk ${warn ? "adm-risk--warn" : ""}"><span class="adm-risk__bar"><span style="width:${ratio}%"></span></span>${ratio}%</span>
+            </div>
+            <div class="adm-cell-sub">${parcels} parcels delivered · ${warn ? "ask for delivery fee in advance" : "safe for COD"}</div>
+          </div>`;
+      });
+
+      $(".js-settings-form").addEventListener("submit", (e) => {
+        e.preventDefault();
+        toast("Settings saved", "Changes are live on the storefront");
+      });
+
+      const pixelInput = $(".js-pixel-id-input");
+      if (pixelInput) {
+        pixelInput.value = localStorage.getItem("rabez_pixel_id") || "";
+      }
+      $(".js-pixel-settings-form")?.addEventListener("submit", (e) => {
+        e.preventDefault();
+        const val = (pixelInput ? pixelInput.value : "").trim();
+        localStorage.setItem("rabez_pixel_id", val);
+        toast("Pixel settings saved", val ? `Meta Pixel ID ${val} is now active` : "Pixel ID updated");
+      });
+
+      /* ---------- Init ---------- */
+      renderNewSizes("winter-hoodie");
+      renderOrders();
+      renderProducts();
+    })();
+  </script>
+</body>
+</html>

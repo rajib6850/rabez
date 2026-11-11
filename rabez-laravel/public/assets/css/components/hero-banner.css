@@ -1,0 +1,437 @@
+/* ==========================================================================
+   ELEMENTOR WIDGET: Hero Matchday Showcase (widget-hero-banner.css)
+   Spacious Editorial Typography + Interactive 3-Kit Fan Stage
+   ========================================================================== */
+
+.rabez-hero {
+  position: relative;
+  background-color: var(--rabez-black);
+  color: #FFFFFF;
+  padding: 52px 0 58px;
+  min-height: 520px;
+  display: flex;
+  align-items: center;
+  border-bottom: 1px solid var(--rabez-dark-border);
+  overflow: hidden;
+}
+
+.rabez-hero::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(to right, rgba(255, 255, 255, 0.025) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.025) 1px, transparent 1px);
+  background-size: 64px 64px;
+  pointer-events: none;
+}
+
+.rabez-hero__grid {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.98fr);
+  align-items: center;
+  gap: 56px;
+}
+
+/* --- Left Column: Breathable Editorial Typography --- */
+.rabez-hero__content {
+  max-width: 560px;
+  min-width: 0;
+}
+
+.rabez-hero__title {
+  font-family: var(--rabez-font-display);
+  font-size: clamp(2.85rem, 5.4vw, 4.75rem);
+  font-weight: 800;
+  line-height: 1.1;
+  letter-spacing: 0.02em;
+  color: #FFFFFF;
+  text-transform: uppercase;
+  margin-bottom: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rabez-hero__title span {
+  color: var(--rabez-neon);
+  display: block;
+}
+
+.rabez-hero__desc {
+  font-size: 1.06rem;
+  line-height: 1.75;
+  color: #C0C9C4;
+  max-width: 490px;
+  margin-bottom: 36px;
+}
+
+.rabez-hero__cta-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 16px;
+}
+
+.rabez-hero__cta-row .rabez-btn {
+  min-height: 52px;
+  padding: 0 28px;
+  font-size: 0.9rem;
+}
+
+/* --- Right Column: Interactive 3-Jersey Fan Stage --- */
+.rabez-hero-stage {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  user-select: none;
+  min-width: 0;
+  width: 100%;
+}
+
+.rabez-hero-stage__glow {
+  position: absolute;
+  width: 380px;
+  height: 380px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(4, 244, 4, 0.16) 0%, rgba(4, 244, 4, 0) 70%);
+  filter: blur(24px);
+  pointer-events: none;
+  z-index: 0;
+}
+
+.rabez-hero-deck {
+  position: relative;
+  width: 100%;
+  max-width: 480px;
+  height: 410px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+}
+
+.rabez-hero-deck__card {
+  position: absolute;
+  width: 268px;
+  aspect-ratio: 3 / 4;
+  border-radius: 14px;
+  overflow: hidden;
+  background-color: #141816;
+  border: 1.5px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 22px 48px rgba(0, 0, 0, 0.55);
+  transition: transform 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+              border-color 0.35s ease,
+              box-shadow 0.5s ease;
+  cursor: pointer;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(0) scale(0.72);
+}
+
+.rabez-hero-deck__card img.rabez-hero-deck__img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.5s ease;
+}
+
+.rabez-hero-deck__card:hover img.rabez-hero-deck__img {
+  transform: scale(1.04);
+}
+
+/* Center Active Spotlight Jersey */
+.rabez-hero-deck__card.is-active {
+  opacity: 1;
+  pointer-events: auto;
+  z-index: 4;
+  transform: translateX(0) translateY(-6px) scale(1) rotate(0deg);
+  border-color: var(--rabez-neon);
+  box-shadow: 0 28px 60px rgba(0, 0, 0, 0.75), 0 0 28px rgba(4, 244, 4, 0.18);
+}
+
+/* Left Angled Jersey */
+.rabez-hero-deck__card.is-prev {
+  opacity: 0.78;
+  pointer-events: auto;
+  z-index: 2;
+  transform: translateX(-118px) translateY(10px) scale(0.84) rotate(-8deg);
+}
+
+.rabez-hero-deck__card.is-prev:hover {
+  opacity: 0.95;
+  transform: translateX(-124px) translateY(4px) scale(0.86) rotate(-7deg);
+}
+
+/* Right Angled Jersey */
+.rabez-hero-deck__card.is-next {
+  opacity: 0.78;
+  pointer-events: auto;
+  z-index: 2;
+  transform: translateX(118px) translateY(10px) scale(0.84) rotate(8deg);
+}
+
+.rabez-hero-deck__card.is-next:hover {
+  opacity: 0.95;
+  transform: translateX(124px) translateY(4px) scale(0.86) rotate(7deg);
+}
+
+/* Top Badges on Jersey Frame */
+.rabez-hero-deck__top {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.rabez-hero-deck__badge {
+  background-color: var(--rabez-neon);
+  color: #070908;
+  font-size: 0.65rem;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding: 4px 9px;
+  border-radius: 4px;
+}
+
+.rabez-hero-deck__crest {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background: rgba(10, 12, 11, 0.82);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.18);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 5px;
+}
+
+.rabez-hero-deck__crest img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Floating Bottom Glass Bar inside Active Jersey Frame */
+.rabez-hero-deck__caption {
+  position: absolute;
+  left: 10px;
+  right: 10px;
+  bottom: 10px;
+  z-index: 3;
+  background: rgba(10, 12, 11, 0.88);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.14);
+  border-radius: 10px;
+  padding: 10px 12px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  opacity: 0;
+  transform: translateY(8px);
+  transition: opacity 0.3s ease, transform 0.3s ease;
+}
+
+.rabez-hero-deck__card.is-active .rabez-hero-deck__caption {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.rabez-hero-deck__meta {
+  min-width: 0;
+}
+
+.rabez-hero-deck__title {
+  font-family: var(--rabez-font-display);
+  font-size: 1.08rem;
+  font-weight: 700;
+  line-height: 1.1;
+  color: #FFFFFF;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.rabez-hero-deck__price {
+  font-size: 0.86rem;
+  font-weight: 800;
+  color: var(--rabez-neon);
+  margin-top: 2px;
+}
+
+.rabez-hero-deck__action {
+  width: 34px;
+  height: 34px;
+  border-radius: 8px;
+  background-color: var(--rabez-neon);
+  color: #070908;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, background-color 0.2s ease;
+}
+
+.rabez-hero-deck__card.is-active:hover .rabez-hero-deck__action {
+  transform: translateX(2px);
+  background-color: #FFFFFF;
+}
+
+/* --- Interactive Club Crest Switcher Dock --- */
+.rabez-hero-dock {
+  position: relative;
+  z-index: 4;
+  margin-top: 26px;
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: rgba(20, 24, 22, 0.9);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  padding: 8px 12px;
+  border-radius: 999px;
+}
+
+.rabez-hero-dock__btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  padding: 6px 12px 6px 8px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: #A9B3AE;
+  font-size: 0.76rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.22s ease;
+  white-space: nowrap;
+}
+
+.rabez-hero-dock__btn img {
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.rabez-hero-dock__btn:hover {
+  color: #FFFFFF;
+  background: rgba(255, 255, 255, 0.06);
+}
+
+.rabez-hero-dock__btn.is-active {
+  background: rgba(4, 244, 4, 0.14);
+  border-color: var(--rabez-neon);
+  color: #FFFFFF;
+}
+
+@media (max-width: 1024px) {
+  .rabez-hero {
+    padding: 64px 0 72px;
+    min-height: auto;
+  }
+  .rabez-hero__grid {
+    grid-template-columns: 1fr;
+    gap: 44px;
+  }
+  .rabez-hero__content {
+    max-width: 600px;
+  }
+}
+
+/* --- Mobile Layout (Spacious Text + Engaging 3-Jersey Fan Deck) --- */
+@media (max-width: 640px) {
+  .rabez-hero {
+    padding: 40px 0 46px;
+  }
+  .rabez-hero__grid {
+    gap: 32px;
+  }
+  .rabez-hero__title {
+    font-size: 2.55rem;
+    line-height: 1.12;
+    gap: 4px;
+    margin-bottom: 16px;
+  }
+  .rabez-hero__desc {
+    font-size: 0.94rem;
+    line-height: 1.65;
+    margin-bottom: 24px;
+  }
+  .rabez-hero__cta-row {
+    display: grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap: 10px;
+  }
+  .rabez-hero__cta-row .rabez-btn {
+    min-height: 46px;
+    padding: 0 12px;
+    font-size: 0.78rem;
+    width: 100%;
+  }
+
+  .rabez-hero-deck {
+    height: 290px;
+    max-width: 100%;
+  }
+  .rabez-hero-deck__card {
+    width: 206px;
+  }
+  .rabez-hero-deck__card.is-prev {
+    transform: translateX(-72px) translateY(8px) scale(0.82) rotate(-7deg);
+  }
+  .rabez-hero-deck__card.is-next {
+    transform: translateX(72px) translateY(8px) scale(0.82) rotate(7deg);
+  }
+  .rabez-hero-deck__caption {
+    padding: 8px 10px;
+    left: 8px;
+    right: 8px;
+    bottom: 8px;
+  }
+  .rabez-hero-deck__title {
+    font-size: 0.94rem;
+  }
+  .rabez-hero-deck__price {
+    font-size: 0.75rem;
+    white-space: nowrap;
+  }
+  .rabez-hero-deck__action {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+  }
+  .rabez-hero-dock {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    max-width: 100%;
+    padding: 5px 6px;
+    gap: 4px;
+    border-radius: 14px;
+  }
+  .rabez-hero-dock__btn {
+    padding: 5px 8px 5px 6px;
+    font-size: 0.7rem;
+    gap: 5px;
+  }
+  .rabez-hero-dock__btn img {
+    width: 16px;
+    height: 16px;
+  }
+}

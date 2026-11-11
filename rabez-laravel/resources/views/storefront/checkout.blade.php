@@ -1,0 +1,137 @@
+@extends('layouts.storefront')
+
+@section('title', 'Order Checkout - RABEZ Official Jersey Store')
+
+@section('content')
+
+  <main class="rabez-section rabez-section--alt">
+    <div class="rabez-container">
+      <div class="rabez-section-head">
+        <h1 class="rabez-section-title">Order Checkout</h1>
+      </div>
+
+      <div class="js-order-success-banner" style="display:none;"></div>
+
+      <form class="checkout woocommerce-checkout rabez-checkout-grid js-cod-checkout-form">
+        <!-- Left: Customer Delivery Details -->
+        <div class="rabez-checkout-card" id="customer_details">
+          <h2 style="font-size:1.35rem; margin-bottom:16px;">Delivery Information</h2>
+
+          <div class="rabez-form-grid">
+            <div class="rabez-form-group">
+              <label for="billing_first_name">Full Name *</label>
+              <input type="text" id="billing_first_name" name="customer_name" required placeholder="আপনার পূর্ণ নাম / Your Name">
+            </div>
+
+            <div class="rabez-form-group">
+              <label for="billing_phone">Mobile Number *</label>
+              <input type="tel" id="billing_phone" name="customer_phone" required placeholder="01XXXXXXXXX">
+            </div>
+
+            <div class="rabez-form-group rabez-form-group--full">
+              <label>Delivery Method &amp; Area *</label>
+              @if(($settings['shipping_mode'] ?? 'flat') === 'flat')
+                <div class="rabez-shipping-flat-card" style="background:#191E1B; border:1.5px solid #2B332E; border-radius:8px; padding:14px 16px; display:flex; justify-content:space-between; align-items:center;">
+                  <div>
+                    <div style="font-weight:700; color:#fff; font-size:14px;">All Over Bangladesh Delivery (Home Delivery)</div>
+                    <div style="font-size:12px; color:#9BA59F; margin-top:2px;">Flat rate home delivery across all 64 districts in Bangladesh</div>
+                  </div>
+                  <div style="text-align:right;">
+                    <span style="font-size:1.15rem; font-weight:800; color:#04F404;">৳ {{ intval($settings['shipping_flat_fee'] ?? 130) }}</span>
+                    <input type="hidden" name="shipping_zone" value="{{ intval($settings['shipping_flat_fee'] ?? 130) }}">
+                  </div>
+                </div>
+              @else
+                <div class="rabez-shipping-options">
+                  <label class="rabez-shipping-card is-selected">
+                    <span>
+                      <input type="radio" name="shipping_zone" value="{{ intval($settings['shipping_inside_dhaka'] ?? 70) }}" checked>
+                      Inside Dhaka
+                    </span>
+                    <strong>৳ {{ intval($settings['shipping_inside_dhaka'] ?? 70) }}</strong>
+                  </label>
+                  <label class="rabez-shipping-card">
+                    <span>
+                      <input type="radio" name="shipping_zone" value="{{ intval($settings['shipping_outside_dhaka'] ?? 130) }}">
+                      Outside Dhaka
+                    </span>
+                    <strong>৳ {{ intval($settings['shipping_outside_dhaka'] ?? 130) }}</strong>
+                  </label>
+                </div>
+              @endif
+            </div>
+
+            <div class="rabez-form-group rabez-form-group--full">
+              <label for="billing_address_1">Full Delivery Address (House, Road, Area, District) *</label>
+              <input type="text" id="billing_address_1" name="customer_address" required placeholder="e.g. House 12, Road 5, Dhanmondi, Dhaka">
+            </div>
+
+            <div class="rabez-form-group rabez-form-group--full">
+              <label for="order_comments">Custom Print / Delivery Note (Optional)</label>
+              <textarea id="order_comments" name="order_notes" placeholder="Any custom name/number or delivery note..."></textarea>
+            </div>
+          </div>
+        </div>
+
+        <!-- Right: Order Review & Payment -->
+        <div class="rabez-checkout-card digi-checkout-order-details" id="order_review">
+          <h2 style="font-size:1.35rem; margin-bottom:14px;">Order Summary</h2>
+
+          <div class="js-checkout-items" style="margin-bottom:16px;"></div>
+
+          <!-- Coupon Application Box -->
+          <div class="rabez-checkout-coupon" style="padding:12px; background:#191E1B; border:1px dashed #2B332E; border-radius:8px; margin-bottom:14px;">
+            <div style="font-size:12px; font-weight:700; color:#CBD5E1; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="2"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+              <span>Have a Discount Coupon?</span>
+            </div>
+            <div style="display:flex; gap:8px;">
+              <input type="text" id="checkout-coupon-code" name="coupon_code" placeholder="e.g. RABEZ100" style="flex:1; text-transform:uppercase; font-weight:700; font-size:13px; padding:8px 10px; background:#0F1311; border:1px solid #2B332E; color:#fff; border-radius:6px; letter-spacing:0.04em;">
+              <button type="button" id="js-apply-coupon-btn" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:13px; padding:8px 18px; border:none; border-radius:6px; cursor:pointer; white-space:nowrap; letter-spacing:0.04em; transition:all 0.15s; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.background='#22C55E'" onmouseout="this.style.background='#04F404'">Apply</button>
+            </div>
+            <div id="checkout-coupon-msg" style="font-size:12px; margin-top:6px; display:none; line-height:1.3;"></div>
+          </div>
+
+          <div style="display:grid; gap:10px; font-size:0.92rem; padding:14px 0; border-bottom:1px solid #E4E7E4;">
+            <div style="display:flex; justify-content:space-between;">
+              <span>Subtotal</span>
+              <strong class="js-checkout-subtotal">৳ 1,150</strong>
+            </div>
+            <div class="js-checkout-discount-row" style="display:none; justify-content:space-between; color:#16a34a; font-weight:600;">
+              <span>Discount (<span class="js-applied-coupon-code"></span>)</span>
+              <span>- <strong class="js-checkout-discount">৳ 0</strong></span>
+            </div>
+            <div style="display:flex; justify-content:space-between;">
+              <span>Delivery Charge</span>
+              <strong class="js-checkout-shipping">৳ {{ intval($settings['shipping_flat_fee'] ?? 130) }}</strong>
+            </div>
+          </div>
+
+          <div style="display:flex; justify-content:space-between; align-items:center; font-size:1.25rem; font-weight:800; padding:16px 0;">
+            <span>Total Payable</span>
+            <span class="js-checkout-total" style="color:#008A00;">৳ 1,280</span>
+          </div>
+
+          <div style="background:#F6F7F5; border-left:3px solid #04F404; padding:12px 14px; font-size:0.85rem; margin-bottom:16px;">
+            <div style="font-weight:700; color:#111; margin-bottom:3px;">Payment Method:</div>
+            <div style="color:#4B5563; line-height:1.4;">
+              <strong>Cash on Delivery (COD):</strong> Check your jersey upon delivery and pay cash.<br>
+              <span style="color:#008A00; font-weight:600;">bKash / Nagad / Cards:</span> Online payment options coming soon.
+            </div>
+          </div>
+
+          <div style="display:grid; gap:10px;">
+            <button type="submit" id="place_order" class="rabez-btn rabez-btn--primary rabez-btn--full" style="font-size:15px; font-weight:800; padding:14px;">
+              Confirm Order
+            </button>
+            <button type="button" class="rabez-btn rabez-btn--dark rabez-btn--full js-whatsapp-checkout">
+              Order via WhatsApp Instead
+            </button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </main>
+
+  <!-- Footer -->
+@endsection

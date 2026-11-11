@@ -1,0 +1,281 @@
+/* ==========================================================================
+   ELEMENTOR WIDGET: Footer & Trust Strip (widget-footer.css)
+   Matches RABEZ Pitch-Black Footer (#000000) & #04F404 Social Icons
+   ========================================================================== */
+
+.rabez-trust-strip {
+  background-color: var(--rabez-bg-alt);
+  border-top: 1px solid var(--rabez-border);
+  border-bottom: 1px solid var(--rabez-border);
+  padding: 48px 0;
+}
+
+.rabez-trust-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 32px;
+}
+
+.rabez-trust-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.rabez-trust-icon {
+  width: 46px;
+  height: 46px;
+  border-radius: var(--rabez-radius-xs);
+  background-color: var(--rabez-black);
+  color: var(--rabez-neon);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.rabez-trust-icon svg {
+  width: 21px;
+  height: 21px;
+}
+
+.rabez-trust-title {
+  font-size: 0.94rem;
+  font-weight: 800;
+  color: var(--rabez-text-main);
+  margin-bottom: 5px;
+}
+
+.rabez-trust-desc {
+  font-size: 0.82rem;
+  line-height: 1.55;
+  color: var(--rabez-text-muted);
+}
+
+/* --- Main Footer --- */
+.rabez-footer {
+  background-color: #050606;
+  color: #D2D8D4;
+  padding-top: 80px;
+}
+
+.rabez-footer__grid {
+  display: grid;
+  grid-template-columns: 1.35fr 1fr 1fr 1.25fr;
+  gap: 48px;
+  padding-bottom: 60px;
+  border-bottom: 1px solid var(--rabez-dark-border);
+}
+
+.rabez-footer__logo {
+  height: 62px;
+  width: auto;
+  margin-bottom: 20px;
+}
+
+.rabez-footer__bio {
+  font-size: 0.92rem;
+  line-height: 1.7;
+  color: #9BA59F;
+  max-width: 330px;
+  margin-bottom: 24px;
+}
+
+.rabez-social-links {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.rabez-social-link {
+  width: 38px;
+  height: 38px;
+  border-radius: var(--rabez-radius-xs);
+  background-color: var(--rabez-neon);
+  color: #080A09;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.18s ease, background-color 0.18s ease;
+}
+
+.rabez-social-link:hover {
+  transform: translateY(-2px);
+  background-color: #FFFFFF;
+}
+
+.rabez-social-link svg {
+  width: 18px;
+  height: 18px;
+}
+
+.rabez-footer__heading {
+  font-family: var(--rabez-font-display);
+  font-size: 1.2rem;
+  letter-spacing: 0.08em;
+  color: #FFFFFF;
+  margin-bottom: 20px;
+}
+
+.rabez-footer__links {
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+  font-size: 0.9rem;
+}
+
+.rabez-footer__links a {
+  color: #9BA59F;
+}
+
+.rabez-footer__links a:hover {
+  color: var(--rabez-neon);
+}
+
+.rabez-footer__contact-list {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.rabez-footer__contact-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 0.9rem;
+  color: #D2D8D4;
+}
+
+.rabez-footer__contact-icon {
+  width: 34px;
+  height: 34px;
+  border-radius: 6px;
+  background-color: #121714;
+  border: 1px solid #242C28;
+  color: var(--rabez-neon);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: all 0.18s ease;
+}
+
+.rabez-footer__contact-item:hover .rabez-footer__contact-icon {
+  border-color: var(--rabez-neon);
+  background-color: rgba(4, 244, 4, 0.1);
+}
+
+.rabez-footer__contact-icon svg {
+  width: 16px;
+  height: 16px;
+}
+
+.rabez-footer__contact-text {
+  display: flex;
+  flex-direction: column;
+  line-height: 1.25;
+}
+
+.rabez-footer__contact-label {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #7D8782;
+}
+
+.rabez-footer__contact-val {
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #FFFFFF;
+}
+
+.rabez-footer__contact-val:hover {
+  color: var(--rabez-neon);
+}
+
+.rabez-footer__bottom {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 0;
+  font-size: 0.84rem;
+  color: #828C86;
+}
+
+.rabez-payment-pills {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.rabez-pay-pill {
+  padding: 4px 10px;
+  background-color: #121614;
+  border: 1px solid #262D29;
+  border-radius: 2px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: #D2D8D4;
+}
+
+/* --- Mobile Sticky Bottom Action Bar (For Facebook Ad Traffic) --- */
+.rabez-mobile-bar {
+  display: none;
+}
+
+@media (max-width: 960px) {
+  .rabez-trust-grid,
+  .rabez-footer__grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .rabez-trust-grid,
+  .rabez-footer__grid {
+    grid-template-columns: 1fr;
+    gap: 24px;
+  }
+  .rabez-footer {
+    padding-top: 40px;
+    padding-bottom: 68px; /* Space for sticky mobile bar */
+  }
+  .rabez-mobile-bar {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 920;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1.25fr;
+    gap: 6px;
+    padding: 8px 10px;
+    background-color: rgba(10, 12, 11, 0.96);
+    border-top: 1px solid var(--rabez-dark-border);
+    box-shadow: 0 -6px 20px rgba(0, 0, 0, 0.28);
+  }
+  .rabez-mobile-bar__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    height: 40px;
+    border-radius: var(--rabez-radius-xs);
+    font-size: 0.74rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    background-color: #181C1A;
+    border: 1px solid #2C3430;
+  }
+  .rabez-mobile-bar__btn--primary {
+    background-color: var(--rabez-neon);
+    border-color: var(--rabez-neon);
+    color: #080A09;
+  }
+}
+

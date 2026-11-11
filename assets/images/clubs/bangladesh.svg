@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 120" fill="none">
+  <!-- Outer Gold & Bottle Green National Shield / Crest -->
+  <circle cx="60" cy="60" r="56" fill="#006A4E" stroke="#D4AF37" stroke-width="5"/>
+  <circle cx="60" cy="60" r="47" fill="#00563F" stroke="#FFFFFF" stroke-width="2" stroke-opacity="0.35"/>
+  <!-- Red Rising Sun of Bangladesh -->
+  <circle cx="58" cy="54" r="24" fill="#F42A41"/>
+  <!-- Classic Football Panel Motif Inside Sun -->
+  <polygon points="58,41 67,48 63,59 53,59 49,48" fill="#006A4E" opacity="0.9"/>
+  <circle cx="58" cy="54" r="24" fill="none" stroke="#D4AF37" stroke-width="2"/>
+  <!-- Bottom BFF Ribbon -->
+  <rect x="24" y="83" width="72" height="18" rx="9" fill="#F42A41" stroke="#D4AF37" stroke-width="2"/>
+  <text x="60" y="96" text-anchor="middle" fill="#FFFFFF" font-family="Arial, sans-serif" font-size="11" font-weight="800" letter-spacing="1.5">BFF • BD</text>
+</svg>
