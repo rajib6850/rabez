@@ -264,3 +264,12 @@ php artisan serve --port=8000
 9. **Dedicated "Discount" Sidebar Menu:** Moved coupons out of settings into their own menu under "Users" with 4 live statistical summary cards and real-time search.
 10. **Full-Width Delivery & Courier Card:** Re-engineered the settings page to eliminate awkward empty space on the right side.
 11. **Mobile Responsiveness Fix:** Eliminated horizontal overflow blowout on mobile by constraining grid tracks (`minmax(0, 1fr)`) and enabling text wrap on full-width buttons.
+12. **Live Production Deployment to cPanel (`rabez.shop`):**
+    - **Production URL:** `https://rabez.shop/`
+    - **Live Admin Login:** `https://rabez.shop/login` (Admin: `admin@rabez.shop` / Pass: `admin1234` or `password`)
+    - **Hosting Environment:** cPanel on CloudLinux / LiteSpeed (`rain.cloudswebserver.com:2083`, IP: `103.112.62.103`)
+    - **PHP Runtime:** PHP 8.4 (`ea-php84`) with native SQLite, GD, WebP, cURL, and OpenSSL.
+    - **Architecture:** Core Laravel codebase is located at `/home/rabezsho/rabez_app/rabez-laravel/` (outside public web root for maximum security), while `/home/rabezsho/public_html/` holds the front controller and static assets (`assets/`, `manifest.json`, `sw.js`, `storage/` link).
+    - **PWA Mobile App:** Fully configured with `manifest.json` and `sw.js`. Visitors on mobile (Android Chrome / iOS Safari) or desktop can tap "Install RABEZ App" / "Add to Home screen" to install as a standalone mobile application.
+
+

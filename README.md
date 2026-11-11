@@ -71,3 +71,4 @@ php artisan serve --port=8000
 
 ## 📖 Complete Documentation
 For the full architectural specification, database schemas, and revisions log, see [PROJECT_MEMORY.md](PROJECT_MEMORY.md).
+
