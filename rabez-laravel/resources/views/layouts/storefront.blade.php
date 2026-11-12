@@ -19,19 +19,19 @@
   <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800&family=Red+Hat+Text:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- RABEZ Modular CSS Architecture -->
-  <link rel="stylesheet" href="{{ asset('assets/css/01-variables.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/02-base-reset.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/03-components.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/header-navigation.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/hero-banner.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/club-filter-bar.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/product-grid.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/css/01-variables.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/02-base-reset.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/03-components.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/header-navigation.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/hero-banner.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/club-filter-bar.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/product-grid.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}?v=2.1">
 
   @stack('styles')
 </head>
