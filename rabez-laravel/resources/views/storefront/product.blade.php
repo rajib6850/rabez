@@ -62,8 +62,11 @@
           <div class="rabez-variation-block variations_form">
             <div class="rabez-variation-header">
               <span>Select Jersey Size: <strong id="js-selected-size-label" style="color:var(--rabez-neon);">{{ $defaultSize }}</strong></span>
-              <button type="button" class="rabez-size-chart-link js-open-size-chart-modal" style="background:none; border:none; color:#04F404; text-decoration:underline; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:4px; padding:0;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path><path d="M14.5 4.5l5 5"></path></svg>
+              <button type="button" class="rabez-size-chart-link js-open-size-chart-modal" style="background:none; border:none; color:#04F404; text-decoration:underline; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path>
+                  <path d="M14.5 4.5l5 5"></path>
+                </svg>
                 <span>Size Chart</span>
               </button>
             </div>
@@ -96,25 +99,69 @@
               <input type="number" class="rabez-qty-input js-sp-qty" value="1" min="1" max="50" aria-label="Quantity" readonly>
               <button type="button" class="rabez-qty-btn js-sp-qty-plus" aria-label="Increase quantity">+</button>
             </div>
-            <button type="button" id="js-sp-add-to-cart-btn" class="rabez-btn rabez-btn--primary rabez-btn--full" style="font-size:15px; font-weight:800;">
-              Add to Bag &mdash; <span id="js-sp-btn-price">৳ {{ number_format($product->price) }}</span>
+            <button type="button" id="js-sp-add-to-cart-btn" class="rabez-btn rabez-btn--primary rabez-btn--full" style="font-size:15px; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 21l1-12.5z"/>
+              </svg>
+              <span>Add to Bag &mdash; <span id="js-sp-btn-price">৳ {{ number_format($product->price) }}</span></span>
             </button>
           </div>
 
           <button type="button" id="js-sp-whatsapp-order-btn" class="rabez-btn rabez-btn--dark rabez-btn--full" style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2.2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
-            Order Instantly on WhatsApp (+880 1612-359652)
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+            </svg>
+            <span>Order Instantly on WhatsApp (+880 1612-359652)</span>
           </button>
 
           <ul class="rabez-delivery-list" style="margin-top:20px;">
             @if(($settings['shipping_mode'] ?? 'flat') === 'flat')
-              <li><strong>All Over Bangladesh Home Delivery:</strong> ৳ {{ intval($settings['shipping_flat_fee'] ?? 130) }} (Flat Rate Across Bangladesh)</li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;">
+                  <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+                  <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+                  <circle cx="7" cy="18" r="2"/>
+                  <circle cx="17" cy="18" r="2"/>
+                </svg>
+                <span><strong>All Over Bangladesh Home Delivery:</strong> ৳ {{ intval($settings['shipping_flat_fee'] ?? 130) }} (Flat Rate Across Bangladesh)</span>
+              </li>
             @else
-              <li><strong>Inside Dhaka:</strong> ৳ {{ intval($settings['shipping_inside_dhaka'] ?? 70) }} (24&ndash;48 Hours Delivery)</li>
-              <li><strong>Outside Dhaka:</strong> ৳ {{ intval($settings['shipping_outside_dhaka'] ?? 130) }} (2&ndash;3 Days Courier Service)</li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;">
+                  <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+                  <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+                  <circle cx="7" cy="18" r="2"/>
+                  <circle cx="17" cy="18" r="2"/>
+                </svg>
+                <span><strong>Inside Dhaka:</strong> ৳ {{ intval($settings['shipping_inside_dhaka'] ?? 70) }} (24&ndash;48 Hours Delivery)</span>
+              </li>
+              <li>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;">
+                  <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+                  <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+                  <circle cx="7" cy="18" r="2"/>
+                  <circle cx="17" cy="18" r="2"/>
+                </svg>
+                <span><strong>Outside Dhaka:</strong> ৳ {{ intval($settings['shipping_outside_dhaka'] ?? 130) }} (2&ndash;3 Days Courier Service)</span>
+              </li>
             @endif
-            <li><strong>Payment:</strong> Cash on Delivery, bKash, Nagad available &bull; Open parcel &amp; check jersey</li>
-            <li><strong>Exchange Policy:</strong> 3-day easy size exchange guarantee</li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;">
+                <rect x="2" y="6" width="20" height="12" rx="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <path d="M6 12h.01M18 12h.01"/>
+              </svg>
+              <span><strong>Payment:</strong> Cash on Delivery, bKash, Nagad available &bull; Open parcel &amp; check jersey</span>
+            </li>
+            <li>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0; margin-top:2px;">
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+                <path d="M21 3v5h-5"/>
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                <path d="M3 21v-5h5"/>
+              </svg>
+              <span><strong>Exchange Policy:</strong> 3-day easy size exchange guarantee</span>
+            </li>
           </ul>
         </div>
       </div>
@@ -275,12 +322,16 @@
         color: #FFFFFF;
       }
       .rabez-accordion-arrow {
-        font-size: 20px;
-        font-weight: 800;
         color: #04F404;
-        line-height: 1;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
         margin-left: 10px;
         flex-shrink: 0;
+      }
+      .rabez-accordion-btn.is-active .rabez-accordion-arrow {
+        transform: rotate(180deg);
       }
       .rabez-desc-accordion-item .rabez-desc-panel {
         display: none !important;
@@ -304,15 +355,27 @@
         <!-- Desktop Tab Navigation -->
         <div class="rabez-desc-tabs">
           <button type="button" class="rabez-desc-tab is-active js-desc-tab" data-tab="details">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+              <polyline points="14 2 14 8 20 8"></polyline>
+              <line x1="16" y1="13" x2="8" y2="13"></line>
+              <line x1="16" y1="17" x2="8" y2="17"></line>
+            </svg>
             <span>Product Details &amp; Specifications</span>
           </button>
           <button type="button" class="rabez-desc-tab js-desc-tab" data-tab="care">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+            </svg>
             <span>Fabric &amp; Care</span>
           </button>
           <button type="button" class="rabez-desc-tab js-desc-tab" data-tab="shipping">
-            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+              <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+              <circle cx="7" cy="18" r="2"/>
+              <circle cx="17" cy="18" r="2"/>
+            </svg>
             <span>Delivery &amp; Exchange Policy</span>
           </button>
         </div>
@@ -321,10 +384,19 @@
         <div class="rabez-desc-accordion-item" data-accordion="details">
           <button type="button" class="rabez-accordion-btn is-active js-accordion-btn" data-target="details">
             <span class="rabez-accordion-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><polyline points="10 9 9 9 8 9"></polyline></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                <polyline points="14 2 14 8 20 8"></polyline>
+                <line x1="16" y1="13" x2="8" y2="13"></line>
+                <line x1="16" y1="17" x2="8" y2="17"></line>
+              </svg>
               <span>Product Details &amp; Specifications</span>
             </span>
-            <span class="rabez-accordion-arrow">&minus;</span>
+            <span class="rabez-accordion-arrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
           </button>
           <div class="rabez-desc-panel js-desc-panel is-open-mobile" data-panel="details" style="display:block;">
             @if(!empty($product->description))
@@ -359,10 +431,16 @@
         <div class="rabez-desc-accordion-item" data-accordion="care">
           <button type="button" class="rabez-accordion-btn js-accordion-btn" data-target="care">
             <span class="rabez-accordion-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="2.2"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path>
+              </svg>
               <span>Fabric Composition &amp; Care</span>
             </span>
-            <span class="rabez-accordion-arrow">&plus;</span>
+            <span class="rabez-accordion-arrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
           </button>
           <div class="rabez-desc-panel js-desc-panel" data-panel="care" style="display:none;">
             <h3 style="font-size:19px; font-weight:800; color:#FFFFFF; margin-bottom:12px;">Fabric Composition &amp; Washing Instructions</h3>
@@ -381,10 +459,19 @@
         <div class="rabez-desc-accordion-item" data-accordion="shipping">
           <button type="button" class="rabez-accordion-btn js-accordion-btn" data-target="shipping">
             <span class="rabez-accordion-title">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="2.2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+                <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+                <circle cx="7" cy="18" r="2"/>
+                <circle cx="17" cy="18" r="2"/>
+              </svg>
               <span>Delivery &amp; Exchange Policy</span>
             </span>
-            <span class="rabez-accordion-arrow">&plus;</span>
+            <span class="rabez-accordion-arrow">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </span>
           </button>
           <div class="rabez-desc-panel js-desc-panel" data-panel="shipping" style="display:none;">
             <h3 style="font-size:19px; font-weight:800; color:#FFFFFF; margin-bottom:12px;">Fast Delivery &amp; 3-Day Hassle-Free Size Exchange</h3>
@@ -496,7 +583,7 @@
             </div>
 
             <div class="rabez-size-alert">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
               <span><strong>Athletic Slim Fit:</strong> Player Edition jerseys have an athletic tapered cut. If you prefer a loose fit, choose <strong>1 size up</strong>.</span>
             </div>
 
@@ -504,10 +591,10 @@
             <div class="rabez-size-graphic-toggle-wrap">
               <button type="button" class="rabez-size-graphic-toggle js-toggle-graphic">
                 <span style="display:flex; align-items:center; gap:6px;">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                   <span>View Official Graphic Chart</span>
                 </span>
-                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </button>
             </div>
           </div>
@@ -573,7 +660,7 @@
             </div>
 
             <div class="rabez-size-alert rabez-size-alert--retro">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
               <span><strong>Regular Comfort Fit:</strong> Retro edition jerseys are relaxed cut. Choose your normal standard T-shirt size.</span>
             </div>
 
@@ -581,10 +668,10 @@
             <div class="rabez-size-graphic-toggle-wrap">
               <button type="button" class="rabez-size-graphic-toggle js-toggle-graphic">
                 <span style="display:flex; align-items:center; gap:6px;">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
                   <span>View Official Graphic Chart</span>
                 </span>
-                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
               </button>
             </div>
           </div>
@@ -639,10 +726,10 @@
                 </div>
                 <div class="rabez-product-card__actions">
                   <button type="button" class="rabez-card-icon-btn js-wishlist-toggle" data-product-id="{{ $rel->id }}" aria-label="Add to Wishlist" title="Wishlist">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                   </button>
                   <button type="button" class="rabez-card-icon-btn js-quick-view" data-product-id="{{ $rel->id }}" aria-label="Quick View" title="Quick View">
-                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                   </button>
                 </div>
               </div>
@@ -671,10 +758,8 @@
                     <ins><span class="woocommerce-Price-amount amount">৳ {{ number_format($rel->price) }}</span></ins>
                   </div>
                   <button type="button" class="rabez-add-cart-btn add_to_cart_button ajax_add_to_cart js-add-to-cart" data-product-id="{{ $rel->id }}">
-                    <svg class="rabez-btn-icon-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" width="13" height="13">
-                      <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path>
-                      <line x1="3" y1="6" x2="21" y2="6"></line>
-                      <path d="M16 10a4 4 0 0 1-8 0"></path>
+                    <svg class="rabez-btn-icon-cart" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" width="14" height="14">
+                      <path d="M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 21l1-12.5z"></path>
                     </svg>
                     <span>Add</span>
                   </button>
@@ -772,11 +857,9 @@
           if (isCurrentlyActive) {
             accBtn.classList.remove("is-active");
             if (panel) panel.classList.remove("is-open-mobile");
-            if (arrow) arrow.innerHTML = "&plus;";
           } else {
             accBtn.classList.add("is-active");
             if (panel) panel.classList.add("is-open-mobile");
-            if (arrow) arrow.innerHTML = "&minus;";
           }
         });
       });

@@ -108,17 +108,15 @@
   function getAddButtonInnerHTML(isAdded) {
     if (isAdded) {
       return `
-        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="20 6 9 17 4 12"/>
         </svg>
         <span>Added</span>
       `;
     }
     return `
-      <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-        <path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/>
-        <line x1="3" y1="6" x2="21" y2="6"/>
-        <path d="M16 10a4 4 0 0 1-8 0"/>
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 21l1-12.5z"/>
       </svg>
       <span>Add</span>
     `;
@@ -191,14 +189,14 @@
           <div class="rabez-product-card__actions">
             <button type="button" class="rabez-card-icon-btn js-wishlist-toggle ${isWished ? "is-active" : ""}"
                     data-product-id="${product.id}" aria-label="Add to Wishlist" title="Wishlist">
-              <svg viewBox="0 0 24 24" fill="${isWished ? "currentColor" : "none"}" stroke="currentColor" stroke-width="2">
-                <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+              <svg viewBox="0 0 24 24" fill="${isWished ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
               </svg>
             </button>
             <button type="button" class="rabez-card-icon-btn js-quick-view"
                     data-product-id="${product.id}" aria-label="Quick View" title="Quick View">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
                 <circle cx="12" cy="12" r="3"/>
               </svg>
             </button>
@@ -400,7 +398,12 @@
       if (!cart.length) {
         drawerBody.innerHTML = `
           <div style="text-align:center; padding: 48px 16px; color:#6E7672;">
-            <p style="font-weight:700; color:#FFFFFF; margin-bottom:6px;">Your jersey bag is empty</p>
+            <div style="display:inline-flex; align-items:center; justify-content:center; width:64px; height:64px; border-radius:50%; background:#141C16; border:1px solid #202924; margin-bottom:14px; color:#04F404;">
+              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 21l1-12.5z"/>
+              </svg>
+            </div>
+            <p style="font-weight:700; color:#FFFFFF; margin-bottom:6px; font-size:15px;">Your jersey bag is empty</p>
             <p style="font-size:0.84rem; color:#9CA3AF; margin-bottom:18px;">Pick your club kit & size to start your order.</p>
             <a href="/shop" class="rabez-btn rabez-btn--primary rabez-btn--sm">Browse Jerseys</a>
           </div>
@@ -428,7 +431,11 @@
                   ${customMeta}
                   <div class="rabez-cart-item__price" style="font-weight:800; font-size:13px; color:#04F404; margin-top:2px;">${formatBDT(item.price * item.qty)}</div>
                 </div>
-                <button type="button" class="rabez-cart-item__remove js-remove-cart-item" data-key="${item.key}" aria-label="Remove item" style="background:none; border:none; color:#6B7280; font-size:11.5px; cursor:pointer; padding:4px 6px; border-radius:4px;" onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#6B7280'">Remove</button>
+                <button type="button" class="rabez-cart-item__remove js-remove-cart-item" data-key="${item.key}" aria-label="Remove item" title="Remove item" style="background:none; border:none; color:#6B7280; cursor:pointer; padding:6px; border-radius:4px; display:inline-flex; align-items:center; justify-content:center; transition:color 0.15s;" onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#6B7280'">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M3 6h18M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  </svg>
+                </button>
               </div>
             `;
           })
@@ -618,12 +625,12 @@
           <!-- Action Buttons -->
           <div style="display:grid; gap:7px;">
             <button type="button" class="rabez-btn rabez-btn--primary rabez-btn--full js-modal-add-cart ${isAdded ? "is-added added" : ""}" data-product-id="${product.id}" style="padding:11px 18px; font-weight:800; font-size:0.92rem; display:flex; align-items:center; justify-content:center; gap:8px;">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 21l1-12.5z"/></svg>
               <span class="js-qv-btn-text">Add to Bag &mdash; ${formatBDT(product.price)}</span>
             </button>
 
             <button type="button" class="rabez-btn js-qv-whatsapp-order" data-product-id="${product.id}" style="background:#25D366; color:#FFFFFF; border:none; border-radius:var(--rabez-radius-sm); padding:10px 16px; font-weight:800; font-size:0.9rem; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; transition:background 0.18s ease;">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="currentColor"><path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.893 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.884-.001 2.225.651 3.891 1.746 5.634l-.999 3.648 3.742-.981zm11.387-5.464c-.074-.124-.272-.198-.57-.347-.297-.149-1.758-.868-2.031-.967-.272-.099-.47-.149-.669.149-.198.297-.768.967-.941 1.165-.173.198-.347.223-.644.074-.297-.149-1.255-.462-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.297-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.571-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414z"/></svg>
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
               <span>Order via WhatsApp</span>
             </button>
 
@@ -635,15 +642,28 @@
           <!-- Trust Perks Row -->
           <div class="rabez-qv-perks" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:12px; padding-top:10px; border-top:1px solid var(--rabez-border); font-size:0.72rem; text-align:center; color:var(--rabez-text-body);">
             <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+                <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+                <circle cx="7" cy="18" r="2"/>
+                <circle cx="17" cy="18" r="2"/>
+              </svg>
               <span style="font-weight:700; line-height:1.2;">Cash on Delivery<br><small style="color:var(--rabez-text-muted); font-size:0.68rem;">All Over BD</small></span>
             </div>
             <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="2"><polyline points="23 4 23 10 17 10"></polyline><polyline points="1 20 1 14 7 14"></polyline><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+                <path d="M21 3v5h-5"/>
+                <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+                <path d="M3 21v-5h5"/>
+              </svg>
               <span style="font-weight:700; line-height:1.2;">3-Day Exchange<br><small style="color:var(--rabez-text-muted); font-size:0.68rem;">Easy size swap</small></span>
             </div>
             <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                <path d="m9 12 2 2 4-4"/>
+              </svg>
               <span style="font-weight:700; line-height:1.2;">100% Quality<br><small style="color:var(--rabez-text-muted); font-size:0.68rem;">Breathable Fabric</small></span>
             </div>
           </div>

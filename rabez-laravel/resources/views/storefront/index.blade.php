@@ -16,14 +16,14 @@
 
           <div class="rabez-hero__cta-row">
             <a href="#catalog" class="rabez-btn rabez-btn--primary">
-              Shop Jerseys
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+              <span>Shop Jerseys</span>
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                 <line x1="5" y1="12" x2="19" y2="12"></line>
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
             </a>
             <a href="#custom-print" class="rabez-btn rabez-btn--hero-secondary">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                 <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>
               </svg>
               <span>Custom Name &amp; Number</span>
@@ -51,7 +51,7 @@
                   <div class="rabez-hero-deck__price">৳ 1,150 &bull; Half Sleeve</div>
                 </div>
                 <span class="rabez-hero-deck__action" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
@@ -74,7 +74,7 @@
                   <div class="rabez-hero-deck__price">৳ 1,300 &bull; Full Sleeve</div>
                 </div>
                 <span class="rabez-hero-deck__action" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
@@ -97,7 +97,7 @@
                   <div class="rabez-hero-deck__price">৳ 1,150 &bull; Half Sleeve</div>
                 </div>
                 <span class="rabez-hero-deck__action" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
@@ -120,7 +120,7 @@
                   <div class="rabez-hero-deck__price">৳ 1,150 &bull; Half Sleeve</div>
                 </div>
                 <span class="rabez-hero-deck__action" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
@@ -143,7 +143,7 @@
                   <div class="rabez-hero-deck__price">৳ 1,450 &bull; Jersey Crest</div>
                 </div>
                 <span class="rabez-hero-deck__action" aria-hidden="true">
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="5" y1="12" x2="19" y2="12"></line>
                     <polyline points="12 5 19 12 12 19"></polyline>
                   </svg>
@@ -297,10 +297,10 @@
               </div>
               <div class="rabez-product-card__actions">
                 <button type="button" class="rabez-card-icon-btn js-wishlist-toggle" data-product-id="1324" aria-label="Add to Wishlist" title="Wishlist">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </button>
                 <button type="button" class="rabez-card-icon-btn js-quick-view" data-product-id="1324" aria-label="Quick View" title="Quick View">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
             </div>
@@ -321,10 +321,10 @@
               </div>
               <div class="rabez-product-card__actions">
                 <button type="button" class="rabez-card-icon-btn js-wishlist-toggle" data-product-id="1411" aria-label="Add to Wishlist" title="Wishlist">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </button>
                 <button type="button" class="rabez-card-icon-btn js-quick-view" data-product-id="1411" aria-label="Quick View" title="Quick View">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
             </div>
@@ -345,10 +345,10 @@
               </div>
               <div class="rabez-product-card__actions">
                 <button type="button" class="rabez-card-icon-btn js-wishlist-toggle" data-product-id="1320" aria-label="Add to Wishlist" title="Wishlist">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </button>
                 <button type="button" class="rabez-card-icon-btn js-quick-view" data-product-id="1320" aria-label="Quick View" title="Quick View">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
             </div>
@@ -369,10 +369,10 @@
               </div>
               <div class="rabez-product-card__actions">
                 <button type="button" class="rabez-card-icon-btn js-wishlist-toggle" data-product-id="1384" aria-label="Add to Wishlist" title="Wishlist">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
                 </button>
                 <button type="button" class="rabez-card-icon-btn js-quick-view" data-product-id="1384" aria-label="Quick View" title="Quick View">
-                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/><circle cx="12" cy="12" r="3"/></svg>
                 </button>
               </div>
             </div>
@@ -726,11 +726,11 @@
       <div class="rabez-container rabez-trust-grid">
         <div class="rabez-trust-item">
           <div class="rabez-trust-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <rect x="1" y="3" width="15" height="13"></rect>
-              <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-              <circle cx="5.5" cy="18.5" r="2.5"></circle>
-              <circle cx="18.5" cy="18.5" r="2.5"></circle>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+              <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+              <circle cx="7" cy="18" r="2"/>
+              <circle cx="17" cy="18" r="2"/>
             </svg>
           </div>
           <div>
@@ -741,8 +741,8 @@
 
         <div class="rabez-trust-item">
           <div class="rabez-trust-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/>
             </svg>
           </div>
           <div>
@@ -753,10 +753,11 @@
 
         <div class="rabez-trust-item">
           <div class="rabez-trust-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <polyline points="23 4 23 10 17 10"></polyline>
-              <polyline points="1 20 1 14 7 14"></polyline>
-              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
+              <path d="M21 3v5h-5"/>
+              <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
+              <path d="M3 21v-5h5"/>
             </svg>
           </div>
           <div>
@@ -767,8 +768,8 @@
 
         <div class="rabez-trust-item">
           <div class="rabez-trust-icon">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
             </svg>
           </div>
           <div>
@@ -778,116 +779,4 @@
         </div>
       </div>
     </section>
-  </main>
-
-  <!-- ========================================================================
-       WIDGET 10: PITCH-BLACK BRAND FOOTER (elementor-widget-rabez-footer)
-       ======================================================================== -->
-  <footer class="rabez-footer" role="contentinfo">
-    <div class="rabez-container">
-      <div class="rabez-footer__grid">
-        <div>
-          <img src="assets/images/brand/rabez-neon-logo.png" alt="RABEZ - Wear What you stand for." class="rabez-footer__logo" width="220" height="73" loading="lazy">
-          <p class="rabez-footer__bio">
-            Your destination for premium jersey collections. Discover the perfect blend of style, comfort, and quality with RABEZ.
-          </p>
-          <div class="rabez-social-links">
-            <a href="https://www.facebook.com/rabezshop/" target="_blank" rel="noopener" class="rabez-social-link" aria-label="RABEZ Facebook Page">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12 2C6.5 2 2 6.5 2 12c0 5 3.7 9.1 8.4 9.9v-7H7.9V12h2.5V9.8c0-2.5 1.5-3.9 3.8-3.9 1.1 0 2.2.2 2.2.2v2.5h-1.3c-1.2 0-1.6.8-1.6 1.6V12h2.8l-.4 2.9h-2.3v7C18.3 21.1 22 17 22 12c0-5.5-4.5-10-10-10z"/>
-              </svg>
-            </a>
-            <a href="https://api.whatsapp.com/send/?phone=8801612359652" target="_blank" rel="noopener" class="rabez-social-link" aria-label="RABEZ WhatsApp">
-              <svg viewBox="0 0 24 24" fill="currentColor">
-                <path d="M12.012 2c-5.506 0-9.989 4.478-9.99 9.984a9.964 9.964 0 0 0 1.333 4.993L2 22l5.233-1.237a9.994 9.994 0 0 0 4.779 1.217h.004c5.505 0 9.985-4.48 9.988-9.984 0-2.669-1.037-5.178-2.922-7.066C17.19 3.04 14.684 2 12.012 2z"/>
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <div>
-          <h3 class="rabez-footer__heading">Jersey &amp; Hoodie Categories</h3>
-          <ul class="rabez-footer__links">
-            <li><a href="shop.html">All Jerseys &amp; Hoodies (31)</a></li>
-            <li><a href="shop.html?sleeve=half-sleeve">Half Sleeve Kits (৳1,150)</a></li>
-            <li><a href="shop.html?sleeve=full-sleeve">Full Sleeve Kits (৳1,300)</a></li>
-            <li><a href="shop.html?sleeve=winter-hoodie">Winter Hoodies with Jersey Logo (৳1,450)</a></li>
-            <li><a href="#custom-print">Custom Name &amp; Number (+৳250)</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="rabez-footer__heading">Customer Care</h3>
-          <ul class="rabez-footer__links">
-            <li><a href="track-order.html">Track Your Order &amp; Invoice</a></li>
-            <li><a href="#size-guide">Bangladesh Size Chart</a></li>
-            <li><a href="checkout.html">Cash on Delivery Info</a></li>
-            <li><a href="checkout.html">Size Exchange Policy</a></li>
-            <li><a href="admin.html">Admin App (Staff Only)</a></li>
-          </ul>
-        </div>
-
-        <div>
-          <h3 class="rabez-footer__heading">Direct Order &amp; Support</h3>
-          <ul class="rabez-footer__contact-list">
-            <li class="rabez-footer__contact-item">
-              <span class="rabez-footer__contact-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"></path>
-                </svg>
-              </span>
-              <div class="rabez-footer__contact-text">
-                <span class="rabez-footer__contact-label">WhatsApp &amp; Hotline</span>
-                <a href="https://api.whatsapp.com/send/?phone=8801612359652" target="_blank" rel="noopener" class="rabez-footer__contact-val">+880 1612-359652</a>
-              </div>
-            </li>
-
-            <li class="rabez-footer__contact-item">
-              <span class="rabez-footer__contact-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
-                </svg>
-              </span>
-              <div class="rabez-footer__contact-text">
-                <span class="rabez-footer__contact-label">Official Facebook</span>
-                <a href="https://www.facebook.com/rabezshop/" target="_blank" rel="noopener" class="rabez-footer__contact-val">facebook.com/rabezshop</a>
-              </div>
-            </li>
-
-            <li class="rabez-footer__contact-item">
-              <span class="rabez-footer__contact-icon" aria-hidden="true">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"></path>
-                  <circle cx="12" cy="10" r="3"></circle>
-                </svg>
-              </span>
-              <div class="rabez-footer__contact-text">
-                <span class="rabez-footer__contact-label">Store Location</span>
-                <span class="rabez-footer__contact-val">Road-10, College Avenue, Barishal</span>
-              </div>
-            </li>
-          </ul>
-        </div>
-      </div>
-
-      <div class="rabez-footer__bottom">
-        <p>&copy; 2026 RABEZ (<a href="https://rabez.shop/" style="color:#FFFFFF;">rabez.shop</a>) &ndash; All Rights Reserved.</p>
-        <div class="rabez-payment-pills">
-          <span class="rabez-pay-pill">Cash On Delivery</span>
-          <span class="rabez-pay-pill">bKash</span>
-          <span class="rabez-pay-pill">Nagad</span>
-          <span class="rabez-pay-pill">Steadfast / Pathao Courier</span>
-        </div>
-      </div>
-    </div>
-  </footer>
-
-  <!-- Mobile Sticky Bottom Conversion Bar (For Facebook Ad Mobile Shoppers) -->
-  <nav class="rabez-mobile-bar" aria-label="Mobile Quick Actions">
-    <a href="#catalog" class="rabez-mobile-bar__btn">Jerseys</a>
-    <a href="https://api.whatsapp.com/send/?phone=8801612359652" target="_blank" rel="noopener" class="rabez-mobile-bar__btn">WhatsApp</a>
-    <button type="button" class="rabez-mobile-bar__btn rabez-mobile-bar__btn--primary js-open-cart-drawer">
-      Bag (<span class="js-cart-count">1</span>) &bull; <span class="js-cart-subtotal">৳ 1,150</span>
-    </button>
-  </nav>
 @endsection

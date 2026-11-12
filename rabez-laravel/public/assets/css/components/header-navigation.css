@@ -422,8 +422,15 @@
 }
 
 .rabez-icon-btn svg {
-  width: 18px;
-  height: 18px;
+  width: 19px;
+  height: 19px;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  transition: transform 0.22s cubic-bezier(0.16, 1, 0.3, 1), stroke 0.18s ease;
+}
+
+.rabez-icon-btn:hover svg {
+  transform: scale(1.1);
 }
 
 .rabez-count-pill {

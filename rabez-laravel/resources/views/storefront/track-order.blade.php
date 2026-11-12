@@ -376,9 +376,9 @@
       <div class="rabez-track-search-box">
         <form class="rabez-track-form js-track-order-form" method="GET" action="{{ route('track-order') }}">
           <div class="rabez-track-input-wrap">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2">
-              <circle cx="11" cy="11" r="8"></circle>
-              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="11" cy="11" r="7.5"></circle>
+              <path d="m20 20-3.6-3.6"></path>
             </svg>
             <input type="text" name="order" class="rabez-track-input js-track-query" value="{{ $query }}" placeholder="Enter Order ID (e.g. RBZ-10024) or Mobile Number (01XXXXXXXXX)..." aria-label="Order ID or Phone Number" required>
           </div>
@@ -430,11 +430,11 @@ if ($order) {
     const searchedQuery = @json($query);
 
     const STEP_ICONS = {
-      1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline></svg>',
-      2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
-      3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>',
-      4: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><rect x="1" y="3" width="15" height="13"></rect><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon><circle cx="5.5" cy="18.5" r="2.5"></circle><circle cx="18.5" cy="18.5" r="2.5"></circle></svg>',
-      5: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M20 6L9 17l-5-5"></path></svg>'
+      1: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line></svg>',
+      2: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path><path d="m9 12 2 2 4-4"></path></svg>',
+      3: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"></path></svg>',
+      4: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>',
+      5: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>'
     };
 
     function renderOrderDetails(match) {
@@ -524,11 +524,11 @@ if ($order) {
           <div class="rabez-courier-box">
             <div class="rabez-courier-box__left">
               <span class="rabez-courier-box__icon">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                  <rect x="1" y="3" width="15" height="13"></rect>
-                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                  <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                  <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+                  <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+                  <circle cx="7" cy="18" r="2"/>
+                  <circle cx="17" cy="18" r="2"/>
                 </svg>
               </span>
               <div>
@@ -585,8 +585,11 @@ if ($order) {
       if (!query) {
         root.innerHTML = `
           <div style="text-align:center; padding: 50px 20px; background:#131A16; border-radius:16px; border:1px solid #1F2823; margin-top:30px;">
-            <div style="width:60px; height:60px; margin:0 auto 16px; background:#0D110F; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#04F404;">
-              <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+            <div style="width:60px; height:60px; margin:0 auto 16px; background:#0D110F; border-radius:50%; display:flex; align-items:center; justify-content:center; color:#04F404; border:1px solid #1F2823;">
+              <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <circle cx="11" cy="11" r="7.5"></circle>
+                <path d="m20 20-3.6-3.6"></path>
+              </svg>
             </div>
             <h3 style="font-size:1.25rem; font-weight:800; color:#FFFFFF; margin-bottom:8px;">Track Your Shipment</h3>
             <p style="color:#9CA3AF; font-size:0.92rem; max-width:440px; margin:0 auto;">Enter your Order ID (from your order confirmation SMS or checkout) or your 11-digit mobile number above to view real-time delivery status.</p>
@@ -607,8 +610,12 @@ if ($order) {
 
       root.innerHTML = `
         <div style="text-align:center; padding: 50px 20px; background:#131A16; border-radius:16px; border:1px solid #1F2823; margin-top:30px;">
-          <div style="width:60px; height:60px; margin:0 auto 16px; background:rgba(239,68,68,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#EF4444;">
-            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>
+          <div style="width:60px; height:60px; margin:0 auto 16px; background:rgba(239,68,68,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; color:#EF4444; border:1px solid rgba(239,68,68,0.25);">
+            <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
           </div>
           <h3 style="font-size:1.25rem; font-weight:800; color:#FFFFFF; margin-bottom:8px;">No Order Found</h3>
           <p style="color:#9CA3AF; font-size:0.92rem; max-width:440px; margin:0 auto 20px;">We could not find any active order matching "<strong style=\"color:#fff;\">${query}</strong>". Please verify your Order ID or phone number.</p>
