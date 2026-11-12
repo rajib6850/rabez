@@ -266,10 +266,15 @@ php artisan serve --port=8000
 11. **Mobile Responsiveness Fix:** Eliminated horizontal overflow blowout on mobile by constraining grid tracks (`minmax(0, 1fr)`) and enabling text wrap on full-width buttons.
 12. **Live Production Deployment to cPanel (`rabez.shop`):**
     - **Production URL:** `https://rabez.shop/`
-    - **Live Admin Login:** `https://rabez.shop/login` (Admin: `admin@rabez.shop` / Pass: `admin1234` or `password`)
+    - **Live Admin Login:** `https://rabez.shop/login` (Admin: `admin@rabez.shop`)
     - **Hosting Environment:** cPanel on CloudLinux / LiteSpeed (`rain.cloudswebserver.com:2083`, IP: `103.112.62.103`)
-    - **PHP Runtime:** PHP 8.4 (`ea-php84`) with native SQLite, GD, WebP, cURL, and OpenSSL.
-    - **Architecture:** Core Laravel codebase is located at `/home/rabezsho/rabez_app/rabez-laravel/` (outside public web root for maximum security), while `/home/rabezsho/public_html/` holds the front controller and static assets (`assets/`, `manifest.json`, `sw.js`, `storage/` link).
-    - **PWA Mobile App:** Fully configured with `manifest.json` and `sw.js`. Visitors on mobile (Android Chrome / iOS Safari) or desktop can tap "Install RABEZ App" / "Add to Home screen" to install as a standalone mobile application.
+    - **PHP Runtime:** Upgraded to **PHP 8.5** (`ea-php85` / Version 8.5.12) with native SQLite, GD, WebP, cURL, and OpenSSL.
+    - **Launch Readiness:** All demo credential callouts, sample order pills, test orders, and dummy tokens were removed for official launch.
+13. **Hero Secondary CTA Redesign:**
+    - Replaced cryptic `CUSTOM NAME & #` with professional **`CUSTOM NAME & NUMBER`**.
+    - Upgraded design from flat faint wireframe outline to a sleek **Dark Glassmorphic button** (`rgba(255,255,255,0.06)`, `backdrop-filter: blur(12px)`, soft drop shadow, and `#04F404` neon hover glow).
+    - Added an authentic **Squad Kit / Jersey Icon** with neon green accent.
+    - Added `scroll-margin-top: 86px` on `#custom-print` for zero-overlap smooth scrolling down to the interactive kit preview widget.
+
 
 
