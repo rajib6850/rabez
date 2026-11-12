@@ -396,6 +396,19 @@ php artisan serve --port=8000
         - Whenever a user applies a coupon code or encounters an error message (e.g. invalid code or empty input), the coupon fields container automatically forces itself open (`toggleCheckoutCoupon(true)` / `toggleDrawerCoupon(true)`) so messages are never hidden.
         - Applied coupon code and discount row remain visible in the price summary (`Discount (CODE) -৳XX`), complete with "Remove" functionality.
 
+24. **Admin Dashboard "Discount & Promotional Coupons" Button & Mobile Fix:**
+    - **Duplicate Plus (+) Sign Removed:**
+        - Fixed the "+ New Coupon" button which previously had both an SVG vector plus icon and literal `+` inside text (`[+] + New Coupon`). Removed the redundant text `+` to display a single, crisp vector icon with label: `[+] New Coupon`.
+        - Also updated empty table state prompt from `Click "+ New Coupon"` to `Click "New Coupon"`.
+    - **Mobile Viewport Overflow Prevention:**
+        - Previously on mobile viewports (`<= 640px` and `<= 390px`), fixed `width: 230px` on the search input combined with the button (~140px) demanded 380px+, forcing the button completely out of the viewport on narrow screens.
+        - Introduced responsive `.adm-coupons-toolbar`:
+            - On screens `<= 640px`: Toolbar expands to `width: 100% !important`, search input uses `flex: 1 1 140px; min-width: 0; width: auto !important;`, and button has `flex-shrink: 0; white-space: nowrap;`. Both fit side-by-side with zero horizontal overflow.
+            - On ultra-small screens `<= 380px`: Elements stack vertically at `100% width` with comfortable touch targets.
+        - Card header title now uses `flex-wrap: wrap` to allow the active badge to wrap gracefully without blowing out card width.
+        - Added `max-height: 92vh; overflow-y: auto;` to coupon modal dialog for mobile screens.
+
+
 
 
 
