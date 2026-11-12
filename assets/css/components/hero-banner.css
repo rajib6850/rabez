@@ -474,21 +474,6 @@
     border-radius: 6px;
   }
   .rabez-hero-dock {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-    max-width: 100%;
-    padding: 5px 6px;
-    gap: 4px;
-    border-radius: 14px;
-  }
-  .rabez-hero-dock__btn {
-    padding: 5px 8px 5px 6px;
-    font-size: 0.7rem;
-    gap: 5px;
-  }
-  .rabez-hero-dock__btn img {
-    width: 16px;
-    height: 16px;
+    display: none !important;
   }
 }
