@@ -82,6 +82,51 @@
   font-size: 0.9rem;
 }
 
+/* Secondary Hero CTA - Premium Dark Glass */
+.rabez-btn--hero-secondary {
+  background: rgba(255, 255, 255, 0.05);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  border-radius: 8px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.3);
+  transition: all 0.22s ease-in-out;
+}
+
+.rabez-btn--hero-secondary svg {
+  color: #04F404;
+  transition: transform 0.22s ease;
+  flex-shrink: 0;
+}
+
+.rabez-btn--hero-secondary:hover {
+  background: rgba(4, 244, 4, 0.08);
+  border-color: #04F404;
+  color: #04F404;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(4, 244, 4, 0.22);
+}
+
+.rabez-btn--hero-secondary:hover svg {
+  transform: scale(1.15) rotate(-6deg);
+}
+
+.rabez-btn--hero-secondary:active {
+  transform: translateY(0);
+}
+
+#custom-print {
+  scroll-margin-top: 86px;
+}
+
 /* --- Right Column: Interactive 3-Jersey Fan Stage --- */
 .rabez-hero-stage {
   position: relative;
@@ -375,14 +420,26 @@
   }
   .rabez-hero__cta-row {
     display: grid;
-    grid-template-columns: 1.1fr 0.9fr;
+    grid-template-columns: 1fr 1fr;
     gap: 10px;
   }
   .rabez-hero__cta-row .rabez-btn {
-    min-height: 46px;
-    padding: 0 12px;
-    font-size: 0.78rem;
+    min-height: 48px;
+    padding: 0 10px;
+    font-size: 0.74rem;
     width: 100%;
+    gap: 6px;
+  }
+  .rabez-hero__cta-row .rabez-btn svg {
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+
+  @media (max-width: 380px) {
+    .rabez-hero__cta-row {
+      grid-template-columns: 1fr;
+    }
   }
 
   .rabez-hero-deck {
