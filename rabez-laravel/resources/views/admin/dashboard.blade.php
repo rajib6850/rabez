@@ -1203,6 +1203,33 @@
       .adm-print-row .adm-btn { grid-column: 1 / -1; }
       .adm-table th, .adm-table td { padding-left: 14px; padding-right: 14px; }
       .adm-drawer { width: 100%; }
+      .adm-coupons-toolbar {
+        width: 100% !important;
+        display: flex !important;
+        flex-direction: row !important;
+        gap: 8px !important;
+        margin-top: 4px;
+      }
+      .adm-coupons-toolbar .js-coupon-search-input {
+        flex: 1 1 140px !important;
+        width: auto !important;
+        min-width: 0 !important;
+      }
+      .adm-coupons-toolbar .js-open-coupon-modal {
+        flex-shrink: 0 !important;
+        white-space: nowrap !important;
+      }
+    }
+    @media (max-width: 380px) {
+      .adm-coupons-toolbar {
+        flex-direction: column !important;
+        gap: 8px !important;
+      }
+      .adm-coupons-toolbar .js-coupon-search-input,
+      .adm-coupons-toolbar .js-open-coupon-modal {
+        width: 100% !important;
+        justify-content: center !important;
+      }
     }
 
     /* ==========================================================================
@@ -2557,18 +2584,18 @@
           <!-- Coupons Management Card -->
           <div class="adm-card">
             <div class="adm-card__head" style="flex-wrap:wrap; gap:14px; align-items:center;">
-              <div>
-                <h2 class="adm-card__title" style="display:flex; align-items:center; gap:10px;">
+              <div style="flex:1; min-width:0; max-width:100%;">
+                <h2 class="adm-card__title" style="display:flex; align-items:center; flex-wrap:wrap; gap:8px;">
                   <span>Discount &amp; Promotional Coupons</span>
                   <span class="adm-badge adm-badge--success" style="font-size:11px; padding:3px 9px; border-radius:999px; background:rgba(34,197,94,0.15); color:#22c55e; border:1px solid rgba(34,197,94,0.3); font-weight:700;"><span class="js-coupons-count">0</span> Active</span>
                 </h2>
                 <p class="adm-card__desc">Create and manage coupon promo codes, set percentage or flat ৳ discounts, and minimum order requirements.</p>
               </div>
-              <div style="display:flex; align-items:center; gap:10px;">
+              <div class="adm-coupons-toolbar">
                 <input type="text" class="adm-input js-coupon-search-input" placeholder="Search coupon code or note..." style="width:230px; height:36px; font-size:12.5px;">
                 <button type="button" class="adm-btn js-open-coupon-modal" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:12.5px; padding:8px 16px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px; transition:transform 0.15s, background 0.15s;" onmouseover="this.style.background='#22C55E'" onmouseout="this.style.background='#04F404'">
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
-                  <span>+ New Coupon</span>
+                  <span>New Coupon</span>
                 </button>
               </div>
             </div>
@@ -3171,7 +3198,7 @@
 
   <!-- COUPON CREATE / EDIT MODAL -->
   <div class="adm-modal js-coupon-modal" style="display:none; position:fixed; inset:0; z-index:1002; background:rgba(0,0,0,0.7); align-items:center; justify-content:center; padding:16px;">
-    <div style="background:var(--adm-surface); border:1px solid var(--adm-border); border-radius:12px; width:100%; max-width:460px; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.5);">
+    <div style="background:var(--adm-surface); border:1px solid var(--adm-border); border-radius:12px; width:100%; max-width:460px; max-height:92vh; overflow-y:auto; padding:24px; box-shadow:0 20px 40px rgba(0,0,0,0.5);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:18px;">
         <h3 class="js-coupon-modal-title" style="font-size:18px; font-weight:800; color:var(--adm-text); margin:0;">Create Discount Coupon</h3>
         <button type="button" class="adm-icon-btn js-close-coupon-modal" aria-label="Close" style="cursor:pointer; background:none; border:none; color:var(--adm-muted);">
@@ -5278,7 +5305,7 @@
             <tr>
               <td colspan="6" style="padding:36px 20px; text-align:center; color:var(--adm-muted); font-size:13px;">
                 ${couponsList.length === 0
-                  ? 'No discount coupons found. Click "+ New Coupon" above to create your first coupon.'
+                  ? 'No discount coupons found. Click "New Coupon" above to create your first coupon.'
                   : `No coupons matched "${escapeHtml(q)}". <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm" onclick="document.querySelector('.js-coupon-search-input').value=''; couponSearchQuery=''; renderCoupons();" style="margin-left:8px;">Clear search</button>`}
               </td>
             </tr>`;
