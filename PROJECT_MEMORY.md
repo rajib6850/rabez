@@ -279,6 +279,13 @@ php artisan serve --port=8000
     - **Clean White Background Restored:** Retained the clean `#FFFFFF` daylight background for `.rabez-filter-bar` and `#F6F7F5` card tiles based on user preference.
     - **18px Left & Right Container Alignment:** Added `padding: 2px 18px 4px 18px;` and `scroll-padding: 0 18px;` to `.rabez-club-pills` so the active `All Kits` card no longer clips against the left edge of the screen and aligns with the 18px layout gutter.
     - **Hero Dock & Swipe:** Restored the interactive hero dock on mobile, providing smooth horizontal swipe with snap alignment.
+15. **Mobile-First Size Chart Bottom Sheet Overhaul:**
+    - **App-Like Bottom Sheet:** On screens `<= 640px`, the modal slides up as a smooth bottom sheet with top pull handle (`20px 20px 0 0` border radius), eliminating the bulky desktop scrollbar and centered floating card.
+    - **Weight Fit Guidance:** Added recommended body weight column (`50-60 kg`, `60-70 kg`, `70-78 kg`, `78-86 kg`, `86-96 kg`) alongside Chest and Length in inches.
+    - **1-Tap Quick Select:** Added bottom quick-select pills (`S`, `M`, `L`, `XL`, `XXL`) and clickable table rows that immediately select the size on the product page and smoothly close the sheet.
+    - **Active Size Sync:** Opens with the user's currently selected product size highlighted in neon green.
+    - **Collapsible Graphic Chart:** Clean toggle button (`View Official Graphic Chart`) preserves fast loading and prevents giant redundant images from forcing endless scrolling on small screens.
+    - **Dynamic Fit Alert:** Clear visual cues explaining Player Edition (Athletic Slim Fit - order 1 size up for loose fit) vs Retro Series (Regular Comfort Fit - standard T-shirt size).
 
 
 
