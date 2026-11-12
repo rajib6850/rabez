@@ -394,7 +394,7 @@
     <div class="rabez-cart-drawer__foot">
       <!-- Drawer Coupon Box -->
       <div class="rabez-drawer-coupon" style="margin-bottom:12px; padding:10px 12px; background:#141916; border:1px dashed #2B3830; border-radius:8px; transition:border-color 0.2s ease;">
-        <button type="button" class="rabez-coupon-toggle js-toggle-drawer-coupon" onclick="if(window.toggleDrawerCoupon){window.toggleDrawerCoupon();}else{const f=document.getElementById('drawer-coupon-fields');if(f)f.style.display=f.style.display==='none'?'block':'none';}" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:0; cursor:pointer; text-align:left;">
+        <button type="button" class="rabez-coupon-toggle js-toggle-drawer-coupon" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:0; cursor:pointer; text-align:left;">
           <div style="font-size:12px; font-weight:700; color:#E2E8F0; display:flex; align-items:center; gap:6px;">
             <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
               <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>

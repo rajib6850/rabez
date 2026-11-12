@@ -81,7 +81,7 @@
 
           <!-- Coupon Application Box -->
           <div class="rabez-checkout-coupon" style="padding:10px 12px; background:#191E1B; border:1px dashed #2B332E; border-radius:8px; margin-bottom:14px; transition:border-color 0.2s ease;">
-            <button type="button" class="rabez-coupon-toggle js-toggle-checkout-coupon" onclick="if(window.toggleCheckoutCoupon){window.toggleCheckoutCoupon();}else{const f=document.getElementById('checkout-coupon-fields');if(f)f.style.display=f.style.display==='none'?'block':'none';}" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:0; cursor:pointer; text-align:left;">
+            <button type="button" class="rabez-coupon-toggle js-toggle-checkout-coupon" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:0; cursor:pointer; text-align:left;">
               <div style="font-size:12.5px; font-weight:700; color:#E2E8F0; display:flex; align-items:center; gap:7px;">
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
