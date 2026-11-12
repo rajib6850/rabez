@@ -383,6 +383,20 @@ php artisan serve --port=8000
     - **Global Viewport Overflow Prevention:**
         - Added `overflow-x: hidden` to `html` to prevent horizontal elasticity or bounce across all mobile webkit browsers.
 
+23. **Collapsible Coupon Toggle ("Have a Discount Coupon?") in Checkout & Drawer Bag:**
+    - **Clean Collapsed Initial State:**
+        - On both the **Checkout Page** (`checkout.blade.php`) and the **Cart Drawer / Bag Drawer** (`storefront.blade.php`), the coupon code input field and Apply button are hidden by default (`display: none`).
+        - Only the clickable question/link **"Have a Discount Coupon?"** is visible with an official coupon icon and an interactive chevron indicator (`▾`).
+        - Renamed Drawer's old text from "Have a Promo Coupon?" to "Have a Discount Coupon?" for complete storewide consistency.
+    - **Smooth Expand / Collapse UX:**
+        - Clicking the question smoothly reveals the exact current coupon form (uppercase input field, "Apply" button, and error/success message container).
+        - Clicking it again collapses the input section, while rotating the chevron icon seamlessly with CSS transitions (`transition: transform 0.25s ease`).
+        - Automatically focuses the coupon input field upon expansion for frictionless typing.
+    - **Smart Feedback Visibility:**
+        - Whenever a user applies a coupon code or encounters an error message (e.g. invalid code or empty input), the coupon fields container automatically forces itself open (`toggleCheckoutCoupon(true)` / `toggleDrawerCoupon(true)`) so messages are never hidden.
+        - Applied coupon code and discount row remain visible in the price summary (`Discount (CODE) -৳XX`), complete with "Remove" functionality.
+
+
 
 
 
