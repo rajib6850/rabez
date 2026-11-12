@@ -22,7 +22,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/01-variables.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/02-base-reset.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/03-components.css') }}?v=2.1">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/header-navigation.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/header-navigation.css') }}?v=2.5">
   <link rel="stylesheet" href="{{ asset('assets/css/components/hero-banner.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/club-filter-bar.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/product-grid.css') }}?v=2.1">
@@ -438,8 +438,8 @@
   <!-- Analytics & Tracking Engine (Meta Pixel + CAPI Deduplication + Anti-Spam) -->
   <script src="{{ asset('assets/js/analytics.js') }}"></script>
   <script src="{{ asset('assets/js/products-data.js') }}"></script>
-  <script src="{{ asset('assets/js/cart.js') }}"></script>
-  <script src="{{ asset('assets/js/app.js') }}"></script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=2.5"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=2.5"></script>
 
   @stack('scripts')
 </body>
