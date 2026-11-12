@@ -275,11 +275,10 @@ php artisan serve --port=8000
     - Upgraded design from flat faint wireframe outline to a sleek **Dark Glassmorphic button** (`rgba(255,255,255,0.06)`, `backdrop-filter: blur(12px)`, soft drop shadow, and `#04F404` neon hover glow).
     - Added an authentic **Squad Kit / Jersey Icon** with neon green accent.
     - Added `scroll-margin-top: 86px` on `#custom-print` for zero-overlap smooth scrolling down to the interactive kit preview widget.
-14. **Club Filter Bar & Hero Dock Mobile UX Overhaul:**
-    - **Hidden Redundant Hero Dock on Mobile:** Screen widths `<= 640px` now set `.rabez-hero-dock { display: none !important; }` to eliminate duplicate filter pills stacked over the club filter bar.
-    - **Sleek Dark Surface Styling:** Converted `.rabez-filter-bar` from glaring white to pitch dark `#0A0C0B` (matching the hero background seamlessly) with `#1A221E` borders.
-    - **Club Crest Medallions:** Styled `.rabez-club-pill` with `#131A16` dark surface, `#202A24` border, 76px compact mobile width, and neon `#04F404` active state with glowing border and neon bottom underline.
-    - **Smooth Native Swipe:** Seamless horizontal touch scrolling with `scroll-snap` and clean 14px side padding so crests never hug the screen bezel.
+14. **Club Filter Bar & Mobile Alignment (User Decision):**
+    - **Clean White Background Restored:** Retained the clean `#FFFFFF` daylight background for `.rabez-filter-bar` and `#F6F7F5` card tiles based on user preference.
+    - **18px Left & Right Container Alignment:** Added `padding: 2px 18px 4px 18px;` and `scroll-padding: 0 18px;` to `.rabez-club-pills` so the active `All Kits` card no longer clips against the left edge of the screen and aligns with the 18px layout gutter.
+    - **Hero Dock & Swipe:** Restored the interactive hero dock on mobile, providing smooth horizontal swipe with snap alignment.
 
 
 
