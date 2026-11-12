@@ -295,48 +295,6 @@
       }
     }
 
-    /* Scoped Size Chart Modal Dark Overrides */
-    .js-size-chart-modal .rabez-fit-tabs {
-      background: #141916 !important;
-      border: 1px solid #2B3830 !important;
-      padding: 4px !important;
-      border-radius: 8px !important;
-      gap: 6px !important;
-      display: inline-flex !important;
-    }
-    .js-size-chart-modal .rabez-size-table {
-      background: #0E1410 !important;
-      border: 1px solid #2B3830 !important;
-    }
-    .js-size-chart-modal .rabez-size-table th {
-      background: #141916 !important;
-      color: #04F404 !important;
-      border: 1px solid #2B3830 !important;
-      padding: 10px 14px !important;
-      font-weight: 800 !important;
-    }
-    .js-size-chart-modal .rabez-size-table td {
-      background: #0E1410 !important;
-      color: #FFFFFF !important;
-      border: 1px solid #2B3830 !important;
-      padding: 10px 14px !important;
-    }
-    .js-size-chart-modal .rabez-size-table tr:nth-child(2n) td {
-      background: #121A15 !important;
-      color: #FFFFFF !important;
-    }
-    .js-size-chart-modal .rabez-size-table tr.is-highlight td,
-    .js-size-chart-modal .rabez-size-table tr[style*="background:rgba(4,244,4"] td {
-      background: rgba(4, 244, 4, 0.1) !important;
-      color: #FFFFFF !important;
-    }
-
-    @media (max-width: 640px) {
-      .rabez-size-modal-grid {
-        grid-template-columns: 1fr !important;
-        gap: 16px !important;
-      }
-    }
   </style>
 
   <!-- Product Detailed Description & Specifications Section -->
@@ -447,94 +405,205 @@
     </div>
   </section>
 
-  <!-- Official RABEZ Size Guide Popup Modal -->
-  <div id="size-guide" class="rabez-modal-backdrop js-size-chart-modal" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.85); backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:16px;">
-    <div style="background:#0F1411; border:1px solid #1F2E23; border-radius:14px; width:100%; max-width:860px; max-height:92vh; overflow-y:auto; box-shadow:0 25px 60px rgba(0,0,0,0.95); padding:24px 28px; position:relative;">
+  <!-- Official RABEZ Size Guide Popup Modal (Mobile Bottom Sheet & Desktop Dialog) -->
+  <div id="size-guide" class="rabez-modal-backdrop rabez-size-modal-backdrop js-size-chart-modal" role="dialog" aria-modal="true" aria-labelledby="size-modal-title">
+    <div class="rabez-size-modal-card">
+      <div class="rabez-size-modal-handle" aria-hidden="true"></div>
+
       <!-- Modal Header -->
-      <div style="display:flex; justify-content:space-between; align-items:center; border-bottom:1px solid #1F2823; padding-bottom:16px; margin-bottom:20px;">
-        <div style="display:flex; align-items:center; gap:12px;">
-          <div style="background:#142318; border:1px solid #04F404; border-radius:8px; width:38px; height:38px; display:flex; align-items:center; justify-content:center; color:#04F404; flex-shrink:0;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path><path d="M14.5 4.5l5 5"></path></svg>
+      <div class="rabez-size-modal-header">
+        <div class="rabez-size-modal-header__main">
+          <div class="rabez-size-modal-icon">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path><path d="M14.5 4.5l5 5"></path></svg>
           </div>
           <div>
-            <h2 style="font-size:1.25rem; font-weight:800; color:#FFFFFF; margin:0; line-height:1.2;">RABEZ Official Jersey Size Guide (Inches)</h2>
-            <p style="font-size:12.5px; color:#9CA3AF; margin:2px 0 0;">Measure around chest in inches with a measuring tape for exact match fit</p>
+            <div style="display:flex; align-items:center; gap:8px;">
+              <h2 id="size-modal-title" class="rabez-size-modal-title">Jersey Size Guide</h2>
+              <span class="rabez-size-badge">Inches / ইঞ্চি</span>
+            </div>
+            <p class="rabez-size-modal-sub">Measure around chest in inches with a measuring tape for exact fit</p>
           </div>
         </div>
-        <button type="button" class="js-close-size-chart-modal" aria-label="Close size chart" style="background:#1A221E; border:1px solid #2B3830; color:#D1D5DB; width:34px; height:34px; border-radius:50%; display:flex; align-items:center; justify-content:center; font-size:20px; cursor:pointer; transition:all 0.15s; line-height:1;" onmouseover="this.style.background='#EF4444'; this.style.color='#fff';" onmouseout="this.style.background='#1A221E'; this.style.color='#D1D5DB';">&times;</button>
+        <button type="button" class="rabez-size-modal-close js-close-size-chart-modal" aria-label="Close size chart">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+        </button>
       </div>
 
       <!-- Fit Tabs -->
-      <div class="rabez-fit-tabs" role="tablist" style="display:flex; gap:10px; margin-bottom:20px;">
-        <button type="button" class="rabez-fit-tab is-active js-fit-tab" data-fit="player" style="background:#142318; border:1px solid #04F404; color:#04F404; font-weight:800; font-size:13px; padding:8px 18px; border-radius:6px; cursor:pointer;">
-          Player Edition Jersey
+      <div class="rabez-size-modal-tabs" role="tablist">
+        <button type="button" class="rabez-size-modal-tab is-active js-fit-tab" data-fit="player">
+          <span class="rabez-tab-dot"></span>
+          Player Edition (Slim Fit)
         </button>
-        <button type="button" class="rabez-fit-tab js-fit-tab" data-fit="retro" style="background:#141916; border:1px solid #2B3830; color:#9CA3AF; font-weight:700; font-size:13px; padding:8px 18px; border-radius:6px; cursor:pointer;">
-          Retro Size Chart
+        <button type="button" class="rabez-size-modal-tab js-fit-tab" data-fit="retro">
+          <span class="rabez-tab-dot"></span>
+          Retro Series (Regular Fit)
         </button>
       </div>
 
       <!-- Tab Content: Player -->
       <div class="js-fit-panel" data-fit-panel="player">
-        <div class="rabez-size-panel-grid rabez-size-modal-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+        <div class="rabez-size-panel-grid rabez-size-modal-grid">
           <div>
-            <div class="rabez-size-table-wrap" style="overflow-x:auto;">
-              <table class="rabez-size-table" style="width:100%; border-collapse:collapse; font-size:14px; text-align:center;">
+            <div class="rabez-size-table-wrap">
+              <table class="rabez-size-modal-table">
                 <thead>
-                  <tr style="background:#141916; color:#04F404;">
-                    <th style="padding:10px 12px; border:1px solid #2B3830;">Size</th>
-                    <th style="padding:10px 12px; border:1px solid #2B3830;">Chest (Inch)</th>
-                    <th style="padding:10px 12px; border:1px solid #2B3830;">Length (Inch)</th>
+                  <tr>
+                    <th>Size</th>
+                    <th>Chest (ইন)</th>
+                    <th>Length (ইন)</th>
+                    <th>Weight Fit</th>
                   </tr>
                 </thead>
-                <tbody style="color:#FFFFFF;">
-                  <tr style="border-bottom:1px solid #1F2823;"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">S</td><td style="padding:10px; border:1px solid #2B3830;">36"</td><td style="padding:10px; border:1px solid #2B3830;">27"</td></tr>
-                  <tr style="border-bottom:1px solid #1F2823;"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">M</td><td style="padding:10px; border:1px solid #2B3830;">38"</td><td style="padding:10px; border:1px solid #2B3830;">28"</td></tr>
-                  <tr style="border-bottom:1px solid #1F2823; background:rgba(4,244,4,0.06);"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">L (Standard)</td><td style="padding:10px; border:1px solid #2B3830;">40"</td><td style="padding:10px; border:1px solid #2B3830;">29"</td></tr>
-                  <tr style="border-bottom:1px solid #1F2823;"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">XL</td><td style="padding:10px; border:1px solid #2B3830;">42"</td><td style="padding:10px; border:1px solid #2B3830;">30"</td></tr>
-                  <tr style="border-bottom:1px solid #1F2823;"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">XXL</td><td style="padding:10px; border:1px solid #2B3830;">44"</td><td style="padding:10px; border:1px solid #2B3830;">31"</td></tr>
+                <tbody>
+                  <tr data-row-size="S">
+                    <td class="td-size"><strong>S</strong></td>
+                    <td>36"</td>
+                    <td>27"</td>
+                    <td class="td-weight">50 – 60 kg</td>
+                  </tr>
+                  <tr data-row-size="M">
+                    <td class="td-size"><strong>M</strong></td>
+                    <td>38"</td>
+                    <td>28"</td>
+                    <td class="td-weight">60 – 70 kg</td>
+                  </tr>
+                  <tr data-row-size="L" class="is-highlight">
+                    <td class="td-size">
+                      <span class="td-size-wrap">
+                        <strong>L</strong>
+                        <span class="rabez-size-tag">Popular</span>
+                      </span>
+                    </td>
+                    <td>40"</td>
+                    <td>29"</td>
+                    <td class="td-weight">70 – 78 kg</td>
+                  </tr>
+                  <tr data-row-size="XL">
+                    <td class="td-size"><strong>XL</strong></td>
+                    <td>42"</td>
+                    <td>30"</td>
+                    <td class="td-weight">78 – 86 kg</td>
+                  </tr>
+                  <tr data-row-size="XXL">
+                    <td class="td-size"><strong>XXL</strong></td>
+                    <td>44"</td>
+                    <td>31"</td>
+                    <td class="td-weight">86 – 96 kg</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-            <div style="font-size:12px; color:#9CA3AF; margin-top:12px; line-height:1.5;">
-              <strong style="color:#04F404;">N.B:</strong> 0.5 inch may differ from jersey to jersey due to athletic fabric elasticity.
+
+            <div class="rabez-size-alert">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <span><strong>Athletic Slim Fit:</strong> Player Edition jerseys have an athletic tapered cut. If you prefer a loose fit, choose <strong>1 size up</strong>.</span>
+            </div>
+
+            <!-- Mobile Visual Toggle -->
+            <div class="rabez-size-graphic-toggle-wrap">
+              <button type="button" class="rabez-size-graphic-toggle js-toggle-graphic">
+                <span style="display:flex; align-items:center; gap:6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <span>View Official Graphic Chart</span>
+                </span>
+                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
             </div>
           </div>
-          <div style="text-align:center;">
-            <img src="{{ asset('assets/images/brand/rabez-player-size-chart.jpg') }}" alt="RABEZ Player Edition Size Chart" style="width:100%; border-radius:10px; border:1px solid #2B3830; box-shadow:0 10px 25px rgba(0,0,0,0.5);" loading="lazy">
+
+          <div class="rabez-size-graphic-box js-graphic-container">
+            <img src="{{ asset('assets/images/brand/rabez-player-size-chart.jpg') }}" alt="RABEZ Player Edition Size Chart" loading="lazy">
           </div>
         </div>
       </div>
 
       <!-- Tab Content: Retro -->
       <div class="js-fit-panel" data-fit-panel="retro" style="display:none;">
-        <div class="rabez-size-panel-grid rabez-size-modal-grid" style="display:grid; grid-template-columns:1fr 1fr; gap:24px; align-items:start;">
+        <div class="rabez-size-panel-grid rabez-size-modal-grid">
           <div>
-            <div class="rabez-size-table-wrap" style="overflow-x:auto;">
-              <table class="rabez-size-table" style="width:100%; border-collapse:collapse; font-size:14px; text-align:center;">
+            <div class="rabez-size-table-wrap">
+              <table class="rabez-size-modal-table">
                 <thead>
-                  <tr style="background:#141916; color:#04F404;">
-                    <th style="padding:10px 12px; border:1px solid #2B3830;">Size</th>
-                    <th style="padding:10px 12px; border:1px solid #2B3830;">Chest (Inch)</th>
-                    <th style="padding:10px 12px; border:1px solid #2B3830;">Length (Inch)</th>
+                  <tr>
+                    <th>Size</th>
+                    <th>Chest (ইন)</th>
+                    <th>Length (ইন)</th>
+                    <th>Weight Fit</th>
                   </tr>
                 </thead>
-                <tbody style="color:#FFFFFF;">
-                  <tr style="border-bottom:1px solid #1F2823;"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">S</td><td style="padding:10px; border:1px solid #2B3830;">38"</td><td style="padding:10px; border:1px solid #2B3830;">27"</td></tr>
-                  <tr style="border-bottom:1px solid #1F2823;"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">M</td><td style="padding:10px; border:1px solid #2B3830;">40"</td><td style="padding:10px; border:1px solid #2B3830;">28"</td></tr>
-                  <tr style="border-bottom:1px solid #1F2823; background:rgba(4,244,4,0.06);"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">L (Standard)</td><td style="padding:10px; border:1px solid #2B3830;">42"</td><td style="padding:10px; border:1px solid #2B3830;">29"</td></tr>
-                  <tr style="border-bottom:1px solid #1F2823;"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">XL</td><td style="padding:10px; border:1px solid #2B3830;">44"</td><td style="padding:10px; border:1px solid #2B3830;">30"</td></tr>
-                  <tr style="border-bottom:1px solid #1F2823;"><td style="padding:10px; border:1px solid #2B3830; font-weight:800; color:#04F404;">XXL</td><td style="padding:10px; border:1px solid #2B3830;">46"</td><td style="padding:10px; border:1px solid #2B3830;">31"</td></tr>
+                <tbody>
+                  <tr data-row-size="S">
+                    <td class="td-size"><strong>S</strong></td>
+                    <td>38"</td>
+                    <td>27"</td>
+                    <td class="td-weight">55 – 65 kg</td>
+                  </tr>
+                  <tr data-row-size="M">
+                    <td class="td-size"><strong>M</strong></td>
+                    <td>40"</td>
+                    <td>28"</td>
+                    <td class="td-weight">65 – 74 kg</td>
+                  </tr>
+                  <tr data-row-size="L" class="is-highlight">
+                    <td class="td-size">
+                      <span class="td-size-wrap">
+                        <strong>L</strong>
+                        <span class="rabez-size-tag">Standard</span>
+                      </span>
+                    </td>
+                    <td>42"</td>
+                    <td>29"</td>
+                    <td class="td-weight">74 – 82 kg</td>
+                  </tr>
+                  <tr data-row-size="XL">
+                    <td class="td-size"><strong>XL</strong></td>
+                    <td>44"</td>
+                    <td>30"</td>
+                    <td class="td-weight">82 – 90 kg</td>
+                  </tr>
+                  <tr data-row-size="XXL">
+                    <td class="td-size"><strong>XXL</strong></td>
+                    <td>46"</td>
+                    <td>31"</td>
+                    <td class="td-weight">90 – 100 kg</td>
+                  </tr>
                 </tbody>
               </table>
             </div>
-            <div style="font-size:12px; color:#9CA3AF; margin-top:12px; line-height:1.5;">
-              <strong style="color:#04F404;">**</strong> Measurement may vary 0.5&ndash;1.0 inch from jersey to jersey.
+
+            <div class="rabez-size-alert rabez-size-alert--retro">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+              <span><strong>Regular Comfort Fit:</strong> Retro edition jerseys are relaxed cut. Choose your normal standard T-shirt size.</span>
+            </div>
+
+            <!-- Mobile Visual Toggle -->
+            <div class="rabez-size-graphic-toggle-wrap">
+              <button type="button" class="rabez-size-graphic-toggle js-toggle-graphic">
+                <span style="display:flex; align-items:center; gap:6px;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect><circle cx="8.5" cy="8.5" r="1.5"></circle><polyline points="21 15 16 10 5 21"></polyline></svg>
+                  <span>View Official Graphic Chart</span>
+                </span>
+                <svg class="chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"></polyline></svg>
+              </button>
             </div>
           </div>
-          <div style="text-align:center;">
-            <img src="{{ asset('assets/images/brand/rabez-retro-size-chart.jpg') }}" alt="RABEZ Retro Size Chart" style="width:100%; border-radius:10px; border:1px solid #2B3830; box-shadow:0 10px 25px rgba(0,0,0,0.5);" loading="lazy">
+
+          <div class="rabez-size-graphic-box js-graphic-container">
+            <img src="{{ asset('assets/images/brand/rabez-retro-size-chart.jpg') }}" alt="RABEZ Retro Size Chart" loading="lazy">
           </div>
+        </div>
+      </div>
+
+      <!-- Quick Select Footer Action Bar -->
+      <div class="rabez-size-modal-footer">
+        <span class="rabez-size-footer-label">Tap to Choose Size:</span>
+        <div class="rabez-size-quick-pills">
+          <button type="button" class="rabez-size-quick-pill js-quick-select" data-size="S">S</button>
+          <button type="button" class="rabez-size-quick-pill js-quick-select" data-size="M">M</button>
+          <button type="button" class="rabez-size-quick-pill js-quick-select" data-size="L">L</button>
+          <button type="button" class="rabez-size-quick-pill js-quick-select" data-size="XL">XL</button>
+          <button type="button" class="rabez-size-quick-pill js-quick-select" data-size="XXL">XXL</button>
         </div>
       </div>
     </div>
@@ -821,25 +890,48 @@
         }
       });
 
-      // Size Chart Modal Open / Close & Tabs
+      // Size Chart Modal Open / Close & Interactive Features
+      function syncSizeChartSelection(size) {
+        document.querySelectorAll(".rabez-size-modal-table tr[data-row-size]").forEach((tr) => {
+          tr.classList.toggle("is-active-size", tr.dataset.rowSize === size);
+        });
+        document.querySelectorAll(".js-quick-select").forEach((btn) => {
+          btn.classList.toggle("is-selected", btn.dataset.size === size);
+        });
+      }
+
       function openSizeChartModal() {
         const modal = document.querySelector(".js-size-chart-modal");
-        if (modal) modal.style.display = "flex";
+        if (modal) {
+          modal.classList.add("is-open");
+          document.body.style.overflow = "hidden";
+          syncSizeChartSelection(currentSize);
+        }
       }
+
       function closeSizeChartModal() {
         const modal = document.querySelector(".js-size-chart-modal");
-        if (modal) modal.style.display = "none";
+        if (modal) {
+          modal.classList.remove("is-open");
+          document.body.style.overflow = "";
+        }
       }
+
       document.querySelectorAll(".js-open-size-chart-modal, a[href='#size-guide']").forEach((btn) => {
         btn.addEventListener("click", (e) => {
           e.preventDefault();
           openSizeChartModal();
         });
       });
-      document.querySelector(".js-close-size-chart-modal")?.addEventListener("click", closeSizeChartModal);
+
+      document.querySelectorAll(".js-close-size-chart-modal").forEach((btn) => {
+        btn.addEventListener("click", closeSizeChartModal);
+      });
+
       document.querySelector(".js-size-chart-modal")?.addEventListener("click", (e) => {
         if (e.target.classList.contains("js-size-chart-modal")) closeSizeChartModal();
       });
+
       document.addEventListener("keydown", (e) => {
         if (e.key === "Escape") closeSizeChartModal();
       });
@@ -847,20 +939,54 @@
       // Size Chart Fit Tabs
       document.querySelectorAll(".js-fit-tab").forEach((tab) => {
         tab.addEventListener("click", () => {
-          document.querySelectorAll(".js-fit-tab").forEach((t) => {
-            t.classList.remove("is-active");
-            t.style.background = "#141916";
-            t.style.borderColor = "#2B3830";
-            t.style.color = "#9CA3AF";
-          });
+          document.querySelectorAll(".js-fit-tab").forEach((t) => t.classList.remove("is-active"));
           tab.classList.add("is-active");
-          tab.style.background = "#142318";
-          tab.style.borderColor = "#04F404";
-          tab.style.color = "#04F404";
           const fit = tab.dataset.fit;
           document.querySelectorAll(".js-fit-panel").forEach((p) => {
             p.style.display = p.dataset.fitPanel === fit ? "block" : "none";
           });
+        });
+      });
+
+      // Mobile Graphic Chart Toggle
+      document.querySelectorAll(".js-toggle-graphic").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const panel = btn.closest(".js-fit-panel");
+          const container = panel?.querySelector(".js-graphic-container");
+          if (container) {
+            const isVisible = container.classList.toggle("is-visible");
+            btn.classList.toggle("is-active", isVisible);
+            const label = btn.querySelector("span span") || btn.querySelector("span:not(.chevron)");
+            if (label) {
+              label.textContent = isVisible ? "Hide Official Graphic Chart" : "View Official Graphic Chart";
+            }
+          }
+        });
+      });
+
+      // Quick Size Selection inside Modal
+      document.querySelectorAll(".js-quick-select").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const size = btn.dataset.size;
+          const targetBtn = document.querySelector(`.rabez-size-btn[data-size="${size}"]`);
+          if (targetBtn) {
+            targetBtn.click();
+            syncSizeChartSelection(size);
+            setTimeout(closeSizeChartModal, 220);
+          }
+        });
+      });
+
+      // Table Row Click to Select
+      document.querySelectorAll(".rabez-size-modal-table tr[data-row-size]").forEach((row) => {
+        row.style.cursor = "pointer";
+        row.addEventListener("click", () => {
+          const size = row.dataset.rowSize;
+          const targetBtn = document.querySelector(`.rabez-size-btn[data-size="${size}"]`);
+          if (targetBtn) {
+            targetBtn.click();
+            syncSizeChartSelection(size);
+          }
         });
       });
 
