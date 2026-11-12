@@ -291,6 +291,32 @@ php artisan serve --port=8000
     - **SEO Friendly Slugs:** Converted all random-number and ID-suffixed slugs (e.g. `fc-barcelona-2627-home-half-sleeve-player-edition-2` -> `fc-barcelona-26-27-home-half-sleeve-player-edition`, `real-madrid-2627-home-jersey-19` -> `real-madrid-26-27-home-jersey`).
     - **Season Slashes Preserved:** Updated AdminController so slashes in season names (e.g. `26/27`) convert cleanly to `26-27` instead of stripping to `2627`.
     - **Collision-Safe Generator:** Removed random `rand(10, 99)` and ID appending; slug generation now checks database uniqueness cleanly with incremental counters only on duplicate names.
+17. **Full-Site Luxury Shopify E-Commerce Icon Redesign (Prestige / Dawn Aesthetic):**
+    - **Unified Geometry & Stroke:** Standardized all icons across the platform to a minimalist vector stroke geometry (`stroke-width="1.5"`, `stroke-linecap="round"`, `stroke-linejoin="round"`, and `viewBox="0 0 24 24"`), replacing outdated heavy 2.5px strokes and blocky supermarket icons.
+    - **Header & Navigation:**
+        - **Boutique Tote Bag:** Replaced square wire shopping cart crate with an arched-handle boutique shopping tote bag (`M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5...`).
+        - **Curved Wishlist Heart:** Replaced clunky generic heart with a delicate, sensual curved luxury heart outline.
+        - **Angled Search Lens:** Replaced straight-stem search icon with a crisp 45° angled stem magnifying glass.
+        - **High-Fashion Menu Toggle:** Replaced 3-bar industrial hamburger with a sleek 2-line minimalist toggle.
+        - **Top Perk & User Menu:** Sleek delivery flash van, refined chevron down, and 1.5px admin/order/sign-out icons.
+    - **Homepage & Shop Grid:**
+        - **Editorial CTAs:** Clean line-arrow (`→`) for "Shop Jerseys" and refined squad kit line art for "Custom Name & Number".
+        - **Pre-rendered & Dynamic Product Cards:** Upgraded wishlist heart and quick-view eye across both Blade templates and client-side dynamic JavaScript rendering (`cart.js`).
+        - **Trust & Delivery Strip:** Replaced all 4 feature icons with luxury Shopify outline icons: Home Delivery (courier van), Premium Fabric (Jacquard sparkle diamond), Size Exchange (circular 2-way exchange loop), and Direct WhatsApp (clean outline).
+        - **Duplicate Footer Cleanup:** Eliminated redundant static `<footer>` tags from `index.blade.php` and `shop.blade.php` so all pages cleanly inherit the master storefront layout footer.
+    - **Single Product Page (`product.blade.php`):**
+        - **Tailor Ruler:** Upgraded "Size Chart" link with an authentic tailor measuring tape icon.
+        - **Add to Bag CTA:** Added boutique luxury tote bag icon alongside the price.
+        - **Delivery Perks Strip:** Dedicated outline icons for All BD Delivery (van), Payment & COD (shield/card), and Exchange Policy (curved exchange loop).
+        - **Rotating Accordion Chevron:** Replaced harsh text entities (`&plus;` / `&minus;`) with a smooth 180° CSS rotating SVG chevron (`.rabez-accordion-arrow`).
+    - **Cart Drawer & Checkout:**
+        - **Empty State Illustration:** Boutique luxury tote bag line art with zero visual clutter.
+        - **Item Delete Action:** Refined SVG outline trash bin replacing clunky red text.
+        - **Discount Coupon:** High-end boutique tag with punched hole.
+        - **Checkout CTA:** Secure lock shield and editorial forward arrow.
+    - **Order Tracker (`track-order.blade.php`):**
+        - Upgraded input search lens, empty state icon, courier consignment van, and 5-stage order progress timeline icons.
+
 
 
 
