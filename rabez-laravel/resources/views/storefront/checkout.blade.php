@@ -80,19 +80,26 @@
           <div class="js-checkout-items" style="margin-bottom:16px;"></div>
 
           <!-- Coupon Application Box -->
-          <div class="rabez-checkout-coupon" style="padding:12px; background:#191E1B; border:1px dashed #2B332E; border-radius:8px; margin-bottom:14px;">
-            <div style="font-size:12px; font-weight:700; color:#CBD5E1; margin-bottom:6px; display:flex; align-items:center; gap:6px;">
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-                <circle cx="7" cy="7" r="1.5" fill="#04F404"></circle>
+          <div class="rabez-checkout-coupon" style="padding:10px 12px; background:#191E1B; border:1px dashed #2B332E; border-radius:8px; margin-bottom:14px; transition:border-color 0.2s ease;">
+            <button type="button" class="rabez-coupon-toggle js-toggle-checkout-coupon" onclick="if(window.toggleCheckoutCoupon){window.toggleCheckoutCoupon();}else{const f=document.getElementById('checkout-coupon-fields');if(f)f.style.display=f.style.display==='none'?'block':'none';}" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:0; cursor:pointer; text-align:left;">
+              <div style="font-size:12.5px; font-weight:700; color:#E2E8F0; display:flex; align-items:center; gap:7px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                  <circle cx="7" cy="7" r="1.5" fill="#04F404"></circle>
+                </svg>
+                <span>Have a Discount Coupon?</span>
+              </div>
+              <svg class="rabez-coupon-chevron js-checkout-coupon-chevron" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;">
+                <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
-              <span>Have a Discount Coupon?</span>
+            </button>
+            <div id="checkout-coupon-fields" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed #2B332E;">
+              <div style="display:flex; gap:8px;">
+                <input type="text" id="checkout-coupon-code" name="coupon_code" placeholder="e.g. RABEZ100" style="flex:1; text-transform:uppercase; font-weight:700; font-size:13px; padding:8px 10px; background:#0F1311; border:1px solid #2B332E; color:#fff; border-radius:6px; letter-spacing:0.04em;">
+                <button type="button" id="js-apply-coupon-btn" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:13px; padding:8px 18px; border:none; border-radius:6px; cursor:pointer; white-space:nowrap; letter-spacing:0.04em; transition:all 0.15s; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.background='#22C55E'" onmouseout="this.style.background='#04F404'">Apply</button>
+              </div>
+              <div id="checkout-coupon-msg" style="font-size:12px; margin-top:6px; display:none; line-height:1.3;"></div>
             </div>
-            <div style="display:flex; gap:8px;">
-              <input type="text" id="checkout-coupon-code" name="coupon_code" placeholder="e.g. RABEZ100" style="flex:1; text-transform:uppercase; font-weight:700; font-size:13px; padding:8px 10px; background:#0F1311; border:1px solid #2B332E; color:#fff; border-radius:6px; letter-spacing:0.04em;">
-              <button type="button" id="js-apply-coupon-btn" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:13px; padding:8px 18px; border:none; border-radius:6px; cursor:pointer; white-space:nowrap; letter-spacing:0.04em; transition:all 0.15s; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.background='#22C55E'" onmouseout="this.style.background='#04F404'">Apply</button>
-            </div>
-            <div id="checkout-coupon-msg" style="font-size:12px; margin-top:6px; display:none; line-height:1.3;"></div>
           </div>
 
           <div style="display:grid; gap:10px; font-size:0.92rem; padding:14px 0; border-bottom:1px solid #E4E7E4;">

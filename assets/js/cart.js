@@ -709,6 +709,41 @@
     appliedCoupon = null;
   }
 
+  function toggleCheckoutCoupon(forceOpen) {
+    const fields = document.getElementById("checkout-coupon-fields");
+    const chevron = document.querySelector(".js-checkout-coupon-chevron");
+    if (!fields) return;
+    const isCurrentlyOpen = fields.style.display !== "none" && fields.style.display !== "";
+    const shouldOpen = forceOpen !== undefined ? forceOpen : !isCurrentlyOpen;
+    fields.style.display = shouldOpen ? "block" : "none";
+    if (chevron) {
+      chevron.style.transform = shouldOpen ? "rotate(180deg)" : "rotate(0deg)";
+    }
+    if (shouldOpen) {
+      const input = document.getElementById("checkout-coupon-code");
+      if (input) input.focus();
+    }
+  }
+
+  function toggleDrawerCoupon(forceOpen) {
+    const fields = document.getElementById("drawer-coupon-fields");
+    const chevron = document.querySelector(".js-drawer-coupon-chevron");
+    if (!fields) return;
+    const isCurrentlyOpen = fields.style.display !== "none" && fields.style.display !== "";
+    const shouldOpen = forceOpen !== undefined ? forceOpen : !isCurrentlyOpen;
+    fields.style.display = shouldOpen ? "block" : "none";
+    if (chevron) {
+      chevron.style.transform = shouldOpen ? "rotate(180deg)" : "rotate(0deg)";
+    }
+    if (shouldOpen) {
+      const input = document.getElementById("drawer-coupon-code");
+      if (input) input.focus();
+    }
+  }
+
+  window.toggleCheckoutCoupon = toggleCheckoutCoupon;
+  window.toggleDrawerCoupon = toggleDrawerCoupon;
+
   function setCouponFeedback(message, isSuccess = false) {
     const msgEls = [
       document.getElementById("checkout-coupon-msg"),
@@ -723,6 +758,8 @@
         el.style.display = "block";
         el.style.color = isSuccess ? "#22C55E" : "#EF4444";
         el.textContent = message;
+        if (el.id === "checkout-coupon-msg") toggleCheckoutCoupon(true);
+        if (el.id === "drawer-coupon-msg") toggleDrawerCoupon(true);
       }
     });
   }
@@ -1191,6 +1228,19 @@
       return;
     }
 
+    // Coupon Box Toggles (Checkout & Drawer)
+    if (e.target.closest(".js-toggle-checkout-coupon")) {
+      e.preventDefault();
+      toggleCheckoutCoupon();
+      return;
+    }
+
+    if (e.target.closest(".js-toggle-drawer-coupon")) {
+      e.preventDefault();
+      toggleDrawerCoupon();
+      return;
+    }
+
     // Coupon Apply Buttons (Checkout & Drawer)
     if (e.target.closest("#js-apply-coupon-btn")) {
       e.preventDefault();
@@ -1276,6 +1326,8 @@
     buildWhatsAppOrderURL,
     applyCouponCode,
     removeAppliedCoupon,
+    toggleCheckoutCoupon,
+    toggleDrawerCoupon,
     getAppliedCoupon: () => appliedCoupon
   };
 

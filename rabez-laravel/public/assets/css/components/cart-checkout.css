@@ -343,3 +343,29 @@
     width: 100%;
   }
 }
+
+/* ==========================================================================
+   Collapsible Coupon Toggle Styling (Checkout & Drawer)
+   ========================================================================== */
+.rabez-coupon-toggle {
+  transition: opacity 0.15s ease;
+  user-select: none;
+}
+.rabez-coupon-toggle:hover {
+  opacity: 0.92;
+}
+.rabez-coupon-toggle:hover span {
+  color: #04F404 !important;
+}
+.rabez-coupon-chevron {
+  transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+.rabez-checkout-coupon,
+.rabez-drawer-coupon {
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+}
+.rabez-checkout-coupon:hover,
+.rabez-drawer-coupon:hover {
+  border-color: #3B4840 !important;
+}
+
