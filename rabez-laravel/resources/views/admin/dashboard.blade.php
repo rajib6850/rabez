@@ -1206,25 +1206,138 @@
     }
 
     /* ==========================================================================
-       MEDIA GALLERY & PICKER MODAL STYLES
+       MEDIA GALLERY (Mobile-First Compact Media Library Grid)
        ========================================================================== */
+    .adm-gallery-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+      gap: 12px;
+    }
+    @media (max-width: 640px) {
+      .adm-gallery-grid {
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+      }
+      .adm-gallery-stats {
+        display: grid !important;
+        grid-template-columns: repeat(3, 1fr) !important;
+        gap: 8px !important;
+        margin-bottom: 12px !important;
+      }
+      .adm-gallery-stats .adm-card {
+        padding: 10px 8px !important;
+        text-align: center;
+      }
+      .adm-gallery-stats .num {
+        font-size: 18px !important;
+        margin-top: 2px !important;
+      }
+      .adm-gallery-stats .adm-card div:first-child {
+        font-size: 10px !important;
+      }
+      .adm-gallery-stats .adm-card div:last-child {
+        display: none !important;
+      }
+      .adm-gallery-uploader-card {
+        margin-bottom: 12px !important;
+      }
+      .adm-gallery-uploader-card .adm-media-uploader {
+        padding: 16px 12px !important;
+      }
+    }
+    @media (max-width: 380px) {
+      .adm-gallery-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+        gap: 6px !important;
+      }
+    }
+
     .adm-gallery-item {
-      border: 1px solid var(--adm-border);
+      position: relative;
+      aspect-ratio: 1 / 1;
+      border: 1.5px solid var(--adm-border);
       border-radius: 8px;
       overflow: hidden;
-      background: var(--adm-surface);
-      display: flex;
-      flex-direction: column;
-      position: relative;
-      transition: all 0.15s ease;
+      background: #0F1311;
+      cursor: pointer;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
     }
     .adm-gallery-item:hover {
-      border-color: var(--adm-ink);
-      box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+      border-color: #22C55E;
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(0,0,0,0.35);
     }
     .adm-gallery-item.is-selected {
       border-color: #22C55E;
-      box-shadow: 0 0 0 2px rgba(34,197,94,0.3);
+      box-shadow: 0 0 0 2px rgba(34,197,94,0.45);
+    }
+    .adm-gallery-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      pointer-events: none;
+    }
+    .adm-gallery-item__cb {
+      position: absolute;
+      top: 6px;
+      left: 6px;
+      z-index: 3;
+      width: 17px;
+      height: 17px;
+      accent-color: #22C55E;
+      cursor: pointer;
+    }
+    .adm-gallery-item__badge {
+      position: absolute;
+      top: 6px;
+      right: 6px;
+      z-index: 2;
+      background: rgba(10, 12, 11, 0.82);
+      backdrop-filter: blur(4px);
+      color: #22C55E;
+      font-size: 9px;
+      font-weight: 800;
+      padding: 2px 5px;
+      border-radius: 4px;
+      letter-spacing: 0.5px;
+      line-height: 1;
+      border: 1px solid rgba(34,197,94,0.3);
+    }
+    .adm-gallery-item__meta {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 6px 8px;
+      background: linear-gradient(0deg, rgba(0,0,0,0.92) 0%, rgba(0,0,0,0.6) 60%, transparent 100%);
+      color: #FFFFFF;
+      font-size: 10.5px;
+      font-weight: 600;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      pointer-events: none;
+    }
+    .adm-gallery-item__actions {
+      position: absolute;
+      inset: 0;
+      background: rgba(10, 12, 11, 0.78);
+      backdrop-filter: blur(2px);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      opacity: 0;
+      transition: opacity 0.16s ease;
+      z-index: 4;
+    }
+    @media (hover: hover) {
+      .adm-gallery-item:hover .adm-gallery-item__actions {
+        opacity: 1;
+      }
     }
     .adm-gallery-strip-item {
       position: relative;
@@ -1680,86 +1793,6 @@
         </section>
 
         <!-- ==================================================================
-             MEDIA GALLERY & WEBP OPTIMIZATION ENGINE
-             ================================================================== -->
-        <section class="adm-panel" data-panel="gallery">
-          <!-- Gallery Top Stats -->
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:16px;">
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Total Media Files</div>
-              <div class="num js-stat-media-total" style="font-size:26px; font-weight:800; color:#fff; margin-top:4px;">{{ count($media ?? []) }}</div>
-              <div style="font-size:11px; color:#22C55E; margin-top:2px;">All jerseys &amp; uploads</div>
-            </div>
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Auto WebP Engine</div>
-              <div style="font-size:26px; font-weight:800; color:#22C55E; margin-top:4px;">Active</div>
-              <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">80-90% lossless compression</div>
-            </div>
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">iPhone / EXIF Rotation</div>
-              <div style="font-size:26px; font-weight:800; color:#3B82F6; margin-top:4px;">Auto-Fix</div>
-              <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">Never upside-down or tilted</div>
-            </div>
-          </div>
-
-          <!-- Drag & Drop Uploader Card -->
-          <div class="adm-card" style="margin-bottom:18px;">
-            <div class="adm-card__body" style="padding:18px;">
-              <div class="adm-media-uploader" id="js-gallery-dropzone" style="border:2px dashed #2B332E; border-radius:10px; padding:28px 20px; text-align:center; background:#0F1311; cursor:pointer; transition:all 0.2s ease;">
-                <input type="file" id="js-gallery-file-input" multiple accept="image/*" hidden>
-                <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-                  <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(34,197,94,0.12); color:#22C55E;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="17 8 12 3 7 8"></polyline>
-                      <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                  </span>
-                  <div>
-                    <span style="font-weight:700; color:#fff; font-size:14.5px;">Click to upload or drag &amp; drop photos here</span>
-                    <div style="font-size:12px; color:#7D8782; margin-top:3px;">
-                      iPhone Camera Photos, JPG, PNG, WebP supported &bull; High MB files auto-compressed to &lt;250KB WebP
-                    </div>
-                  </div>
-                  <button type="button" class="adm-btn adm-btn--primary adm-btn--sm" style="margin-top:4px;" onclick="document.getElementById('js-gallery-file-input').click(); event.stopPropagation();">
-                    Select Images from Device
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gallery List Card -->
-          <div class="adm-card">
-            <div class="adm-card__head" style="flex-wrap:wrap; gap:12px;">
-              <div>
-                <h2 class="adm-card__title">Image Library</h2>
-                <p class="adm-card__desc">Click any image to view details, copy URL, or use in products.</p>
-              </div>
-              <div style="display:flex; align-items:center; gap:10px;">
-                <input type="text" class="adm-input js-media-search" placeholder="Search images..." style="width:200px; height:34px; font-size:12.5px;">
-                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-media-refresh-btn" title="Refresh Media">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Bulk action bar for Media -->
-            <div class="adm-bulk-bar js-bulk-bar-media" style="margin:0 16px 12px; display:none;">
-              <span class="adm-bulk-bar__count"><strong class="js-bulk-count-media">0</strong> selected</span>
-              <button type="button" class="adm-btn adm-btn--danger adm-btn--sm" onclick="handleBulkDelete('media')">Delete Selected</button>
-              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm" onclick="clearBulkSelection('media')">Cancel</button>
-            </div>
-
-            <div class="adm-card__body">
-              <div id="adm-gallery-grid" class="adm-gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:14px;">
-                <!-- Rendered by JS -->
-              </div>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================================================================
              PRODUCTS
              ================================================================== -->
         <section class="adm-panel" data-panel="products">
@@ -1827,86 +1860,6 @@
                 </thead>
                 <tbody id="adm-products"></tbody>
               </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================================================================
-             MEDIA GALLERY & WEBP OPTIMIZATION ENGINE
-             ================================================================== -->
-        <section class="adm-panel" data-panel="gallery">
-          <!-- Gallery Top Stats -->
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:16px;">
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Total Media Files</div>
-              <div class="num js-stat-media-total" style="font-size:26px; font-weight:800; color:#fff; margin-top:4px;">{{ count($media ?? []) }}</div>
-              <div style="font-size:11px; color:#22C55E; margin-top:2px;">All jerseys &amp; uploads</div>
-            </div>
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Auto WebP Engine</div>
-              <div style="font-size:26px; font-weight:800; color:#22C55E; margin-top:4px;">Active</div>
-              <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">80-90% lossless compression</div>
-            </div>
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">iPhone / EXIF Rotation</div>
-              <div style="font-size:26px; font-weight:800; color:#3B82F6; margin-top:4px;">Auto-Fix</div>
-              <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">Never upside-down or tilted</div>
-            </div>
-          </div>
-
-          <!-- Drag & Drop Uploader Card -->
-          <div class="adm-card" style="margin-bottom:18px;">
-            <div class="adm-card__body" style="padding:18px;">
-              <div class="adm-media-uploader" id="js-gallery-dropzone" style="border:2px dashed #2B332E; border-radius:10px; padding:28px 20px; text-align:center; background:#0F1311; cursor:pointer; transition:all 0.2s ease;">
-                <input type="file" id="js-gallery-file-input" multiple accept="image/*" hidden>
-                <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-                  <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(34,197,94,0.12); color:#22C55E;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="17 8 12 3 7 8"></polyline>
-                      <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                  </span>
-                  <div>
-                    <span style="font-weight:700; color:#fff; font-size:14.5px;">Click to upload or drag &amp; drop photos here</span>
-                    <div style="font-size:12px; color:#7D8782; margin-top:3px;">
-                      iPhone Camera Photos, JPG, PNG, WebP supported &bull; High MB files auto-compressed to &lt;250KB WebP
-                    </div>
-                  </div>
-                  <button type="button" class="adm-btn adm-btn--primary adm-btn--sm" style="margin-top:4px;" onclick="document.getElementById('js-gallery-file-input').click(); event.stopPropagation();">
-                    Select Images from Device
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gallery List Card -->
-          <div class="adm-card">
-            <div class="adm-card__head" style="flex-wrap:wrap; gap:12px;">
-              <div>
-                <h2 class="adm-card__title">Image Library</h2>
-                <p class="adm-card__desc">Click any image to view details, copy URL, or use in products.</p>
-              </div>
-              <div style="display:flex; align-items:center; gap:10px;">
-                <input type="text" class="adm-input js-media-search" placeholder="Search images..." style="width:200px; height:34px; font-size:12.5px;">
-                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-media-refresh-btn" title="Refresh Media">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Bulk action bar for Media -->
-            <div class="adm-bulk-bar js-bulk-bar-media" style="margin:0 16px 12px; display:none;">
-              <span class="adm-bulk-bar__count"><strong class="js-bulk-count-media">0</strong> selected</span>
-              <button type="button" class="adm-btn adm-btn--danger adm-btn--sm" onclick="handleBulkDelete('media')">Delete Selected</button>
-              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm" onclick="clearBulkSelection('media')">Cancel</button>
-            </div>
-
-            <div class="adm-card__body">
-              <div id="adm-gallery-grid" class="adm-gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:14px;">
-                <!-- Rendered by JS -->
-              </div>
             </div>
           </div>
         </section>
@@ -2160,7 +2113,7 @@
              ================================================================== -->
         <section class="adm-panel" data-panel="gallery">
           <!-- Gallery Top Stats -->
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:16px;">
+          <div class="adm-gallery-stats" style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:16px;">
             <div class="adm-card" style="padding:16px;">
               <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Total Media Files</div>
               <div class="num js-stat-media-total" style="font-size:26px; font-weight:800; color:#fff; margin-top:4px;">{{ count($media ?? []) }}</div>
@@ -2168,37 +2121,35 @@
             </div>
             <div class="adm-card" style="padding:16px;">
               <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Auto WebP Engine</div>
-              <div style="font-size:26px; font-weight:800; color:#22C55E; margin-top:4px;">Active</div>
+              <div class="num" style="font-size:26px; font-weight:800; color:#22C55E; margin-top:4px;">Active</div>
               <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">80-90% lossless compression</div>
             </div>
             <div class="adm-card" style="padding:16px;">
               <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">iPhone / EXIF Rotation</div>
-              <div style="font-size:26px; font-weight:800; color:#3B82F6; margin-top:4px;">Auto-Fix</div>
+              <div class="num" style="font-size:26px; font-weight:800; color:#3B82F6; margin-top:4px;">Auto-Fix</div>
               <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">Never upside-down or tilted</div>
             </div>
           </div>
 
-          <!-- Drag & Drop Uploader Card -->
-          <div class="adm-card" style="margin-bottom:18px;">
+          <!-- Drag & Drop / Mobile Photo Uploader Card -->
+          <div class="adm-card adm-gallery-uploader-card" style="margin-bottom:18px;">
             <div class="adm-card__body" style="padding:18px;">
-              <div class="adm-media-uploader" id="js-gallery-dropzone" style="border:2px dashed #2B332E; border-radius:10px; padding:28px 20px; text-align:center; background:#0F1311; cursor:pointer; transition:all 0.2s ease;">
+              <div class="adm-media-uploader" id="js-gallery-dropzone" style="border:2px dashed #2B332E; border-radius:10px; padding:22px 16px; text-align:center; background:#0F1311; cursor:pointer; transition:all 0.2s ease;">
                 <input type="file" id="js-gallery-file-input" multiple accept="image/*" hidden>
                 <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-                  <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(34,197,94,0.12); color:#22C55E;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="17 8 12 3 7 8"></polyline>
-                      <line x1="12" y1="3" x2="12" y2="15"></line>
+                  <span style="display:inline-flex; align-items:center; justify-content:center; width:44px; height:44px; border-radius:50%; background:rgba(34,197,94,0.12); color:#22C55E;">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
                     </svg>
                   </span>
                   <div>
-                    <span style="font-weight:700; color:#fff; font-size:14.5px;">Click to upload or drag &amp; drop photos here</span>
-                    <div style="font-size:12px; color:#7D8782; margin-top:3px;">
-                      iPhone Camera Photos, JPG, PNG, WebP supported &bull; High MB files auto-compressed to &lt;250KB WebP
+                    <span style="font-weight:700; color:#fff; font-size:14px;">Upload Photos &bull; Auto-Convert to WebP</span>
+                    <div style="font-size:11.5px; color:#7D8782; margin-top:2px;">
+                      iPhone Photos, JPG, PNG &bull; Auto-compressed to &lt;250KB WebP
                     </div>
                   </div>
-                  <button type="button" class="adm-btn adm-btn--primary adm-btn--sm" style="margin-top:4px;" onclick="document.getElementById('js-gallery-file-input').click(); event.stopPropagation();">
-                    Select Images from Device
+                  <button type="button" class="adm-btn adm-btn--primary adm-btn--sm" style="margin-top:2px;" onclick="document.getElementById('js-gallery-file-input').click(); event.stopPropagation();">
+                    📷 Select Photos from Device
                   </button>
                 </div>
               </div>
@@ -2209,11 +2160,11 @@
           <div class="adm-card">
             <div class="adm-card__head" style="flex-wrap:wrap; gap:12px;">
               <div>
-                <h2 class="adm-card__title">Image Library</h2>
-                <p class="adm-card__desc">Click any image to view details, copy URL, or use in products.</p>
+                <h2 class="adm-card__title">Media Library</h2>
+                <p class="adm-card__desc">Tap any photo to view details, copy URL, or use in products.</p>
               </div>
               <div style="display:flex; align-items:center; gap:10px;">
-                <input type="text" class="adm-input js-media-search" placeholder="Search images..." style="width:200px; height:34px; font-size:12.5px;">
+                <input type="text" class="adm-input js-media-search" placeholder="Search photos..." style="width:180px; height:34px; font-size:12.5px;">
                 <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-media-refresh-btn" title="Refresh Media">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
                 </button>
@@ -2228,8 +2179,8 @@
             </div>
 
             <div class="adm-card__body">
-              <div id="adm-gallery-grid" class="adm-gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:14px;">
-                <!-- Rendered by JS -->
+              <div id="adm-gallery-grid" class="adm-gallery-grid">
+                <!-- Rendered as compact square thumbnail tiles by JS -->
               </div>
             </div>
           </div>
@@ -2447,87 +2398,6 @@
         </section>
 
         <!-- ==================================================================
-             MEDIA GALLERY & WEBP OPTIMIZATION ENGINE
-             ================================================================== -->
-        <section class="adm-panel" data-panel="gallery">
-          <!-- Gallery Top Stats -->
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:16px;">
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Total Media Files</div>
-              <div class="num js-stat-media-total" style="font-size:26px; font-weight:800; color:#fff; margin-top:4px;">{{ count($media ?? []) }}</div>
-              <div style="font-size:11px; color:#22C55E; margin-top:2px;">All jerseys &amp; uploads</div>
-            </div>
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Auto WebP Engine</div>
-              <div style="font-size:26px; font-weight:800; color:#22C55E; margin-top:4px;">Active</div>
-              <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">80-90% lossless compression</div>
-            </div>
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">iPhone / EXIF Rotation</div>
-              <div style="font-size:26px; font-weight:800; color:#3B82F6; margin-top:4px;">Auto-Fix</div>
-              <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">Never upside-down or tilted</div>
-            </div>
-          </div>
-
-          <!-- Drag & Drop Uploader Card -->
-          <div class="adm-card" style="margin-bottom:18px;">
-            <div class="adm-card__body" style="padding:18px;">
-              <div class="adm-media-uploader" id="js-gallery-dropzone" style="border:2px dashed #2B332E; border-radius:10px; padding:28px 20px; text-align:center; background:#0F1311; cursor:pointer; transition:all 0.2s ease;">
-                <input type="file" id="js-gallery-file-input" multiple accept="image/*" hidden>
-                <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-                  <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(34,197,94,0.12); color:#22C55E;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="17 8 12 3 7 8"></polyline>
-                      <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                  </span>
-                  <div>
-                    <span style="font-weight:700; color:#fff; font-size:14.5px;">Click to upload or drag &amp; drop photos here</span>
-                    <div style="font-size:12px; color:#7D8782; margin-top:3px;">
-                      iPhone Camera Photos, JPG, PNG, WebP supported &bull; High MB files auto-compressed to &lt;250KB WebP
-                    </div>
-                  </div>
-                  <button type="button" class="adm-btn adm-btn--primary adm-btn--sm" style="margin-top:4px;" onclick="document.getElementById('js-gallery-file-input').click(); event.stopPropagation();">
-                    Select Images from Device
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gallery List Card -->
-          <div class="adm-card">
-            <div class="adm-card__head" style="flex-wrap:wrap; gap:12px;">
-              <div>
-                <h2 class="adm-card__title">Image Library</h2>
-                <p class="adm-card__desc">Click any image to view details, copy URL, or use in products.</p>
-              </div>
-              <div style="display:flex; align-items:center; gap:10px;">
-                <input type="text" class="adm-input js-media-search" placeholder="Search images..." style="width:200px; height:34px; font-size:12.5px;">
-                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-media-refresh-btn" title="Refresh Media">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Bulk action bar for Media -->
-            <div class="adm-bulk-bar js-bulk-bar-media" style="margin:0 16px 12px; display:none;">
-              <span class="adm-bulk-bar__count"><strong class="js-bulk-count-media">0</strong> selected</span>
-              <button type="button" class="adm-btn adm-btn--danger adm-btn--sm" onclick="handleBulkDelete('media')">Delete Selected</button>
-              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm" onclick="clearBulkSelection('media')">Cancel</button>
-            </div>
-
-            <div class="adm-card__body">
-              <div id="adm-gallery-grid" class="adm-gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:14px;">
-                <!-- Rendered by JS -->
-              </div>
-            </div>
-          </div>
-        </section>
-
-        
-        <!-- ==================================================================
              USERS & ACCESS CONTROL
              ================================================================== -->
         <section class="adm-panel" data-panel="users">
@@ -2622,86 +2492,6 @@
                 </thead>
                 <tbody id="adm-users"></tbody>
               </table>
-            </div>
-          </div>
-        </section>
-
-        <!-- ==================================================================
-             MEDIA GALLERY & WEBP OPTIMIZATION ENGINE
-             ================================================================== -->
-        <section class="adm-panel" data-panel="gallery">
-          <!-- Gallery Top Stats -->
-          <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:14px; margin-bottom:16px;">
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Total Media Files</div>
-              <div class="num js-stat-media-total" style="font-size:26px; font-weight:800; color:#fff; margin-top:4px;">{{ count($media ?? []) }}</div>
-              <div style="font-size:11px; color:#22C55E; margin-top:2px;">All jerseys &amp; uploads</div>
-            </div>
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">Auto WebP Engine</div>
-              <div style="font-size:26px; font-weight:800; color:#22C55E; margin-top:4px;">Active</div>
-              <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">80-90% lossless compression</div>
-            </div>
-            <div class="adm-card" style="padding:16px;">
-              <div style="font-size:12px; font-weight:600; color:var(--adm-muted); text-transform:uppercase;">iPhone / EXIF Rotation</div>
-              <div style="font-size:26px; font-weight:800; color:#3B82F6; margin-top:4px;">Auto-Fix</div>
-              <div style="font-size:11px; color:var(--adm-muted); margin-top:2px;">Never upside-down or tilted</div>
-            </div>
-          </div>
-
-          <!-- Drag & Drop Uploader Card -->
-          <div class="adm-card" style="margin-bottom:18px;">
-            <div class="adm-card__body" style="padding:18px;">
-              <div class="adm-media-uploader" id="js-gallery-dropzone" style="border:2px dashed #2B332E; border-radius:10px; padding:28px 20px; text-align:center; background:#0F1311; cursor:pointer; transition:all 0.2s ease;">
-                <input type="file" id="js-gallery-file-input" multiple accept="image/*" hidden>
-                <div style="display:flex; flex-direction:column; align-items:center; gap:8px;">
-                  <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; border-radius:50%; background:rgba(34,197,94,0.12); color:#22C55E;">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                      <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                      <polyline points="17 8 12 3 7 8"></polyline>
-                      <line x1="12" y1="3" x2="12" y2="15"></line>
-                    </svg>
-                  </span>
-                  <div>
-                    <span style="font-weight:700; color:#fff; font-size:14.5px;">Click to upload or drag &amp; drop photos here</span>
-                    <div style="font-size:12px; color:#7D8782; margin-top:3px;">
-                      iPhone Camera Photos, JPG, PNG, WebP supported &bull; High MB files auto-compressed to &lt;250KB WebP
-                    </div>
-                  </div>
-                  <button type="button" class="adm-btn adm-btn--primary adm-btn--sm" style="margin-top:4px;" onclick="document.getElementById('js-gallery-file-input').click(); event.stopPropagation();">
-                    Select Images from Device
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Gallery List Card -->
-          <div class="adm-card">
-            <div class="adm-card__head" style="flex-wrap:wrap; gap:12px;">
-              <div>
-                <h2 class="adm-card__title">Image Library</h2>
-                <p class="adm-card__desc">Click any image to view details, copy URL, or use in products.</p>
-              </div>
-              <div style="display:flex; align-items:center; gap:10px;">
-                <input type="text" class="adm-input js-media-search" placeholder="Search images..." style="width:200px; height:34px; font-size:12.5px;">
-                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-media-refresh-btn" title="Refresh Media">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 4v6h-6"></path><path d="M1 20v-6h6"></path><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path></svg>
-                </button>
-              </div>
-            </div>
-
-            <!-- Bulk action bar for Media -->
-            <div class="adm-bulk-bar js-bulk-bar-media" style="margin:0 16px 12px; display:none;">
-              <span class="adm-bulk-bar__count"><strong class="js-bulk-count-media">0</strong> selected</span>
-              <button type="button" class="adm-btn adm-btn--danger adm-btn--sm" onclick="handleBulkDelete('media')">Delete Selected</button>
-              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm" onclick="clearBulkSelection('media')">Cancel</button>
-            </div>
-
-            <div class="adm-card__body">
-              <div id="adm-gallery-grid" class="adm-gallery-grid" style="display:grid; grid-template-columns:repeat(auto-fill, minmax(180px, 1fr)); gap:14px;">
-                <!-- Rendered by JS -->
-              </div>
             </div>
           </div>
         </section>
@@ -3285,6 +3075,56 @@
   </nav>
 
   
+  <!-- ========================================================================
+       MEDIA PHOTO DETAIL MODAL / BOTTOM SHEET (Mobile & Desktop)
+       ======================================================================== -->
+  <div id="adm-photo-sheet" style="display:none; position:fixed; inset:0; z-index:99999; background:rgba(0,0,0,0.85); backdrop-filter:blur(6px); align-items:center; justify-content:center; padding:16px;">
+    <div class="adm-photo-sheet__card" style="background:#111513; border:1px solid #233027; border-radius:14px; width:100%; max-width:440px; max-height:90vh; overflow-y:auto; box-shadow:0 24px 48px rgba(0,0,0,0.6); display:flex; flex-direction:column;">
+      <div style="padding:14px 18px; border-bottom:1px solid #1E2722; display:flex; align-items:center; justify-content:space-between;">
+        <div style="font-weight:700; color:#fff; font-size:14px; display:flex; align-items:center; gap:8px;">
+          <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:#22C55E;"></span>
+          Image Details
+        </div>
+        <button type="button" onclick="closePhotoSheet()" style="background:none; border:none; color:#9CA3AF; cursor:pointer; font-size:22px; line-height:1; padding:0 4px;" title="Close">&times;</button>
+      </div>
+      <div style="padding:16px; display:flex; flex-direction:column; gap:14px;">
+        <div style="width:100%; aspect-ratio:1; max-height:280px; background:#070908; border-radius:10px; overflow:hidden; display:flex; align-items:center; justify-content:center; border:1px solid #1D2520;">
+          <img id="photo-sheet-img" src="" alt="" style="max-width:100%; max-height:100%; object-fit:contain;">
+        </div>
+        <div style="background:#0D110F; border:1px solid #1B241E; border-radius:8px; padding:12px; display:flex; flex-direction:column; gap:8px; font-size:12px;">
+          <div style="display:flex; justify-content:space-between; gap:10px;">
+            <span style="color:#7D8782; flex-shrink:0;">File Name:</span>
+            <span id="photo-sheet-name" style="color:#fff; font-weight:600; text-align:right; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#7D8782;">Resolution:</span>
+            <span id="photo-sheet-dim" style="color:#fff; font-weight:600;"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#7D8782;">File Size:</span>
+            <span id="photo-sheet-size" style="color:#22C55E; font-weight:700;"></span>
+          </div>
+          <div style="display:flex; justify-content:space-between;">
+            <span style="color:#7D8782;">Format:</span>
+            <span id="photo-sheet-format" style="color:#fff;"></span>
+          </div>
+          <div style="display:flex; flex-direction:column; gap:4px; margin-top:4px; padding-top:6px; border-top:1px solid #1A221D;">
+            <span style="color:#7D8782; font-size:11px;">Direct File URL:</span>
+            <input type="text" id="photo-sheet-url-input" readonly style="background:#070908; border:1px solid #232E27; border-radius:4px; color:#A9B3AE; font-size:11px; padding:6px 8px; width:100%; outline:none;" onclick="this.select()">
+          </div>
+        </div>
+        <div style="display:flex; gap:10px;">
+          <button type="button" id="photo-sheet-copy-btn" class="adm-btn adm-btn--primary" style="flex:1;">
+            📋 Copy URL
+          </button>
+          <button type="button" id="photo-sheet-del-btn" class="adm-btn adm-btn--danger" style="background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">
+            🗑 Delete
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- ========================================================================
        REUSABLE MEDIA PICKER MODAL (Auto-WebP + iPhone EXIF)
        ======================================================================== -->
@@ -4254,7 +4094,7 @@
           grid.innerHTML = `
             <div style="grid-column: 1 / -1; padding: 48px 20px; text-align: center; color: var(--adm-muted); background: var(--adm-subtle); border: 1px dashed var(--adm-border); border-radius: 8px;">
               <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px; opacity:0.5;"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
-              <div style="font-weight: 600; font-size: 14px; color: var(--adm-ink);">No media images found</div>
+              <div style="font-weight: 600; font-size: 14px; color: var(--adm-ink);">No media photos found</div>
               <div style="font-size: 12px; margin-top: 4px;">Upload photos from device or drag &amp; drop high-MB jersey photos.</div>
             </div>`;
           return;
@@ -4266,35 +4106,52 @@
           const format = (m.mime_type || '').includes('webp') ? 'WEBP' : ((m.mime_type || '').includes('png') ? 'PNG' : 'JPG');
           const dim = (m.width && m.height) ? `${m.width}×${m.height}` : '';
           const imgUrl = (m.url.startsWith('http') || m.url.startsWith('/')) ? m.url : ('/' + m.url);
-          const name = m.original_name || m.filename || 'Jersey image';
+          const name = m.original_name || m.filename || 'Jersey photo';
 
           return `
-            <div class="adm-gallery-item ${isSelected ? 'is-selected' : ''}" data-id="${m.id}">
-              <div style="position:relative; width:100%; aspect-ratio:1; background:#0F1311; overflow:hidden;">
-                <input type="checkbox" class="adm-cb js-select-row" data-type="media" data-id="${m.id}" ${isSelected ? 'checked' : ''} style="position:absolute; top:8px; left:8px; z-index:2; cursor:pointer;" onclick="event.stopPropagation()">
-                <span style="position:absolute; top:8px; right:8px; z-index:2; background:rgba(0,0,0,0.75); color:#22C55E; font-size:9.5px; font-weight:800; padding:2px 6px; border-radius:4px; letter-spacing:0.5px;">${format}</span>
-                <img src="${imgUrl}" alt="${name}" loading="lazy" style="width:100%; height:100%; object-fit:cover; display:block;">
-              </div>
-              <div style="padding:10px 12px; display:flex; flex-direction:column; gap:4px; flex:1;">
-                <div style="font-size:12px; font-weight:600; color:var(--adm-ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap;" title="${name}">
-                  ${name}
-                </div>
-                <div style="font-size:11px; color:var(--adm-text-3); display:flex; justify-content:space-between;">
-                  <span>${sizeKB ? `${sizeKB} KB` : 'WebP'}</span>
-                  <span>${dim}</span>
-                </div>
-                <div style="display:flex; gap:6px; margin-top:6px; padding-top:6px; border-top:1px solid var(--adm-border);">
-                  <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-media-copy-url" data-url="${imgUrl}" style="flex:1; padding:3px 6px; font-size:11px;" title="Copy URL">
-                    Copy URL
-                  </button>
-                  <button type="button" class="adm-btn adm-btn--danger adm-btn--sm js-media-del-btn" data-id="${m.id}" style="padding:3px 8px; font-size:11px; background:#fee2e2; color:#b91c1c; border-color:#fca5a5;" title="Delete">
-                    Del
-                  </button>
-                </div>
+            <div class="adm-gallery-item ${isSelected ? 'is-selected' : ''}" data-id="${m.id}" data-url="${imgUrl}" data-name="${name}" data-size="${sizeKB ? `${sizeKB} KB` : 'WebP'}" data-dim="${dim}" data-format="${format}">
+              <input type="checkbox" class="adm-cb js-select-row adm-gallery-item__cb" data-type="media" data-id="${m.id}" ${isSelected ? 'checked' : ''} onclick="event.stopPropagation()">
+              <span class="adm-gallery-item__badge">${format}</span>
+              <img src="${imgUrl}" alt="${name}" loading="lazy">
+              <div class="adm-gallery-item__meta">${name}</div>
+              <div class="adm-gallery-item__actions">
+                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-media-copy-url" data-url="${imgUrl}" style="padding:4px 8px; font-size:11px;" title="Copy URL">Copy URL</button>
+                <button type="button" class="adm-btn adm-btn--danger adm-btn--sm js-media-del-btn" data-id="${m.id}" style="padding:4px 8px; font-size:11px; background:#fee2e2; color:#b91c1c; border-color:#fca5a5;" title="Delete">Del</button>
               </div>
             </div>`;
         }).join('');
       }
+
+      window.openPhotoSheet = function(m) {
+        const sheet = document.getElementById('adm-photo-sheet');
+        if (!sheet) return;
+        document.getElementById('photo-sheet-img').src = m.url;
+        document.getElementById('photo-sheet-name').textContent = m.name;
+        document.getElementById('photo-sheet-dim').textContent = m.dim || 'Auto Resolution';
+        document.getElementById('photo-sheet-size').textContent = m.size || 'WebP';
+        document.getElementById('photo-sheet-format').textContent = m.format || 'WEBP';
+        const urlInput = document.getElementById('photo-sheet-url-input');
+        const directUrl = m.url.startsWith('http') ? m.url : (window.location.origin + (m.url.startsWith('/') ? m.url : '/' + m.url));
+        if (urlInput) urlInput.value = directUrl;
+
+        document.getElementById('photo-sheet-copy-btn').onclick = () => {
+          navigator.clipboard.writeText(directUrl).then(() => {
+            toast("URL Copied to Clipboard", directUrl);
+          }).catch(() => {
+            prompt("Copy URL manually:", directUrl);
+          });
+        };
+        document.getElementById('photo-sheet-del-btn').onclick = () => {
+          closePhotoSheet();
+          deleteMedia(m.id);
+        };
+        sheet.style.display = 'flex';
+      };
+
+      window.closePhotoSheet = function() {
+        const sheet = document.getElementById('adm-photo-sheet');
+        if (sheet) sheet.style.display = 'none';
+      };
 
       async function uploadMediaFiles(files, onComplete) {
         if (!files || files.length === 0) return;
@@ -5679,6 +5536,26 @@
         if (delMediaBtn) {
           e.stopPropagation();
           deleteMedia(delMediaBtn.dataset.id);
+          return;
+        }
+
+        // Media Gallery thumbnail tap -> Open Photo Inspector Sheet
+        const galleryItem = t.closest(".adm-gallery-item");
+        if (galleryItem && !t.closest(".adm-gallery-item__cb") && !t.closest(".js-media-copy-url") && !t.closest(".js-media-del-btn")) {
+          e.stopPropagation();
+          openPhotoSheet({
+            id: galleryItem.dataset.id,
+            url: galleryItem.dataset.url,
+            name: galleryItem.dataset.name,
+            size: galleryItem.dataset.size,
+            dim: galleryItem.dataset.dim,
+            format: galleryItem.dataset.format
+          });
+          return;
+        }
+
+        if (t.id === "adm-photo-sheet") {
+          closePhotoSheet();
           return;
         }
 
