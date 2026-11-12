@@ -328,6 +328,19 @@ php artisan serve --port=8000
             - **Authenticated:** User greeting card with active dot, user name, role badge (`ADMIN`), direct link to **Admin Panel**, and red **Sign Out** button.
         - **Zero Desktop Clutter:** Strictly hidden on desktop (`@media (min-width: 1121px) { display: none !important; }`).
         - **Safe Mobile Scroll:** Added `max-height: calc(100vh - 75px)` and `overflow-y: auto` to `.rabez-nav` so even on smaller smartphone screens or landscape orientation, the entire menu scrolls smoothly.
+19. **Backend Admin Media Gallery Mobile Overhaul (WordPress / Shopify Library Grid):**
+    - **Context & Diagnosis:** Previously in `admin/dashboard.blade.php`, `.adm-gallery-grid` used `minmax(180px, 1fr)` and each item rendered a giant card containing full-width photo, product title, file metadata, and Copy/Delete buttons. On mobile screens, this forced a single-column layout where each photo took up 350px+ of vertical space, looking like an e-commerce product feed ("product showcase") rather than an image library. Additionally, the `<section class="adm-panel" data-panel="gallery">` DOM block was duplicated 5 times.
+    - **Single Canonical Panel:** Removed the 4 redundant duplicate sections; preserved a single clean panel located logically under the Catalog group.
+    - **Mobile-First 3-Column Thumbnail Grid:**
+        - Standardized on a compact 3-column square thumbnail grid (`grid-template-columns: repeat(3, 1fr) !important; gap: 8px !important; aspect-ratio: 1/1`) on mobile `<= 640px` (2 columns on `<= 380px`).
+        - Removed clunky full-width card text and buttons from the grid view, replacing them with clean photo tiles featuring a subtle multi-select checkbox, green `WEBP` micro badge, and discreet bottom gradient filename label.
+    - **Interactive Photo Inspector Sheet (`adm-photo-sheet`):**
+        - Tapping any photo tile opens an app-like inspector modal/bottom sheet displaying full-res image preview, filename, dimensions, file size in KB, format, and direct URL input.
+        - Includes 1-tap **"Copy URL"** (with instant clipboard toast) and **"Delete"** actions.
+    - **Condensed Mobile Header & Uploader:**
+        - Transformed the 3 stacked vertical stat cards into a compact 3-column KPI summary bar (`Total Media`, `Auto WebP`, `EXIF Fix`).
+        - Added a streamlined **`📷 Select Photos from Device`** button optimized for mobile cameras and photo pickers.
+
 
 
 
