@@ -130,27 +130,91 @@
         <a href="{{ route('home') }}#custom-print" class="rabez-nav__link">Custom Print</a>
         <a href="{{ route('home') }}#size-guide" class="rabez-nav__link">Size Chart</a>
 
-        @auth
-          <div class="rabez-nav-auth-mobile" style="margin-top:12px; padding-top:12px; border-top:1px solid #1E2421; display:flex; flex-direction:column; gap:8px;">
-            <div style="font-size:12px; color:#9CA3AF; display:flex; align-items:center; gap:6px;">
-              <span class="rabez-user-dot"></span>
-              Signed in as <strong style="color:#fff;">{{ Auth::user()->name }}</strong>
-              @if(Auth::user()->isAdmin())
-                <span class="rabez-role-badge">ADMIN</span>
-              @endif
+        <!-- Mobile Drawer Utilities & Quick Actions -->
+        <div class="rabez-nav-mobile-utilities">
+          <div class="rabez-nav-mobile-divider"></div>
+
+          <!-- Track Order Featured Card -->
+          <a href="{{ route('track-order') }}" class="rabez-nav-mobile-track">
+            <span class="rabez-nav-mobile-track__left">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
+              </svg>
+              <span>Track Your Order & Invoice</span>
+            </span>
+            <span class="rabez-nav-mobile-track__badge">LIVE</span>
+          </a>
+
+          <!-- Social & Direct Support Quick Row -->
+          <div class="rabez-nav-mobile-quick-row">
+            <a href="https://api.whatsapp.com/send/?phone=8801612359652" target="_blank" rel="noopener" class="rabez-nav-mobile-pill rabez-nav-mobile-pill--whatsapp">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+              </svg>
+              <span>WhatsApp</span>
+            </a>
+
+            <a href="https://www.facebook.com/rabezshop/" target="_blank" rel="noopener" class="rabez-nav-mobile-pill rabez-nav-mobile-pill--facebook">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+              </svg>
+              <span>Facebook Page</span>
+            </a>
+          </div>
+
+          <!-- Customer Auth Section -->
+          @auth
+            <div class="rabez-nav-mobile-auth-card">
+              <div class="rabez-nav-mobile-auth-user">
+                <span class="rabez-user-dot"></span>
+                <span class="rabez-nav-mobile-auth-name">Signed in as <strong>{{ Auth::user()->name }}</strong></span>
+                @if(Auth::user()->isAdmin())
+                  <span class="rabez-role-badge">ADMIN</span>
+                @endif
+              </div>
+
+              <div class="rabez-nav-mobile-auth-actions">
+                @if(Auth::user()->isAdmin())
+                  <a href="{{ route('admin.dashboard') }}" class="rabez-nav-mobile-auth-btn rabez-nav-mobile-auth-btn--admin">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                      <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                    </svg>
+                    <span>Admin Panel</span>
+                  </a>
+                @endif
+                <a href="{{ route('logout') }}" class="rabez-nav-mobile-auth-btn rabez-nav-mobile-auth-btn--logout">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                    <polyline points="16 17 21 12 16 7"></polyline>
+                    <line x1="21" y1="12" x2="9" y2="12"></line>
+                  </svg>
+                  <span>Sign Out</span>
+                </a>
+              </div>
             </div>
-            @if(Auth::user()->isAdmin())
-              <a href="{{ route('admin.dashboard') }}" style="color:#22C55E; font-weight:700;">⚡ Admin Dashboard</a>
-            @endif
-            <a href="{{ route('logout') }}" style="color:#EF4444; font-size:13px; text-decoration:none;">Sign Out</a>
-          </div>
-        @else
-          <div class="rabez-nav-auth-mobile" style="margin-top:12px; padding-top:12px; border-top:1px solid #1E2421; display:flex; gap:12px;">
-            <a href="{{ route('login') }}" style="color:#fff; font-weight:600; font-size:13px; text-decoration:none;">Sign In</a>
-            <span style="color:#4B5563;">•</span>
-            <a href="{{ route('register') }}" style="color:#22C55E; font-weight:600; font-size:13px; text-decoration:none;">Create Account</a>
-          </div>
-        @endauth
+          @else
+            <div class="rabez-nav-mobile-guest-row">
+              <a href="{{ route('login') }}" class="rabez-nav-mobile-auth-btn rabez-nav-mobile-auth-btn--login">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>Sign In</span>
+              </a>
+
+              <a href="{{ route('register') }}" class="rabez-nav-mobile-auth-btn rabez-nav-mobile-auth-btn--register">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="9" cy="7" r="4"></circle>
+                  <line x1="19" y1="8" x2="19" y2="14"></line>
+                  <line x1="22" y1="11" x2="16" y2="11"></line>
+                </svg>
+                <span>Create Account</span>
+              </a>
+            </div>
+          @endauth
+        </div>
       </nav>
       <div class="rabez-header__actions">
         <form action="{{ route('shop') }}" method="GET" class="rabez-header-search" role="search">
