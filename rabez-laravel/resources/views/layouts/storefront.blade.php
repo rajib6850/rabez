@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.2">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=2.7">
   <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}?v=2.6">
 
@@ -581,7 +581,7 @@
   <!-- Analytics & Tracking Engine (Meta Pixel + CAPI Deduplication + Anti-Spam) -->
   <script src="{{ asset('assets/js/analytics.js') }}"></script>
   <script src="{{ asset('assets/js/products-data.js') }}"></script>
-  <script src="{{ asset('assets/js/cart.js') }}?v=2.6"></script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=2.7"></script>
   <script src="{{ asset('assets/js/app.js') }}?v=2.6"></script>
 
   @stack('scripts')

@@ -243,6 +243,7 @@
   max-width: 860px;
   max-height: 90vh;
   overflow-y: auto;
+  overflow-x: hidden;
   background-color: #FFFFFF;
   border-radius: var(--rabez-radius-md);
   padding: 22px 24px 18px 24px;
@@ -368,23 +369,118 @@
 }
 
 @media (max-width: 768px) {
-  .rabez-modal {
-    padding: 20px 16px;
+  /* Full Display Edge-to-Edge Quick View Modal */
+  .rabez-modal-backdrop.js-quickview-backdrop {
+    padding: 0 !important;
+    margin: 0 !important;
+    align-items: stretch !important;
+    justify-content: stretch !important;
+    background-color: #FFFFFF !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    height: 100dvh !important;
+    max-height: 100% !important;
   }
+
+  .js-quickview-backdrop .rabez-modal {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 100% !important;
+    height: 100% !important;
+    max-height: 100% !important;
+    border-radius: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 16px 16px 90px 16px !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    overscroll-behavior-y: contain !important;
+    -webkit-overflow-scrolling: touch !important;
+    box-sizing: border-box !important;
+  }
+
+  .js-quickview-backdrop .rabez-modal * {
+    box-sizing: border-box !important;
+  }
+
+  /* Prevent any horizontal scrolling inside quick view */
   .rabez-qv-layout {
-    grid-template-columns: 1fr;
-    gap: 20px;
+    grid-template-columns: 1fr !important;
+    gap: 18px !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
   }
+
   .rabez-qv-gallery {
-    flex-direction: column-reverse;
+    flex-direction: column-reverse !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+    gap: 10px !important;
   }
+
   .rabez-qv-thumbs {
-    flex-direction: row;
-    width: 100%;
-    overflow-x: auto;
+    flex-direction: row !important;
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: auto !important;
+    gap: 8px !important;
+    padding-bottom: 4px !important;
+    scrollbar-width: none !important;
+    -ms-overflow-style: none !important;
+    box-sizing: border-box !important;
   }
+
+  .rabez-qv-thumbs::-webkit-scrollbar {
+    display: none !important;
+  }
+
   .rabez-qv-thumb {
-    width: 56px;
+    width: 58px !important;
+    flex-shrink: 0 !important;
+  }
+
+  .rabez-qv-main-media {
+    width: 100% !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+    border-radius: 8px !important;
+  }
+
+  .rabez-qv-summary {
+    width: 100% !important;
+    max-width: 100% !important;
+    overflow-x: hidden !important;
+    box-sizing: border-box !important;
+  }
+
+  .rabez-qv-perks {
+    display: grid !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 6px !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Floating persistent close button on mobile */
+  .js-quickview-backdrop .rabez-modal__close {
+    position: fixed !important;
+    top: 14px !important;
+    right: 14px !important;
+    width: 38px !important;
+    height: 38px !important;
+    background-color: rgba(255, 255, 255, 0.94) !important;
+    backdrop-filter: blur(10px) !important;
+    -webkit-backdrop-filter: blur(10px) !important;
+    border: 1px solid rgba(0, 0, 0, 0.12) !important;
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.2) !important;
+    color: #0A0C0B !important;
+    z-index: 1000 !important;
   }
 }
 

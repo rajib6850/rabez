@@ -520,6 +520,8 @@
     const modalContent = document.querySelector(".js-quickview-content");
     if (!product || !modalBackdrop || !modalContent) return;
 
+    document.body.style.overflow = "hidden";
+
     const isAdded = isProductInCart(product.id);
     const swatches = product.sizes
       .map(
@@ -1150,6 +1152,7 @@
     }
     if (e.target.closest(".js-close-quickview") || e.target.classList.contains("js-quickview-backdrop")) {
       document.querySelector(".js-quickview-backdrop")?.classList.remove("is-open");
+      document.body.style.overflow = "";
       return;
     }
 
@@ -1252,6 +1255,10 @@
   });
 
   document.addEventListener("keydown", function (e) {
+    if (e.key === "Escape") {
+      document.querySelector(".js-quickview-backdrop")?.classList.remove("is-open");
+      document.body.style.overflow = "";
+    }
     if (e.key === "Enter" && e.target) {
       if (e.target.id === "checkout-coupon-code" || e.target.id === "drawer-coupon-code") {
         e.preventDefault();

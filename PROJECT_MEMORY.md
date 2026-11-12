@@ -357,6 +357,21 @@ php artisan serve --port=8000
         - Shows RABEZ app icon with green verified checkmark.
         - Provides two crystal-clear choice cards: "1-Tap Direct Install (Instant, 0 MB)" and "Download Android APK (1.7 MB)" with 3-step sideload instructions.
 
+21. **Mobile Quick View Full Display & Zero Horizontal Scroll Overhaul:**
+    - **Full Display Edge-to-Edge Experience:**
+        - On mobile devices `<= 768px`, removed the old `20px` backdrop padding that caused the 2-3% empty borders around the modal.
+        - Modal now expands to 100% full screen (`width: 100vw !important`, `height: 100dvh !important`, `border-radius: 0 !important`, `border: none !important`), matching modern high-fashion and luxury e-commerce mobile experiences.
+    - **Zero Horizontal Scrolling (`overflow-x: hidden`):**
+        - Strictly enforced `overflow-x: hidden !important` and `box-sizing: border-box !important` across `.rabez-modal`, `.rabez-qv-layout`, `.rabez-qv-gallery`, `.rabez-qv-summary`, and child elements.
+        - Set `grid-template-columns: repeat(3, minmax(0, 1fr))` on trust perks so narrow phone viewports never force layout expansion.
+        - Disabled horizontal scrollbars on thumbnail rail (`scrollbar-width: none`).
+    - **Floating Persistent Close Control:**
+        - Upgraded the close button to a glassmorphic floating circular pill (`position: fixed`, `top: 14px`, `right: 14px`, `z-index: 1000`, `background: rgba(255,255,255,0.94)`, `backdrop-filter: blur(10px)`). The user can dismiss the modal instantly from anywhere in the scroll depth without having to scroll all the way back to the top.
+    - **Background Scroll Locking & Keyboard Accessibility:**
+        - When Quick View opens, `document.body.style.overflow = "hidden"` prevents the underlying storefront from dragging or shifting.
+        - Restored upon closing via close button, backdrop click, or pressing the `Escape` key.
+
+
 
 
 
