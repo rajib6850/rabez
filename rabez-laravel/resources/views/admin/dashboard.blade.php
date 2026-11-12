@@ -1331,12 +1331,19 @@
       justify-content: center;
       gap: 6px;
       opacity: 0;
+      pointer-events: none; /* Crucial: never intercept clicks/touches when invisible */
       transition: opacity 0.16s ease;
       z-index: 4;
     }
     @media (hover: hover) {
       .adm-gallery-item:hover .adm-gallery-item__actions {
         opacity: 1;
+        pointer-events: auto; /* Allow clicks only on actual mouse hover */
+      }
+    }
+    @media (max-width: 768px) {
+      .adm-gallery-item__actions {
+        display: none !important; /* On mobile/touch devices, completely disable hover overlay so thumbnail tap opens photo sheet */
       }
     }
     .adm-gallery-strip-item {
