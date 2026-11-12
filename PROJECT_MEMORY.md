@@ -337,6 +337,8 @@ php artisan serve --port=8000
     - **Interactive Photo Inspector Sheet (`adm-photo-sheet`):**
         - Tapping any photo tile opens an app-like inspector modal/bottom sheet displaying full-res image preview, filename, dimensions, file size in KB, format, and direct URL input.
         - Includes 1-tap **"Copy URL"** (with instant clipboard toast) and **"Delete"** actions.
+        - **Touch-Target Pointer Events Fix:** Added `pointer-events: none` to the desktop action overlay `.adm-gallery-item__actions` and set `display: none !important` on screens `<= 768px`. Previously, an invisible overlay (`opacity: 0`) with z-index 4 covered the thumbnail, causing fingers on touch devices to inadvertently trigger the hidden delete button prompt.
+
     - **Condensed Mobile Header & Uploader:**
         - Transformed the 3 stacked vertical stat cards into a compact 3-column KPI summary bar (`Total Media`, `Auto WebP`, `EXIF Fix`).
         - Added a streamlined **`📷 Select Photos from Device`** button optimized for mobile cameras and photo pickers.
