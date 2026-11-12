@@ -397,6 +397,7 @@
   pointer-events: auto;
 }
 
+.rabez-install-modal::-webkit-scrollbar { display: none; }
 .rabez-install-modal {
   position: relative;
   background: #0B0E0C;
@@ -406,6 +407,8 @@
   max-width: 480px;
   max-height: 90vh;
   overflow-y: auto;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
   padding: 28px 24px 24px;
   box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(4, 244, 4, 0.08);
   transform: scale(0.94) translateY(12px);
