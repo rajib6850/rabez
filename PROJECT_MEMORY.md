@@ -316,6 +316,19 @@ php artisan serve --port=8000
         - **Checkout CTA:** Secure lock shield and editorial forward arrow.
     - **Order Tracker (`track-order.blade.php`):**
         - Upgraded input search lens, empty state icon, courier consignment van, and 5-stage order progress timeline icons.
+18. **Mobile Navigation Drawer Utilities & Quick Social Row:**
+    - **Context:** On mobile/tablet screens `<= 1120px`, topbar right links (`Track Order`, `Facebook Page`, `WhatsApp`, `Sign In`, `Register`) are intentionally hidden to keep the header minimal and prevent horizontal blowout.
+    - **Integrated Drawer Utilities (`.rabez-nav-mobile-utilities`):**
+        - **Featured Track Order Card:** Full-width glassmorphic card with consignment box SVG icon, crisp white typography, and vibrant green `LIVE` pill badge linking to `/track-order`.
+        - **2-Column Quick Support Row:**
+            - **WhatsApp:** Direct link (`+880 1612-359652`) with green outline WhatsApp SVG and subtle green surface tint.
+            - **Facebook Page:** Direct link (`rabezshop`) with blue outline Facebook SVG.
+        - **Responsive Auth Row:**
+            - **Guest:** Side-by-side 2-column buttons for **Sign In** (with user profile icon) and **Create Account** (with user plus icon in neon green).
+            - **Authenticated:** User greeting card with active dot, user name, role badge (`ADMIN`), direct link to **Admin Panel**, and red **Sign Out** button.
+        - **Zero Desktop Clutter:** Strictly hidden on desktop (`@media (min-width: 1121px) { display: none !important; }`).
+        - **Safe Mobile Scroll:** Added `max-height: calc(100vh - 75px)` and `overflow-y: auto` to `.rabez-nav` so even on smaller smartphone screens or landscape orientation, the entire menu scrolls smoothly.
+
 
 
 
