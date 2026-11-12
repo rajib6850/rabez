@@ -343,6 +343,21 @@ php artisan serve --port=8000
         - Transformed the 3 stacked vertical stat cards into a compact 3-column KPI summary bar (`Total Media`, `Auto WebP`, `EXIF Fix`).
         - Added a streamlined **`📷 Select Photos from Device`** button optimized for mobile cameras and photo pickers.
 
+20. **Mobile App Installation & Direct APK Download System:**
+    - **Dual Installation Workflow:**
+        - **1-Tap Direct Install (PWA):** Powered by `manifest.json` (with standalone display, OLED pitch-black `#0A0C0B` theme, and 512x512/192x192 PNG icons) and `sw.js` service worker. Automatically captures `beforeinstallprompt` on Android Chrome/Edge/Samsung Internet for 1-tap installation with 0 MB storage. For iOS Safari, provides an intuitive 3-step visual guide (Share ⎋ -> Add to Home Screen ⊞).
+        - **Direct Android APK Package:** Standalone 1.7 MB APK package hosted directly at `/downloads/RABEZ-Official.apk` and `/downloads/rabez.apk`. Includes Digital Asset Links verification at `/.well-known/assetlinks.json` for full native chrome-free display.
+    - **High-Converting Entry Points:**
+        - **Footer Customer Care:** Dedicated entry `Download & Install App` with neon outline smartphone SVG icon and `APK / PWA` badge.
+        - **Footer Contact Column:** Direct mobile app download card with `Official Mobile App` header and arrow.
+        - **Mobile Navigation Drawer:** Dedicated glassmorphic app banner (`.rabez-nav-mobile-app-card`) with neon smartphone icon, `INSTALL` CTA pill, and instant modal trigger.
+        - **Desktop Topbar:** Quick `App Install` pill link beside Track Order.
+    - **Interactive App Install Modal (`#rabez-install-modal`):**
+        - App-like bottom sheet on mobile (`max-height: 85vh`, `border-radius: 20px 20px 0 0`) and centered modal on desktop.
+        - Shows RABEZ app icon with green verified checkmark.
+        - Provides two crystal-clear choice cards: "1-Tap Direct Install (Instant, 0 MB)" and "Download Android APK (1.7 MB)" with 3-step sideload instructions.
+
+
 
 
 

@@ -42,6 +42,19 @@
         }
       });
     }
+
+    // Topbar user dropdown toggle for touch & clicks
+    const topDropdown = document.querySelector(".js-topbar-dropdown");
+    if (topDropdown) {
+      document.addEventListener("click", (e) => {
+        if (e.target.closest(".js-topbar-dropdown-toggle")) {
+          e.preventDefault();
+          topDropdown.classList.toggle("is-open");
+        } else if (!e.target.closest(".js-topbar-dropdown")) {
+          topDropdown.classList.remove("is-open");
+        }
+      });
+    }
   }
 
   /* 2. Hero Interactive 3-Jersey Fan Stage Widget */
@@ -279,6 +292,7 @@
             customer_phone: phone,
             customer_address: address,
             shipping_zone: shipping,
+            coupon_code: (window.RABEZ_STORE && typeof window.RABEZ_STORE.getAppliedCoupon === 'function' && window.RABEZ_STORE.getAppliedCoupon()?.code) || (document.getElementById("checkout-coupon-code")?.value.trim().toUpperCase() || ""),
             cart_items: cartItems.map((c) => ({
               id: c.id,
               name: c.name,
@@ -333,8 +347,12 @@
             savedOrders.unshift(newOrder);
             localStorage.setItem("rabez_orders_v1", JSON.stringify(savedOrders));
 
-            // Clear Cart
+            // Clear Cart & Coupon
             localStorage.removeItem("rabez_wc_cart_v1");
+            localStorage.removeItem("rabez_applied_coupon_v1");
+            if (window.RABEZ_STORE && typeof window.RABEZ_STORE.removeAppliedCoupon === 'function') {
+              window.RABEZ_STORE.removeAppliedCoupon();
+            }
             document.querySelectorAll(".js-cart-count").forEach((el) => (el.textContent = "0"));
 
             // Analytics: Meta Pixel Purchase event
@@ -380,6 +398,78 @@
       });
     }
   }
+
+  /* ==========================================================================
+     RABEZ Mobile App Install & PWA Handling
+     ========================================================================== */
+  let deferredInstallPrompt = null;
+
+  window.addEventListener("beforeinstallprompt", (e) => {
+    e.preventDefault();
+    deferredInstallPrompt = e;
+    const pwaBtnText = document.getElementById("rabez-pwa-btn-text");
+    if (pwaBtnText) {
+      pwaBtnText.textContent = "Install App on Phone (1-Tap)";
+    }
+  });
+
+  window.openAppInstallModal = function () {
+    const modal = document.getElementById("rabez-install-modal");
+    if (!modal) return;
+    modal.classList.add("is-open");
+    document.body.style.overflow = "hidden";
+
+    // Detect iOS devices (Safari does not support beforeinstallprompt)
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+    const iosGuide = document.getElementById("rabez-ios-guide");
+    if (iosGuide) {
+      iosGuide.style.display = isIOS ? "block" : "none";
+    }
+  };
+
+  window.closeAppInstallModal = function () {
+    const modal = document.getElementById("rabez-install-modal");
+    if (!modal) return;
+    modal.classList.remove("is-open");
+    document.body.style.overflow = "";
+  };
+
+  window.installPWAApp = async function () {
+    if (deferredInstallPrompt) {
+      deferredInstallPrompt.prompt();
+      try {
+        const choice = await deferredInstallPrompt.userChoice;
+        if (choice && choice.outcome === "accepted") {
+          window.closeAppInstallModal();
+        }
+      } catch (err) {
+        console.warn("PWA install error:", err);
+      }
+      deferredInstallPrompt = null;
+    } else {
+      const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+      if (isIOS) {
+        const iosGuide = document.getElementById("rabez-ios-guide");
+        if (iosGuide) {
+          iosGuide.style.display = "block";
+          iosGuide.scrollIntoView({ behavior: "smooth" });
+        }
+      } else {
+        const apkBtn = document.getElementById("rabez-apk-dl-btn");
+        if (apkBtn) {
+          apkBtn.scrollIntoView({ behavior: "smooth" });
+        } else {
+          window.location.href = "/downloads/RABEZ-Official.apk";
+        }
+      }
+    }
+  };
+
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape") {
+      window.closeAppInstallModal();
+    }
+  });
 
   document.addEventListener("DOMContentLoaded", () => {
     initHeaderWidget();

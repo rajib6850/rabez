@@ -31,7 +31,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.2">
   <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.1">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}?v=2.6">
 
   @stack('styles')
 </head>
@@ -98,6 +98,14 @@
             </div>
           </div>
         @else
+          <a href="javascript:void(0)" onclick="openAppInstallModal()" style="color:#FFFFFF; font-weight:600; display:inline-flex; align-items:center; gap:5px;" title="Install RABEZ Mobile App">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+              <line x1="12" y1="18" x2="12.01" y2="18"></line>
+            </svg>
+            <span>App Install</span>
+          </a>
+          <span class="rabez-topbar__sep">&bull;</span>
           <a href="{{ route('track-order') }}" style="color:#04F404; font-weight:700;">Track Order</a>
           <span class="rabez-topbar__sep">&bull;</span>
           <a href="{{ route('login') }}" style="color:#fff; font-weight:600;">Sign In</a>
@@ -133,6 +141,23 @@
         <!-- Mobile Drawer Utilities & Quick Actions -->
         <div class="rabez-nav-mobile-utilities">
           <div class="rabez-nav-mobile-divider"></div>
+
+          <!-- App Install Featured Card -->
+          <div class="rabez-nav-mobile-app-card" onclick="openAppInstallModal()">
+            <div class="rabez-nav-mobile-app-card__left">
+              <span class="rabez-nav-mobile-app-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+              </span>
+              <div class="rabez-nav-mobile-app-card__text">
+                <span class="rabez-nav-mobile-app-title">RABEZ Mobile App</span>
+                <span class="rabez-nav-mobile-app-sub">1-Tap Install &bull; APK (1.7 MB)</span>
+              </div>
+            </div>
+            <span class="rabez-nav-mobile-app-cta">INSTALL</span>
+          </div>
 
           <!-- Track Order Featured Card -->
           <a href="{{ route('track-order') }}" class="rabez-nav-mobile-track">
@@ -277,6 +302,16 @@
         <div class="rabez-footer__nav-col">
           <h4 class="rabez-footer__heading">Customer Care</h4>
           <ul class="rabez-footer__links">
+            <li>
+              <a href="javascript:void(0)" onclick="openAppInstallModal()" style="display:inline-flex; align-items:center; gap:6px; color:#FFFFFF; font-weight:700;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                </svg>
+                <span>Download &amp; Install App</span>
+                <span class="rabez-footer-app-badge">APK / PWA</span>
+              </a>
+            </li>
             <li><a href="{{ route('track-order') }}">Track Your Order &amp; Invoice</a></li>
             <li><a href="{{ route('checkout') }}">1-Page COD Checkout</a></li>
             <li><a href="https://api.whatsapp.com/send/?phone=8801612359652" target="_blank">Direct WhatsApp Support</a></li>
@@ -307,6 +342,22 @@
               <div class="rabez-footer__contact-text">
                 <span class="rabez-footer__contact-label">Store Location</span>
                 <span class="rabez-footer__contact-val">Road-10, College Avenue, Barishal</span>
+              </div>
+            </li>
+            <li class="rabez-footer__contact-item" style="margin-top: 6px;">
+              <div onclick="openAppInstallModal()" class="rabez-footer-app-btn">
+                <span class="rabez-footer__contact-icon" style="background:rgba(4,244,4,0.12); color:#04F404; border-color:rgba(4,244,4,0.3);">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
+                    <line x1="12" y1="18" x2="12.01" y2="18"></line>
+                  </svg>
+                </span>
+                <div class="rabez-footer__contact-text">
+                  <span class="rabez-footer__contact-label" style="color:#04F404;">Official Mobile App</span>
+                  <span class="rabez-footer__contact-val" style="display:flex; align-items:center; gap:4px; font-size:0.86rem;">
+                    Download APK / 1-Tap &rarr;
+                  </span>
+                </div>
               </div>
             </li>
           </ul>
@@ -401,6 +452,98 @@
     </div>
   </div>
 
+  <!-- RABEZ App Install & Download Modal -->
+  <div id="rabez-install-modal" class="rabez-modal-backdrop rabez-install-modal-backdrop" onclick="if(event.target === this) closeAppInstallModal()">
+    <div class="rabez-install-modal" role="dialog" aria-modal="true" aria-labelledby="rabez-install-modal-title">
+      <button type="button" class="rabez-install-modal__close" onclick="closeAppInstallModal()" aria-label="Close dialog">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="18" y1="6" x2="6" y2="18"></line>
+          <line x1="6" y1="6" x2="18" y2="18"></line>
+        </svg>
+      </button>
+
+      <div class="rabez-install-modal__header">
+        <div class="rabez-install-modal__app-badge">
+          <img src="{{ asset('icon-192.png') }}" alt="RABEZ App Icon" width="68" height="68">
+          <span class="rabez-install-modal__verified-check">
+            <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="#050606" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="20 6 9 17 4 12"></polyline>
+            </svg>
+          </span>
+        </div>
+        <h3 id="rabez-install-modal-title" class="rabez-install-modal__title">RABEZ Official Mobile App</h3>
+        <p class="rabez-install-modal__subtitle">Faster checkout, real-time courier tracking &amp; instant kit drops.</p>
+      </div>
+
+      <div class="rabez-install-modal__methods">
+        <!-- Method 1: 1-Tap PWA Install -->
+        <div class="rabez-install-card rabez-install-card--pwa">
+          <div class="rabez-install-card__badge-row">
+            <span class="rabez-install-tag rabez-install-tag--green">RECOMMENDED</span>
+            <span class="rabez-install-tag">INSTANT &bull; 0 MB STORAGE</span>
+          </div>
+          <h4 class="rabez-install-card__title">1-Tap Direct Install</h4>
+          <p class="rabez-install-card__desc">Adds RABEZ directly to your home screen like a native app. No heavy file downloads, zero storage hassle, always updated.</p>
+
+          <button type="button" class="rabez-install-cta-btn rabez-install-cta-btn--pwa" onclick="installPWAApp()">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+            </svg>
+            <span id="rabez-pwa-btn-text">Install App on Phone</span>
+          </button>
+
+          <!-- iOS Safari Instructions -->
+          <div id="rabez-ios-guide" class="rabez-ios-guide" style="display:none;">
+            <div class="rabez-ios-guide__title">iPhone / iPad Safari Guide:</div>
+            <ol class="rabez-ios-guide__steps">
+              <li>Tap the <strong>Share</strong> button <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"/><polyline points="16 6 12 2 8 6"/><line x1="12" y1="2" x2="12" y2="15"/></svg> at bottom of Safari.</li>
+              <li>Scroll down and tap <strong>Add to Home Screen</strong> <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="2"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>.</li>
+              <li>Tap <strong>Add</strong> at top right. Done!</li>
+            </ol>
+          </div>
+        </div>
+
+        <div class="rabez-install-divider">
+          <span>OR DIRECT FILE</span>
+        </div>
+
+        <!-- Method 2: Android APK Download -->
+        <div class="rabez-install-card rabez-install-card--apk">
+          <div class="rabez-install-card__badge-row">
+            <span class="rabez-install-tag">ANDROID PACKAGE</span>
+            <span class="rabez-install-tag">APK &bull; 1.7 MB</span>
+          </div>
+          <h4 class="rabez-install-card__title">Download Android APK (.apk)</h4>
+          <p class="rabez-install-card__desc">Download the standalone installation package to your phone storage. Compatible with Android 8.0+.</p>
+
+          <a href="{{ asset('downloads/RABEZ-Official.apk') }}" download="RABEZ-Official.apk" class="rabez-install-cta-btn rabez-install-cta-btn--apk" id="rabez-apk-dl-btn">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span>Download Official APK (1.7 MB)</span>
+          </a>
+
+          <div class="rabez-apk-steps">
+            <div class="rabez-apk-step">
+              <span class="rabez-apk-step__num">1</span>
+              <span>Download the .apk file</span>
+            </div>
+            <div class="rabez-apk-step">
+              <span class="rabez-apk-step__num">2</span>
+              <span>Tap to open &amp; click "Install"</span>
+            </div>
+            <div class="rabez-apk-step">
+              <span class="rabez-apk-step__num">3</span>
+              <span>Allow unknown apps if prompted</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <!-- Mobile Sticky Bottom Conversion Bar -->
   <nav class="rabez-mobile-bar" aria-label="Mobile Quick Actions">
     <a href="{{ route('shop') }}" class="rabez-mobile-bar__btn" style="display:inline-flex; align-items:center; justify-content:center; gap:6px;">
@@ -438,8 +581,8 @@
   <!-- Analytics & Tracking Engine (Meta Pixel + CAPI Deduplication + Anti-Spam) -->
   <script src="{{ asset('assets/js/analytics.js') }}"></script>
   <script src="{{ asset('assets/js/products-data.js') }}"></script>
-  <script src="{{ asset('assets/js/cart.js') }}?v=2.5"></script>
-  <script src="{{ asset('assets/js/app.js') }}?v=2.5"></script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=2.6"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=2.6"></script>
 
   @stack('scripts')
 </body>

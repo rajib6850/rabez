@@ -279,3 +279,389 @@
   }
 }
 
+
+/* ==========================================================================
+   RABEZ App Install & Download UI Components
+   ========================================================================== */
+
+/* Footer & Topbar Links */
+.rabez-footer-app-btn {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 10px 14px;
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid rgba(4, 244, 4, 0.25);
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+.rabez-footer-app-btn:hover {
+  background: rgba(4, 244, 4, 0.08);
+  border-color: var(--rabez-neon);
+  transform: translateY(-2px);
+}
+.rabez-footer-app-badge {
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  padding: 2px 7px;
+  border-radius: 3px;
+  background: rgba(4, 244, 4, 0.15);
+  color: var(--rabez-neon);
+  border: 1px solid rgba(4, 244, 4, 0.3);
+  margin-left: 6px;
+}
+
+/* Mobile Nav Drawer App Card */
+.rabez-nav-mobile-app-card {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  background: linear-gradient(135deg, rgba(4, 244, 4, 0.08) 0%, rgba(20, 24, 22, 0.8) 100%);
+  border: 1px solid rgba(4, 244, 4, 0.3);
+  padding: 12px 14px;
+  border-radius: 10px;
+  cursor: pointer;
+  margin-bottom: 12px;
+  transition: all 0.2s ease;
+}
+.rabez-nav-mobile-app-card:active {
+  transform: scale(0.98);
+}
+.rabez-nav-mobile-app-card__left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.rabez-nav-mobile-app-icon {
+  width: 38px;
+  height: 38px;
+  border-radius: 8px;
+  background: rgba(4, 244, 4, 0.12);
+  border: 1px solid rgba(4, 244, 4, 0.3);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--rabez-neon);
+  flex-shrink: 0;
+}
+.rabez-nav-mobile-app-card__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.rabez-nav-mobile-app-title {
+  font-size: 0.92rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  line-height: 1.2;
+}
+.rabez-nav-mobile-app-sub {
+  font-size: 0.74rem;
+  color: #9CA3AF;
+  line-height: 1.2;
+}
+.rabez-nav-mobile-app-cta {
+  font-size: 0.72rem;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  padding: 6px 12px;
+  background: var(--rabez-neon);
+  color: #050606;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* Modal Backdrop & Container */
+.rabez-install-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rabez-install-modal-backdrop.is-open {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.rabez-install-modal {
+  position: relative;
+  background: #0B0E0C;
+  border: 1px solid rgba(4, 244, 4, 0.22);
+  border-radius: 16px;
+  width: 100%;
+  max-width: 480px;
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 28px 24px 24px;
+  box-shadow: 0 24px 60px rgba(0, 0, 0, 0.7), 0 0 40px rgba(4, 244, 4, 0.08);
+  transform: scale(0.94) translateY(12px);
+  transition: transform 0.24s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.rabez-install-modal-backdrop.is-open .rabez-install-modal {
+  transform: scale(1) translateY(0);
+}
+
+.rabez-install-modal__close {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.06);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  color: #9CA3AF;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.18s ease;
+}
+.rabez-install-modal__close:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #FFFFFF;
+}
+
+.rabez-install-modal__header {
+  text-align: center;
+  margin-bottom: 22px;
+}
+.rabez-install-modal__app-badge {
+  position: relative;
+  width: 68px;
+  height: 68px;
+  margin: 0 auto 14px;
+  border-radius: 16px;
+  overflow: visible;
+}
+.rabez-install-modal__app-badge img {
+  width: 68px;
+  height: 68px;
+  border-radius: 16px;
+  border: 2px solid rgba(4, 244, 4, 0.4);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.4);
+  object-fit: cover;
+}
+.rabez-install-modal__verified-check {
+  position: absolute;
+  bottom: -4px;
+  right: -4px;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background: var(--rabez-neon);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.4);
+}
+
+.rabez-install-modal__title {
+  font-family: var(--rabez-font-display);
+  font-size: 1.35rem;
+  letter-spacing: 0.04em;
+  color: #FFFFFF;
+  margin: 0 0 6px;
+}
+.rabez-install-modal__subtitle {
+  font-size: 0.84rem;
+  color: #9BA59F;
+  margin: 0;
+  line-height: 1.45;
+}
+
+.rabez-install-modal__methods {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.rabez-install-card {
+  background: #121614;
+  border: 1px solid #232B26;
+  border-radius: 12px;
+  padding: 18px 16px;
+  transition: border-color 0.2s ease;
+}
+.rabez-install-card--pwa {
+  border-color: rgba(4, 244, 4, 0.35);
+  background: linear-gradient(180deg, rgba(4, 244, 4, 0.05) 0%, rgba(18, 22, 20, 0.95) 100%);
+}
+
+.rabez-install-card__badge-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 10px;
+}
+.rabez-install-tag {
+  font-size: 0.64rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  background: #1C221F;
+  color: #9CA3AF;
+  border: 1px solid #2A332E;
+}
+.rabez-install-tag--green {
+  background: rgba(4, 244, 4, 0.15);
+  color: var(--rabez-neon);
+  border-color: rgba(4, 244, 4, 0.35);
+}
+
+.rabez-install-card__title {
+  font-size: 1rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin: 0 0 6px;
+}
+.rabez-install-card__desc {
+  font-size: 0.8rem;
+  line-height: 1.45;
+  color: #8C9690;
+  margin: 0 0 14px;
+}
+
+.rabez-install-cta-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  padding: 12px 18px;
+  border-radius: 8px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  text-decoration: none;
+  transition: all 0.2s ease;
+  box-sizing: border-box;
+}
+.rabez-install-cta-btn--pwa {
+  background: var(--rabez-neon);
+  color: #050606;
+  border: 1px solid var(--rabez-neon);
+  box-shadow: 0 4px 14px rgba(4, 244, 4, 0.25);
+}
+.rabez-install-cta-btn--pwa:hover {
+  background: #22FF22;
+  transform: translateY(-1px);
+}
+.rabez-install-cta-btn--apk {
+  background: #19201C;
+  color: #FFFFFF;
+  border: 1px solid #2D3932;
+}
+.rabez-install-cta-btn--apk:hover {
+  background: #222B26;
+  border-color: var(--rabez-neon);
+  color: var(--rabez-neon);
+  transform: translateY(-1px);
+}
+
+.rabez-install-divider {
+  display: flex;
+  align-items: center;
+  text-align: center;
+  margin: 4px 0;
+}
+.rabez-install-divider::before,
+.rabez-install-divider::after {
+  content: '';
+  flex: 1;
+  border-bottom: 1px solid #1E2521;
+}
+.rabez-install-divider span {
+  padding: 0 12px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  color: #6B7280;
+}
+
+.rabez-apk-steps {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px dashed #222A25;
+}
+.rabez-apk-step {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 0.76rem;
+  color: #9CA3AF;
+}
+.rabez-apk-step__num {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  background: #1C221F;
+  border: 1px solid #2E3732;
+  color: var(--rabez-neon);
+  font-size: 0.68rem;
+  font-weight: 800;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+/* iOS Safari Guide */
+.rabez-ios-guide {
+  margin-top: 12px;
+  padding: 12px 14px;
+  background: rgba(0, 0, 0, 0.35);
+  border: 1px solid #242D28;
+  border-radius: 8px;
+}
+.rabez-ios-guide__title {
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: #FFFFFF;
+  margin-bottom: 6px;
+}
+.rabez-ios-guide__steps {
+  margin: 0;
+  padding-left: 18px;
+  font-size: 0.76rem;
+  color: #9CA3AF;
+  line-height: 1.6;
+}
+.rabez-ios-guide__steps svg {
+  vertical-align: -2px;
+  display: inline;
+}
+
+@media (max-width: 640px) {
+  .rabez-install-modal-backdrop {
+    align-items: flex-end;
+    padding: 0;
+  }
+  .rabez-install-modal {
+    max-height: 85vh;
+    border-radius: 20px 20px 0 0;
+    padding: 24px 18px 28px;
+    transform: translateY(100%);
+  }
+  .rabez-install-modal-backdrop.is-open .rabez-install-modal {
+    transform: translateY(0);
+  }
+}

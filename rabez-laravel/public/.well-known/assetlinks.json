@@ -1,0 +1,8 @@
+[{
+      "relation": ["delegate_permission/common.handle_all_urls"],
+      "target": {
+        "namespace": "android_app",
+        "package_name": "shop.rabez.app",
+        "sha256_cert_fingerprints": ["82:97:39:65:30:19:F8:1A:22:F6:C1:6E:A4:FC:8B:71:34:A0:E5:FC:D4:BD:F9:FF:42:ED:6B:C3:0B:B5:FB:56"]
+      }
+    }]
