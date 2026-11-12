@@ -286,6 +286,12 @@ php artisan serve --port=8000
     - **Active Size Sync:** Opens with the user's currently selected product size highlighted in neon green.
     - **Collapsible Graphic Chart:** Clean toggle button (`View Official Graphic Chart`) preserves fast loading and prevents giant redundant images from forcing endless scrolling on small screens.
     - **Dynamic Fit Alert:** Clear visual cues explaining Player Edition (Athletic Slim Fit - order 1 size up for loose fit) vs Retro Series (Regular Comfort Fit - standard T-shirt size).
+16. **Browser Tab Title Encoding & SEO Clean Slugs (Fixed):**
+    - **Broken Character Fix:** Replaced corrupt `\xef\xbf\xbd` (``) in `index.blade.php` title with clean standard hyphen: `RABEZ - Football Jersey Store Bangladesh | Half Sleeve, Full Sleeve & Winter Hoodies`.
+    - **SEO Friendly Slugs:** Converted all random-number and ID-suffixed slugs (e.g. `fc-barcelona-2627-home-half-sleeve-player-edition-2` -> `fc-barcelona-26-27-home-half-sleeve-player-edition`, `real-madrid-2627-home-jersey-19` -> `real-madrid-26-27-home-jersey`).
+    - **Season Slashes Preserved:** Updated AdminController so slashes in season names (e.g. `26/27`) convert cleanly to `26-27` instead of stripping to `2627`.
+    - **Collision-Safe Generator:** Removed random `rand(10, 99)` and ID appending; slug generation now checks database uniqueness cleanly with incremental counters only on duplicate names.
+
 
 
 
