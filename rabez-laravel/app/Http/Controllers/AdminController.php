@@ -222,9 +222,18 @@ class AdminController extends Controller
             $featuredImageUrl = array_shift($galleryUrls);
         }
 
+        $baseName = str_replace(['/', '\\'], '-', $validated['name']);
+        $baseSlug = Str::slug($baseName);
+        $slug = $baseSlug;
+        $counter = 1;
+        while (Product::where('slug', $slug)->exists()) {
+            $counter++;
+            $slug = "{$baseSlug}-{$counter}";
+        }
+
         $product = Product::create([
             'name' => $validated['name'],
-            'slug' => Str::slug($validated['name']) . '-' . rand(10, 99),
+            'slug' => $slug,
             'sku' => strtoupper($validated['sku']),
             'club' => $validated['club'] ?? 'all',
             'sleeve' => $validated['sleeve'] ?? 'half-sleeve',
@@ -271,9 +280,17 @@ class AdminController extends Controller
             'gallery' => 'nullable',
         ]);
 
-        if (isset($validated['name'])) {
+        if (isset($validated['name']) && $validated['name'] !== $product->name) {
             $product->name = $validated['name'];
-            $product->slug = Str::slug($validated['name']) . '-' . $product->id;
+            $baseName = str_replace(['/', '\\'], '-', $validated['name']);
+            $baseSlug = Str::slug($baseName);
+            $slug = $baseSlug;
+            $counter = 1;
+            while (Product::where('slug', $slug)->where('id', '!=', $product->id)->exists()) {
+                $counter++;
+                $slug = "{$baseSlug}-{$counter}";
+            }
+            $product->slug = $slug;
         }
         if (isset($validated['sku'])) $product->sku = strtoupper($validated['sku']);
         if (isset($validated['price'])) $product->price = $validated['price'];

@@ -1,6 +1,6 @@
 @extends('layouts.storefront')
 
-@section('title', 'RABEZ � Football Jersey Store Bangladesh | Half Sleeve, Full Sleeve & Winter Hoodies')
+@section('title', 'RABEZ - Football Jersey Store Bangladesh | Half Sleeve, Full Sleeve & Winter Hoodies')
 
 @section('content')
     <section class="rabez-hero">
@@ -287,7 +287,7 @@
           <!-- Pre-rendered SEO Product Cards for Googlebot & Facebook Crawlers -->
           <li class="product type-product rabez-product-card has-back-view" data-product-id="1324">
             <div class="rabez-product-card__media">
-              <a href="/product/real-madrid-2627-home-jersey-19" class="woocommerce-LoopProduct-link">
+              <a href="/product/real-madrid-26-27-home-jersey" class="woocommerce-LoopProduct-link">
                 <img src="{{ asset('assets/images/products/real-madrid-home-hs.jpg') }}" class="rabez-card-img-front" alt="Real Madrid 26/27 Home Half Sleeve Jersey - Front View" width="500" height="667">
                 <img src="{{ asset('assets/images/products/real-madrid-polo-white-hs.jpg') }}" class="rabez-card-img-back" alt="Real Madrid 26/27 Home Half Sleeve Jersey - Back View" width="500" height="667" loading="lazy">
                 <span class="rabez-card-flip-pill">Back View</span>
@@ -305,7 +305,7 @@
               </div>
             </div>
             <div class="rabez-product-card__body">
-              <h3 class="rabez-product-card__title"><a href="/product/real-madrid-2627-home-jersey-19">Real Madrid 26/27 Home Half Sleeve Jersey</a></h3>
+              <h3 class="rabez-product-card__title"><a href="/product/real-madrid-26-27-home-jersey">Real Madrid 26/27 Home Half Sleeve Jersey</a></h3>
               <div class="price rabez-product-card__price">৳ 1,150</div>
             </div>
           </li>
@@ -335,7 +335,7 @@
           </li>
           <li class="product type-product rabez-product-card has-back-view" data-product-id="1320">
             <div class="rabez-product-card__media">
-              <a href="/product/fc-barcelona-2627-home-half-sleeve-player-edition-2" class="woocommerce-LoopProduct-link">
+              <a href="/product/fc-barcelona-26-27-home-half-sleeve-player-edition" class="woocommerce-LoopProduct-link">
                 <img src="{{ asset('assets/images/products/barcelona-home-hs.jpg') }}" class="rabez-card-img-front" alt="Barcelona Home Half Sleeve Jersey - Front View" width="500" height="667" loading="lazy">
                 <img src="{{ asset('assets/images/products/messi-barca-arg-hoodie.jpg') }}" class="rabez-card-img-back" alt="Barcelona Home Half Sleeve Jersey - Back View" width="500" height="667" loading="lazy">
                 <span class="rabez-card-flip-pill">Back View</span>
@@ -353,13 +353,13 @@
               </div>
             </div>
             <div class="rabez-product-card__body">
-              <h3 class="rabez-product-card__title"><a href="/product/fc-barcelona-2627-home-half-sleeve-player-edition-2">Barcelona Home Half Sleeve Jersey</a></h3>
+              <h3 class="rabez-product-card__title"><a href="/product/fc-barcelona-26-27-home-half-sleeve-player-edition">Barcelona Home Half Sleeve Jersey</a></h3>
               <div class="price rabez-product-card__price">৳ 1,150</div>
             </div>
           </li>
           <li class="product type-product rabez-product-card has-back-view" data-product-id="1384">
             <div class="rabez-product-card__media">
-              <a href="/product/bangladesh-national-team-2627-home-half-sleeve" class="woocommerce-LoopProduct-link">
+              <a href="/product/bangladesh-national-team-26-27-home-half-sleeve" class="woocommerce-LoopProduct-link">
                 <img src="{{ asset('assets/images/products/bangladesh-home-hs.jpg') }}" class="rabez-card-img-front" alt="Bangladesh BFF Home Half Sleeve Jersey - Front View" width="500" height="667" loading="lazy">
                 <img src="{{ asset('assets/images/products/real-madrid-teal-trefoil-hs.jpg') }}" class="rabez-card-img-back" alt="Bangladesh BFF Home Half Sleeve Jersey - Back View" width="500" height="667" loading="lazy">
                 <span class="rabez-card-flip-pill">Back View</span>
@@ -377,7 +377,7 @@
               </div>
             </div>
             <div class="rabez-product-card__body">
-              <h3 class="rabez-product-card__title"><a href="/product/bangladesh-national-team-2627-home-half-sleeve">Bangladesh (BFF) Home Half Sleeve Jersey</a></h3>
+              <h3 class="rabez-product-card__title"><a href="/product/bangladesh-national-team-26-27-home-half-sleeve">Bangladesh (BFF) Home Half Sleeve Jersey</a></h3>
               <div class="price rabez-product-card__price">৳ 1,150</div>
             </div>
           </li>
