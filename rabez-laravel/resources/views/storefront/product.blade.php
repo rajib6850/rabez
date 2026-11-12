@@ -968,11 +968,11 @@
       document.querySelectorAll(".js-quick-select").forEach((btn) => {
         btn.addEventListener("click", () => {
           const size = btn.dataset.size;
-          const targetBtn = document.querySelector(`.rabez-size-btn[data-size="${size}"]`);
+          const targetBtn = document.querySelector(`.js-sp-swatches .rabez-size-swatch[data-size="${size}"]`);
           if (targetBtn) {
             targetBtn.click();
             syncSizeChartSelection(size);
-            setTimeout(closeSizeChartModal, 220);
+            setTimeout(closeSizeChartModal, 240);
           }
         });
       });
@@ -982,7 +982,7 @@
         row.style.cursor = "pointer";
         row.addEventListener("click", () => {
           const size = row.dataset.rowSize;
-          const targetBtn = document.querySelector(`.rabez-size-btn[data-size="${size}"]`);
+          const targetBtn = document.querySelector(`.js-sp-swatches .rabez-size-swatch[data-size="${size}"]`);
           if (targetBtn) {
             targetBtn.click();
             syncSizeChartSelection(size);
