@@ -371,6 +371,19 @@ php artisan serve --port=8000
         - When Quick View opens, `document.body.style.overflow = "hidden"` prevents the underlying storefront from dragging or shifting.
         - Restored upon closing via close button, backdrop click, or pressing the `Escape` key.
 
+22. **Checkout Page Mobile Layout & Zero Horizontal Scroll Fix:**
+    - **Context & Diagnosis:** On mobile screens `<= 768px`, `.rabez-checkout-card` used fixed `padding: 36px` and `.rabez-checkout-grid` used `grid-template-columns: 1fr` without `minmax(0, 1fr)` or `min-width: 0`. Intrinsic input sizes and long button labels caused cards to size at 436px wide, spilling outside the 360px-390px mobile viewports and triggering an unsightly horizontal scrollbar.
+    - **Responsive Grid & Card Sizing:**
+        - Standardized `.rabez-checkout-grid` to `grid-template-columns: minmax(0, 1fr)`.
+        - Added `min-width: 0; max-width: 100%; width: 100%; box-sizing: border-box;` across `.rabez-checkout-card`, `.rabez-form-grid`, `.rabez-form-group`, and all input/textarea elements.
+        - Reduced card padding to `20px 16px` on screens `<= 768px` for optimal breathing room and maximum form utility.
+    - **Responsive Shipping Flat Card & CTA Buttons:**
+        - Converted `.rabez-shipping-flat-card` to responsive column alignment on mobile, preventing flat rate fee badges from overlapping or pushing width out.
+        - Allowed flex-wrapping on checkout CTA buttons (`#place_order`, `.js-whatsapp-checkout`) with `white-space: normal` and `word-break: break-word`.
+    - **Global Viewport Overflow Prevention:**
+        - Added `overflow-x: hidden` to `html` to prevent horizontal elasticity or bounce across all mobile webkit browsers.
+
+
 
 
 

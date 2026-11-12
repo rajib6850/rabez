@@ -168,9 +168,12 @@
 /* --- Checkout Page Layout --- */
 .rabez-checkout-grid {
   display: grid;
-  grid-template-columns: 1.15fr 0.85fr;
+  grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
   gap: 40px;
   align-items: start;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .rabez-checkout-card {
@@ -178,18 +181,29 @@
   border: 1px solid var(--rabez-border);
   border-radius: var(--rabez-radius-md);
   padding: 36px;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .rabez-form-grid {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 20px;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
 }
 
 .rabez-form-group {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  min-width: 0;
+  max-width: 100%;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .rabez-form-group--full {
@@ -211,6 +225,19 @@
   border: 1px solid var(--rabez-border-strong);
   border-radius: var(--rabez-radius-xs);
   font-size: 0.9rem;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.rabez-shipping-flat-card {
+  max-width: 100%;
+  box-sizing: border-box;
+}
+
+.rabez-shipping-flat-card > div:first-child {
+  min-width: 0;
+  flex: 1 1 auto;
 }
 
 .rabez-shipping-card span {
@@ -233,8 +260,10 @@
 
 .rabez-shipping-options {
   display: grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .rabez-shipping-card {
@@ -247,6 +276,8 @@
   cursor: pointer;
   font-size: 0.85rem;
   font-weight: 700;
+  min-width: 0;
+  box-sizing: border-box;
 }
 
 .rabez-shipping-card.is-selected {
@@ -256,10 +287,59 @@
 
 @media (max-width: 900px) {
   .rabez-checkout-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 24px;
   }
   .rabez-form-grid,
   .rabez-shipping-options {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .rabez-checkout-grid {
+    gap: 20px;
+  }
+  .rabez-checkout-card {
+    padding: 20px 16px !important;
+    border-radius: 10px;
+  }
+  .rabez-section {
+    padding-top: 28px;
+    padding-bottom: 44px;
+  }
+  .rabez-section-title {
+    font-size: 1.6rem;
+  }
+  #place_order {
+    white-space: normal !important;
+    line-height: 1.35;
+    padding: 12px 14px !important;
+    text-align: center;
+  }
+  #place_order span {
+    word-break: break-word;
+  }
+  .js-whatsapp-checkout {
+    white-space: normal !important;
+    line-height: 1.35;
+    padding: 12px 14px !important;
+    text-align: center;
+  }
+  .rabez-checkout-coupon > div:last-child {
+    width: 100%;
+  }
+  .rabez-checkout-coupon input {
+    min-width: 0;
+    width: 100%;
+  }
+  .rabez-shipping-flat-card {
+    flex-direction: column;
+    align-items: flex-start !important;
+    gap: 10px;
+  }
+  .rabez-shipping-flat-card > div:last-child {
+    text-align: left !important;
+    width: 100%;
   }
 }

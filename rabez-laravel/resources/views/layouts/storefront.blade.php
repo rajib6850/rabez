@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.2">
   <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=2.7">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.8">
   <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}?v=2.6">
 
   @stack('styles')
