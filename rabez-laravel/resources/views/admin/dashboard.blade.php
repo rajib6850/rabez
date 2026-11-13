@@ -1600,23 +1600,23 @@
                 <span>Revenue today</span>
                 <span class="adm-kpi__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg></span>
               </div>
-              <div class="adm-kpi__value">৳ 8,420</div>
-              <div class="adm-kpi__foot"><span class="adm-up">+18%</span> vs yesterday</div>
+              <div class="adm-kpi__value js-kpi-revenue">৳ {{ number_format($revenueToday ?? 0) }}</div>
+              <div class="adm-kpi__foot"><span class="adm-up js-kpi-revenue-trend">&#10003; Realtime</span> live sales</div>
             </div>
             <div class="adm-kpi">
               <div class="adm-kpi__head">
                 <span>Open orders</span>
                 <span class="adm-kpi__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg></span>
               </div>
-              <div class="adm-kpi__value js-kpi-open">3</div>
-              <div class="adm-kpi__foot js-kpi-open-sub">2 ready to ship</div>
+              <div class="adm-kpi__value js-kpi-open">{{ $openOrdersCount ?? 0 }}</div>
+              <div class="adm-kpi__foot js-kpi-open-sub">{{ ($openOrdersCount ?? 0) > 0 ? ($openOrdersCount . ' orders to process') : 'No open orders' }}</div>
             </div>
             <div class="adm-kpi">
               <div class="adm-kpi__head">
                 <span>COD with courier</span>
                 <span class="adm-kpi__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></span>
               </div>
-              <div class="adm-kpi__value">৳ 14,850</div>
+              <div class="adm-kpi__value js-kpi-cod">৳ {{ number_format($codWithCourier ?? 0) }}</div>
               <div class="adm-kpi__foot">Settles in 2-3 days</div>
             </div>
             <div class="adm-kpi">
@@ -1624,7 +1624,7 @@
                 <span>Products live</span>
                 <span class="adm-kpi__icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/></svg></span>
               </div>
-              <div class="adm-kpi__value js-kpi-products">18</div>
+              <div class="adm-kpi__value js-kpi-products">{{ $productsCount ?? count($products ?? []) }}</div>
               <div class="adm-kpi__foot">Jerseys &amp; winter hoodies</div>
             </div>
           </div>
@@ -1634,53 +1634,53 @@
               <div class="adm-card__head">
                 <div>
                   <h2 class="adm-card__title">Revenue &middot; Last 7 days</h2>
-                  <p class="adm-card__desc">Total ৳ 54,200 across 42 orders</p>
+                  <p class="adm-card__desc js-chart-desc">Total ৳ 0 across 0 orders</p>
                 </div>
-                <span class="adm-chip adm-chip--delivered">+24% this week</span>
+                <span class="adm-chip js-chart-chip" style="background:rgba(34,197,94,0.12); color:#22c55e;">Live Analytics</span>
               </div>
               <div class="adm-card__body">
-                <div class="adm-chart">
+                <div class="adm-chart js-revenue-chart">
                   <div class="adm-chart__col">
-                    <span class="adm-chart__val">6.2k</span>
-                    <div class="adm-chart__bar" style="height:52%;"></div>
+                    <span class="adm-chart__val">0</span>
+                    <div class="adm-chart__bar" style="height:0%;"></div>
                     <span class="adm-chart__day">Fri</span>
                   </div>
                   <div class="adm-chart__col">
-                    <span class="adm-chart__val">9.1k</span>
-                    <div class="adm-chart__bar" style="height:76%;"></div>
+                    <span class="adm-chart__val">0</span>
+                    <div class="adm-chart__bar" style="height:0%;"></div>
                     <span class="adm-chart__day">Sat</span>
                   </div>
                   <div class="adm-chart__col">
-                    <span class="adm-chart__val">7.4k</span>
-                    <div class="adm-chart__bar" style="height:62%;"></div>
+                    <span class="adm-chart__val">0</span>
+                    <div class="adm-chart__bar" style="height:0%;"></div>
                     <span class="adm-chart__day">Sun</span>
                   </div>
                   <div class="adm-chart__col">
-                    <span class="adm-chart__val">5.8k</span>
-                    <div class="adm-chart__bar" style="height:48%;"></div>
+                    <span class="adm-chart__val">0</span>
+                    <div class="adm-chart__bar" style="height:0%;"></div>
                     <span class="adm-chart__day">Mon</span>
                   </div>
                   <div class="adm-chart__col">
-                    <span class="adm-chart__val">10.1k</span>
-                    <div class="adm-chart__bar" style="height:86%;"></div>
+                    <span class="adm-chart__val">0</span>
+                    <div class="adm-chart__bar" style="height:0%;"></div>
                     <span class="adm-chart__day">Tue</span>
                   </div>
                   <div class="adm-chart__col">
-                    <span class="adm-chart__val">7.2k</span>
-                    <div class="adm-chart__bar" style="height:60%;"></div>
+                    <span class="adm-chart__val">0</span>
+                    <div class="adm-chart__bar" style="height:0%;"></div>
                     <span class="adm-chart__day">Wed</span>
                   </div>
                   <div class="adm-chart__col is-today">
-                    <span class="adm-chart__val">8.4k</span>
-                    <div class="adm-chart__bar" style="height:72%;"></div>
+                    <span class="adm-chart__val">0</span>
+                    <div class="adm-chart__bar" style="height:0%;"></div>
                     <span class="adm-chart__day">Today</span>
                   </div>
                 </div>
 
-                <div class="adm-rows" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--adm-border);">
-                  <div><span>Website COD</span><strong class="num">৳ 28,450 (52%)</strong></div>
-                  <div><span>Facebook &amp; WhatsApp</span><strong class="num">৳ 18,300 (34%)</strong></div>
-                  <div><span>Barishal showroom</span><strong class="num">৳ 7,450 (14%)</strong></div>
+                <div class="adm-rows js-channel-breakdown" style="margin-top:18px; padding-top:14px; border-top:1px solid var(--adm-border);">
+                  <div><span>Website COD</span><strong class="num js-channel-web">৳ 0 (0%)</strong></div>
+                  <div><span>Facebook &amp; WhatsApp</span><strong class="num js-channel-social">৳ 0 (0%)</strong></div>
+                  <div><span>Barishal showroom</span><strong class="num js-channel-pos">৳ 0 (0%)</strong></div>
                 </div>
               </div>
             </div>
@@ -1689,34 +1689,15 @@
               <div class="adm-card__head">
                 <div>
                   <h2 class="adm-card__title">Top selling items</h2>
-                  <p class="adm-card__desc">Most ordered this week</p>
+                  <p class="adm-card__desc">Most ordered kits</p>
                 </div>
                 <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-tab" data-tab="products">All products</button>
               </div>
-              <div class="adm-card__body" style="padding-top:10px; padding-bottom:10px;">
-                <div class="adm-item">
-                  <img src="{{ asset('assets/') }}/images/products/real-madrid-home-hs.jpg" alt="Real Madrid">
-                  <div style="flex:1; min-width:0;">
-                    <div class="adm-cell-main">Real Madrid 26/27 Home Half Sleeve</div>
-                    <div class="adm-cell-sub">16 sold &middot; ৳ 1,150</div>
-                  </div>
-                  <span class="adm-cell-main num">৳ 18,400</span>
-                </div>
-                <div class="adm-item">
-                  <img src="{{ asset('assets/') }}/images/products/messi-barca-arg-hoodie.jpg" alt="Messi Winter Hoodie">
-                  <div style="flex:1; min-width:0;">
-                    <div class="adm-cell-main">Messi #10 Barca × Argentina Hoodie</div>
-                    <div class="adm-cell-sub">11 sold &middot; ৳ 1,450</div>
-                  </div>
-                  <span class="adm-cell-main num">৳ 15,950</span>
-                </div>
-                <div class="adm-item">
-                  <img src="{{ asset('assets/') }}/images/products/messi-celebration-fs.jpg" alt="Messi Celebration">
-                  <div style="flex:1; min-width:0;">
-                    <div class="adm-cell-main">Messi Celebration Full Sleeve</div>
-                    <div class="adm-cell-sub">9 sold &middot; ৳ 1,300</div>
-                  </div>
-                  <span class="adm-cell-main num">৳ 11,700</span>
+              <div class="adm-card__body js-top-selling-body" style="padding-top:10px; padding-bottom:10px;">
+                <div style="text-align:center; padding:38px 16px; color:var(--adm-muted); font-size:13px; line-height:1.5;">
+                  <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="margin-bottom:8px; opacity:0.5;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                  <div>No sales recorded yet.</div>
+                  <div style="font-size:12px; margin-top:2px;">Your best-selling kits will rank here automatically as customer orders are placed.</div>
                 </div>
               </div>
             </div>
@@ -2230,32 +2211,13 @@
                 <h2 class="adm-card__title">Print queue</h2>
                 <p class="adm-card__desc">Check spelling and number before heat-pressing.</p>
               </div>
-              <span class="adm-chip adm-chip--printing js-print-chip">2 waiting</span>
+              <span class="adm-chip adm-chip--printing js-print-chip">0 waiting</span>
             </div>
-            <div>
-              <div class="adm-print-row">
-                <img src="{{ asset('assets/') }}/images/products/real-madrid-home-hs.jpg" alt="Real Madrid home jersey">
-                <div>
-                  <div class="adm-cell-main">Real Madrid 26/27 Home Half Sleeve &middot; XL</div>
-                  <div class="adm-cell-sub">#RBZ-10025 &middot; Mehedi Hasan, Rajshahi</div>
-                </div>
-                <div class="adm-print-label">
-                  <div class="adm-print-label__cap">Back print</div>
-                  <div class="adm-print-label__text">BELLINGHAM &middot; 5</div>
-                </div>
-                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-mark-printed">Mark as printed</button>
-              </div>
-              <div class="adm-print-row">
-                <img src="{{ asset('assets/') }}/images/products/messi-barca-arg-hoodie.jpg" alt="Messi winter hoodie">
-                <div>
-                  <div class="adm-cell-main">Messi #10 Barca × Argentina Winter Hoodie &middot; L</div>
-                  <div class="adm-cell-sub">#RBZ-10028 &middot; Rafsan Jani, Dhaka</div>
-                </div>
-                <div class="adm-print-label">
-                  <div class="adm-print-label__cap">Back print</div>
-                  <div class="adm-print-label__text">MESSI &middot; 10</div>
-                </div>
-                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-mark-printed">Mark as printed</button>
+            <div id="adm-print-queue-list">
+              <div style="text-align:center; padding:44px 20px; color:var(--adm-muted); font-size:13.5px;">
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px; opacity:0.6;"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+                <div>No custom back prints waiting in the print queue.</div>
+                <div style="font-size:12px; margin-top:4px;">When customers order custom jersey name &amp; number printing (+৳250), they will appear here.</div>
               </div>
             </div>
           </div>
@@ -2277,7 +2239,7 @@
                 <form id="adm-pos-form" class="adm-form">
                   <div class="adm-field">
                     <label class="adm-label" for="pos-phone">Phone</label>
-                    <input type="tel" id="pos-phone" class="adm-input num" required value="01715889900" placeholder="01XXXXXXXXX">
+                    <input type="tel" id="pos-phone" class="adm-input num" required value="" placeholder="01XXXXXXXXX">
                   </div>
                   <div class="adm-field">
                     <label class="adm-label" for="pos-name">Customer name</label>
@@ -2363,7 +2325,7 @@
             </div>
             <div class="adm-card__body">
               <form class="js-check-form" style="display:flex; gap:8px; flex-wrap:wrap; max-width:540px;">
-                <input type="tel" class="adm-input num js-check-phone" style="flex:1; min-width:220px;" value="01911002233" placeholder="01XXXXXXXXX">
+                <input type="tel" class="adm-input num js-check-phone" style="flex:1; min-width:220px;" value="" placeholder="e.g. 017XXXXXXXX">
                 <button type="submit" class="adm-btn adm-btn--primary">Check Risk</button>
               </form>
               <div class="js-check-result" style="margin-top:14px;"></div>
@@ -3442,6 +3404,10 @@
         $(".js-page-sub").textContent = page[1];
         document.body.classList.remove("is-nav-open");
         window.scrollTo({ top: 0, behavior: "smooth" });
+        if (key === "dashboard") { renderOrders(); renderOverviewStats(); }
+        if (key === "orders") renderOrders();
+        if (key === "print-queue") renderPrintQueue();
+        if (key === "customers") renderCustomers();
         if (key === "gallery") renderMedia();
         if (key === "discounts") renderCoupons();
       }
@@ -3654,12 +3620,16 @@
         const open = counts.Pending + counts.Printing;
         $$(".js-kpi-open").forEach((el) => (el.textContent = open));
         const readyCount = orders.filter((o) => o.status === "Pending" && o.ratio >= 60).length;
-        $$(".js-kpi-open-sub").forEach((el) => (el.textContent = `${readyCount} ready to ship`));
+        $$(".js-kpi-open-sub").forEach((el) => (el.textContent = open > 0 ? `${readyCount} ready to ship` : 'No open orders'));
 
         // Render Dashboard recent orders
         const recentRoot = $("#adm-recent-orders");
         if (recentRoot) {
-          recentRoot.innerHTML = orders.slice(0, 5).map(orderRowCardHTML).join("");
+          if (!orders.length) {
+            recentRoot.innerHTML = `<div style="text-align:center; padding:38px 16px; color:var(--adm-muted); font-size:13.5px;">No customer orders placed yet. As customers checkout on rabez.shop, orders will appear here in real-time.</div>`;
+          } else {
+            recentRoot.innerHTML = orders.slice(0, 5).map(orderRowCardHTML).join("");
+          }
         }
 
         // Filter and render Full Orders Table
@@ -3679,6 +3649,120 @@
           }
         }
         updateBulkBar('orders');
+        renderOverviewStats();
+        renderPrintQueue();
+      }
+
+      function renderOverviewStats() {
+        const totalRevenue = orders.reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+        const openCount = orders.filter(o => ['Pending', 'Printing'].includes(o.status)).length;
+        const codCount = orders.filter(o => o.status === 'Shipped').reduce((sum, o) => sum + (Number(o.total) || 0), 0);
+        
+        const revEl = document.querySelector(".js-kpi-revenue");
+        if (revEl) revEl.textContent = money(totalRevenue);
+        const openEl = document.querySelector(".js-kpi-open");
+        if (openEl) openEl.textContent = openCount;
+        const openSub = document.querySelector(".js-kpi-open-sub");
+        if (openSub) openSub.textContent = openCount > 0 ? `${openCount} orders to process` : 'No open orders';
+        const codEl = document.querySelector(".js-kpi-cod");
+        if (codEl) codEl.textContent = money(codCount);
+
+        const chartDesc = document.querySelector(".js-chart-desc");
+        if (chartDesc) chartDesc.textContent = `Total ${money(totalRevenue)} across ${orders.length} orders`;
+
+        const webTotal = orders.filter(o => (o.source || '').toLowerCase().includes('web') || !o.source).reduce((s, o) => s + (Number(o.total) || 0), 0);
+        const socialTotal = orders.filter(o => (o.source || '').toLowerCase().includes('facebook') || (o.source || '').toLowerCase().includes('whatsapp')).reduce((s, o) => s + (Number(o.total) || 0), 0);
+        const posTotal = orders.filter(o => (o.source || '').toLowerCase().includes('showroom') || (o.source || '').toLowerCase().includes('pos')).reduce((s, o) => s + (Number(o.total) || 0), 0);
+        
+        const webPct = totalRevenue > 0 ? Math.round((webTotal / totalRevenue) * 100) : 0;
+        const socialPct = totalRevenue > 0 ? Math.round((socialTotal / totalRevenue) * 100) : 0;
+        const posPct = totalRevenue > 0 ? Math.round((posTotal / totalRevenue) * 100) : 0;
+
+        const wEl = document.querySelector(".js-channel-web");
+        if (wEl) wEl.textContent = `${money(webTotal)} (${webPct}%)`;
+        const sEl = document.querySelector(".js-channel-social");
+        if (sEl) sEl.textContent = `${money(socialTotal)} (${socialPct}%)`;
+        const pEl = document.querySelector(".js-channel-pos");
+        if (pEl) pEl.textContent = `${money(posTotal)} (${posPct}%)`;
+
+        const topSellBody = document.querySelector(".js-top-selling-body");
+        if (topSellBody) {
+          if (!orders.length) {
+            topSellBody.innerHTML = `
+              <div style="text-align:center; padding:38px 16px; color:var(--adm-muted); font-size:13px; line-height:1.5;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" style="margin-bottom:8px; opacity:0.5;"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"/><line x1="3" y1="6" x2="21" y2="6"/></svg>
+                <div>No sales recorded yet.</div>
+                <div style="font-size:12px; margin-top:2px;">Your best-selling kits will rank here automatically as customer orders are placed.</div>
+              </div>
+            `;
+          } else {
+            const itemMap = {};
+            orders.forEach(o => {
+              (o.items || []).forEach(it => {
+                const k = it.name || it.product_name || 'Jersey';
+                if (!itemMap[k]) itemMap[k] = { name: k, image: it.image || '', count: 0, revenue: 0, price: it.unit_price || it.price || 0 };
+                itemMap[k].count += Number(it.qty || 1);
+                itemMap[k].revenue += Number(it.total_price || (it.unit_price * (it.qty || 1)) || 0);
+              });
+            });
+            const topItems = Object.values(itemMap).sort((a, b) => b.count - a.count).slice(0, 3);
+            topSellBody.innerHTML = topItems.map(it => `
+              <div class="adm-item">
+                <img src="${it.image || '/assets/images/products/real-madrid-home-hs.jpg'}" alt="${it.name}">
+                <div style="flex:1; min-width:0;">
+                  <div class="adm-cell-main">${it.name}</div>
+                  <div class="adm-cell-sub">${it.count} sold &middot; ${money(it.price)}</div>
+                </div>
+                <span class="adm-cell-main num">${money(it.revenue)}</span>
+              </div>
+            `).join("");
+          }
+        }
+      }
+
+      function renderPrintQueue() {
+        const container = document.getElementById("adm-print-queue-list");
+        const chip = document.querySelector(".js-print-chip");
+        if (!container) return;
+        
+        const printItems = [];
+        orders.forEach(o => {
+          if (['Pending', 'Printing'].includes(o.status) && Array.isArray(o.items)) {
+            o.items.forEach(it => {
+              if (it.custom_name || it.custom_number) {
+                printItems.push({ order: o, item: it });
+              }
+            });
+          }
+        });
+
+        if (chip) chip.textContent = `${printItems.length} waiting`;
+
+        if (!printItems.length) {
+          container.innerHTML = `
+            <div style="text-align:center; padding:44px 20px; color:var(--adm-muted); font-size:13.5px;">
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" style="margin-bottom:8px; opacity:0.6;"><path d="M6 9V2h12v7"></path><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path><rect x="6" y="14" width="12" height="8"></rect></svg>
+              <div>No custom back prints waiting in the print queue.</div>
+              <div style="font-size:12px; margin-top:4px;">When customers order custom jersey name &amp; number printing (+৳250), they will appear here.</div>
+            </div>
+          `;
+          return;
+        }
+
+        container.innerHTML = printItems.map(p => `
+          <div class="adm-print-row">
+            <img src="${p.item.image || '/assets/images/products/real-madrid-home-hs.jpg'}" alt="${p.item.name}">
+            <div>
+              <div class="adm-cell-main">${p.item.name} &middot; ${p.item.size || 'L'}</div>
+              <div class="adm-cell-sub">#${p.order.id} &middot; ${p.order.customer}, ${city(p.order.address)}</div>
+            </div>
+            <div class="adm-print-label">
+              <div class="adm-print-label__cap">Back print</div>
+              <div class="adm-print-label__text">${(p.item.custom_name || '').toUpperCase()} &middot; ${p.item.custom_number || ''}</div>
+            </div>
+            <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-mark-printed" data-id="${p.order.id}">Mark as printed</button>
+          </div>
+        `).join("");
       }
 
       async function syncOrdersFromDB() {
