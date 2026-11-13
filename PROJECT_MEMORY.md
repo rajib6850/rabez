@@ -408,6 +408,20 @@ php artisan serve --port=8000
         - Card header title now uses `flex-wrap: wrap` to allow the active badge to wrap gracefully without blowing out card width.
         - Added `max-height: 92vh; overflow-y: auto;` to coupon modal dialog for mobile screens.
 
+25. **Fresh Store Launch Clean Reset (Zeroing Mock Orders While Preserving All Product Data):**
+    - **Product Ecosystem 100% Preserved:**
+        - All 17 live products (jerseys, winter hoodies, retro kits), descriptions, high-res images, pricing, and 85 size/stock variants (S, M, L, XL, XXL) remain completely intact.
+        - All 5 categories ('Football Jerseys', 'Winter Hoodies', 'Football Boots', 'Tracksuits & Pants', 'Accessories') preserved.
+        - All store configuration settings (delivery charge mode, flat rate ৳130 / zone rates ৳70, hotline, WhatsApp number) and admin login credentials preserved.
+    - **Clean Wipe of Test & Mock Data:**
+        - **Orders & Items:** Completely emptied (`orders = 0`, `order_items = 0`) across both local and live production database (`database.sqlite`).
+        - **Dashboard Overview Stats:** Replaced hardcoded demo statistics (`৳8,420` revenue, `42` orders, fake 7-day bars) with dynamic live calculations that cleanly reflect real order status starting at ৳0.
+        - **Print Queue:** Converted from static hardcoded rows to a dynamic print manager (`renderPrintQueue()`) showing an empty queue placeholder until orders with custom back print (+৳250) are received.
+        - **Recent Orders & Customers:** Clean empty state messaging indicating orders and customers will appear live upon actual customer purchases.
+        - **Database Seeder Updated:** Removed mock orders `RBZ-10024` through `RBZ-10027` from `DatabaseSeeder.php` to guarantee future database seeds only initialize product catalogs.
+        - **Media Library Cleaned:** Removed one-off test upload image while preserving all official product assets.
+
+
 
 
 
