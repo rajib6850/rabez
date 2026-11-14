@@ -77,20 +77,22 @@
             </div>
           </div>
 
-          <!-- Optional Custom Name & Number Addon (+৳250) -->
-          <div class="rabez-print-addon" style="border:1px solid #2B332E; border-radius:6px; padding:12px 14px; margin:18px 0; background:#121614;">
-            <label style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none;">
-              <span style="font-weight:700; color:#fff; display:flex; align-items:center; gap:8px;">
-                <input type="checkbox" id="js-custom-print-toggle" style="accent-color:#04F404; width:16px; height:16px; cursor:pointer;">
-                + Add Custom Name &amp; Number Print
-              </span>
-              <span style="color:#04F404; font-weight:800; font-size:13px;">+ ৳ 250</span>
-            </label>
-            <div id="js-custom-print-inputs" style="display:none; margin-top:12px; gap:10px; grid-template-columns:2fr 1fr;">
-              <input type="text" id="js-sp-custom-name" maxlength="12" placeholder="Name on Back (e.g. MESSI)" style="height:38px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px; text-transform:uppercase;">
-              <input type="text" id="js-sp-custom-num" maxlength="2" placeholder="Number (10)" style="height:38px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px;">
+          @if($product->has_custom_print)
+            <!-- Optional Custom Name & Number Addon -->
+            <div class="rabez-print-addon" style="border:1px solid #2B332E; border-radius:6px; padding:12px 14px; margin:18px 0; background:#121614;">
+              <label style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none;">
+                <span style="font-weight:700; color:#fff; display:flex; align-items:center; gap:8px;">
+                  <input type="checkbox" id="js-custom-print-toggle" style="accent-color:#04F404; width:16px; height:16px; cursor:pointer;">
+                  + Add Custom Name &amp; Number Print
+                </span>
+                <span style="color:#04F404; font-weight:800; font-size:13px;">+ ৳ {{ intval($customPrintFee ?? ($settings['custom_print_fee'] ?? 250)) }}</span>
+              </label>
+              <div id="js-custom-print-inputs" style="display:none; margin-top:12px; gap:10px; grid-template-columns:2fr 1fr;">
+                <input type="text" id="js-sp-custom-name" maxlength="12" placeholder="Name on Back (e.g. MESSI)" style="height:38px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px; text-transform:uppercase;">
+                <input type="text" id="js-sp-custom-num" maxlength="2" placeholder="Number (10)" style="height:38px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px;">
+              </div>
             </div>
-          </div>
+          @endif
 
           <!-- Quantity + Add to Cart -->
           <div class="rabez-purchase-row">
@@ -776,6 +778,8 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       const basePrice = {{ (float) $product->price }};
+      const allowCustomPrint = {{ $product->has_custom_print ? 'true' : 'false' }};
+      const customPrintFee = Number({{ intval($customPrintFee ?? ($settings['custom_print_fee'] ?? 250)) }});
       let hasCustomPrint = false;
       let currentSize = "{{ $defaultSize }}";
       let qty = 1;
@@ -797,7 +801,7 @@
       const qtyPlus = document.querySelector(".js-sp-qty-plus");
 
       function updatePriceDisplay() {
-        const itemPrice = basePrice + (hasCustomPrint ? 250 : 0);
+        const itemPrice = basePrice + ((allowCustomPrint && hasCustomPrint) ? customPrintFee : 0);
         const totalPrice = itemPrice * qty;
         if (priceDisplay) {
           priceDisplay.textContent = `৳ ${totalPrice.toLocaleString("en-IN")}`;
@@ -895,13 +899,15 @@
       });
 
       // 5. Custom Print Checkbox
-      customPrintToggle?.addEventListener("change", (e) => {
-        hasCustomPrint = e.target.checked;
-        if (customPrintInputs) {
-          customPrintInputs.style.display = hasCustomPrint ? "grid" : "none";
-        }
-        updatePriceDisplay();
-      });
+      if (allowCustomPrint && customPrintToggle) {
+        customPrintToggle.addEventListener("change", (e) => {
+          hasCustomPrint = e.target.checked;
+          if (customPrintInputs) {
+            customPrintInputs.style.display = hasCustomPrint ? "grid" : "none";
+          }
+          updatePriceDisplay();
+        });
+      }
 
       // Ensure product is globally registered in RABEZ store
       const currentProductData = {
@@ -912,7 +918,8 @@
         regularPrice: Number({{ $product->regular_price ?? ($product->price + 200) }}),
         image: @json(asset($product->image ?: 'assets/images/products/real-madrid-home-hs.jpg')),
         sizes: ["S", "M", "L", "XL", "XXL"],
-        defaultSize: currentSize || "L"
+        defaultSize: currentSize || "L",
+        hasCustomPrint: allowCustomPrint
       };
       window.RABEZ_CURRENT_PRODUCT = currentProductData;
       window.RABEZ_PRODUCTS = window.RABEZ_PRODUCTS || [];
@@ -942,7 +949,8 @@
             image: "{{ $rel->image ? asset($rel->image) : asset('assets/images/products/real-madrid-home-hs.jpg') }}",
             gallery: @json(array_map('asset', $rGallery)),
             defaultSize: "L",
-            sizes: ["S", "M", "L", "XL", "XXL"]
+            sizes: ["S", "M", "L", "XL", "XXL"],
+            hasCustomPrint: {{ $rel->has_custom_print ? 'true' : 'false' }}
           });
         }
       @endforeach
@@ -950,8 +958,8 @@
       // 6. Add to Bag
       addBtn?.addEventListener("click", () => {
         const prodId = {{ $product->id }};
-        const customName = hasCustomPrint ? (customNameInput?.value.trim().toUpperCase() || "") : "";
-        const customNum = hasCustomPrint ? (customNumInput?.value.trim() || "") : "";
+        const customName = (allowCustomPrint && hasCustomPrint) ? (customNameInput?.value.trim().toUpperCase() || "") : "";
+        const customNum = (allowCustomPrint && hasCustomPrint) ? (customNumInput?.value.trim() || "") : "";
 
         if (window.RABEZ_STORE && typeof window.RABEZ_STORE.addToCart === "function") {
           window.RABEZ_STORE.addToCart({
@@ -1075,17 +1083,17 @@
 
       // 7. WhatsApp Order Direct
       waBtn?.addEventListener("click", () => {
-        const customName = hasCustomPrint ? (customNameInput?.value.trim().toUpperCase() || "") : "";
-        const customNum = hasCustomPrint ? (customNumInput?.value.trim() || "") : "";
+        const customName = (allowCustomPrint && hasCustomPrint) ? (customNameInput?.value.trim().toUpperCase() || "") : "";
+        const customNum = (allowCustomPrint && hasCustomPrint) ? (customNumInput?.value.trim() || "") : "";
         let msg = `Hello RABEZ! I want to order this jersey:\n\n`;
         msg += `Product: {{ $product->name }}\n`;
         msg += `SKU: {{ $product->sku }}\n`;
         msg += `Size: ${currentSize}\n`;
         msg += `Quantity: ${qty}\n`;
-        if (hasCustomPrint && (customName || customNum)) {
-          msg += `Custom Print: ${customName} #${customNum} (+৳250)\n`;
+        if (allowCustomPrint && hasCustomPrint && (customName || customNum)) {
+          msg += `Custom Print: ${customName} #${customNum} (+৳${customPrintFee})\n`;
         }
-        const unitPrice = basePrice + (hasCustomPrint ? 250 : 0);
+        const unitPrice = basePrice + ((allowCustomPrint && hasCustomPrint) ? customPrintFee : 0);
         msg += `Total Amount: ৳ ${(unitPrice * qty).toLocaleString("en-IN")}\n`;
         msg += `\nPlease confirm my order!`;
 

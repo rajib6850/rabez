@@ -3,6 +3,12 @@
 @section('title', 'RABEZ - Football Jersey Store Bangladesh | Half Sleeve, Full Sleeve & Winter Hoodies')
 
 @section('content')
+    @php
+      $heroProductId = function (string $sku, int $fallbackId) use ($storefrontProducts) {
+          $found = isset($storefrontProducts) ? $storefrontProducts->firstWhere('sku', $sku) : null;
+          return $found?->id ?? (isset($storefrontProducts) ? ($storefrontProducts->first()?->id ?? $fallbackId) : $fallbackId);
+      };
+    @endphp
     <section class="rabez-hero">
       <div class="rabez-container rabez-hero__grid">
         <div class="rabez-hero__content">
@@ -22,12 +28,24 @@
                 <polyline points="12 5 19 12 12 19"></polyline>
               </svg>
             </a>
-            <a href="#custom-print" class="rabez-btn rabez-btn--hero-secondary">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>
-              </svg>
-              <span>Custom Name &amp; Number</span>
-            </a>
+            @if(isset($customPrintProducts) && $customPrintProducts->isNotEmpty())
+              <a href="#custom-print" class="rabez-btn rabez-btn--hero-secondary">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20.38 3.46L16 2a4 4 0 0 1-8 0L3.62 3.46a2 2 0 0 0-1.34 2.23l.58 3.47a1 1 0 0 0 .99.84H6v10c0 1.1.9 2 2 2h8a2 2 0 0 0 2-2V10h2.15a1 1 0 0 0 .99-.84l.58-3.47a2 2 0 0 0-1.34-2.23z"/>
+                </svg>
+                <span>Custom Name &amp; Number</span>
+              </a>
+            @else
+              <a href="{{ route('shop') }}" class="rabez-btn rabez-btn--hero-secondary">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <rect x="3" y="3" width="7" height="7" rx="1"></rect>
+                  <rect x="14" y="3" width="7" height="7" rx="1"></rect>
+                  <rect x="3" y="14" width="7" height="7" rx="1"></rect>
+                  <rect x="14" y="14" width="7" height="7" rx="1"></rect>
+                </svg>
+                <span>Explore Full Catalog</span>
+              </a>
+            @endif
           </div>
         </div>
 
@@ -37,7 +55,7 @@
 
           <div class="rabez-hero-deck">
             <!-- Card 0: Real Madrid (Center Active) -->
-            <article class="rabez-hero-deck__card is-active js-hero-deck-card" data-index="0" data-product-id="1324">
+            <article class="rabez-hero-deck__card is-active js-hero-deck-card" data-index="0" data-product-id="{{ $heroProductId('RM-HOME-26', 19) }}">
               <div class="rabez-hero-deck__top">
                 <span class="rabez-hero-deck__badge">Best Seller</span>
                 <span class="rabez-hero-deck__crest">
@@ -60,7 +78,7 @@
             </article>
 
             <!-- Card 1: Messi Celebration (Right Fan) -->
-            <article class="rabez-hero-deck__card is-next js-hero-deck-card" data-index="1" data-product-id="1411">
+            <article class="rabez-hero-deck__card is-next js-hero-deck-card" data-index="1" data-product-id="{{ $heroProductId('ARG-MESSI-FS', 3) }}">
               <div class="rabez-hero-deck__top">
                 <span class="rabez-hero-deck__badge">Full Sleeve</span>
                 <span class="rabez-hero-deck__crest">
@@ -83,7 +101,7 @@
             </article>
 
             <!-- Card 2: Man United (Hidden/Back) -->
-            <article class="rabez-hero-deck__card js-hero-deck-card" data-index="2" data-product-id="1349">
+            <article class="rabez-hero-deck__card js-hero-deck-card" data-index="2" data-product-id="{{ $heroProductId('MUN-HOME-HS', 5) }}">
               <div class="rabez-hero-deck__top">
                 <span class="rabez-hero-deck__badge">Ready Stock</span>
                 <span class="rabez-hero-deck__crest">
@@ -106,7 +124,7 @@
             </article>
 
             <!-- Card 3: FC Barcelona (Hidden/Back) -->
-            <article class="rabez-hero-deck__card js-hero-deck-card" data-index="3" data-product-id="1320">
+            <article class="rabez-hero-deck__card js-hero-deck-card" data-index="3" data-product-id="{{ $heroProductId('FCB-HOME-HS', 2) }}">
               <div class="rabez-hero-deck__top">
                 <span class="rabez-hero-deck__badge">Hot Drop</span>
                 <span class="rabez-hero-deck__crest">
@@ -129,7 +147,7 @@
             </article>
 
             <!-- Card 4: Winter Hoodie with Jersey Logo (Left Fan) -->
-            <article class="rabez-hero-deck__card is-prev js-hero-deck-card" data-index="4" data-product-id="1501">
+            <article class="rabez-hero-deck__card is-prev js-hero-deck-card" data-index="4" data-product-id="{{ $heroProductId('HD-MESSI-BARCA-ARG', 16) }}">
               <div class="rabez-hero-deck__top">
                 <span class="rabez-hero-deck__badge">Winter Drop</span>
                 <span class="rabez-hero-deck__crest">
@@ -476,48 +494,58 @@
          WIDGET 07: LIVE CUSTOM NAME & NUMBER BACK PRINT PREVIEW
          (elementor-widget-rabez-customizer)
          ====================================================================== -->
+    @if(isset($customPrintProducts) && $customPrintProducts->isNotEmpty())
+    @php
+      $findCustId = function (string $sku, ?string $club = null) use ($customPrintProducts) {
+          $found = $customPrintProducts->firstWhere('sku', $sku);
+          if (!$found && $club) {
+              $found = $customPrintProducts->firstWhere('club', $club);
+          }
+          return $found?->id ?? ($customPrintProducts->first()?->id ?? '');
+      };
+    @endphp
     <section id="custom-print" class="rabez-section rabez-section--sm rabez-section--dark">
       <div class="rabez-container">
         <div class="rabez-section-head">
-          <h2 class="rabez-section-title">Custom Name &amp; Number Print (+৳250)</h2>
+          <h2 class="rabez-section-title">Custom Name &amp; Number Print (+৳{{ intval($customPrintFee ?? 250) }})</h2>
         </div>
 
         <div class="rabez-customizer js-jersey-customizer">
           <div class="rabez-customizer__form">
             <div>
               <label style="display:block; font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#B4BDB8; margin-bottom:10px;">
-                1. Select Kit Color:
+                1. Preview Kit Color:
               </label>
               <div class="rabez-kit-color-options">
                 <button type="button" class="rabez-kit-swatch is-active js-kit-theme-swatch"
-                        data-bg="#F7F8F7" data-trim="#006A4E" data-text="#111111" data-product-id="1324">
+                        data-bg="#F7F8F7" data-trim="#006A4E" data-text="#111111" data-product-id="{{ $findCustId('RM-HOME-26', 'real-madrid') }}">
                   <span class="rabez-kit-swatch__circle" style="background:#FFFFFF;"></span>
                   Real Madrid Home
                 </button>
                 <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#151817" data-trim="#E5C158" data-text="#F5D76E" data-product-id="1388">
+                        data-bg="#151817" data-trim="#E5C158" data-text="#F5D76E" data-product-id="{{ $findCustId('RMA-AWAY-FS', 'real-madrid') }}">
                   <span class="rabez-kit-swatch__circle" style="background:#111111;"></span>
-                  Madrid Black Teka
+                  Madrid Dark Kit
                 </button>
                 <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#8C3B4A" data-trim="#F3E5AB" data-text="#F3E5AB" data-product-id="1326">
+                        data-bg="#8C3B4A" data-trim="#F3E5AB" data-text="#F3E5AB" data-product-id="{{ $findCustId('RMA-3RD-HS', 'real-madrid') }}">
                   <span class="rabez-kit-swatch__circle" style="background:#8C3B4A;"></span>
-                  Madrid Rose 3rd
+                  Madrid 3rd
                 </button>
                 <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#173F8A" data-trim="#9B1B30" data-text="#F5C518" data-product-id="1320">
+                        data-bg="#173F8A" data-trim="#9B1B30" data-text="#F5C518" data-product-id="{{ $findCustId('FCB-HOME-HS', 'barcelona') }}">
                   <span class="rabez-kit-swatch__circle" style="background:#173F8A;"></span>
                   Barcelona Home
                 </button>
                 <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#0B4F36" data-trim="#C92A2A" data-text="#FFFFFF" data-product-id="1384">
+                        data-bg="#0B4F36" data-trim="#C92A2A" data-text="#FFFFFF" data-product-id="{{ $findCustId('BD-HOME-HS', 'bangladesh') }}">
                   <span class="rabez-kit-swatch__circle" style="background:#0B4F36;"></span>
                   Bangladesh Green
                 </button>
                 <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#0A0C0B" data-trim="#04F404" data-text="#FFFFFF" data-product-id="1501">
+                        data-bg="#0A0C0B" data-trim="#04F404" data-text="#FFFFFF" data-product-id="{{ $findCustId('HD-MESSI-BARCA-ARG', 'argentina') }}">
                   <span class="rabez-kit-swatch__circle" style="background:#0A0C0B; border-color:#04F404;"></span>
-                  Winter Hoodie (Jersey Logo)
+                  Argentina / Dark
                 </button>
               </div>
             </div>
@@ -535,15 +563,11 @@
 
             <div class="rabez-field-row">
               <div class="rabez-field">
-                <label for="cust-kit-select">Select Jersey or Hoodie</label>
+                <label for="cust-kit-select">Select Customizable Product</label>
                 <select id="cust-kit-select" class="js-cust-kit">
-                  <option value="1324">Real Madrid Home Half Sleeve (৳1,150 + ৳250)</option>
-                  <option value="1501">Winter Hoodie with Club Crest &amp; # (৳1,450 + ৳250)</option>
-                  <option value="1388">Real Madrid Retro Teka Full Sleeve (৳1,300 + ৳250)</option>
-                  <option value="1326">Real Madrid 3rd Rose Half Sleeve (৳1,150 + ৳250)</option>
-                  <option value="1320">Barcelona Home Half Sleeve (৳1,150 + ৳250)</option>
-                  <option value="1411">Messi Celebration Full Sleeve (৳1,300 + ৳250)</option>
-                  <option value="1384">Bangladesh (BFF) Home Jersey (৳1,150 + ৳250)</option>
+                  @foreach($customPrintProducts as $cp)
+                    <option value="{{ $cp->id }}">{{ $cp->name }} (৳{{ number_format($cp->price) }} + ৳{{ intval($customPrintFee ?? 250) }})</option>
+                  @endforeach
                 </select>
               </div>
               <div class="rabez-field">
@@ -588,6 +612,7 @@
         </div>
       </div>
     </section>
+    @endif
 
     <!-- ======================================================================
          WIDGET 08: OFFICIAL RABEZ SIZE CHART (Player Edition & Retro)

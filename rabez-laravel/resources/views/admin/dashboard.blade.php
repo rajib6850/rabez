@@ -2000,6 +2000,16 @@
                     <input type="text" id="adm-fabric" class="adm-input" placeholder="e.g. 320 GSM brushed fleece">
                   </div>
 
+                  <div class="adm-field adm-field--full" style="background:var(--adm-subtle); padding:12px 14px; border-radius:8px; border:1px solid var(--adm-border);">
+                    <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; user-select:none;">
+                      <div>
+                        <div style="font-weight:700; font-size:13.5px; color:var(--adm-ink);">Enable Custom Name &amp; Number Print (+৳{{ intval($settings['custom_print_fee'] ?? 250) }})</div>
+                        <div style="font-size:12px; color:var(--adm-muted); margin-top:2px;">Keep unchecked unless this specific product allows custom back name &amp; number printing.</div>
+                      </div>
+                      <input type="checkbox" id="adm-custom-print" style="width:18px; height:18px; accent-color:#04F404; cursor:pointer; flex-shrink:0;">
+                    </label>
+                  </div>
+
                   <div class="adm-field adm-field--full">
                     <span class="adm-label">Sizes in stock</span>
                     <div class="adm-sizes" id="adm-new-sizes"></div>
@@ -2845,6 +2855,16 @@
                 <option value="0">Out of Stock / Sold Out</option>
               </select>
             </div>
+
+            <div class="adm-field" style="background:var(--adm-surface); padding:12px 14px; border-radius:8px; border:1px solid var(--adm-border);">
+              <label style="display:flex; align-items:center; justify-content:space-between; gap:12px; cursor:pointer; user-select:none;">
+                <div>
+                  <div style="font-weight:700; font-size:13px; color:var(--adm-ink);">Custom Name &amp; Number Print (+৳{{ intval($settings['custom_print_fee'] ?? 250) }})</div>
+                  <div style="font-size:11.5px; color:var(--adm-muted); margin-top:2px;">Show Custom Name &amp; Number box on this product only.</div>
+                </div>
+                <input type="checkbox" id="edit-prod-custom-print" style="width:18px; height:18px; accent-color:#04F404; cursor:pointer; flex-shrink:0;">
+              </label>
+            </div>
           </div>
         </div>
 
@@ -3308,7 +3328,8 @@
           slug: p.slug || '',
           sizes: inStockSizes.length ? inStockSizes : allSizes,
           allSizes: allSizes,
-          isReadyStock: !!p.is_ready_stock
+          isReadyStock: !!p.is_ready_stock,
+          hasCustomPrint: !!p.has_custom_print
         };
       }
 
@@ -4145,6 +4166,9 @@
                 <div style="min-width:0;">
                   <div class="adm-cell-main">${p.name}</div>
                   <div class="adm-cell-sub">${p.sku || "—"} &middot; ${p.clubLabel || ""}</div>
+                  <button type="button" class="adm-chip js-toggle-custom-print" data-id="${p.id}" style="margin-top:5px; font-size:11px; padding:2px 8px; cursor:pointer; ${p.hasCustomPrint ? 'background:rgba(4,244,4,0.14); color:#047857; border:1px solid #10B981; font-weight:700;' : 'background:#F3F4F6; color:#6B7280; border:1px solid #D1D5DB; font-weight:600;'}" title="Tap to enable or disable Custom Name &amp; Number on this product">
+                    ${p.hasCustomPrint ? '✓ Custom Print: ON' : 'Custom Print: OFF'}
+                  </button>
                 </div>
               </div>
             </td>
@@ -4635,6 +4659,9 @@
         $("#edit-prod-cat").value = p.sleeve || "half-sleeve";
         $("#edit-prod-club").value = p.club || "all";
         $("#edit-prod-stock").value = p.isReadyStock ? "1" : "0";
+        if ($("#edit-prod-custom-print")) {
+          $("#edit-prod-custom-print").checked = !!p.hasCustomPrint;
+        }
         $("#edit-prod-desc").value = p.shortDesc || p.name;
         $("#edit-prod-long-desc").value = p.description || "";
 
@@ -4666,6 +4693,7 @@
           sleeve: $("#edit-prod-cat").value,
           club: $("#edit-prod-club").value,
           is_ready_stock: $("#edit-prod-stock").value === "1" ? 1 : 0,
+          has_custom_print: $("#edit-prod-custom-print")?.checked ? 1 : 0,
           short_desc: $("#edit-prod-desc").value.trim(),
           description: $("#edit-prod-long-desc").value.trim(),
           image: editFeaturedImage,
@@ -4692,12 +4720,13 @@
             p.sleeve = payload.sleeve;
             p.club = payload.club;
             p.isReadyStock = !!payload.is_ready_stock;
+            p.hasCustomPrint = !!payload.has_custom_print;
             p.shortDesc = payload.short_desc;
             p.description = payload.description;
             if (data.product && data.product.slug) p.slug = data.product.slug;
             p.image = payload.image;
             p.gallery = payload.gallery;
-            const labels = { "half-sleeve": "Half Sleeve", "full-sleeve": "Full Sleeve", "winter-hoodie": "Winter Hoodie", "footwear": "Boots", "tracksuit": "Tracksuit" };
+            const labels = { "half-sleeve": "Half Sleeve", "full-sleeve": "Full Sleeve", "winter-hoodie": "Winter Hoodie", "retro": "Retro", "footwear": "Boots", "tracksuit": "Tracksuit" };
             p.sleeveLabel = labels[p.sleeve] || p.sleeve;
 
             closeOverlays();
@@ -5680,6 +5709,42 @@
         const editProd = t.closest(".js-edit-product");
         if (editProd) { e.stopPropagation(); openProductDrawer(editProd.dataset.id); return; }
 
+        const toggleCustomBtn = t.closest(".js-toggle-custom-print");
+        if (toggleCustomBtn) {
+          e.stopPropagation();
+          const pid = toggleCustomBtn.dataset.id;
+          const p = products.find((x) => String(x.id) === String(pid));
+          if (!p) return;
+          const nextState = p.hasCustomPrint ? 0 : 1;
+          toggleCustomBtn.disabled = true;
+          fetch(`/admin/products/${p.id}/update`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify({ has_custom_print: nextState, _token: CSRF_TOKEN })
+          })
+            .then((r) => r.json())
+            .then((data) => {
+              if (data.success && data.product) {
+                p.hasCustomPrint = !!data.product.has_custom_print;
+                renderProducts();
+                toast(p.hasCustomPrint ? "Custom Print Enabled" : "Custom Print Disabled", p.name);
+              } else {
+                alert("Failed to update custom print setting.");
+                toggleCustomBtn.disabled = false;
+              }
+            })
+            .catch((err) => {
+              console.error(err);
+              toast("Update error", err.message);
+              toggleCustomBtn.disabled = false;
+            });
+          return;
+        }
+
         const delProd = t.closest(".js-delete-product");
         if (delProd) { e.stopPropagation(); deleteProduct(delProd.dataset.id); return; }
 
@@ -5980,6 +6045,7 @@
           gallery: addGalleryImages,
           short_desc: ($("#adm-short-desc")?.value.trim()) || name,
           description: ($("#adm-long-desc")?.value.trim()) || "",
+          has_custom_print: $("#adm-custom-print")?.checked ? 1 : 0,
           _token: CSRF_TOKEN
         };
 

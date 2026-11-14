@@ -421,6 +421,20 @@ php artisan serve --port=8000
         - **Database Seeder Updated:** Removed mock orders `RBZ-10024` through `RBZ-10027` from `DatabaseSeeder.php` to guarantee future database seeds only initialize product catalogs.
         - **Media Library Cleaned:** Removed one-off test upload image while preserving all official product assets.
 
+26. **Per-Product Custom Name & Number (`has_custom_print`) & Conditional Storefront Coupon Box:**
+    - **Selective Custom Name & Number System:**
+        - **Admin Controls (`AdminController.php`, `dashboard.blade.php`):** Added `has_custom_print` boolean validation/persistence to `storeProduct()` & `updateProduct()`, added checkboxes to **Add Product** (unchecked by default) and **Edit Product** drawer (`#edit-prod-custom-print`), and added an instant 1-click **"Custom Print: ON / OFF"** toggle button in the Admin Products table.
+        - **Database Migration (`2026_11_14_000001_default_false_custom_print_on_products.php`):** Resets existing seeded products cleanly to `has_custom_print = false` so Custom Name & Number appears ONLY on selected products enabled by the admin.
+        - **Live Storefront DB Hydration (`AppServiceProvider.php`, `layouts/storefront.blade.php`):** Shared live DB `$storefrontProductsJs`, `$customPrintProducts`, `$customPrintFee`, and `$hasActiveCoupons` via View Composer, ensuring Homepage, Shop Grid, Quick View, and Single Product views always reflect live database settings.
+        - **Storefront Enforcement (`product.blade.php`, `index.blade.php`, `cart.js`, `app.js`):**
+            - Single Product Page & Quick View Modal render the Custom Name & Number addon ONLY when `has_custom_print` is enabled on that product (Quick View CTA adapts between `View Full Details & Custom Print →` and `View Full Details →`).
+            - Homepage Customizer section (`#custom-print`) & nav link dynamically display only customizable products and hide completely if none are enabled.
+            - `cart.js` strips custom print fields/fees for non-customizable products on both `addToCart` and `localStorage` cart hydration.
+    - **Conditional Coupon Box Visibility (`layouts/storefront.blade.php`, `checkout.blade.php`, `cart.js`, `StorefrontController.php`):**
+        - Hidden "Have a Discount Coupon?" toggle/form and discount summary row in both **Cart Drawer** and **Checkout Page** whenever zero active coupons exist in the Admin Dashboard (`Coupon::where('is_active', true)->exists() === false`).
+        - Cleared any stale cached coupon in `localStorage` (`rabez_applied_coupon_v1`) when no active coupons exist, and updated `/api/apply-coupon` to reject cleanly when inactive.
+
+
 
 
 

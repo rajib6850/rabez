@@ -177,12 +177,16 @@
         if (svgTrim) svgTrim.setAttribute("stroke", trim);
         if (previewName) previewName.style.color = text;
         if (previewNum) previewNum.style.color = text;
-        if (kitSelect) kitSelect.value = prodId;
+        if (kitSelect && prodId) {
+          const matchingOpt = Array.from(kitSelect.options).find((o) => String(o.value) === String(prodId));
+          if (matchingOpt) kitSelect.value = prodId;
+        }
       });
     });
 
     addCustomBtn?.addEventListener("click", () => {
-      const id = Number(kitSelect?.value || 1324);
+      const id = Number(kitSelect?.value || 0);
+      if (!id) return;
       const size = sizeSelect?.value || "L";
       const customName = nameInput?.value || "RABEZ";
       const customNumber = numInput?.value || "10";

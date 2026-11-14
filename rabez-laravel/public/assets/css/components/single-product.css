@@ -577,6 +577,9 @@
   #js-custom-print-inputs {
     grid-template-columns: 1fr !important;
   }
+  .rabez-qv-print-inputs {
+    grid-template-columns: 1fr !important;
+  }
   .rabez-delivery-list li {
     align-items: flex-start;
     line-height: 1.55;

@@ -253,6 +253,10 @@ class StorefrontController extends Controller
             return response()->json(['success' => false, 'message' => 'Please enter a coupon code.']);
         }
 
+        if (!Coupon::where('is_active', true)->exists()) {
+            return response()->json(['success' => false, 'message' => 'No active coupons are currently available.']);
+        }
+
         $coupon = Coupon::where('code', $code)->first();
         if (!$coupon) {
             return response()->json(['success' => false, 'message' => "Coupon code '{$code}' is invalid."]);

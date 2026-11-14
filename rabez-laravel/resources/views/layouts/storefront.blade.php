@@ -29,7 +29,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.2">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=2.7">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=2.8">
   <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.8">
   <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}?v=2.6">
 
@@ -135,7 +135,9 @@
         <a href="{{ route('shop', ['sleeve' => 'winter-hoodie']) }}" class="rabez-nav__link">Winter Hoodies <span class="rabez-nav__tag">NEW</span></a>
         <a href="{{ route('shop', ['sleeve' => 'full-sleeve']) }}" class="rabez-nav__link">Full Sleeve</a>
         <a href="{{ route('shop', ['sleeve' => 'retro']) }}" class="rabez-nav__link">Retro Kits</a>
-        <a href="{{ route('home') }}#custom-print" class="rabez-nav__link">Custom Print</a>
+        @if(isset($customPrintProducts) && $customPrintProducts->isNotEmpty())
+          <a href="{{ route('home') }}#custom-print" class="rabez-nav__link">Custom Print</a>
+        @endif
         <a href="{{ route('home') }}#size-guide" class="rabez-nav__link">Size Chart</a>
 
         <!-- Mobile Drawer Utilities & Quick Actions -->
@@ -392,37 +394,41 @@
     </div>
     <div class="rabez-cart-drawer__body js-cart-drawer-items"></div>
     <div class="rabez-cart-drawer__foot">
-      <!-- Drawer Coupon Box -->
-      <div class="rabez-drawer-coupon" style="margin-bottom:12px; padding:10px 12px; background:#141916; border:1px dashed #2B3830; border-radius:8px; transition:border-color 0.2s ease;">
-        <button type="button" class="rabez-coupon-toggle js-toggle-drawer-coupon" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:0; cursor:pointer; text-align:left;">
-          <div style="font-size:12px; font-weight:700; color:#E2E8F0; display:flex; align-items:center; gap:6px;">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
-              <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
-              <circle cx="7" cy="7" r="1.5" fill="#04F404"></circle>
+      @if($hasActiveCoupons ?? false)
+        <!-- Drawer Coupon Box -->
+        <div class="rabez-drawer-coupon" style="margin-bottom:12px; padding:10px 12px; background:#141916; border:1px dashed #2B3830; border-radius:8px; transition:border-color 0.2s ease;">
+          <button type="button" class="rabez-coupon-toggle js-toggle-drawer-coupon" style="width:100%; display:flex; align-items:center; justify-content:space-between; background:transparent; border:none; padding:0; cursor:pointer; text-align:left;">
+            <div style="font-size:12px; font-weight:700; color:#E2E8F0; display:flex; align-items:center; gap:6px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                <circle cx="7" cy="7" r="1.5" fill="#04F404"></circle>
+              </svg>
+              <span>Have a Discount Coupon?</span>
+            </div>
+            <svg class="rabez-coupon-chevron js-drawer-coupon-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;">
+              <polyline points="6 9 12 15 18 9"></polyline>
             </svg>
-            <span>Have a Discount Coupon?</span>
+          </button>
+          <div id="drawer-coupon-fields" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #2B3830;">
+            <div style="display:flex; gap:6px;">
+              <input type="text" id="drawer-coupon-code" placeholder="e.g. RABEZ100" style="flex:1; text-transform:uppercase; font-size:12px; font-weight:700; padding:7px 10px; background:#0A0D0B; border:1px solid #2B3830; color:#fff; border-radius:5px; letter-spacing:0.04em;">
+              <button type="button" id="js-drawer-apply-coupon" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:12px; padding:7px 14px; border:none; border-radius:5px; cursor:pointer; white-space:nowrap; transition:background 0.15s;" onmouseover="this.style.background='#22C55E'" onmouseout="this.style.background='#04F404'">Apply</button>
+            </div>
+            <div id="drawer-coupon-msg" style="font-size:11.5px; margin-top:5px; display:none; line-height:1.3;"></div>
           </div>
-          <svg class="rabez-coupon-chevron js-drawer-coupon-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#94A3B8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transition:transform 0.25s ease;">
-            <polyline points="6 9 12 15 18 9"></polyline>
-          </svg>
-        </button>
-        <div id="drawer-coupon-fields" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #2B3830;">
-          <div style="display:flex; gap:6px;">
-            <input type="text" id="drawer-coupon-code" placeholder="e.g. RABEZ100" style="flex:1; text-transform:uppercase; font-size:12px; font-weight:700; padding:7px 10px; background:#0A0D0B; border:1px solid #2B3830; color:#fff; border-radius:5px; letter-spacing:0.04em;">
-            <button type="button" id="js-drawer-apply-coupon" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:12px; padding:7px 14px; border:none; border-radius:5px; cursor:pointer; white-space:nowrap; transition:background 0.15s;" onmouseover="this.style.background='#22C55E'" onmouseout="this.style.background='#04F404'">Apply</button>
-          </div>
-          <div id="drawer-coupon-msg" style="font-size:11.5px; margin-top:5px; display:none; line-height:1.3;"></div>
         </div>
-      </div>
+      @endif
 
       <div class="rabez-cart-subtotal" style="display:flex; justify-content:space-between; margin-bottom:5px; font-size:13.5px; color:#9CA3AF;">
         <span>Subtotal:</span>
         <strong class="js-cart-subtotal" style="color:#FFFFFF;">৳ 0</strong>
       </div>
-      <div class="js-drawer-discount-row" style="display:none; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:13px; color:#22C55E; font-weight:700;">
-        <span>Coupon (<span class="js-drawer-applied-code"></span>) <button type="button" class="js-drawer-remove-coupon" style="background:none; border:none; color:#EF4444; font-size:11px; cursor:pointer; text-decoration:underline; margin-left:4px;">Remove</button>:</span>
-        <span>- <strong class="js-drawer-discount-val">৳ 0</strong></span>
-      </div>
+      @if($hasActiveCoupons ?? false)
+        <div class="js-drawer-discount-row" style="display:none; justify-content:space-between; align-items:center; margin-bottom:6px; font-size:13px; color:#22C55E; font-weight:700;">
+          <span>Coupon (<span class="js-drawer-applied-code"></span>) <button type="button" class="js-drawer-remove-coupon" style="background:none; border:none; color:#EF4444; font-size:11px; cursor:pointer; text-decoration:underline; margin-left:4px;">Remove</button>:</span>
+          <span>- <strong class="js-drawer-discount-val">৳ 0</strong></span>
+        </div>
+      @endif
       <div class="js-drawer-total-row" style="display:flex; justify-content:space-between; margin-bottom:12px; font-size:15px; font-weight:800; color:#FFFFFF; border-top:1px solid #1F2823; padding-top:8px;">
         <span>Estimated Total:</span>
         <strong class="js-drawer-total" style="color:#04F404;">৳ 0</strong>
@@ -588,8 +594,16 @@
   <!-- Analytics & Tracking Engine (Meta Pixel + CAPI Deduplication + Anti-Spam) -->
   <script src="{{ asset('assets/js/analytics.js') }}"></script>
   <script src="{{ asset('assets/js/products-data.js') }}"></script>
-  <script src="{{ asset('assets/js/cart.js') }}?v=2.7"></script>
-  <script src="{{ asset('assets/js/app.js') }}?v=2.6"></script>
+  <script>
+    window.RABEZ_HAS_COUPONS = @json($hasActiveCoupons ?? false);
+    window.RABEZ_CUSTOM_PRINT_FEE = {{ intval($customPrintFee ?? 250) }};
+    @if(isset($storefrontProductsJs) && count($storefrontProductsJs) > 0)
+      window.RABEZ_DB_PRODUCTS = @json($storefrontProductsJs);
+      window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;
+    @endif
+  </script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=2.8"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=2.7"></script>
 
   @stack('scripts')
 </body>

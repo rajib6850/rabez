@@ -195,6 +195,7 @@ class AdminController extends Controller
             'description' => 'nullable|string',
             'image' => 'nullable|string',
             'gallery' => 'nullable',
+            'has_custom_print' => 'nullable|boolean',
         ]);
 
         $featuredImageUrl = $validated['image'] ?? null;
@@ -244,6 +245,7 @@ class AdminController extends Controller
             'image' => $featuredImageUrl ?? '/assets/images/products/real-madrid-home-hs.jpg',
             'gallery' => $galleryUrls,
             'is_ready_stock' => true,
+            'has_custom_print' => $request->boolean('has_custom_print', false),
         ]);
 
         foreach (['S', 'M', 'L', 'XL', 'XXL'] as $size) {
@@ -278,6 +280,7 @@ class AdminController extends Controller
             'is_ready_stock' => 'nullable|boolean',
             'image' => 'nullable|string',
             'gallery' => 'nullable',
+            'has_custom_print' => 'nullable|boolean',
         ]);
 
         if (isset($validated['name']) && $validated['name'] !== $product->name) {
@@ -300,6 +303,7 @@ class AdminController extends Controller
         if (isset($validated['short_desc'])) $product->short_desc = $validated['short_desc'];
         if ($request->has('description')) $product->description = $request->input('description') ?? '';
         if (isset($validated['is_ready_stock'])) $product->is_ready_stock = (bool) $validated['is_ready_stock'];
+        if ($request->has('has_custom_print')) $product->has_custom_print = $request->boolean('has_custom_print');
 
         if ($request->hasFile('photo')) {
             $media = $optimizer->optimizeAndStore($request->file('photo'));

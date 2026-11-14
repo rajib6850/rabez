@@ -8,7 +8,10 @@
   const STORAGE_CART_KEY = "rabez_wc_cart_v1";
   const STORAGE_WISHLIST_KEY = "rabez_wc_wishlist_v1";
   const WHATSAPP_NUMBER = "8801612359652";
-  const CUSTOM_PRINT_FEE = 250;
+  function getCustomPrintFee() {
+    const fee = Number(window.RABEZ_CUSTOM_PRINT_FEE);
+    return Number.isFinite(fee) && fee >= 0 ? fee : 250;
+  }
 
   function resolveImageURL(src) {
     if (!src) return "/assets/images/products/real-madrid-home-hs.jpg";
@@ -67,10 +70,28 @@
     return "৳ " + Number(amount).toLocaleString("en-IN");
   }
 
+  const LEGACY_SKU_MAP = {
+    1324: "RM-HOME-26",
+    1411: "ARG-MESSI-FS",
+    1501: "HD-MESSI-BARCA-ARG",
+    1326: "RMA-3RD-HS",
+    1388: "RMA-AWAY-FS",
+    1320: "FCB-HOME-HS",
+    1352: "ARS-HOME-HS",
+    1349: "MUN-HOME-HS",
+    1384: "BD-HOME-HS"
+  };
+
   function getProductById(id) {
     const numId = Number(id);
-    const found = (window.RABEZ_PRODUCTS || []).find((p) => Number(p.id) === numId);
+    const list = window.RABEZ_PRODUCTS || [];
+    const found = list.find((p) => Number(p.id) === numId);
     if (found) return found;
+
+    if (LEGACY_SKU_MAP[numId]) {
+      const bySku = list.find((p) => String(p.sku || "").toUpperCase() === LEGACY_SKU_MAP[numId]);
+      if (bySku) return bySku;
+    }
 
     if (window.RABEZ_CURRENT_PRODUCT && Number(window.RABEZ_CURRENT_PRODUCT.id) === numId) {
       return window.RABEZ_CURRENT_PRODUCT;
@@ -340,10 +361,11 @@
     }
     if (!product) return;
 
-    const cleanName = (customName || "").trim().toUpperCase();
-    const cleanNum = (customNumber || "").trim();
-    const hasCustom = Boolean(cleanName || cleanNum);
-    const unitPrice = product.price + (hasCustom ? CUSTOM_PRINT_FEE : 0);
+    const allowCustomPrint = product.hasCustomPrint === true;
+    const cleanName = allowCustomPrint ? (customName || "").trim().toUpperCase() : "";
+    const cleanNum = allowCustomPrint ? (customNumber || "").trim() : "";
+    const hasCustom = Boolean(allowCustomPrint && (cleanName || cleanNum));
+    const unitPrice = product.price + (hasCustom ? getCustomPrintFee() : 0);
     const key = `${product.id}_${size}_${cleanName}_${cleanNum}`;
 
     const existing = cart.find((item) => item.key === key);
@@ -614,6 +636,23 @@
             </div>
           </div>
 
+          <!-- Optional Custom Name & Number Addon (Only when enabled on this product) -->
+          ${product.hasCustomPrint === true ? `
+            <div class="rabez-qv-print-box" style="border:1px solid var(--rabez-border); border-radius:6px; padding:10px 12px; margin-bottom:12px; background:#F8FAF9;">
+              <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; user-select:none; flex-wrap:wrap;">
+                <span style="font-weight:700; font-size:0.84rem; color:var(--rabez-text-main); display:flex; align-items:center; gap:7px;">
+                  <input type="checkbox" class="js-qv-custom-toggle" style="accent-color:#04F404; width:15px; height:15px; cursor:pointer;">
+                  <span>+ Add Custom Name &amp; Number Print</span>
+                </span>
+                <span style="color:#008A00; font-weight:800; font-size:0.8rem;">+ ৳ ${getCustomPrintFee()}</span>
+              </label>
+              <div class="rabez-qv-print-inputs js-qv-custom-inputs" style="display:none; margin-top:10px; gap:8px; grid-template-columns:2fr 1fr;">
+                <input type="text" class="js-qv-custom-name" maxlength="12" placeholder="Name (e.g. MESSI)" style="width:100%; height:36px; background:#FFFFFF; border:1px solid var(--rabez-border-strong); border-radius:4px; padding:0 10px; color:#111; font-size:12.5px; text-transform:uppercase;">
+                <input type="text" class="js-qv-custom-num" maxlength="2" placeholder="No. (10)" style="width:100%; height:36px; background:#FFFFFF; border:1px solid var(--rabez-border-strong); border-radius:4px; padding:0 10px; color:#111; font-size:12.5px;">
+              </div>
+            </div>
+          ` : ''}
+
           <!-- Quantity Selector Row -->
           <div class="rabez-qv-qty-row" style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
             <span style="font-weight:700; font-size:0.88rem; color:var(--rabez-text-main);">Quantity:</span>
@@ -637,7 +676,7 @@
             </button>
 
             <a href="/product/${product.slug || product.id}" class="rabez-btn rabez-btn--outline rabez-btn--full" style="padding:9px 16px; font-size:0.84rem; text-align:center;">
-              View Full Details &amp; Custom Print &rarr;
+              ${product.hasCustomPrint === true ? 'View Full Details &amp; Custom Print &rarr;' : 'View Full Details &rarr;'}
             </a>
           </div>
 
@@ -699,14 +738,21 @@
 
   /* --- Coupon Application State & Persistence --- */
   let appliedCoupon = null;
-  try {
-    const cachedCoupon = localStorage.getItem("rabez_applied_coupon_v1");
-    if (cachedCoupon) {
-      appliedCoupon = JSON.parse(cachedCoupon);
-      window.RABEZ_APPLIED_COUPON = appliedCoupon;
+  if (window.RABEZ_HAS_COUPONS === false) {
+    try {
+      localStorage.removeItem("rabez_applied_coupon_v1");
+    } catch (e) {}
+    window.RABEZ_APPLIED_COUPON = null;
+  } else {
+    try {
+      const cachedCoupon = localStorage.getItem("rabez_applied_coupon_v1");
+      if (cachedCoupon) {
+        appliedCoupon = JSON.parse(cachedCoupon);
+        window.RABEZ_APPLIED_COUPON = appliedCoupon;
+      }
+    } catch (e) {
+      appliedCoupon = null;
     }
-  } catch (e) {
-    appliedCoupon = null;
   }
 
   function toggleCheckoutCoupon(forceOpen) {
@@ -801,6 +847,14 @@
   }
 
   async function applyCouponCode(code, options = {}) {
+    if (window.RABEZ_HAS_COUPONS === false) {
+      appliedCoupon = null;
+      window.RABEZ_APPLIED_COUPON = null;
+      try {
+        localStorage.removeItem("rabez_applied_coupon_v1");
+      } catch (e) {}
+      return;
+    }
     const cleanCode = (code || "").trim().toUpperCase();
     if (!cleanCode) {
       if (!options.silent) {
@@ -1029,12 +1083,27 @@
     }
 
     // Quick View Quantity +/- Click
+    function updateQuickViewModalPrice(modal) {
+      if (!modal) return;
+      const addBtn = modal.querySelector(".js-modal-add-cart");
+      const addBtnText = modal.querySelector(".js-qv-btn-text");
+      const priceDisplay = modal.querySelector(".js-qv-price-display");
+      const qtyValEl = modal.querySelector(".js-qv-qty-val");
+      const customToggle = modal.querySelector(".js-qv-custom-toggle");
+      const productId = Number(addBtn?.dataset.productId);
+      const prod = getProductById(productId);
+      if (!prod) return;
+      const qty = parseInt(qtyValEl?.textContent.trim(), 10) || 1;
+      const hasCustom = prod.hasCustomPrint === true && Boolean(customToggle?.checked);
+      const unitPrice = prod.price + (hasCustom ? getCustomPrintFee() : 0);
+      if (priceDisplay) priceDisplay.textContent = formatBDT(unitPrice * qty);
+      if (addBtnText) addBtnText.textContent = `Add to Bag \u2014 ${formatBDT(unitPrice * qty)}`;
+    }
+
     const qtyBtn = e.target.closest(".js-qv-qty-plus, .js-qv-qty-minus");
     if (qtyBtn) {
       const modal = qtyBtn.closest(".rabez-modal");
       const qtyValEl = modal?.querySelector(".js-qv-qty-val");
-      const addBtnText = modal?.querySelector(".js-qv-btn-text");
-      const addBtn = modal?.querySelector(".js-modal-add-cart");
       if (modal && qtyValEl) {
         let qty = parseInt(qtyValEl.textContent.trim(), 10) || 1;
         if (qtyBtn.classList.contains("js-qv-qty-plus")) {
@@ -1043,11 +1112,7 @@
           qty = Math.max(1, qty - 1);
         }
         qtyValEl.textContent = qty;
-        const productId = Number(addBtn?.dataset.productId);
-        const prod = getProductById(productId);
-        if (prod && addBtnText) {
-          addBtnText.textContent = `Add to Bag \u2014 ${formatBDT(prod.price * qty)}`;
-        }
+        updateQuickViewModalPrice(modal);
       }
       return;
     }
@@ -1074,11 +1139,19 @@
       const selectedSwatch = modal?.querySelector(".rabez-size-swatch.is-selected");
       const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "L");
       const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
-      const total = prod ? prod.price * qty : 0;
+      const customToggle = modal?.querySelector(".js-qv-custom-toggle");
+      const allowCustom = prod?.hasCustomPrint === true && Boolean(customToggle?.checked);
+      const customName = allowCustom ? (modal?.querySelector(".js-qv-custom-name")?.value.trim().toUpperCase() || "") : "";
+      const customNumber = allowCustom ? (modal?.querySelector(".js-qv-custom-num")?.value.trim() || "") : "";
+      const unitPrice = prod ? (prod.price + (allowCustom ? getCustomPrintFee() : 0)) : 0;
+      const total = unitPrice * qty;
+      const customLine = allowCustom && (customName || customNumber)
+        ? `\n\u2022 কাস্টম প্রিন্ট: ${customName} #${customNumber} (+৳${getCustomPrintFee()})`
+        : "";
       const msg = `আসসালামু আলাইকুম RABEZ, আমি Quick View থেকে সরাসরি এই জার্সিটি অর্ডার করতে চাই:\n\n` +
         `\u2022 জার্সি: ${prod?.name || 'Jersey'}\n` +
         `\u2022 সাইজ: ${size}\n` +
-        `\u2022 পরিমাণ: ${qty}\n` +
+        `\u2022 পরিমাণ: ${qty}${customLine}\n` +
         `\u2022 মোট মূল্য: ${formatBDT(total)}\n\n` +
         `আমার নাম ও ডেলিভারি ঠিকানা: `;
       const url = `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`;
@@ -1090,13 +1163,18 @@
     const modalAddBtn = e.target.closest(".js-modal-add-cart");
     if (modalAddBtn) {
       const id = Number(modalAddBtn.dataset.productId);
+      const prod = getProductById(id);
       const modal = modalAddBtn.closest(".rabez-modal") || modalAddBtn.closest(".rabez-qv-layout") || modalAddBtn.closest(".rabez-single-product");
       const selectedSwatch = modal?.querySelector(".rabez-size-swatch.is-selected");
       const size = selectedSwatch ? selectedSwatch.dataset.size : "L";
       const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
-      addToCart({ id, size, qty });
+      const customToggle = modal?.querySelector(".js-qv-custom-toggle");
+      const allowCustom = prod?.hasCustomPrint === true && Boolean(customToggle?.checked);
+      const customName = allowCustom ? (modal?.querySelector(".js-qv-custom-name")?.value.trim().toUpperCase() || "") : "";
+      const customNumber = allowCustom ? (modal?.querySelector(".js-qv-custom-num")?.value.trim() || "") : "";
+      addToCart({ id, size, qty, customName, customNumber });
       document.querySelector(".js-quickview-backdrop")?.classList.remove("is-open");
-      openCartDrawer();
+      document.body.style.overflow = "";
       return;
     }
 
@@ -1302,6 +1380,24 @@
       e.target.closest(".rabez-shipping-card")?.classList.add("is-selected");
       renderCheckoutOrderSummary();
     }
+    if (e.target.matches(".js-qv-custom-toggle")) {
+      const modal = e.target.closest(".rabez-modal");
+      const inputs = modal?.querySelector(".js-qv-custom-inputs");
+      if (inputs) {
+        inputs.style.display = e.target.checked ? "grid" : "none";
+      }
+      const addBtn = modal?.querySelector(".js-modal-add-cart");
+      const addBtnText = modal?.querySelector(".js-qv-btn-text");
+      const priceDisplay = modal?.querySelector(".js-qv-price-display");
+      const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
+      const prod = getProductById(Number(addBtn?.dataset.productId));
+      if (prod) {
+        const hasCustom = prod.hasCustomPrint === true && e.target.checked;
+        const unitPrice = prod.price + (hasCustom ? getCustomPrintFee() : 0);
+        if (priceDisplay) priceDisplay.textContent = formatBDT(unitPrice * qty);
+        if (addBtnText) addBtnText.textContent = `Add to Bag \u2014 ${formatBDT(unitPrice * qty)}`;
+      }
+    }
   });
 
   document.addEventListener("keydown", function (e) {
@@ -1355,6 +1451,26 @@
       document.querySelectorAll(".js-club-filter").forEach((el) => {
         el.classList.toggle("is-active", el.dataset.club === paramClub);
       });
+    }
+
+    // Sanitize cached cart items against live product custom-print eligibility
+    if (Array.isArray(window.RABEZ_PRODUCTS) && window.RABEZ_PRODUCTS.length) {
+      let cartSanitized = false;
+      cart = cart.map((item) => {
+        const prod = getProductById(item.id);
+        if (prod && prod.hasCustomPrint !== true && (item.customName || item.customNumber)) {
+          cartSanitized = true;
+          return {
+            ...item,
+            key: `${prod.id}_${item.size}__`,
+            customName: "",
+            customNumber: "",
+            price: Number(prod.price)
+          };
+        }
+        return item;
+      });
+      if (cartSanitized) saveCart();
     }
 
     renderProductGrids();
