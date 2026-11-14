@@ -13,7 +13,7 @@
         radial-gradient(circle at 14% 85%, rgba(4, 244, 4, 0.06), transparent 36%),
         #0A0C0B;
       color: #FFFFFF;
-      padding: 46px 0 58px;
+      padding: 44px 0 44px;
       border-bottom: 1px solid #1E2421;
     }
 
@@ -88,14 +88,14 @@
 
     .rabez-cms-body-wrap {
       background: #F4F6F5;
-      padding: 0 0 64px;
+      padding: 34px 0 68px;
     }
 
     .rabez-cms-grid {
       display: grid;
       grid-template-columns: minmax(0, 1fr) 310px;
       gap: 24px;
-      margin-top: -28px;
+      margin-top: 0;
       align-items: start;
     }
 
@@ -109,6 +109,8 @@
       font-size: 0.98rem;
       line-height: 1.75;
       overflow-wrap: anywhere;
+      min-width: 0;
+      max-width: 100%;
     }
 
     .rabez-cms-article > *:first-child {
@@ -292,18 +294,29 @@
 
     @media (max-width: 960px) {
       .rabez-cms-grid {
-        grid-template-columns: 1fr;
+        grid-template-columns: minmax(0, 1fr);
+        gap: 18px;
+      }
+      .rabez-cms-sidebar {
+        min-width: 0;
       }
     }
 
     @media (max-width: 640px) {
       .rabez-cms-hero {
-        padding: 34px 0 44px;
+        padding: 30px 0 30px;
+      }
+      .rabez-cms-body-wrap {
+        padding: 22px 0 56px;
       }
       .rabez-cms-article {
         padding: 22px 18px;
         border-radius: 12px;
         font-size: 0.94rem;
+      }
+      .rabez-cms-sidecard {
+        padding: 18px;
+        border-radius: 12px;
       }
       .rabez-cms-article h2 {
         font-size: 1.35rem;
