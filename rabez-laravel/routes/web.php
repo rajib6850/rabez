@@ -27,6 +27,7 @@ Route::get('/product.html', function (\Illuminate\Http\Request $request) {
 Route::get('/checkout', [StorefrontController::class, 'checkout'])->name('checkout');
 Route::post('/checkout', [StorefrontController::class, 'processCheckout'])->name('checkout.process');
 Route::post('/api/apply-coupon', [StorefrontController::class, 'applyCoupon'])->name('storefront.apply_coupon');
+Route::get('/api/coupons/active-status', [StorefrontController::class, 'activeCouponsStatus'])->name('storefront.coupons_status');
 Route::get('/track-order', [StorefrontController::class, 'trackOrder'])->name('track-order');
 
 /*

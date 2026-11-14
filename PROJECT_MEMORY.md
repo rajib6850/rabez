@@ -439,6 +439,11 @@ php artisan serve --port=8000
     - Shortened `Order Instantly on WhatsApp (+880 1612-359652)` (`product.blade.php`) and `Order Instantly on WhatsApp` (Cart Drawer in `layouts/storefront.blade.php`) to `Order via WhatsApp` (matching Quick View) so WhatsApp CTA buttons remain crisp and single-line across mobile and desktop.
     - Bumped asset versions (`single-product.css?v=2.9`, `cart.js?v=2.9`, `sw.js` `rabez-pwa-v3`).
 
+28. **Direct Visible Coupon Form, Dynamic Active Coupon Check API, and Service Worker Network-First Fix:**
+    - **Visible Coupon Form (`layouts/storefront.blade.php`, `checkout.blade.php`):** Uncollapsed the coupon input field and Apply button (`display:block;`) so customers immediately see the code input field and Apply button whenever active coupons exist, rather than hiding it behind a collapsed accordion.
+    - **Live Dynamic Active Coupons API (`StorefrontController.php`, `routes/web.php`, `cart.js`):** Added `/api/coupons/active-status` endpoint returning live active coupon existence and count. `cart.js` syncs coupon box visibility in real-time on `DOMContentLoaded` and whenever `openCartDrawer()` is triggered, toggling `.rabez-drawer-coupon` and `.rabez-checkout-coupon` between `block` and `none` without requiring full hard refreshes.
+    - **Service Worker Cache Invalidation (`sw.js`):** Removed `"/"` from `STATIC_ASSETS` and enforced network-first on all page navigations (`e.request.mode === "navigate"`), preventing mobile browsers from serving stale HTML when coupons or catalog items change. Bumped PWA cache to `rabez-pwa-v4` and script to `cart.js?v=3.0`.
+
 
 
 

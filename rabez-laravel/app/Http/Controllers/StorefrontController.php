@@ -285,5 +285,17 @@ class StorefrontController extends Controller
             'message' => "Coupon '{$coupon->code}' applied successfully! You saved ৳" . number_format($discount) . "."
         ]);
     }
+
+    public function activeCouponsStatus()
+    {
+        $hasActive = Coupon::where('is_active', true)->exists();
+        $count = $hasActive ? Coupon::where('is_active', true)->count() : 0;
+
+        return response()->json([
+            'success' => true,
+            'has_active' => $hasActive,
+            'count' => $count,
+        ]);
+    }
 }
 

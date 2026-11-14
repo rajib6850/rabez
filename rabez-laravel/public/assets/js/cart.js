@@ -528,6 +528,7 @@
   function openCartDrawer() {
     document.querySelector(".js-cart-drawer")?.classList.add("is-open");
     document.querySelector(".js-cart-backdrop")?.classList.add("is-open");
+    syncActiveCouponsStatus();
   }
 
   function closeCartDrawer() {
@@ -753,6 +754,44 @@
     } catch (e) {
       appliedCoupon = null;
     }
+  }
+
+  function updateCouponBoxesVisibility(hasCoupons) {
+    window.RABEZ_HAS_COUPONS = Boolean(hasCoupons);
+    const drawerCoupon = document.querySelector(".rabez-drawer-coupon");
+    const checkoutCoupon = document.querySelector(".rabez-checkout-coupon");
+    const drawerDiscountRow = document.querySelector(".js-drawer-discount-row");
+    const checkoutDiscountRow = document.querySelector(".js-checkout-discount-row");
+
+    if (drawerCoupon) {
+      drawerCoupon.style.display = hasCoupons ? "block" : "none";
+    }
+    if (checkoutCoupon) {
+      checkoutCoupon.style.display = hasCoupons ? "block" : "none";
+    }
+    if (!hasCoupons) {
+      if (drawerDiscountRow) drawerDiscountRow.style.display = "none";
+      if (checkoutDiscountRow) checkoutDiscountRow.style.display = "none";
+      appliedCoupon = null;
+      window.RABEZ_APPLIED_COUPON = null;
+      try {
+        localStorage.removeItem("rabez_applied_coupon_v1");
+      } catch (e) {}
+    }
+  }
+
+  async function syncActiveCouponsStatus() {
+    try {
+      const res = await fetch("/api/coupons/active-status", {
+        headers: { "Accept": "application/json" }
+      });
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.success) {
+          updateCouponBoxesVisibility(Boolean(data.has_active));
+        }
+      }
+    } catch (e) {}
   }
 
   function toggleCheckoutCoupon(forceOpen) {
@@ -1477,6 +1516,7 @@
     initSingleProductPage();
     updateCartUI();
     updateWishlistUI();
+    syncActiveCouponsStatus();
   });
 })();
 

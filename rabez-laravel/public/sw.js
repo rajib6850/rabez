@@ -2,9 +2,8 @@
  * RABEZ PWA Service Worker (sw.js)
  * Enables installable app capability & fast cached asset loading
  */
-const CACHE_NAME = "rabez-pwa-v3";
+const CACHE_NAME = "rabez-pwa-v4";
 const STATIC_ASSETS = [
-  "/",
   "/manifest.json",
   "/assets/css/01-variables.css",
   "/assets/css/02-base-reset.css",
@@ -38,6 +37,16 @@ self.addEventListener("activate", (e) => {
 });
 
 self.addEventListener("fetch", (e) => {
+  // Navigation requests (HTML pages) must always fetch live network to reflect coupon & stock changes
+  if (e.request.mode === "navigate") {
+    e.respondWith(
+      fetch(e.request).catch(() => {
+        return caches.match(e.request);
+      })
+    );
+    return;
+  }
+
   // Only cache GET requests for static assets
   if (e.request.method !== "GET" || !e.request.url.startsWith("http")) return;
 
