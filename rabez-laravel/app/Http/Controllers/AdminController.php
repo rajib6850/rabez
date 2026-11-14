@@ -191,11 +191,14 @@ class AdminController extends Controller
             'regular_price' => 'nullable|numeric',
             'club' => 'nullable|string',
             'sleeve' => 'nullable|string',
+            'fabric' => 'nullable|string|max:191',
             'short_desc' => 'nullable|string',
             'description' => 'nullable|string',
             'image' => 'nullable|string',
             'gallery' => 'nullable',
             'has_custom_print' => 'nullable|boolean',
+            'sizes' => 'nullable|array',
+            'all_sizes' => 'nullable|array',
         ]);
 
         $featuredImageUrl = $validated['image'] ?? null;
@@ -232,12 +235,15 @@ class AdminController extends Controller
             $slug = "{$baseSlug}-{$counter}";
         }
 
+        $sleeve = $validated['sleeve'] ?? 'half-sleeve';
+
         $product = Product::create([
             'name' => $validated['name'],
             'slug' => $slug,
             'sku' => strtoupper($validated['sku']),
             'club' => $validated['club'] ?? 'all',
-            'sleeve' => $validated['sleeve'] ?? 'half-sleeve',
+            'sleeve' => $sleeve,
+            'fabric' => isset($validated['fabric']) ? (trim($validated['fabric']) ?: null) : null,
             'price' => $validated['price'],
             'regular_price' => $validated['regular_price'] ?? ($validated['price'] + 200),
             'short_desc' => $validated['short_desc'] ?? '',
@@ -248,14 +254,8 @@ class AdminController extends Controller
             'has_custom_print' => $request->boolean('has_custom_print', false),
         ]);
 
-        foreach (['S', 'M', 'L', 'XL', 'XXL'] as $size) {
-            ProductVariant::create([
-                'product_id' => $product->id,
-                'size' => $size,
-                'stock_qty' => 25,
-                'is_in_stock' => true,
-            ]);
-        }
+        $inStockSizes = $request->exists('sizes') ? ($request->input('sizes', []) ?? []) : null;
+        $this->syncProductVariants($product, $sleeve, $inStockSizes, $request->input('all_sizes'));
 
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'product' => $product->load('variants')]);
@@ -275,12 +275,15 @@ class AdminController extends Controller
             'regular_price' => 'nullable|numeric',
             'club' => 'nullable|string',
             'sleeve' => 'nullable|string',
+            'fabric' => 'nullable|string|max:191',
             'short_desc' => 'nullable|string',
             'description' => 'nullable|string',
             'is_ready_stock' => 'nullable|boolean',
             'image' => 'nullable|string',
             'gallery' => 'nullable',
             'has_custom_print' => 'nullable|boolean',
+            'sizes' => 'nullable|array',
+            'all_sizes' => 'nullable|array',
         ]);
 
         if (isset($validated['name']) && $validated['name'] !== $product->name) {
@@ -300,6 +303,9 @@ class AdminController extends Controller
         if (isset($validated['regular_price'])) $product->regular_price = $validated['regular_price'];
         if (isset($validated['club'])) $product->club = $validated['club'];
         if (isset($validated['sleeve'])) $product->sleeve = $validated['sleeve'];
+        if ($request->exists('fabric')) {
+            $product->fabric = trim((string) $request->input('fabric', '')) ?: null;
+        }
         if (isset($validated['short_desc'])) $product->short_desc = $validated['short_desc'];
         if ($request->has('description')) $product->description = $request->input('description') ?? '';
         if (isset($validated['is_ready_stock'])) $product->is_ready_stock = (bool) $validated['is_ready_stock'];
@@ -333,7 +339,62 @@ class AdminController extends Controller
 
         $product->save();
 
+        if ($request->exists('sizes')) {
+            $this->syncProductVariants(
+                $product,
+                $product->sleeve ?? 'half-sleeve',
+                $request->input('sizes', []) ?? [],
+                $request->input('all_sizes')
+            );
+        }
+
         return response()->json(['success' => true, 'product' => $product->load('variants')]);
+    }
+
+    /**
+     * Synchronize size variants and in-stock flags for a product.
+     */
+    private function syncProductVariants(Product $product, string $sleeve, ?array $inStockSizes, ?array $allSizes = null): void
+    {
+        $defaultSizes = $sleeve === 'footwear'
+            ? ['39', '40', '41', '42', '43', '44']
+            : ['S', 'M', 'L', 'XL', 'XXL'];
+
+        $cleanAll = collect(is_array($allSizes) ? $allSizes : [])
+            ->map(fn ($s) => trim((string) $s))
+            ->filter()
+            ->unique()
+            ->values()
+            ->all();
+
+        $existingVariants = $product->variants()->get()->keyBy('size');
+
+        if (!empty($cleanAll)) {
+            $targetSizes = $cleanAll;
+        } elseif ($existingVariants->isNotEmpty()) {
+            $targetSizes = $existingVariants->keys()->all();
+        } else {
+            $targetSizes = $defaultSizes;
+        }
+
+        $cleanInStock = $inStockSizes === null
+            ? $targetSizes
+            : collect($inStockSizes)->map(fn ($s) => trim((string) $s))->filter()->values()->all();
+
+        // Remove stale sizes no longer part of the product's active size set (e.g. category switch)
+        $product->variants()->whereNotIn('size', $targetSizes)->delete();
+
+        foreach ($targetSizes as $size) {
+            $inStock = in_array($size, $cleanInStock, true);
+            $existing = $existingVariants->get($size);
+            ProductVariant::updateOrCreate(
+                ['product_id' => $product->id, 'size' => $size],
+                [
+                    'is_in_stock' => $inStock,
+                    'stock_qty' => $inStock ? max(1, (int) ($existing->stock_qty ?? 25)) : 0,
+                ]
+            );
+        }
     }
 
     public function deleteProduct($id)

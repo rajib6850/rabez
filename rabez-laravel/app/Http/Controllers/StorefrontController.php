@@ -102,7 +102,7 @@ class StorefrontController extends Controller
             $product = Product::with(['variants', 'category'])->find(19) ?: Product::with(['variants', 'category'])->firstOrFail();
         }
 
-        $relatedProducts = Product::where('id', '!=', $product->id)
+        $relatedProducts = Product::with('variants')->where('id', '!=', $product->id)
             ->where(function ($q) use ($product) {
                 if ($product->club && $product->club !== 'all') {
                     $q->where('club', $product->club);
@@ -115,7 +115,7 @@ class StorefrontController extends Controller
             ->get();
 
         if ($relatedProducts->isEmpty()) {
-            $relatedProducts = Product::where('id', '!=', $product->id)->take(4)->get();
+            $relatedProducts = Product::with('variants')->where('id', '!=', $product->id)->take(4)->get();
         }
 
         $settings = Setting::pluck('value', 'key')->toArray();

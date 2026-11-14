@@ -8,8 +8,11 @@
     $gallery = is_array($product->gallery) ? $product->gallery : (json_decode($product->gallery ?? '[]', true) ?: []);
     $backImg = !empty($gallery) ? asset($gallery[0]) : null;
     $allImages = array_unique(array_merge([$featuredImg], array_map(fn($g) => asset($g), $gallery)));
-    $sizes = $product->variants->isNotEmpty() ? $product->variants->pluck('size')->toArray() : ['S', 'M', 'L', 'XL', 'XXL'];
-    $defaultSize = in_array('L', $sizes) ? 'L' : ($sizes[0] ?? 'L');
+    $defaultSet = $product->sleeve === 'footwear' ? ['39', '40', '41', '42', '43', '44'] : ['S', 'M', 'L', 'XL', 'XXL'];
+    $hasVariants = $product->variants->isNotEmpty();
+    $allSizes = $hasVariants ? $product->variants->pluck('size')->toArray() : $defaultSet;
+    $sizes = $hasVariants ? $product->variants->where('is_in_stock', true)->pluck('size')->toArray() : $allSizes;
+    $defaultSize = in_array('L', $sizes, true) ? 'L' : ($sizes[0] ?? '');
   @endphp
 
   <!-- WooCommerce Single Product Container -->
@@ -58,10 +61,17 @@
             {{ $product->short_desc ?: 'Premium Player Edition football jersey with authentic double-knit jacquard weave, moisture-wicking aerodynamic fabric, and high-density heat-pressed silicone club crest.' }}
           </p>
 
+          @if(!empty($product->fabric))
+            <div style="display:inline-flex; align-items:center; gap:7px; margin:0 0 14px; padding:6px 11px; border-radius:6px; background:#121614; border:1px solid #2B332E; font-size:0.84rem; color:#D1D5DB;">
+              <span style="color:#9BA59F;">Fabric:</span>
+              <strong style="color:#FFFFFF;">{{ $product->fabric }}</strong>
+            </div>
+          @endif
+
           <!-- Size Swatches (pa_size) -->
           <div class="rabez-variation-block variations_form">
             <div class="rabez-variation-header">
-              <span>Select Jersey Size: <strong id="js-selected-size-label" style="color:var(--rabez-neon);">{{ $defaultSize }}</strong></span>
+              <span>Select Jersey Size: <strong id="js-selected-size-label" style="color:{{ $defaultSize ? 'var(--rabez-neon)' : '#EF4444' }};">{{ $defaultSize ?: 'Out of Stock' }}</strong></span>
               <button type="button" class="rabez-size-chart-link js-open-size-chart-modal" style="background:none; border:none; color:#04F404; text-decoration:underline; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:0;">
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
                   <path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path>
@@ -71,8 +81,9 @@
               </button>
             </div>
             <div class="rabez-size-swatches js-sp-swatches">
-              @foreach($sizes as $s)
-                <button type="button" class="rabez-size-swatch {{ $s === $defaultSize ? 'is-selected' : '' }}" data-size="{{ $s }}" aria-pressed="{{ $s === $defaultSize ? 'true' : 'false' }}">{{ $s }}</button>
+              @foreach($allSizes as $s)
+                @php $isAvail = in_array($s, $sizes, true); @endphp
+                <button type="button" class="rabez-size-swatch {{ ($isAvail && $s === $defaultSize) ? 'is-selected' : '' }} {{ !$isAvail ? 'is-out-of-stock' : '' }}" data-size="{{ $s }}" aria-pressed="{{ ($isAvail && $s === $defaultSize) ? 'true' : 'false' }}" @if(!$isAvail) disabled title="Out of stock" @endif>{{ $s }}</button>
               @endforeach
             </div>
           </div>
@@ -448,6 +459,9 @@
             <h3 style="font-size:19px; font-weight:800; color:#FFFFFF; margin-bottom:12px;">Fabric Composition &amp; Washing Instructions</h3>
             <p style="margin-bottom:16px; color:#D1D5DB; line-height:1.85;">Keep your jersey in peak condition with proper washing care:</p>
             <ul style="padding-left:22px; display:grid; gap:11px; color:#E5E7EB; margin-bottom:20px;">
+              @if(!empty($product->fabric))
+                <li><strong style="color:#04F404;">Fabric Specification:</strong> {{ $product->fabric }}</li>
+              @endif
               <li><strong style="color:#FFFFFF;">Material:</strong> 100% Recycled Double-Knit Aeroready / Dri-FIT Polyester.</li>
               <li><strong style="color:#FFFFFF;">Weight:</strong> 190&ndash;210 GSM high-density player edition fabric.</li>
               <li><strong style="color:#FFFFFF;">Washing:</strong> Machine wash cold (30&deg;C) inside out, or hand wash gently in cold water.</li>
@@ -744,13 +758,19 @@
                   <a href="{{ route('product.detail', $rel->slug ?: $rel->id) }}">{{ $rel->name }}</a>
                 </h3>
 
+                @php
+                  $rDefaultSet = $rel->sleeve === 'footwear' ? ['39', '40', '41', '42', '43', '44'] : ['S', 'M', 'L', 'XL', 'XXL'];
+                  $rHasVar = $rel->variants->isNotEmpty();
+                  $rAllSizes = $rHasVar ? $rel->variants->pluck('size')->toArray() : $rDefaultSet;
+                  $rInStock = $rHasVar ? $rel->variants->where('is_in_stock', true)->pluck('size')->toArray() : $rAllSizes;
+                  $rDefault = in_array('L', $rInStock, true) ? 'L' : ($rInStock[0] ?? '');
+                @endphp
                 <div class="rabez-product-card__sizes" role="group" aria-label="Select Jersey Size">
                   <div class="rabez-size-swatches js-card-swatches">
-                    <button type="button" class="rabez-size-swatch" data-size="S">S</button>
-                    <button type="button" class="rabez-size-swatch" data-size="M">M</button>
-                    <button type="button" class="rabez-size-swatch is-selected" data-size="L">L</button>
-                    <button type="button" class="rabez-size-swatch" data-size="XL">XL</button>
-                    <button type="button" class="rabez-size-swatch" data-size="XXL">XXL</button>
+                    @foreach($rAllSizes as $rs)
+                      @php $rAvail = in_array($rs, $rInStock, true); @endphp
+                      <button type="button" class="rabez-size-swatch {{ ($rAvail && $rs === $rDefault) ? 'is-selected' : '' }} {{ !$rAvail ? 'is-out-of-stock' : '' }}" data-size="{{ $rs }}" aria-pressed="{{ ($rAvail && $rs === $rDefault) ? 'true' : 'false' }}" @if(!$rAvail) disabled title="Out of stock" @endif>{{ $rs }}</button>
+                    @endforeach
                   </div>
                 </div>
 
@@ -871,6 +891,7 @@
       // 3. Size selector
       sizeBtns.forEach((btn) => {
         btn.addEventListener("click", () => {
+          if (btn.disabled) return;
           sizeBtns.forEach((b) => {
             b.classList.remove("is-selected");
             b.setAttribute("aria-pressed", "false");
@@ -914,11 +935,13 @@
         id: {{ $product->id }},
         sku: @json($product->sku ?: ('RBZ-' . $product->id)),
         name: @json($product->name),
+        fabric: @json($product->fabric),
         price: Number({{ $product->price }}),
         regularPrice: Number({{ $product->regular_price ?? ($product->price + 200) }}),
         image: @json(asset($product->image ?: 'assets/images/products/real-madrid-home-hs.jpg')),
-        sizes: ["S", "M", "L", "XL", "XXL"],
-        defaultSize: currentSize || "L",
+        sizes: @json($sizes),
+        allSizes: @json($allSizes),
+        defaultSize: currentSize,
         hasCustomPrint: allowCustomPrint
       };
       window.RABEZ_CURRENT_PRODUCT = currentProductData;
@@ -933,23 +956,30 @@
       @foreach($relatedProducts as $rel)
         @php
           $rGallery = is_array($rel->gallery) ? $rel->gallery : (json_decode($rel->gallery ?? '[]', true) ?: []);
+          $rDef = $rel->sleeve === 'footwear' ? ['39', '40', '41', '42', '43', '44'] : ['S', 'M', 'L', 'XL', 'XXL'];
+          $rHv = $rel->variants->isNotEmpty();
+          $rAll = $rHv ? $rel->variants->pluck('size')->toArray() : $rDef;
+          $rIn = $rHv ? $rel->variants->where('is_in_stock', true)->pluck('size')->toArray() : $rAll;
+          $rDefSize = in_array('L', $rIn, true) ? 'L' : ($rIn[0] ?? '');
         @endphp
         if (!window.RABEZ_PRODUCTS.some(p => Number(p.id) === {{ $rel->id }})) {
           window.RABEZ_PRODUCTS.push({
             id: {{ $rel->id }},
-            sku: "{{ $rel->sku }}",
-            name: "{{ addslashes($rel->name) }}",
-            slug: "{{ $rel->slug ?: $rel->id }}",
-            club: "{{ $rel->club }}",
-            clubLabel: "{{ $rel->club_label ?: ucwords(str_replace('-', ' ', $rel->club ?: 'Club')) }}",
-            sleeve: "{{ $rel->sleeve }}",
-            sleeveLabel: "{{ $rel->sleeve_label ?: ucwords(str_replace('-', ' ', $rel->sleeve ?: 'Jersey')) }}",
+            sku: @json($rel->sku),
+            name: @json($rel->name),
+            slug: @json($rel->slug ?: $rel->id),
+            club: @json($rel->club),
+            clubLabel: @json($rel->club_label ?: ucwords(str_replace('-', ' ', $rel->club ?: 'Club'))),
+            sleeve: @json($rel->sleeve),
+            sleeveLabel: @json($rel->sleeve_label ?: ucwords(str_replace('-', ' ', $rel->sleeve ?: 'Jersey'))),
+            fabric: @json($rel->fabric),
             price: {{ (float) $rel->price }},
             regularPrice: {{ (float) ($rel->price + 200) }},
-            image: "{{ $rel->image ? asset($rel->image) : asset('assets/images/products/real-madrid-home-hs.jpg') }}",
+            image: @json($rel->image ? asset($rel->image) : asset('assets/images/products/real-madrid-home-hs.jpg')),
             gallery: @json(array_map('asset', $rGallery)),
-            defaultSize: "L",
-            sizes: ["S", "M", "L", "XL", "XXL"],
+            defaultSize: @json($rDefSize),
+            sizes: @json($rIn),
+            allSizes: @json($rAll),
             hasCustomPrint: {{ $rel->has_custom_print ? 'true' : 'false' }}
           });
         }
@@ -957,6 +987,12 @@
 
       // 6. Add to Bag
       addBtn?.addEventListener("click", () => {
+        if (!currentSize) {
+          if (window.RABEZ_POPUP) {
+            window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+          }
+          return;
+        }
         const prodId = {{ $product->id }};
         const customName = (allowCustomPrint && hasCustomPrint) ? (customNameInput?.value.trim().toUpperCase() || "") : "";
         const customNum = (allowCustomPrint && hasCustomPrint) ? (customNumInput?.value.trim() || "") : "";
@@ -1060,7 +1096,7 @@
         btn.addEventListener("click", () => {
           const size = btn.dataset.size;
           const targetBtn = document.querySelector(`.js-sp-swatches .rabez-size-swatch[data-size="${size}"]`);
-          if (targetBtn) {
+          if (targetBtn && !targetBtn.disabled) {
             targetBtn.click();
             syncSizeChartSelection(size);
             setTimeout(closeSizeChartModal, 240);
@@ -1074,7 +1110,7 @@
         row.addEventListener("click", () => {
           const size = row.dataset.rowSize;
           const targetBtn = document.querySelector(`.js-sp-swatches .rabez-size-swatch[data-size="${size}"]`);
-          if (targetBtn) {
+          if (targetBtn && !targetBtn.disabled) {
             targetBtn.click();
             syncSizeChartSelection(size);
           }
@@ -1083,6 +1119,12 @@
 
       // 7. WhatsApp Order Direct
       waBtn?.addEventListener("click", () => {
+        if (!currentSize) {
+          if (window.RABEZ_POPUP) {
+            window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+          }
+          return;
+        }
         const customName = (allowCustomPrint && hasCustomPrint) ? (customNameInput?.value.trim().toUpperCase() || "") : "";
         const customNum = (allowCustomPrint && hasCustomPrint) ? (customNumInput?.value.trim() || "") : "";
         let msg = `Hello RABEZ! I want to order this jersey:\n\n`;

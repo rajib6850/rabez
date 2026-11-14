@@ -161,10 +161,36 @@
     });
   }
 
+  function escapeHTML(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  /* --- Shared Size Swatches Renderer --- */
+  function buildSizeSwatchesHTML(product) {
+    const allSizes = (Array.isArray(product.allSizes) && product.allSizes.length)
+      ? product.allSizes
+      : (Array.isArray(product.sizes) ? product.sizes : []);
+    const inStock = Array.isArray(product.sizes) ? product.sizes : allSizes;
+    return allSizes
+      .map((s) => {
+        const avail = inStock.includes(s);
+        const isSel = avail && s === product.defaultSize;
+        const escSize = escapeHTML(s);
+        return `<button type="button" class="rabez-size-swatch ${isSel ? "is-selected" : ""} ${!avail ? "is-out-of-stock" : ""}" data-size="${escSize}" aria-pressed="${isSel}" ${!avail ? 'disabled title="Out of stock"' : ""}>${escSize}</button>`;
+      })
+      .join("");
+  }
+
   /* --- Render Product Card (WooCommerce li.product structure) --- */
   function createProductCardHTML(product) {
     const isWished = wishlist.includes(product.id);
     const isAdded = isProductInCart(product.id);
+    const hasStockSizes = Array.isArray(product.sizes) ? product.sizes.length > 0 : true;
     const badgeHTML = product.badge
       ? `<span class="rabez-badge rabez-badge--${product.badgeType || "neon"}">${product.badge}</span>`
       : "";
@@ -172,14 +198,7 @@
       ? `<del><span class="woocommerce-Price-amount amount">৳ ${product.regularPrice.toLocaleString("en-IN")}</span></del>`
       : "";
 
-    const swatchesHTML = product.sizes
-      .map(
-        (s) =>
-          `<button type="button" class="rabez-size-swatch ${
-            s === product.defaultSize ? "is-selected" : ""
-          }" data-size="${s}" aria-pressed="${s === product.defaultSize}">${s}</button>`
-      )
-      .join("");
+    const swatchesHTML = buildSizeSwatchesHTML(product);
 
     const frontImg = resolveImageURL(product.image);
     let backImg = null;
@@ -246,8 +265,8 @@
               <ins><span class="woocommerce-Price-amount amount">${formatBDT(product.price)}</span></ins>
             </div>
             <button type="button" class="rabez-add-cart-btn add_to_cart_button ajax_add_to_cart js-add-to-cart ${isAdded ? "is-added added" : ""}"
-                    data-product-id="${product.id}">
-              ${getAddButtonInnerHTML(isAdded)}
+                    data-product-id="${product.id}" ${!hasStockSizes ? 'disabled style="opacity:0.55; cursor:not-allowed;"' : ""}>
+              ${hasStockSizes ? getAddButtonInnerHTML(isAdded) : "Sold Out"}
             </button>
           </div>
         </div>
@@ -546,14 +565,7 @@
     document.body.style.overflow = "hidden";
 
     const isAdded = isProductInCart(product.id);
-    const swatches = product.sizes
-      .map(
-        (s) =>
-          `<button type="button" class="rabez-size-swatch ${
-            s === product.defaultSize ? "is-selected" : ""
-          }" data-size="${s}" aria-pressed="${s === product.defaultSize}">${s}</button>`
-      )
-      .join("");
+    const swatches = buildSizeSwatchesHTML(product);
 
     const frontImg = product.image || "assets/images/products/real-madrid-home-hs.jpg";
     let allImages = [{ src: frontImg, label: "Front View", isBack: false }];
@@ -602,6 +614,7 @@
           </div>
 
           <p class="rabez-summary__desc" style="font-size:0.84rem; line-height:1.45; color:var(--rabez-text-body); margin-bottom:10px;">${product.shortDesc}</p>
+          ${product.fabric ? `<div style="font-size:0.78rem; color:var(--rabez-text-body); background:#F6F7F5; border:1px solid var(--rabez-border); border-radius:6px; padding:5px 10px; margin-bottom:10px; display:inline-block;"><strong>Fabric:</strong> ${escapeHTML(product.fabric)}</div>` : ""}
 
           <!-- Size Selection & Size Chart Toggle -->
           <div class="rabez-variation-block" style="margin-bottom:10px;">
@@ -1060,15 +1073,7 @@
     }
 
     if (swatchesWrap) {
-      swatchesWrap.innerHTML = product.sizes
-        .map(
-          (s) => `
-          <button type="button" class="rabez-size-swatch ${
-            s === product.defaultSize ? "is-selected" : ""
-          }" data-size="${s}">${s}</button>
-        `
-        )
-        .join("");
+      swatchesWrap.innerHTML = buildSizeSwatchesHTML(product);
     }
   }
 
@@ -1092,8 +1097,13 @@
     if (addBtn) {
       const card = addBtn.closest(".rabez-product-card");
       const id = Number(addBtn.dataset.productId);
+      const prod = getProductById(id);
       const selectedSwatch = card?.querySelector(".rabez-size-swatch.is-selected");
-      const size = selectedSwatch ? selectedSwatch.dataset.size : "L";
+      const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "");
+      if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
+        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+        return;
+      }
       addToCart({ id, size, qty: 1 });
       return;
     }
@@ -1176,7 +1186,11 @@
       const prod = getProductById(id);
       const modal = qvWaBtn.closest(".rabez-modal");
       const selectedSwatch = modal?.querySelector(".rabez-size-swatch.is-selected");
-      const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "L");
+      const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "");
+      if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
+        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+        return;
+      }
       const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
       const customToggle = modal?.querySelector(".js-qv-custom-toggle");
       const allowCustom = prod?.hasCustomPrint === true && Boolean(customToggle?.checked);
@@ -1205,7 +1219,11 @@
       const prod = getProductById(id);
       const modal = modalAddBtn.closest(".rabez-modal") || modalAddBtn.closest(".rabez-qv-layout") || modalAddBtn.closest(".rabez-single-product");
       const selectedSwatch = modal?.querySelector(".rabez-size-swatch.is-selected");
-      const size = selectedSwatch ? selectedSwatch.dataset.size : "L";
+      const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "");
+      if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
+        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+        return;
+      }
       const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
       const customToggle = modal?.querySelector(".js-qv-custom-toggle");
       const allowCustom = prod?.hasCustomPrint === true && Boolean(customToggle?.checked);

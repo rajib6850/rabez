@@ -3598,12 +3598,26 @@
               </div>
             </div>
 
-            <div class="adm-field">
-              <label class="adm-label" for="edit-prod-stock" style="font-weight:700;">Stock Availability</label>
-              <select id="edit-prod-stock" class="adm-select">
-                <option value="1">Ready Stock (In Stock & Available)</option>
-                <option value="0">Out of Stock / Sold Out</option>
-              </select>
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(170px, 1fr)); gap:12px;">
+              <div class="adm-field">
+                <label class="adm-label" for="edit-prod-stock" style="font-weight:700;">Stock Availability</label>
+                <select id="edit-prod-stock" class="adm-select">
+                  <option value="1">Ready Stock (In Stock & Available)</option>
+                  <option value="0">Out of Stock / Sold Out</option>
+                </select>
+              </div>
+              <div class="adm-field">
+                <label class="adm-label" for="edit-prod-fabric" style="font-weight:700;">Fabric</label>
+                <input type="text" id="edit-prod-fabric" class="adm-input" placeholder="e.g. 190 GSM Jacquard / 320 GSM Fleece">
+              </div>
+            </div>
+
+            <div class="adm-field" style="background:var(--adm-surface); padding:12px 14px; border-radius:8px; border:1px solid var(--adm-border);">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                <span class="adm-label" style="font-weight:700; margin:0;">Sizes in stock</span>
+                <span style="font-size:11px; color:var(--adm-muted);">Tap a size to toggle in stock / out of stock</span>
+              </div>
+              <div class="adm-sizes" id="edit-prod-sizes"></div>
             </div>
 
             <div class="adm-field" style="background:var(--adm-surface); padding:12px 14px; border-radius:8px; border:1px solid var(--adm-border);">
@@ -4284,10 +4298,19 @@
         };
       }
 
+      function defaultSizesForCategory(cat) {
+        return cat === "footwear" ? ["39", "40", "41", "42", "43", "44"] : ["S", "M", "L", "XL", "XXL"];
+      }
+
       function mapProductFromDB(p) {
-        const labels = { "half-sleeve": "Half Sleeve", "full-sleeve": "Full Sleeve", "winter-hoodie": "Winter Hoodie", "footwear": "Boots", "tracksuit": "Tracksuit" };
-        const inStockSizes = (p.variants || []).filter(v => v.is_in_stock).map(v => v.size);
-        const allSizes = (p.variants && p.variants.length) ? p.variants.map(v => v.size) : (p.sleeve === "footwear" ? ["39", "40", "41", "42", "43", "44"] : ["S", "M", "L", "XL", "XXL"]);
+        const labels = { "half-sleeve": "Half Sleeve", "full-sleeve": "Full Sleeve", "winter-hoodie": "Winter Hoodie", "retro": "Retro", "footwear": "Boots", "tracksuit": "Tracksuit" };
+        const variantsList = Array.isArray(p.variants) ? p.variants : [];
+        const allSizes = variantsList.length
+          ? variantsList.map(v => v.size)
+          : defaultSizesForCategory(p.sleeve);
+        const inStockSizes = variantsList.length
+          ? variantsList.filter(v => v.is_in_stock).map(v => v.size)
+          : allSizes;
         return {
           id: p.id,
           sku: p.sku || ("RBZ-" + p.id),
@@ -4296,6 +4319,7 @@
           clubLabel: p.club ? p.club.toUpperCase() : "Club",
           sleeve: p.sleeve || "half-sleeve",
           sleeveLabel: labels[p.sleeve] || p.sleeve,
+          fabric: p.fabric || "",
           price: Number(p.price),
           regularPrice: Number(p.regular_price || p.price),
           image: p.image || '/assets/images/products/real-madrid-home-hs.jpg',
@@ -4303,7 +4327,7 @@
           shortDesc: p.short_desc || p.name,
           description: p.description || '',
           slug: p.slug || '',
-          sizes: inStockSizes.length ? inStockSizes : allSizes,
+          sizes: inStockSizes,
           allSizes: allSizes,
           isReadyStock: !!p.is_ready_stock,
           hasCustomPrint: !!p.has_custom_print
@@ -5122,7 +5146,15 @@
 
       /* ---------- Products ---------- */
       function sizesFor(p) {
-        return p.allSizes || (p.sleeve === "footwear" ? ["39", "40", "41", "42", "43", "44"] : ["S", "M", "L", "XL", "XXL"]);
+        return (p.allSizes && p.allSizes.length) ? p.allSizes : defaultSizesForCategory(p.sleeve);
+      }
+
+      function renderEditSizes(allSizes, inStockSizes) {
+        const wrap = $("#edit-prod-sizes");
+        if (!wrap) return;
+        const list = (Array.isArray(allSizes) && allSizes.length) ? allSizes : defaultSizesForCategory("half-sleeve");
+        const active = Array.isArray(inStockSizes) ? inStockSizes : list;
+        wrap.innerHTML = list.map((s) => `<button type="button" class="adm-size js-edit-size ${active.includes(s) ? "" : "is-out"}" data-size="${cmsEsc(s)}">${cmsEsc(s)}</button>`).join("");
       }
 
       function productTableRowHTML(p) {
@@ -5145,7 +5177,7 @@
                 <img src="${p.image}" alt="" style="width:40px; height:48px; object-fit:cover; border-radius:6px; border:1px solid #E6E9E7;" loading="lazy">
                 <div style="min-width:0;">
                   <div class="adm-cell-main">${p.name}</div>
-                  <div class="adm-cell-sub">${p.sku || "—"} &middot; ${p.clubLabel || ""}</div>
+                  <div class="adm-cell-sub">${p.sku || "—"} &middot; ${p.clubLabel || ""}${p.fabric ? ` &middot; ${cmsEsc(p.fabric)}` : ""}</div>
                   <button type="button" class="adm-chip js-toggle-custom-print" data-id="${p.id}" style="margin-top:5px; font-size:11px; padding:2px 8px; cursor:pointer; ${p.hasCustomPrint ? 'background:rgba(4,244,4,0.14); color:#047857; border:1px solid #10B981; font-weight:700;' : 'background:#F3F4F6; color:#6B7280; border:1px solid #D1D5DB; font-weight:600;'}" title="Tap to enable or disable Custom Name &amp; Number on this product">
                     ${p.hasCustomPrint ? '✓ Custom Print: ON' : 'Custom Print: OFF'}
                   </button>
@@ -5639,6 +5671,10 @@
         $("#edit-prod-cat").value = p.sleeve || "half-sleeve";
         $("#edit-prod-club").value = p.club || "all";
         $("#edit-prod-stock").value = p.isReadyStock ? "1" : "0";
+        if ($("#edit-prod-fabric")) {
+          $("#edit-prod-fabric").value = p.fabric || "";
+        }
+        renderEditSizes(sizesFor(p), p.sizes);
         if ($("#edit-prod-custom-print")) {
           $("#edit-prod-custom-print").checked = !!p.hasCustomPrint;
         }
@@ -5665,6 +5701,10 @@
         const p = products.find((x) => x.id == id);
         if (!p) return;
 
+        const sizeEls = $$("#edit-prod-sizes .js-edit-size");
+        const allSizes = sizeEls.map((el) => el.dataset.size).filter(Boolean);
+        const inStockSizes = sizeEls.filter((el) => !el.classList.contains("is-out")).map((el) => el.dataset.size).filter(Boolean);
+
         const payload = {
           name: $("#edit-prod-name").value.trim(),
           sku: $("#edit-prod-sku").value.trim(),
@@ -5672,6 +5712,9 @@
           regular_price: Number($("#edit-prod-reg-price").value),
           sleeve: $("#edit-prod-cat").value,
           club: $("#edit-prod-club").value,
+          fabric: $("#edit-prod-fabric") ? $("#edit-prod-fabric").value.trim() : "",
+          sizes: inStockSizes,
+          all_sizes: allSizes,
           is_ready_stock: $("#edit-prod-stock").value === "1" ? 1 : 0,
           has_custom_print: $("#edit-prod-custom-print")?.checked ? 1 : 0,
           short_desc: $("#edit-prod-desc").value.trim(),
@@ -5693,21 +5736,27 @@
           });
           const data = await res.json();
           if (data.success) {
-            p.name = payload.name;
-            p.sku = payload.sku;
-            p.price = payload.price;
-            p.regularPrice = payload.regular_price;
-            p.sleeve = payload.sleeve;
-            p.club = payload.club;
-            p.isReadyStock = !!payload.is_ready_stock;
-            p.hasCustomPrint = !!payload.has_custom_print;
-            p.shortDesc = payload.short_desc;
-            p.description = payload.description;
-            if (data.product && data.product.slug) p.slug = data.product.slug;
-            p.image = payload.image;
-            p.gallery = payload.gallery;
-            const labels = { "half-sleeve": "Half Sleeve", "full-sleeve": "Full Sleeve", "winter-hoodie": "Winter Hoodie", "retro": "Retro", "footwear": "Boots", "tracksuit": "Tracksuit" };
-            p.sleeveLabel = labels[p.sleeve] || p.sleeve;
+            if (data.product) {
+              Object.assign(p, mapProductFromDB(data.product));
+            } else {
+              p.name = payload.name;
+              p.sku = payload.sku;
+              p.price = payload.price;
+              p.regularPrice = payload.regular_price;
+              p.sleeve = payload.sleeve;
+              p.club = payload.club;
+              p.fabric = payload.fabric;
+              p.allSizes = payload.all_sizes;
+              p.sizes = payload.sizes;
+              p.isReadyStock = !!payload.is_ready_stock;
+              p.hasCustomPrint = !!payload.has_custom_print;
+              p.shortDesc = payload.short_desc;
+              p.description = payload.description;
+              p.image = payload.image;
+              p.gallery = payload.gallery;
+              const labels = { "half-sleeve": "Half Sleeve", "full-sleeve": "Full Sleeve", "winter-hoodie": "Winter Hoodie", "retro": "Retro", "footwear": "Boots", "tracksuit": "Tracksuit" };
+              p.sleeveLabel = labels[p.sleeve] || p.sleeve;
+            }
 
             closeOverlays();
             renderProducts();
@@ -6508,7 +6557,7 @@
 
       /* ---------- Add product sizes ---------- */
       function renderNewSizes(cat) {
-        const list = cat === "footwear" ? ["39", "40", "41", "42", "43", "44"] : ["S", "M", "L", "XL", "XXL"];
+        const list = defaultSizesForCategory(cat);
         $("#adm-new-sizes").innerHTML = list.map((s) => `<button type="button" class="adm-size js-new-size" data-size="${s}">${s}</button>`).join("");
       }
 
@@ -6835,22 +6884,50 @@
           return;
         }
 
-        // Size toggling on product row
+        // Size toggling on product row (persisted to DB)
         const size = t.closest(".js-size");
         if (size) {
           const p = products.find((x) => String(x.id) === size.dataset.id);
-          if (!p) return;
+          if (!p || size.dataset.saving === "1") return;
           const s = size.dataset.size;
-          if (p.sizes.includes(s)) {
-            p.sizes = p.sizes.filter((x) => x !== s);
-            toast(`Size ${s} marked sold out`, p.name);
-          } else {
-            p.sizes.push(s);
-            toast(`Size ${s} back in stock`, p.name);
-          }
+          const prevSizes = [...p.sizes];
+          const nextSizes = p.sizes.includes(s)
+            ? p.sizes.filter((x) => x !== s)
+            : [...p.sizes, s];
+          p.sizes = nextSizes;
           renderProducts();
+
+          fetch(`/admin/products/${p.id}/update`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify({ sizes: nextSizes, all_sizes: sizesFor(p), _token: CSRF_TOKEN })
+          })
+            .then((r) => r.json())
+            .then((data) => {
+              if (data.success && data.product) {
+                Object.assign(p, mapProductFromDB(data.product));
+                renderProducts();
+                toast(p.sizes.includes(s) ? `Size ${s} back in stock` : `Size ${s} marked sold out`, p.name);
+              } else {
+                p.sizes = prevSizes;
+                renderProducts();
+                admAlert(data.message || "Failed to update size stock.", { title: "Update Failed" });
+              }
+            })
+            .catch((err) => {
+              p.sizes = prevSizes;
+              renderProducts();
+              toast("Update error", err.message);
+            });
           return;
         }
+
+        const editSize = t.closest(".js-edit-size");
+        if (editSize) { editSize.classList.toggle("is-out"); return; }
 
         const newSize = t.closest(".js-new-size");
         if (newSize) { newSize.classList.toggle("is-out"); return; }
@@ -6926,6 +7003,14 @@
           renderNewSizes(cat);
           const prices = { "half-sleeve": 1150, "full-sleeve": 1300, "winter-hoodie": 1450, "footwear": 2450, "tracksuit": 1850 };
           $("#adm-price").value = prices[cat] || 1150;
+        }
+
+        if (e.target.id === "edit-prod-cat") {
+          const nextCat = e.target.value;
+          const currentActive = $$("#edit-prod-sizes .js-edit-size:not(.is-out)").map((el) => el.dataset.size);
+          const nextDefaults = defaultSizesForCategory(nextCat);
+          const nextInStock = nextDefaults.filter((s) => currentActive.includes(s));
+          renderEditSizes(nextDefaults, nextInStock.length ? nextInStock : nextDefaults);
         }
 
         if (e.target.id === "full-edit-shipping" || e.target.matches(".js-item-qty") || e.target.matches(".js-item-price")) {
@@ -7022,11 +7107,18 @@
         const name = $("#adm-name").value.trim();
         const sku = $("#adm-sku").value.trim() || ("RBZ-" + Math.floor(100 + Math.random() * 900));
 
+        const newSizeEls = $$("#adm-new-sizes .js-new-size");
+        const newAllSizes = newSizeEls.map((el) => el.dataset.size).filter(Boolean);
+        const newInStockSizes = newSizeEls.filter((el) => !el.classList.contains("is-out")).map((el) => el.dataset.size).filter(Boolean);
+
         const payload = {
           name: name,
           sku: sku,
           club: clubSel.value,
           sleeve: cat,
+          fabric: ($("#adm-fabric")?.value.trim()) || "",
+          sizes: newInStockSizes,
+          all_sizes: newAllSizes,
           price: price,
           regular_price: regPrice,
           image: addFeaturedImage,
@@ -7051,6 +7143,7 @@
           if (data.success) {
             toast("Product published to database", data.product.name);
             e.target.reset();
+            renderNewSizes($("#adm-cat")?.value || "winter-hoodie");
             await syncProductsFromDB();
             showTab("products");
           } else {

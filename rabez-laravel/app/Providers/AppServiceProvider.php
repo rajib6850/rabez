@@ -68,12 +68,13 @@ class AppServiceProvider extends ServiceProvider
                         $storefrontProducts = Product::with('variants')->latest('id')->get();
                         $storefrontProductsJs = $storefrontProducts->map(function (Product $p) use ($sleeveLabels) {
                             $variants = $p->variants ?? collect();
-                            $inStock = $variants->where('is_in_stock', true)->pluck('size')->values()->all();
-                            $allSizes = $variants->pluck('size')->values()->all();
                             $defaultSet = $p->sleeve === 'footwear'
                                 ? ['39', '40', '41', '42', '43', '44']
                                 : ['S', 'M', 'L', 'XL', 'XXL'];
-                            $sizes = count($inStock) ? $inStock : (count($allSizes) ? $allSizes : $defaultSet);
+                            $hasVariants = $variants->isNotEmpty();
+                            $allSizes = $hasVariants ? $variants->pluck('size')->values()->all() : $defaultSet;
+                            $inStock = $hasVariants ? $variants->where('is_in_stock', true)->pluck('size')->values()->all() : $defaultSet;
+                            $sizes = $inStock;
 
                             $rawGallery = is_array($p->gallery)
                                 ? $p->gallery
@@ -99,8 +100,10 @@ class AppServiceProvider extends ServiceProvider
                                 'badgeType' => $p->sleeve === 'winter-hoodie' ? 'neon' : ($p->is_ready_stock ? null : 'dark'),
                                 'price' => (float) $p->price,
                                 'regularPrice' => $p->regular_price ? (float) $p->regular_price : null,
+                                'fabric' => $p->fabric ?: null,
                                 'sizes' => $sizes,
-                                'defaultSize' => in_array('L', $sizes, true) ? 'L' : ($sizes[0] ?? 'L'),
+                                'allSizes' => $allSizes,
+                                'defaultSize' => in_array('L', $sizes, true) ? 'L' : ($sizes[0] ?? ($allSizes[0] ?? '')),
                                 'image' => $image,
                                 'gallery' => $gallery,
                                 'shortDesc' => $p->short_desc ?: $p->name,

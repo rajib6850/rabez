@@ -480,6 +480,18 @@ php artisan serve --port=8000
         - Built `#adm-dialog-overlay` (`z-index: 110000`) and Promise-based `admAlert()`, `admConfirm()`, and `admPrompt()` helpers with `closeAdmDialog` wired cleanly into `Escape` handling ahead of `closeOverlays()`.
         - Converted all 45 admin dialogs across Orders, Bulk Actions, Media Library, Products, Categories, Customers, Users, Coupons, Custom Print toggle, POS, CMS Pages, Menu Builder, and `.js-rte-link-btn` (preserving/restoring `Selection`/`Range` around `await admPrompt(...)` for WYSIWYG links).
 
+34. **Product Edit & Add — Editable Fabric & Persistent Sizes in Stock:**
+    - **Database (`2026_11_14_000003_add_fabric_to_products_table.php`):** Added nullable `fabric` column (`string('fabric', 191)`) to `products` table.
+    - **Admin Backend (`AdminController.php`):** Added `syncProductVariants()` shared helper and updated `storeProduct()` & `updateProduct()` to validate and persist `fabric`, `sizes` (in-stock sizes), and `all_sizes` (removing stale sizes cleanly on category switches such as footwear `39–44` vs apparel `S–XXL`).
+    - **Admin Dashboard (`admin/dashboard.blade.php`):**
+        - Added `Fabric` (`#edit-prod-fabric`) and `Sizes in stock` (`#edit-prod-sizes`) interactive toggle chips to the Edit Product Drawer, wired into `openProductDrawer()`, `#edit-prod-cat` category-change handler, and `saveProductEdit()`.
+        - Persisted inline table row size stock toggles (`.js-size`) directly to `POST /admin/products/{id}/update` and wired `#adm-add-form` to submit `#adm-fabric` and `#adm-new-sizes` availability.
+        - Fixed `mapProductFromDB()` so marking all sizes out of stock (`inStockSizes.length === 0`) no longer falls back to all sizes in stock.
+    - **Storefront Sync (`AppServiceProvider.php`, `StorefrontController.php`, `storefront/product.blade.php`, `cart.js`, `layouts/storefront.blade.php`, `sw.js`):**
+        - Exposed `fabric` and `allSizes` (keeping `sizes` accurately empty when all variants are out of stock) and loaded `variants` on related products.
+        - Extracted shared `buildSizeSwatchesHTML()` in `cart.js` to render out-of-stock swatches cleanly as `disabled` + `.is-out-of-stock`, displayed product `fabric` in Single Product summary, Quick View, and Fabric Composition & Care tab, and guarded Add to Bag / WhatsApp orders with `RABEZ_POPUP.alert()` when no sizes are in stock.
+        - Bumped `cart.js?v=3.2`, `sw.js` `rabez-pwa-v7`, synced root `assets/js/cart.js`, and added automated coverage (`ProductEditFabricAndSizesTest.php`).
+
 
 
 
