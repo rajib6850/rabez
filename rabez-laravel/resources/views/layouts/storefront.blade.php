@@ -304,16 +304,6 @@
         <div class="rabez-footer__nav-col">
           <h4 class="rabez-footer__heading">Customer Care</h4>
           <ul class="rabez-footer__links">
-            <li>
-              <a href="javascript:void(0)" onclick="openAppInstallModal()" style="display:inline-flex; align-items:center; gap:6px; color:#FFFFFF; font-weight:700;">
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                  <rect x="5" y="2" width="14" height="20" rx="2" ry="2"></rect>
-                  <line x1="12" y1="18" x2="12.01" y2="18"></line>
-                </svg>
-                <span>Download &amp; Install App</span>
-                <span class="rabez-footer-app-badge">APK / PWA</span>
-              </a>
-            </li>
             <li><a href="{{ route('track-order') }}">Track Your Order &amp; Invoice</a></li>
             <li><a href="{{ route('checkout') }}">1-Page COD Checkout</a></li>
             <li><a href="https://api.whatsapp.com/send/?phone=8801612359652" target="_blank">Direct WhatsApp Support</a></li>

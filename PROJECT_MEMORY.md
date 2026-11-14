@@ -453,6 +453,9 @@ php artisan serve --port=8000
     - Shortened `All Over Bangladesh Delivery (Home Delivery)` on the Checkout delivery method card (`checkout.blade.php`) to `Home Delivery (All Bangladesh)` with subtitle `Flat rate across all 64 districts in Bangladesh`.
     - Shortened `All Over Bangladesh Home Delivery` on Single Product page (`product.blade.php`) to `Home Delivery (All Bangladesh)`.
 
+31. **Removed Duplicate App Install Link from Footer Customer Care:**
+    - Removed duplicate `Download & Install App (APK / PWA)` link from the Customer Care column in the footer (`layouts/storefront.blade.php`), keeping the dedicated "Official Mobile App" action button under Direct Hotline & Store.
+
 
 
 
