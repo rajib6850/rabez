@@ -639,12 +639,12 @@
           <!-- Optional Custom Name & Number Addon (Only when enabled on this product) -->
           ${product.hasCustomPrint === true ? `
             <div class="rabez-qv-print-box" style="border:1px solid var(--rabez-border); border-radius:6px; padding:10px 12px; margin-bottom:12px; background:#F8FAF9;">
-              <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; user-select:none; flex-wrap:wrap;">
-                <span style="font-weight:700; font-size:0.84rem; color:var(--rabez-text-main); display:flex; align-items:center; gap:7px;">
-                  <input type="checkbox" class="js-qv-custom-toggle" style="accent-color:#04F404; width:15px; height:15px; cursor:pointer;">
-                  <span>+ Add Custom Name &amp; Number Print</span>
+              <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; user-select:none; flex-wrap:nowrap;">
+                <span style="font-weight:700; font-size:0.84rem; color:var(--rabez-text-main); display:flex; align-items:center; gap:7px; min-width:0;">
+                  <input type="checkbox" class="js-qv-custom-toggle" style="accent-color:#04F404; width:15px; height:15px; flex-shrink:0; cursor:pointer;">
+                  <span>Custom Name &amp; Number</span>
                 </span>
-                <span style="color:#008A00; font-weight:800; font-size:0.8rem;">+ ৳ ${getCustomPrintFee()}</span>
+                <span style="color:#008A00; font-weight:800; font-size:0.8rem; white-space:nowrap; flex-shrink:0;">+ ৳ ${getCustomPrintFee()}</span>
               </label>
               <div class="rabez-qv-print-inputs js-qv-custom-inputs" style="display:none; margin-top:10px; gap:8px; grid-template-columns:2fr 1fr;">
                 <input type="text" class="js-qv-custom-name" maxlength="12" placeholder="Name (e.g. MESSI)" style="width:100%; height:36px; background:#FFFFFF; border:1px solid var(--rabez-border-strong); border-radius:4px; padding:0 10px; color:#111; font-size:12.5px; text-transform:uppercase;">

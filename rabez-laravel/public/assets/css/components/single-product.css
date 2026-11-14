@@ -538,12 +538,21 @@
   word-break: break-word;
 }
 
-.rabez-print-addon label {
-  flex-wrap: wrap;
+.rabez-print-addon label,
+.rabez-qv-print-box label {
+  flex-wrap: nowrap;
   gap: 8px;
 }
 
 @media (max-width: 480px) {
+  .rabez-print-addon {
+    padding: 10px 12px !important;
+  }
+  .rabez-print-addon label span:first-child,
+  .rabez-qv-print-box label span:first-child {
+    font-size: 13px !important;
+    gap: 6px !important;
+  }
   .rabez-summary__title {
     font-size: 1.55rem;
     line-height: 1.18;

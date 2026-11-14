@@ -80,12 +80,12 @@
           @if($product->has_custom_print)
             <!-- Optional Custom Name & Number Addon -->
             <div class="rabez-print-addon" style="border:1px solid #2B332E; border-radius:6px; padding:12px 14px; margin:18px 0; background:#121614;">
-              <label style="display:flex; align-items:center; justify-content:space-between; cursor:pointer; user-select:none;">
-                <span style="font-weight:700; color:#fff; display:flex; align-items:center; gap:8px;">
-                  <input type="checkbox" id="js-custom-print-toggle" style="accent-color:#04F404; width:16px; height:16px; cursor:pointer;">
-                  + Add Custom Name &amp; Number Print
+              <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; user-select:none;">
+                <span style="font-weight:700; font-size:14px; color:#fff; display:flex; align-items:center; gap:8px; min-width:0;">
+                  <input type="checkbox" id="js-custom-print-toggle" style="accent-color:#04F404; width:16px; height:16px; flex-shrink:0; cursor:pointer;">
+                  <span>Custom Name &amp; Number</span>
                 </span>
-                <span style="color:#04F404; font-weight:800; font-size:13px;">+ ৳ {{ intval($customPrintFee ?? ($settings['custom_print_fee'] ?? 250)) }}</span>
+                <span style="color:#04F404; font-weight:800; font-size:13px; white-space:nowrap; flex-shrink:0;">+ ৳ {{ intval($customPrintFee ?? ($settings['custom_print_fee'] ?? 250)) }}</span>
               </label>
               <div id="js-custom-print-inputs" style="display:none; margin-top:12px; gap:10px; grid-template-columns:2fr 1fr;">
                 <input type="text" id="js-sp-custom-name" maxlength="12" placeholder="Name on Back (e.g. MESSI)" style="height:38px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px; text-transform:uppercase;">
@@ -110,10 +110,10 @@
           </div>
 
           <button type="button" id="js-sp-whatsapp-order-btn" class="rabez-btn rabez-btn--dark rabez-btn--full" style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
               <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
             </svg>
-            <span>Order Instantly on WhatsApp (+880 1612-359652)</span>
+            <span>Order via WhatsApp</span>
           </button>
 
           <ul class="rabez-delivery-list" style="margin-top:20px;">

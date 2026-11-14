@@ -434,6 +434,11 @@ php artisan serve --port=8000
         - Hidden "Have a Discount Coupon?" toggle/form and discount summary row in both **Cart Drawer** and **Checkout Page** whenever zero active coupons exist in the Admin Dashboard (`Coupon::where('is_active', true)->exists() === false`).
         - Cleared any stale cached coupon in `localStorage` (`rabez_applied_coupon_v1`) when no active coupons exist, and updated `/api/apply-coupon` to reject cleanly when inactive.
 
+27. **Concise Single-Line Mobile Labels for Custom Name & Number and WhatsApp Order Buttons:**
+    - Shortened `+ Add Custom Name & Number Print` to `Custom Name & Number` in both Single Product (`product.blade.php`) and Quick View (`cart.js`) alongside mobile font/wrap tuning (`single-product.css`) so the label and `+ ৳ 250` fee always fit on one clean row down to `360px` mobile screens.
+    - Shortened `Order Instantly on WhatsApp (+880 1612-359652)` (`product.blade.php`) and `Order Instantly on WhatsApp` (Cart Drawer in `layouts/storefront.blade.php`) to `Order via WhatsApp` (matching Quick View) so WhatsApp CTA buttons remain crisp and single-line across mobile and desktop.
+    - Bumped asset versions (`single-product.css?v=2.9`, `cart.js?v=2.9`, `sw.js` `rabez-pwa-v3`).
+
 
 
 
