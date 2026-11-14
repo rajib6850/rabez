@@ -456,6 +456,22 @@ php artisan serve --port=8000
 31. **Removed Duplicate App Install Link from Footer Customer Care:**
     - Removed duplicate `Download & Install App (APK / PWA)` link from the Customer Care column in the footer (`layouts/storefront.blade.php`), keeping the dedicated "Official Mobile App" action button under Direct Hotline & Store.
 
+32. **Dashboard CMS Pages & Multi-Level Navigation Menu Builder (Desktop + Mobile):**
+    - **Database & Models (`2026_11_14_000002_create_pages_and_menus_tables.php`, `Page.php`, `MenuItem.php`):**
+        - Added `pages` and self-referential `menu_items` (`location`: `header`, `footer_care`, `parent_id`, `page_id`, `type`, `url`, `badge_text`, `target`, `sort_order`, `is_active`) tables with initial default pages (`Privacy Policy`, `Terms & Conditions`, `Return & Exchange Policy`) and starter multi-level header & footer Customer Care menus.
+        - Implemented HTML sanitization (`Page::sanitizeHtml`), reserved system slug protection (`Page::RESERVED_SLUGS`), circular hierarchy detection (`MenuItem::wouldCreateCycle`), and dynamic tree resolution (`MenuItem::buildTree`).
+    - **Storefront Dynamic Page & Menu Rendering (`StorefrontController.php`, `AppServiceProvider.php`, `routes/web.php`, `storefront/page.blade.php`, `partials/storefront-menu-items.blade.php`):**
+        - Registered clean root URLs (`/{slug}` and `/page/{slug}`) at the bottom of `routes/web.php` with admin draft preview (`?preview=1`) and dark RABEZ responsive page template (`storefront/page.blade.php`).
+        - Shared `$headerMenuTree`, `$footerCareMenu`, and `$publishedPages` globally via `AppServiceProvider`, updating Header navigation and Footer Customer Care in `layouts/storefront.blade.php`.
+    - **Multi-Level Responsive Navigation (`nav-dropdown.css`, `app.js`, `sw.js`):**
+        - Built unlimited-depth desktop hover/keyboard dropdowns (`> 1120px`) with invisible hover bridges and automatic viewport right-edge flip detection (`.flip-left`).
+        - Built touch-friendly nested mobile accordion menus (`<= 1120px`) inside the slide-down drawer with dedicated expand/collapse chevron toggles, indented level containers, zero horizontal overflow down to `360px`, and safe bottom scroll clearance above the sticky bar.
+        - Bumped asset versions (`header-navigation.css?v=2.6`, `nav-dropdown.css?v=1.1`, `app.js?v=2.8`, `sw.js` `rabez-pwa-v5`).
+    - **Admin Dashboard CMS UI (`AdminController.php`, `admin/dashboard.blade.php`):**
+        - Added **Pages** management panel and slide-out **Page Editor Drawer** with live slug preview, SEO meta fields, publish/draft toggle, and visual Rich Text toolbar (`H2`, `H3`, `P`, `B`, `I`, `U`, lists, blockquote, links, and raw HTML source toggle).
+        - Added **Menu Builder** panel for `Header Navigation` and `Footer Customer Care` supporting Link Source (`CMS Page`, `Storefront Preset`, `Custom URL / #`), live parent picker, optional badges, and instant 1-tap `↑`, `↓`, `← Outdent`, `→ Nest`, `+Sub`, `Edit`, and `Delete` actions.
+
+
 
 
 

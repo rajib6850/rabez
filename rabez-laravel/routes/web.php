@@ -105,4 +105,25 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/media/upload', [AdminController::class, 'uploadMedia'])->name('admin.media.upload');
     Route::delete('/media/{id}', [AdminController::class, 'deleteMedia'])->name('admin.media.delete');
     Route::post('/media/bulk-delete', [AdminController::class, 'bulkDeleteMedia'])->name('admin.media.bulk_delete');
+
+    // CMS Pages & Multi-Level Menu Builder
+    Route::get('/api/pages', [AdminController::class, 'getPages'])->name('admin.pages.list');
+    Route::post('/pages', [AdminController::class, 'storePage'])->name('admin.pages.store');
+    Route::post('/pages/{id}/update', [AdminController::class, 'updatePage'])->name('admin.pages.update');
+    Route::delete('/pages/{id}', [AdminController::class, 'deletePage'])->name('admin.pages.delete');
+
+    Route::get('/api/menus', [AdminController::class, 'getMenus'])->name('admin.menus.list');
+    Route::post('/menus', [AdminController::class, 'storeMenuItem'])->name('admin.menus.store');
+    Route::post('/menus/reorder', [AdminController::class, 'reorderMenus'])->name('admin.menus.reorder');
+    Route::post('/menus/{id}/update', [AdminController::class, 'updateMenuItem'])->name('admin.menus.update');
+    Route::delete('/menus/{id}', [AdminController::class, 'deleteMenuItem'])->name('admin.menus.delete');
 });
+
+// Dynamic CMS Storefront Pages (must remain at the bottom after all system/store routes)
+Route::get('/page/{slug}', [StorefrontController::class, 'page'])
+    ->where('slug', '[A-Za-z0-9\-]+')
+    ->name('storefront.page.prefixed');
+
+Route::get('/{slug}', [StorefrontController::class, 'page'])
+    ->where('slug', '[A-Za-z0-9\-]+')
+    ->name('storefront.page');

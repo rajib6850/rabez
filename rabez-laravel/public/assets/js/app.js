@@ -23,22 +23,96 @@
     }
 
     if (toggle && nav) {
+      const closeAllSubmenus = (scope) => {
+        (scope || nav).querySelectorAll(".rabez-nav-item.is-submenu-open").forEach((li) => {
+          li.classList.remove("is-submenu-open");
+          const btn = li.querySelector(":scope > .rabez-nav-item__row > .js-nav-submenu-toggle");
+          if (btn) btn.setAttribute("aria-expanded", "false");
+        });
+      };
+
+      const toggleSubmenuItem = (li) => {
+        if (!li) return;
+        const willOpen = !li.classList.contains("is-submenu-open");
+        const parentList = li.parentElement;
+        if (parentList && willOpen) {
+          parentList.querySelectorAll(":scope > .rabez-nav-item.is-submenu-open").forEach((sib) => {
+            if (sib !== li) {
+              sib.classList.remove("is-submenu-open");
+              const sibBtn = sib.querySelector(":scope > .rabez-nav-item__row > .js-nav-submenu-toggle");
+              if (sibBtn) sibBtn.setAttribute("aria-expanded", "false");
+              closeAllSubmenus(sib);
+            }
+          });
+        }
+        li.classList.toggle("is-submenu-open", willOpen);
+        if (!willOpen) closeAllSubmenus(li);
+        const btn = li.querySelector(":scope > .rabez-nav-item__row > .js-nav-submenu-toggle");
+        if (btn) btn.setAttribute("aria-expanded", String(willOpen));
+      };
+
+      const checkDropdownFlip = (li) => {
+        if (window.innerWidth <= 1120) return;
+        const dd = li.querySelector(":scope > .rabez-nav__dropdown");
+        if (!dd) return;
+        li.classList.remove("flip-left");
+        const rect = dd.getBoundingClientRect();
+        if (rect.right > window.innerWidth - 16) {
+          li.classList.add("flip-left");
+        }
+      };
+
       toggle.addEventListener("click", () => {
         const isOpen = nav.classList.toggle("is-open");
         toggle.setAttribute("aria-expanded", String(isOpen));
+        if (!isOpen) closeAllSubmenus();
+      });
+
+      nav.querySelectorAll(".js-nav-submenu-toggle").forEach((btn) => {
+        btn.addEventListener("click", (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          toggleSubmenuItem(btn.closest(".rabez-nav-item"));
+        });
+      });
+
+      nav.querySelectorAll(".rabez-nav-item.has-children").forEach((li) => {
+        li.addEventListener("mouseenter", () => checkDropdownFlip(li));
+        li.addEventListener("focusin", () => checkDropdownFlip(li));
       });
 
       nav.querySelectorAll("a").forEach((link) => {
-        link.addEventListener("click", () => {
+        link.addEventListener("click", (e) => {
+          const isPlaceholder = link.dataset.navPlaceholder === "1" || link.getAttribute("href") === "#";
+          const parentLi = link.closest(".rabez-nav-item");
+          if (isPlaceholder && parentLi && parentLi.classList.contains("has-children")) {
+            e.preventDefault();
+            if (window.innerWidth <= 1120) {
+              toggleSubmenuItem(parentLi);
+            }
+            return;
+          }
           nav.classList.remove("is-open");
           toggle.setAttribute("aria-expanded", "false");
+          closeAllSubmenus();
         });
       });
 
       document.addEventListener("click", (e) => {
-        if (!e.target.closest(".rabez-header") && nav.classList.contains("is-open")) {
+        if (!e.target.closest(".rabez-header")) {
+          if (nav.classList.contains("is-open")) {
+            nav.classList.remove("is-open");
+            toggle.setAttribute("aria-expanded", "false");
+          }
+          closeAllSubmenus();
+        }
+      });
+
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
           nav.classList.remove("is-open");
           toggle.setAttribute("aria-expanded", "false");
+          closeAllSubmenus();
         }
       });
     }

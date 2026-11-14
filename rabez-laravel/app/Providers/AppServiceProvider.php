@@ -3,6 +3,8 @@
 namespace App\Providers;
 
 use App\Models\Coupon;
+use App\Models\MenuItem;
+use App\Models\Page;
 use App\Models\Product;
 use App\Models\Setting;
 use Illuminate\Support\Facades\Schema;
@@ -32,6 +34,9 @@ class AppServiceProvider extends ServiceProvider
                 $customPrintFee = 250;
                 $storefrontProducts = collect();
                 $storefrontProductsJs = [];
+                $headerMenuTree = [];
+                $footerCareMenu = [];
+                $publishedPages = collect();
 
                 try {
                     if (Schema::hasTable('coupons')) {
@@ -42,6 +47,13 @@ class AppServiceProvider extends ServiceProvider
                         if ($feeVal !== null && is_numeric($feeVal)) {
                             $customPrintFee = max(0, intval($feeVal));
                         }
+                    }
+                    if (Schema::hasTable('menu_items')) {
+                        $headerMenuTree = MenuItem::buildTree('header', true);
+                        $footerCareMenu = MenuItem::buildTree('footer_care', true);
+                    }
+                    if (Schema::hasTable('pages')) {
+                        $publishedPages = Page::published()->orderBy('sort_order')->orderBy('id')->get(['id', 'title', 'slug']);
                     }
                     if (Schema::hasTable('products')) {
                         $sleeveLabels = [
@@ -107,6 +119,9 @@ class AppServiceProvider extends ServiceProvider
                     'storefrontProducts' => $storefrontProducts,
                     'storefrontProductsJs' => $storefrontProductsJs,
                     'customPrintProducts' => $storefrontProducts->where('has_custom_print', true)->values(),
+                    'headerMenuTree' => $headerMenuTree,
+                    'footerCareMenu' => $footerCareMenu,
+                    'publishedPages' => $publishedPages,
                 ];
             }
 

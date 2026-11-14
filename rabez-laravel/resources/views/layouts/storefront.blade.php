@@ -22,7 +22,8 @@
   <link rel="stylesheet" href="{{ asset('assets/css/01-variables.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/02-base-reset.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/03-components.css') }}?v=2.1">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/header-navigation.css') }}?v=2.5">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/header-navigation.css') }}?v=2.6">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/nav-dropdown.css') }}?v=1.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/hero-banner.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/club-filter-bar.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/product-grid.css') }}?v=2.1">
@@ -130,15 +131,42 @@
         <img src="{{ asset('assets/images/brand/rabez-neon-logo.png') }}" alt="RABEZ - Wear What You Stand For" width="210" height="70">
       </a>
       <nav class="rabez-nav js-main-nav" aria-label="Main Navigation">
-        <a href="{{ route('home') }}" class="rabez-nav__link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
-        <a href="{{ route('shop') }}" class="rabez-nav__link {{ request()->routeIs('shop') ? 'is-active' : '' }}">All Jerseys</a>
-        <a href="{{ route('shop', ['sleeve' => 'winter-hoodie']) }}" class="rabez-nav__link">Winter Hoodies <span class="rabez-nav__tag">NEW</span></a>
-        <a href="{{ route('shop', ['sleeve' => 'full-sleeve']) }}" class="rabez-nav__link">Full Sleeve</a>
-        <a href="{{ route('shop', ['sleeve' => 'retro']) }}" class="rabez-nav__link">Retro Kits</a>
-        @if(isset($customPrintProducts) && $customPrintProducts->isNotEmpty())
-          <a href="{{ route('home') }}#custom-print" class="rabez-nav__link">Custom Print</a>
-        @endif
-        <a href="{{ route('home') }}#size-guide" class="rabez-nav__link">Size Chart</a>
+        <ul class="rabez-nav__list">
+          @if(!empty($headerMenuTree))
+            @include('partials.storefront-menu-items', ['items' => $headerMenuTree, 'level' => 0])
+          @else
+            <li class="rabez-nav-item rabez-nav-item--root">
+              <div class="rabez-nav-item__row">
+                <a href="{{ route('home') }}" class="rabez-nav__link {{ request()->routeIs('home') ? 'is-active' : '' }}">Home</a>
+              </div>
+            </li>
+            <li class="rabez-nav-item rabez-nav-item--root">
+              <div class="rabez-nav-item__row">
+                <a href="{{ route('shop') }}" class="rabez-nav__link {{ request()->routeIs('shop') ? 'is-active' : '' }}">All Jerseys</a>
+              </div>
+            </li>
+            <li class="rabez-nav-item rabez-nav-item--root">
+              <div class="rabez-nav-item__row">
+                <a href="{{ route('shop', ['sleeve' => 'winter-hoodie']) }}" class="rabez-nav__link">Winter Hoodies <span class="rabez-nav__tag">NEW</span></a>
+              </div>
+            </li>
+            <li class="rabez-nav-item rabez-nav-item--root">
+              <div class="rabez-nav-item__row">
+                <a href="{{ route('shop', ['sleeve' => 'full-sleeve']) }}" class="rabez-nav__link">Full Sleeve</a>
+              </div>
+            </li>
+            <li class="rabez-nav-item rabez-nav-item--root">
+              <div class="rabez-nav-item__row">
+                <a href="{{ route('shop', ['sleeve' => 'retro']) }}" class="rabez-nav__link">Retro Kits</a>
+              </div>
+            </li>
+            <li class="rabez-nav-item rabez-nav-item--root">
+              <div class="rabez-nav-item__row">
+                <a href="{{ route('home') }}#size-guide" class="rabez-nav__link">Size Chart</a>
+              </div>
+            </li>
+          @endif
+        </ul>
 
         <!-- Mobile Drawer Utilities & Quick Actions -->
         <div class="rabez-nav-mobile-utilities">
@@ -304,10 +332,31 @@
         <div class="rabez-footer__nav-col">
           <h4 class="rabez-footer__heading">Customer Care</h4>
           <ul class="rabez-footer__links">
-            <li><a href="{{ route('track-order') }}">Track Your Order &amp; Invoice</a></li>
-            <li><a href="{{ route('checkout') }}">1-Page COD Checkout</a></li>
-            <li><a href="https://api.whatsapp.com/send/?phone=8801612359652" target="_blank">Direct WhatsApp Support</a></li>
-            <li><a href="{{ route('admin.dashboard') }}">RABEZ Admin Panel</a></li>
+            @if(!empty($footerCareMenu))
+              @foreach($footerCareMenu as $fItem)
+                <li>
+                  <a href="{{ $fItem['resolved_url'] }}" @if(($fItem['target'] ?? '_self') === '_blank') target="_blank" rel="noopener noreferrer" @endif>
+                    {{ $fItem['title'] }}
+                  </a>
+                  @if(!empty($fItem['children']))
+                    <ul style="list-style:none;margin:4px 0 6px 12px;padding:0;display:flex;flex-direction:column;gap:4px;">
+                      @foreach($fItem['children'] as $fChild)
+                        <li>
+                          <a href="{{ $fChild['resolved_url'] }}" @if(($fChild['target'] ?? '_self') === '_blank') target="_blank" rel="noopener noreferrer" @endif style="font-size:0.84em;opacity:0.88;">
+                            {{ $fChild['title'] }}
+                          </a>
+                        </li>
+                      @endforeach
+                    </ul>
+                  @endif
+                </li>
+              @endforeach
+            @else
+              <li><a href="{{ route('track-order') }}">Track Your Order &amp; Invoice</a></li>
+              <li><a href="{{ route('checkout') }}">1-Page COD Checkout</a></li>
+              <li><a href="https://api.whatsapp.com/send/?phone=8801612359652" target="_blank">Direct WhatsApp Support</a></li>
+              <li><a href="{{ route('admin.dashboard') }}">RABEZ Admin Panel</a></li>
+            @endif
           </ul>
         </div>
         <div class="rabez-footer__contact">
@@ -589,7 +638,7 @@
     @endif
   </script>
   <script src="{{ asset('assets/js/cart.js') }}?v=3.1"></script>
-  <script src="{{ asset('assets/js/app.js') }}?v=2.7"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=2.8"></script>
 
   @stack('scripts')
 </body>

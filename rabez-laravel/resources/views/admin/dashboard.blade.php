@@ -852,17 +852,24 @@
       width: 980px;
       max-width: 96vw;
     }
+    .adm-drawer.js-page-drawer {
+      width: 780px;
+      max-width: 96vw;
+    }
 
     body.is-drawer-open .adm-backdrop,
     body.is-prod-drawer-open .adm-backdrop,
     body.is-cat-drawer-open .adm-backdrop,
     body.is-cust-drawer-open .adm-backdrop,
+    body.is-user-drawer-open .adm-backdrop,
+    body.is-page-drawer-open .adm-backdrop,
     body.is-nav-open .adm-backdrop { opacity: 1; pointer-events: auto; }
     body.is-drawer-open .adm-drawer.js-order-drawer { transform: translateX(0); }
     body.is-prod-drawer-open .adm-drawer.js-prod-drawer { transform: translateX(0); }
     body.is-cat-drawer-open .adm-drawer.js-cat-drawer { transform: translateX(0); }
     body.is-cust-drawer-open .adm-drawer.js-cust-drawer { transform: translateX(0); }
     body.is-user-drawer-open .adm-drawer.js-user-drawer { transform: translateX(0); }
+    body.is-page-drawer-open .adm-drawer.js-page-drawer { transform: translateX(0); }
 
     /* Bulk Action Bar */
     .adm-bulk-bar {
@@ -1431,6 +1438,297 @@
       transform: scale(1.02);
     }
 
+    /* ==========================================================================
+       CMS PAGES RICH TEXT EDITOR & MULTI-LEVEL MENU BUILDER
+       ========================================================================== */
+    .adm-rte-wrap {
+      border: 1px solid var(--adm-border-strong);
+      border-radius: 10px;
+      background: var(--adm-surface);
+      overflow: hidden;
+    }
+
+    .adm-rte-toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 4px;
+      padding: 8px 10px;
+      background: var(--adm-subtle);
+      border-bottom: 1px solid var(--adm-border);
+    }
+
+    .adm-rte-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 30px;
+      height: 30px;
+      padding: 0 9px;
+      border-radius: 6px;
+      border: 1px solid var(--adm-border);
+      background: var(--adm-surface);
+      color: var(--adm-text);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .adm-rte-btn:hover {
+      border-color: #22C55E;
+      background: #F0FDF4;
+    }
+
+    .adm-rte-btn.is-active {
+      background: #0B0D0C;
+      color: #04F404;
+      border-color: #0B0D0C;
+    }
+
+    .adm-rte-sep {
+      width: 1px;
+      height: 18px;
+      background: var(--adm-border-strong);
+      margin: 0 3px;
+    }
+
+    .adm-rte-editor {
+      min-height: 240px;
+      max-height: 420px;
+      overflow-y: auto;
+      padding: 14px 16px;
+      font-size: 14px;
+      line-height: 1.65;
+      color: var(--adm-text);
+      outline: none;
+    }
+
+    .adm-rte-editor h2 {
+      font-size: 18px;
+      font-weight: 700;
+      margin: 14px 0 6px;
+      color: #0B0D0C;
+    }
+
+    .adm-rte-editor h3 {
+      font-size: 15.5px;
+      font-weight: 700;
+      margin: 12px 0 4px;
+      color: #0B0D0C;
+    }
+
+    .adm-rte-editor p {
+      margin: 0 0 10px;
+    }
+
+    .adm-rte-editor ul,
+    .adm-rte-editor ol {
+      margin: 0 0 10px 20px;
+      padding: 0;
+    }
+
+    .adm-rte-editor blockquote {
+      margin: 10px 0;
+      padding: 10px 14px;
+      border-left: 3px solid #22C55E;
+      background: #F4FAF6;
+      border-radius: 6px;
+    }
+
+    .adm-rte-source {
+      width: 100%;
+      min-height: 240px;
+      border: none;
+      padding: 14px 16px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+      font-size: 12.5px;
+      line-height: 1.55;
+      color: #0B0D0C;
+      background: #F8FAF9;
+      resize: vertical;
+      outline: none;
+    }
+
+    .adm-menu-loc-tabs {
+      display: inline-flex;
+      gap: 6px;
+      padding: 4px;
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: 10px;
+    }
+
+    .adm-menu-loc-btn {
+      padding: 7px 14px;
+      border-radius: 7px;
+      border: none;
+      background: transparent;
+      color: var(--adm-text-2);
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .adm-menu-loc-btn.is-active {
+      background: #0B0D0C;
+      color: #04F404;
+    }
+
+    .adm-menu-grid {
+      display: grid;
+      grid-template-columns: 350px minmax(0, 1fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .adm-menu-tree {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .adm-menu-node {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 11px 14px;
+      margin-left: calc(var(--depth, 0) * 26px);
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-left: 3px solid var(--depth-accent, #0B0D0C);
+      border-radius: 10px;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .adm-menu-node[data-depth="0"] { --depth-accent: #0B0D0C; }
+    .adm-menu-node[data-depth="1"] { --depth-accent: #16A34A; background: #FAFDFB; }
+    .adm-menu-node[data-depth="2"] { --depth-accent: #2563EB; background: #F8FAFF; }
+    .adm-menu-node[data-depth="3"] { --depth-accent: #9333EA; background: #FCF9FF; }
+
+    .adm-menu-node.is-inactive {
+      opacity: 0.58;
+      background: #F4F5F4;
+    }
+
+    .adm-menu-node.is-editing {
+      border-color: #16A34A;
+      box-shadow: 0 0 0 2px rgba(22, 163, 74, 0.16);
+    }
+
+    .adm-menu-node__info {
+      min-width: 0;
+      flex: 1 1 auto;
+    }
+
+    .adm-menu-node__top {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 7px;
+    }
+
+    .adm-menu-depth-pill {
+      display: inline-flex;
+      align-items: center;
+      padding: 2px 7px;
+      border-radius: 5px;
+      font-size: 10.5px;
+      font-weight: 700;
+      letter-spacing: 0.03em;
+      background: #EEF2EF;
+      color: #27322C;
+    }
+
+    .adm-menu-node[data-depth="1"] .adm-menu-depth-pill { background: #DCFCE7; color: #15803D; }
+    .adm-menu-node[data-depth="2"] .adm-menu-depth-pill { background: #DBEAFE; color: #1D4ED8; }
+    .adm-menu-node[data-depth="3"] .adm-menu-depth-pill { background: #F3E8FF; color: #7E22CE; }
+
+    .adm-menu-node__title {
+      font-weight: 700;
+      font-size: 13.5px;
+      color: var(--adm-text);
+      overflow-wrap: anywhere;
+    }
+
+    .adm-menu-node__badge {
+      padding: 1px 6px;
+      border-radius: 4px;
+      background: #04F404;
+      color: #0B0D0C;
+      font-size: 10px;
+      font-weight: 800;
+    }
+
+    .adm-menu-node__url {
+      margin-top: 3px;
+      font-size: 11.5px;
+      color: var(--adm-muted);
+      overflow-wrap: anywhere;
+    }
+
+    .adm-menu-actions {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 4px;
+      flex-shrink: 0;
+    }
+
+    .adm-mbtn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      height: 28px;
+      min-width: 28px;
+      padding: 0 7px;
+      border-radius: 6px;
+      border: 1px solid var(--adm-border-strong);
+      background: var(--adm-surface);
+      color: var(--adm-text);
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.14s ease;
+    }
+
+    .adm-mbtn:hover:not(:disabled) {
+      border-color: #16A34A;
+      background: #F0FDF4;
+    }
+
+    .adm-mbtn:disabled {
+      opacity: 0.35;
+      cursor: not-allowed;
+    }
+
+    .adm-mbtn--danger:hover:not(:disabled) {
+      border-color: #EF4444;
+      background: #FEF2F2;
+      color: #B91C1C;
+    }
+
+    @media (max-width: 980px) {
+      .adm-menu-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .adm-menu-node {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 9px;
+        margin-left: calc(var(--depth, 0) * 14px);
+        padding: 10px 11px;
+      }
+      .adm-menu-actions {
+        justify-content: flex-start;
+      }
+    }
+
   </style>
 </head>
 <body class="adm">
@@ -1510,6 +1808,15 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
           <span>Discount</span>
           <span class="adm-nav-count js-coupons-count-badge">{{ count($coupons ?? []) }}</span>
+        </button>
+        <button type="button" class="adm-nav-item js-tab" data-tab="pages">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>
+          <span>Pages</span>
+          <span class="adm-nav-count js-pages-count-badge">0</span>
+        </button>
+        <button type="button" class="adm-nav-item js-tab" data-tab="menus">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="12" r="1"/><circle cx="8.5" cy="18" r="1"/></svg>
+          <span>Menu Builder</span>
         </button>
         <button type="button" class="adm-nav-item js-tab" data-tab="settings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
@@ -2706,6 +3013,216 @@
             </div>
           </div>
         </section>
+
+        <!-- ==================================================================
+             CMS PAGES MANAGEMENT
+             ================================================================== -->
+        <section class="adm-panel" data-panel="pages">
+          <div class="adm-kpis" style="margin-bottom: 20px;">
+            <div class="adm-kpi">
+              <div class="adm-kpi__head">
+                <span>Published Pages</span>
+                <span class="adm-kpi__icon" style="background:rgba(34,197,94,0.15); color:#16A34A;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+                </span>
+              </div>
+              <div class="adm-kpi__value js-stat-pages-published" style="color:#16A34A;">0</div>
+              <div class="adm-kpi__foot">Live &amp; accessible on storefront</div>
+            </div>
+
+            <div class="adm-kpi">
+              <div class="adm-kpi__head">
+                <span>Draft Pages</span>
+                <span class="adm-kpi__icon" style="background:rgba(245,158,11,0.15); color:#D97706;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 1 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
+                </span>
+              </div>
+              <div class="adm-kpi__value js-stat-pages-drafts">0</div>
+              <div class="adm-kpi__foot">Hidden until published</div>
+            </div>
+
+            <div class="adm-kpi">
+              <div class="adm-kpi__head">
+                <span>Total Pages</span>
+                <span class="adm-kpi__icon" style="background:rgba(59,130,246,0.15); color:#2563EB;">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+                </span>
+              </div>
+              <div class="adm-kpi__value js-stat-pages-total">0</div>
+              <div class="adm-kpi__foot">Policies, Info &amp; Landing Pages</div>
+            </div>
+          </div>
+
+          <div class="adm-card">
+            <div class="adm-card__head" style="flex-wrap:wrap; gap:14px; align-items:center;">
+              <div style="flex:1; min-width:0;">
+                <h2 class="adm-card__title">Storefront Pages (Privacy Policy, Terms, Custom Info)</h2>
+                <p class="adm-card__desc">Create and edit custom HTML/rich-text pages at clean URLs like <code>/privacy-policy</code> or <code>/terms-and-conditions</code>.</p>
+              </div>
+              <div class="adm-coupons-toolbar" style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="text" class="adm-input js-page-search-input" placeholder="Search page title or slug..." style="width:230px; height:36px; font-size:12.5px;">
+                <button type="button" class="adm-btn js-open-page-drawer" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:12.5px; padding:8px 16px; border-radius:6px; border:none; cursor:pointer; display:inline-flex; align-items:center; gap:6px;">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+                  <span>New Page</span>
+                </button>
+              </div>
+            </div>
+
+            <div class="adm-card__body adm-card__body--flush">
+              <div class="adm-table-wrap">
+                <table class="adm-table" id="table-pages" style="width:100%;">
+                  <thead>
+                    <tr>
+                      <th style="min-width:220px;">Page Title &amp; Excerpt</th>
+                      <th style="min-width:170px;">URL Slug</th>
+                      <th style="min-width:110px;">Status</th>
+                      <th style="min-width:150px;">Last Updated</th>
+                      <th style="text-align:right; min-width:240px;">Actions</th>
+                    </tr>
+                  </thead>
+                  <tbody id="adm-pages-list">
+                    <tr><td colspan="5" style="text-align:center; padding:28px; color:var(--adm-muted);">Loading pages...</td></tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- ==================================================================
+             MULTI-LEVEL MENU BUILDER
+             ================================================================== -->
+        <section class="adm-panel" data-panel="menus">
+          <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:16px;">
+            <div class="adm-menu-loc-tabs" role="tablist" aria-label="Menu locations">
+              <button type="button" class="adm-menu-loc-btn is-active js-menu-loc-tab" data-location="header">
+                Header Navigation (Multi-Level)
+              </button>
+              <button type="button" class="adm-menu-loc-btn js-menu-loc-tab" data-location="footer_care">
+                Footer Customer Care
+              </button>
+            </div>
+
+            <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+              <a href="{{ route('home') }}" target="_blank" class="adm-btn adm-btn--secondary adm-btn--sm">
+                View Storefront &nearr;
+              </a>
+            </div>
+          </div>
+
+          <div class="adm-menu-grid">
+            <!-- Left Column: Add / Edit Menu Item -->
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title js-menu-form-title">Add Menu Item</h2>
+                  <p class="adm-card__desc js-menu-form-desc">Link a CMS Page, store category, or custom URL to your navigation.</p>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <form id="js-menu-item-form" style="display:grid; gap:13px;">
+                  <input type="hidden" id="menu-edit-id" value="">
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="menu-item-type">Link Source</label>
+                    <select id="menu-item-type" class="adm-select">
+                      <option value="page">CMS Page (Privacy Policy, Terms, etc.)</option>
+                      <option value="route">Storefront Preset Link</option>
+                      <option value="custom">Custom URL / Dropdown Heading (#)</option>
+                    </select>
+                  </div>
+
+                  <div class="adm-field js-menu-page-wrap">
+                    <label class="adm-label" for="menu-item-page-id">Select Page</label>
+                    <select id="menu-item-page-id" class="adm-select">
+                      <option value="">-- Choose a page --</option>
+                    </select>
+                  </div>
+
+                  <div class="adm-field js-menu-preset-wrap" style="display:none;">
+                    <label class="adm-label" for="menu-item-preset">Choose Preset Destination</label>
+                    <select id="menu-item-preset" class="adm-select">
+                      <option value="">-- Select quick link --</option>
+                      <option value="/|Home">Home (/)</option>
+                      <option value="/shop|All Jerseys">All Jerseys (/shop)</option>
+                      <option value="/shop?sleeve=half-sleeve|Half Sleeve Kits">Half Sleeve Kits</option>
+                      <option value="/shop?sleeve=full-sleeve|Full Sleeve Kits">Full Sleeve Kits</option>
+                      <option value="/shop?sleeve=winter-hoodie|Winter Hoodies">Winter Hoodies</option>
+                      <option value="/shop?sleeve=retro|Retro Kits">Retro Kits</option>
+                      <option value="/track-order|Track Your Order">Track Your Order (/track-order)</option>
+                      <option value="/checkout|1-Page COD Checkout">1-Page COD Checkout (/checkout)</option>
+                      <option value="/#size-guide|Size Chart">Size Chart (/#size-guide)</option>
+                      <option value="https://api.whatsapp.com/send/?phone=8801612359652|Direct WhatsApp Support">WhatsApp Support</option>
+                      <option value="/admin|RABEZ Admin Panel">RABEZ Admin Panel (/admin)</option>
+                    </select>
+                  </div>
+
+                  <div class="adm-field js-menu-url-wrap" style="display:none;">
+                    <label class="adm-label" for="menu-item-url">Destination URL</label>
+                    <input type="text" id="menu-item-url" class="adm-input" placeholder="/shop?club=real-madrid or # for folder">
+                    <span class="adm-cell-sub">Use <code>#</code> if this item is only a dropdown parent group.</span>
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="menu-item-title">Menu Label *</label>
+                    <input type="text" id="menu-item-title" class="adm-input" required placeholder="e.g. Privacy Policy or Shop Kits">
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="menu-item-parent-id">Parent Menu (For Multi-Level Dropdown)</label>
+                    <select id="menu-item-parent-id" class="adm-select">
+                      <option value="">— Top Level (Root) —</option>
+                    </select>
+                    <span class="adm-cell-sub">Pick any parent item to nest Level 2, Level 3, or deeper submenus.</span>
+                  </div>
+
+                  <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                    <div class="adm-field">
+                      <label class="adm-label" for="menu-item-badge">Badge (Optional)</label>
+                      <input type="text" id="menu-item-badge" class="adm-input" maxlength="20" placeholder="e.g. NEW">
+                    </div>
+                    <div class="adm-field">
+                      <label class="adm-label" for="menu-item-target">Open In</label>
+                      <select id="menu-item-target" class="adm-select">
+                        <option value="_self">Same Tab</option>
+                        <option value="_blank">New Tab</option>
+                      </select>
+                    </div>
+                  </div>
+
+                  <label style="display:flex; align-items:center; gap:9px; padding:9px 12px; border:1px solid var(--adm-border); border-radius:8px; cursor:pointer; background:var(--adm-subtle);">
+                    <input type="checkbox" id="menu-item-active" checked style="width:16px; height:16px; accent-color:#04F404;">
+                    <span style="font-size:13px; font-weight:600;">Visible on Storefront</span>
+                  </label>
+
+                  <div style="display:flex; gap:8px; padding-top:4px;">
+                    <button type="submit" class="adm-btn adm-btn--primary js-menu-save-btn" style="flex:1; font-weight:700;">
+                      Add to Menu
+                    </button>
+                    <button type="button" class="adm-btn adm-btn--secondary js-menu-cancel-edit" style="display:none;">
+                      Cancel
+                    </button>
+                  </div>
+                </form>
+              </div>
+            </div>
+
+            <!-- Right Column: Interactive Multi-Level Tree -->
+            <div class="adm-card">
+              <div class="adm-card__head" style="flex-wrap:wrap; gap:10px;">
+                <div>
+                  <h2 class="adm-card__title js-menu-tree-heading">Header Menu Hierarchy</h2>
+                  <p class="adm-card__desc">Use <strong>&uarr; &darr;</strong> to reorder and <strong>&rarr; Nest / &larr; Outdent</strong> to build multi-level dropdowns. Mobile drawer adapts automatically.</p>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <div class="adm-menu-tree" id="adm-menu-tree-wrap">
+                  <div style="text-align:center; padding:28px; color:var(--adm-muted);">Loading menu tree...</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
       </main>
     </div>
   </div>
@@ -3064,6 +3581,94 @@
     </div>
   </aside>
 
+  <!-- CMS PAGE EDITOR DRAWER -->
+  <aside class="adm-drawer js-page-drawer" aria-label="Page Editor">
+    <div class="adm-drawer__head">
+      <div>
+        <div class="adm-cell-sub">Storefront CMS Page</div>
+        <h2 style="font-size:18px; margin-top:2px;" class="js-page-drawer-title">Create New Page</h2>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <a href="#" target="_blank" class="adm-btn adm-btn--secondary adm-btn--sm js-page-preview-link" style="display:none;">Preview &nearr;</a>
+        <button type="button" class="adm-icon-btn js-drawer-close" aria-label="Close">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="adm-drawer__body">
+      <form id="js-page-editor-form" style="display:grid; gap:15px;">
+        <input type="hidden" id="page-edit-id" value="">
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+          <div class="adm-field">
+            <label class="adm-label" for="page-edit-title">Page Title *</label>
+            <input type="text" id="page-edit-title" class="adm-input" required placeholder="e.g. Privacy Policy">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label" for="page-edit-slug">URL Slug *</label>
+            <input type="text" id="page-edit-slug" class="adm-input" placeholder="e.g. privacy-policy">
+            <span class="adm-cell-sub js-page-slug-preview" style="font-size:11px; color:#16A34A;">{{ url('/') }}/privacy-policy</span>
+          </div>
+        </div>
+
+        <div class="adm-field">
+          <label class="adm-label" for="page-edit-excerpt">Subtitle / Short Summary (Optional)</label>
+          <input type="text" id="page-edit-excerpt" class="adm-input" placeholder="Shown in the dark hero banner below page title">
+        </div>
+
+        <div class="adm-field">
+          <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; gap:8px; flex-wrap:wrap;">
+            <label class="adm-label" style="margin:0;">Page Content (Visual Editor &amp; HTML)</label>
+            <button type="button" class="adm-rte-btn js-rte-toggle-source" style="height:26px; font-size:11px;">&lt;/&gt; HTML Source</button>
+          </div>
+          <div class="adm-rte-wrap">
+            <div class="adm-rte-toolbar js-rte-toolbar">
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="formatBlock" data-val="h2" title="Heading 2">H2</button>
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="formatBlock" data-val="h3" title="Heading 3">H3</button>
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="formatBlock" data-val="p" title="Paragraph">P</button>
+              <span class="adm-rte-sep"></span>
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="bold" title="Bold"><b>B</b></button>
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="italic" title="Italic"><i>I</i></button>
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="underline" title="Underline"><u>U</u></button>
+              <span class="adm-rte-sep"></span>
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="insertUnorderedList" title="Bullet List">&bull; List</button>
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="insertOrderedList" title="Numbered List">1. List</button>
+              <button type="button" class="adm-rte-btn js-rte-cmd" data-cmd="formatBlock" data-val="blockquote" title="Callout Quote">&ldquo; Quote</button>
+              <button type="button" class="adm-rte-btn js-rte-link-btn" title="Insert Link">Link</button>
+            </div>
+            <div id="page-edit-rte" class="adm-rte-editor" contenteditable="true"></div>
+            <textarea id="page-edit-html" class="adm-rte-source" style="display:none;" placeholder="Write or paste clean HTML here..."></textarea>
+          </div>
+        </div>
+
+        <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap:12px;">
+          <div class="adm-field">
+            <label class="adm-label" for="page-edit-meta-title">SEO Meta Title (Optional)</label>
+            <input type="text" id="page-edit-meta-title" class="adm-input" placeholder="Defaults to Page Title">
+          </div>
+          <div class="adm-field">
+            <label class="adm-label" for="page-edit-meta-desc">SEO Meta Description (Optional)</label>
+            <input type="text" id="page-edit-meta-desc" class="adm-input" placeholder="Search snippet summary">
+          </div>
+        </div>
+
+        <label style="display:flex; align-items:center; justify-content:space-between; padding:11px 14px; border:1px solid var(--adm-border); border-radius:8px; background:var(--adm-subtle); cursor:pointer;">
+          <div>
+            <div style="font-weight:700; font-size:13px;">Publish Page Live</div>
+            <div style="font-size:11.5px; color:var(--adm-muted);">Uncheck to save as Draft (hidden from visitors &amp; menu).</div>
+          </div>
+          <input type="checkbox" id="page-edit-published" checked style="width:18px; height:18px; accent-color:#04F404;">
+        </label>
+
+        <div style="display:flex; gap:10px; padding-top:8px; border-top:1px solid var(--adm-border);">
+          <button type="submit" class="adm-btn adm-btn--primary js-save-page-btn" style="flex:1; font-weight:700;">Save Page</button>
+          <button type="button" class="adm-btn adm-btn--danger js-delete-page-drawer-btn" style="display:none; background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">Delete Page</button>
+        </div>
+      </form>
+    </div>
+  </aside>
+
   <!-- ========================================================================
        MOBILE BOTTOM NAV
        ======================================================================== -->
@@ -3410,6 +4015,8 @@
         "users": ["Users & Access", "Team roles, staff & customer accounts"],
         "gallery": ["Media Gallery", "iPhone & DSLR auto-WebP optimizer & asset library"],
         "discounts": ["Discounts & Promo Coupons", "Manage coupon campaigns, discount codes & minimum spend rules"],
+        "pages": ["Storefront Pages (CMS)", "Create & manage custom pages like Privacy Policy, Terms & custom info"],
+        "menus": ["Navigation Menu Builder", "Organize multi-level dropdown menus for Desktop Header & Footer"],
         "settings": ["Settings", "Delivery, courier credentials & Meta Pixel"]
       };
 
@@ -4135,6 +4742,7 @@
           "is-cat-drawer-open",
           "is-cust-drawer-open",
           "is-user-drawer-open",
+          "is-page-drawer-open",
           "is-nav-open"
         );
         openOrderId = null;
@@ -6392,6 +7000,774 @@
         }
       });
 
+      /* ======================================================================
+         CMS PAGES & MULTI-LEVEL MENU BUILDER
+         ====================================================================== */
+      let cmsPages = [];
+      let cmsMenuTrees = { header: [], footer_care: [] };
+      let activeMenuLocation = "header";
+      let pageSearchQuery = "";
+      let isRteSourceMode = false;
+
+      const cmsBaseUrl = "{{ rtrim(url('/'), '/') }}";
+
+      function cmsEsc(str) {
+        return String(str ?? "")
+          .replace(/&/g, "&amp;")
+          .replace(/</g, "&lt;")
+          .replace(/>/g, "&gt;")
+          .replace(/"/g, "&quot;")
+          .replace(/'/g, "&#39;");
+      }
+
+      function slugifyText(val) {
+        return String(val || "")
+          .toLowerCase()
+          .trim()
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
+          .replace(/^-|-$/g, "");
+      }
+
+      function updateSlugPreview() {
+        const slugEl = document.getElementById("page-edit-slug");
+        const prevEl = document.querySelector(".js-page-slug-preview");
+        if (slugEl && prevEl) {
+          const clean = slugifyText(slugEl.value || "") || "your-page-slug";
+          prevEl.textContent = `${cmsBaseUrl}/${clean}`;
+        }
+      }
+
+      function setRteMode(sourceMode) {
+        const rte = document.getElementById("page-edit-rte");
+        const src = document.getElementById("page-edit-html");
+        const toolbar = document.querySelector(".js-rte-toolbar");
+        const btn = document.querySelector(".js-rte-toggle-source");
+        if (!rte || !src) return;
+
+        if (sourceMode && !isRteSourceMode) {
+          src.value = rte.innerHTML;
+          rte.style.display = "none";
+          src.style.display = "block";
+          if (toolbar) toolbar.style.opacity = "0.45";
+          if (toolbar) toolbar.style.pointerEvents = "none";
+          btn?.classList.add("is-active");
+          isRteSourceMode = true;
+        } else if (!sourceMode && isRteSourceMode) {
+          rte.innerHTML = src.value;
+          src.style.display = "none";
+          rte.style.display = "block";
+          if (toolbar) toolbar.style.opacity = "1";
+          if (toolbar) toolbar.style.pointerEvents = "auto";
+          btn?.classList.remove("is-active");
+          isRteSourceMode = false;
+        }
+      }
+
+      async function loadCmsPages() {
+        try {
+          const res = await fetch("/admin/api/pages", { headers: { "Accept": "application/json" } });
+          const data = await res.json();
+          if (data.success && Array.isArray(data.pages)) {
+            cmsPages = data.pages;
+            renderPagesTable();
+            populateMenuPageSelect();
+          }
+        } catch (err) {
+          console.error("Failed to load pages:", err);
+        }
+      }
+
+      function renderPagesTable() {
+        const tbody = document.getElementById("adm-pages-list");
+        const pubCount = cmsPages.filter(p => p.is_published).length;
+        const draftCount = cmsPages.length - pubCount;
+
+        document.querySelectorAll(".js-stat-pages-published").forEach(el => el.textContent = pubCount);
+        document.querySelectorAll(".js-stat-pages-drafts").forEach(el => el.textContent = draftCount);
+        document.querySelectorAll(".js-stat-pages-total").forEach(el => el.textContent = cmsPages.length);
+        document.querySelectorAll(".js-pages-count-badge").forEach(el => el.textContent = cmsPages.length);
+
+        if (!tbody) return;
+        const q = pageSearchQuery.trim().toLowerCase();
+        const filtered = q
+          ? cmsPages.filter(p =>
+              (p.title || "").toLowerCase().includes(q) ||
+              (p.slug || "").toLowerCase().includes(q) ||
+              (p.excerpt || "").toLowerCase().includes(q)
+            )
+          : cmsPages;
+
+        if (!filtered.length) {
+          tbody.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:32px; color:var(--adm-muted);">No pages found. Click <strong>New Page</strong> to create one.</td></tr>`;
+          return;
+        }
+
+        tbody.innerHTML = filtered.map(p => {
+          const liveUrl = p.is_published ? `${cmsBaseUrl}/${p.slug}` : `${cmsBaseUrl}/${p.slug}?preview=1`;
+          const statusPill = p.is_published
+            ? `<span style="display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;background:#DCFCE7;color:#15803D;">Published</span>`
+            : `<span style="display:inline-flex;align-items:center;padding:3px 9px;border-radius:999px;font-size:11px;font-weight:700;background:#FEF3C7;color:#B45309;">Draft</span>`;
+
+          return `
+            <tr data-page-id="${p.id}">
+              <td>
+                <div style="font-weight:700; color:var(--adm-text);">${cmsEsc(p.title)}</div>
+                ${p.excerpt ? `<div class="adm-cell-sub" style="max-width:340px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">${cmsEsc(p.excerpt)}</div>` : ""}
+              </td>
+              <td>
+                <a href="${cmsEsc(liveUrl)}" target="_blank" style="color:#16A34A; font-weight:600; font-size:12.5px; text-decoration:none;">/${cmsEsc(p.slug)} &nearr;</a>
+              </td>
+              <td>${statusPill}</td>
+              <td style="font-size:12px; color:var(--adm-muted);">${cmsEsc(p.updated_at || "—")}</td>
+              <td style="text-align:right;">
+                <div style="display:inline-flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
+                  <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-page-add-menu" data-id="${p.id}" title="Add this page to Menu">+ Menu</button>
+                  <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-page-edit-btn" data-id="${p.id}">Edit</button>
+                  <button type="button" class="adm-btn adm-btn--sm js-page-del-btn" data-id="${p.id}" style="background:#FEE2E2; color:#B91C1C; border:1px solid #FECACA;">Delete</button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join("");
+      }
+
+      function openPageDrawer(page = null) {
+        closeOverlays();
+        setRteMode(false);
+
+        const idEl = document.getElementById("page-edit-id");
+        const titleEl = document.getElementById("page-edit-title");
+        const slugEl = document.getElementById("page-edit-slug");
+        const excerptEl = document.getElementById("page-edit-excerpt");
+        const rteEl = document.getElementById("page-edit-rte");
+        const htmlEl = document.getElementById("page-edit-html");
+        const metaTitleEl = document.getElementById("page-edit-meta-title");
+        const metaDescEl = document.getElementById("page-edit-meta-desc");
+        const pubEl = document.getElementById("page-edit-published");
+        const drawerTitle = document.querySelector(".js-page-drawer-title");
+        const delBtn = document.querySelector(".js-delete-page-drawer-btn");
+        const prevLink = document.querySelector(".js-page-preview-link");
+
+        if (page) {
+          idEl.value = page.id;
+          titleEl.value = page.title || "";
+          slugEl.value = page.slug || "";
+          slugEl.dataset.manualSlug = "1";
+          excerptEl.value = page.excerpt || "";
+          rteEl.innerHTML = page.content || "<p></p>";
+          htmlEl.value = page.content || "";
+          metaTitleEl.value = page.meta_title || "";
+          metaDescEl.value = page.meta_description || "";
+          pubEl.checked = Boolean(page.is_published);
+          if (drawerTitle) drawerTitle.textContent = `Edit Page: ${page.title}`;
+          if (delBtn) delBtn.style.display = "inline-flex";
+          if (prevLink) {
+            prevLink.href = `${cmsBaseUrl}/${page.slug}${page.is_published ? "" : "?preview=1"}`;
+            prevLink.style.display = "inline-flex";
+          }
+        } else {
+          idEl.value = "";
+          titleEl.value = "";
+          slugEl.value = "";
+          delete slugEl.dataset.manualSlug;
+          excerptEl.value = "";
+          rteEl.innerHTML = "<h2>Section Title</h2><p>Write your page content here...</p>";
+          htmlEl.value = rteEl.innerHTML;
+          metaTitleEl.value = "";
+          metaDescEl.value = "";
+          pubEl.checked = true;
+          if (drawerTitle) drawerTitle.textContent = "Create New Storefront Page";
+          if (delBtn) delBtn.style.display = "none";
+          if (prevLink) prevLink.style.display = "none";
+        }
+
+        updateSlugPreview();
+        document.body.classList.add("is-page-drawer-open");
+      }
+
+      async function deletePageById(id) {
+        const p = cmsPages.find(x => String(x.id) === String(id));
+        if (!p) return;
+        if (!confirm(`Delete page "${p.title}" (/${p.slug})? Links pointing to this page will be detached.`)) return;
+
+        try {
+          const res = await fetch(`/admin/pages/${id}`, {
+            method: "DELETE",
+            headers: { "Accept": "application/json", "X-CSRF-TOKEN": CSRF_TOKEN }
+          });
+          const data = await res.json();
+          if (data.success) {
+            toast("Page Deleted", `"${p.title}" removed`);
+            closeOverlays();
+            await loadCmsPages();
+            await loadCmsMenus();
+          } else {
+            alert(data.message || "Failed to delete page");
+          }
+        } catch (err) {
+          alert("Network error: " + err.message);
+        }
+      }
+
+      /* ---------- Multi-Level Menu Builder ---------- */
+      async function loadCmsMenus() {
+        try {
+          const res = await fetch("/admin/api/menus", { headers: { "Accept": "application/json" } });
+          const data = await res.json();
+          if (data.success) {
+            cmsMenuTrees.header = Array.isArray(data.header_tree) ? data.header_tree : [];
+            cmsMenuTrees.footer_care = Array.isArray(data.footer_care_tree) ? data.footer_care_tree : [];
+            renderMenuBuilder();
+          }
+        } catch (err) {
+          console.error("Failed to load menus:", err);
+        }
+      }
+
+      function populateMenuPageSelect() {
+        const sel = document.getElementById("menu-item-page-id");
+        if (!sel) return;
+        const current = sel.value;
+        sel.innerHTML = `<option value="">-- Choose a page --</option>` +
+          cmsPages.map(p => `<option value="${p.id}">${cmsEsc(p.title)} (/${cmsEsc(p.slug)})${p.is_published ? "" : " [Draft]"}</option>`).join("");
+        if (current) sel.value = current;
+      }
+
+      function syncMenuTypeFields() {
+        const typeEl = document.getElementById("menu-item-type");
+        const pageWrap = document.querySelector(".js-menu-page-wrap");
+        const presetWrap = document.querySelector(".js-menu-preset-wrap");
+        const urlWrap = document.querySelector(".js-menu-url-wrap");
+        if (!typeEl) return;
+
+        const t = typeEl.value;
+        if (pageWrap) pageWrap.style.display = t === "page" ? "block" : "none";
+        if (presetWrap) presetWrap.style.display = t === "route" ? "block" : "none";
+        if (urlWrap) urlWrap.style.display = t === "page" ? "none" : "block";
+      }
+
+      function collectDescendantIds(nodes, targetId, inside = false, out = new Set()) {
+        for (const n of nodes || []) {
+          const isMatch = inside || String(n.id) === String(targetId);
+          if (isMatch) out.add(String(n.id));
+          if (n.children && n.children.length) {
+            collectDescendantIds(n.children, targetId, isMatch, out);
+          }
+        }
+        return out;
+      }
+
+      function populateMenuParentSelect(excludeSet = new Set()) {
+        const sel = document.getElementById("menu-item-parent-id");
+        if (!sel) return;
+        const currentVal = sel.value;
+        const tree = cmsMenuTrees[activeMenuLocation] || [];
+        const options = [`<option value="">— Top Level (Root) —</option>`];
+
+        function walk(nodes, depth) {
+          for (const n of nodes) {
+            if (excludeSet.has(String(n.id))) continue;
+            const prefix = depth > 0 ? `${"— ".repeat(depth)}↳ ` : "";
+            options.push(`<option value="${n.id}">${prefix}${cmsEsc(n.title)}</option>`);
+            if (n.children && n.children.length) {
+              walk(n.children, depth + 1);
+            }
+          }
+        }
+        walk(tree, 0);
+        sel.innerHTML = options.join("");
+        if (currentVal && !excludeSet.has(String(currentVal))) {
+          sel.value = currentVal;
+        }
+      }
+
+      function resetMenuForm() {
+        const form = document.getElementById("js-menu-item-form");
+        if (!form) return;
+        form.reset();
+        document.getElementById("menu-edit-id").value = "";
+        document.getElementById("menu-item-type").value = "page";
+        document.getElementById("menu-item-active").checked = true;
+        document.querySelector(".js-menu-form-title").textContent = "Add Menu Item";
+        document.querySelector(".js-menu-save-btn").textContent = "Add to Menu";
+        document.querySelector(".js-menu-cancel-edit").style.display = "none";
+        populateMenuPageSelect();
+        populateMenuParentSelect(new Set());
+        syncMenuTypeFields();
+        renderMenuBuilder();
+      }
+
+      function findMenuNodeById(nodes, id) {
+        for (const n of nodes || []) {
+          if (String(n.id) === String(id)) return n;
+          if (n.children && n.children.length) {
+            const found = findMenuNodeById(n.children, id);
+            if (found) return found;
+          }
+        }
+        return null;
+      }
+
+      function startEditMenuItem(id) {
+        const tree = cmsMenuTrees[activeMenuLocation] || [];
+        const node = findMenuNodeById(tree, id);
+        if (!node) return;
+
+        document.getElementById("menu-edit-id").value = node.id;
+        document.getElementById("menu-item-type").value = node.type || "custom";
+        syncMenuTypeFields();
+
+        populateMenuPageSelect();
+        if (node.page_id) {
+          document.getElementById("menu-item-page-id").value = node.page_id;
+        }
+        document.getElementById("menu-item-url").value = node.url || "";
+        document.getElementById("menu-item-title").value = node.title || "";
+        document.getElementById("menu-item-badge").value = node.badge_text || "";
+        document.getElementById("menu-item-target").value = node.target || "_self";
+        document.getElementById("menu-item-active").checked = Boolean(node.is_active);
+
+        const excludeSet = collectDescendantIds(tree, node.id);
+        populateMenuParentSelect(excludeSet);
+        document.getElementById("menu-item-parent-id").value = node.parent_id ? String(node.parent_id) : "";
+
+        document.querySelector(".js-menu-form-title").textContent = `Edit: ${node.title}`;
+        document.querySelector(".js-menu-save-btn").textContent = "Save Changes";
+        document.querySelector(".js-menu-cancel-edit").style.display = "inline-flex";
+        renderMenuBuilder();
+        document.getElementById("menu-item-title").focus();
+      }
+
+      function renderMenuBuilder() {
+        const wrap = document.getElementById("adm-menu-tree-wrap");
+        const heading = document.querySelector(".js-menu-tree-heading");
+        if (heading) {
+          heading.textContent = activeMenuLocation === "header"
+            ? "Header Navigation Tree (Desktop Dropdown & Mobile Accordion)"
+            : "Footer Customer Care Links";
+        }
+        if (!wrap) return;
+
+        const editingId = document.getElementById("menu-edit-id")?.value || "";
+        const tree = cmsMenuTrees[activeMenuLocation] || [];
+
+        if (!editingId) {
+          populateMenuParentSelect(new Set());
+        }
+
+        if (!tree.length) {
+          wrap.innerHTML = `<div style="text-align:center; padding:32px; color:var(--adm-muted); border:1px dashed var(--adm-border-strong); border-radius:10px;">No menu items in this location yet. Add your first link on the left.</div>`;
+          return;
+        }
+
+        const rows = [];
+        function walk(nodes, depth, parentId) {
+          nodes.forEach((n, idx) => {
+            rows.push({
+              node: n,
+              depth: depth,
+              index: idx,
+              siblingCount: nodes.length,
+              hasParent: parentId !== null
+            });
+            if (n.children && n.children.length) {
+              walk(n.children, depth + 1, n.id);
+            }
+          });
+        }
+        walk(tree, 0, null);
+
+        wrap.innerHTML = rows.map(({ node, depth, index, siblingCount, hasParent }) => {
+          const depthLabel = depth === 0 ? "TOP" : `L${depth + 1}`;
+          const canUp = index > 0;
+          const canDown = index < siblingCount - 1;
+          const canIndent = index > 0;
+          const canOutdent = hasParent;
+          const isEditTarget = String(editingId) === String(node.id);
+          const urlDisplay = node.type === "page" && node.page_slug ? `/${node.page_slug}` : (node.url || "#");
+
+          return `
+            <div class="adm-menu-node ${node.is_active ? "" : "is-inactive"} ${isEditTarget ? "is-editing" : ""}" style="--depth:${Math.min(depth, 4)};" data-depth="${Math.min(depth, 4)}" data-menu-id="${node.id}">
+              <div class="adm-menu-node__info">
+                <div class="adm-menu-node__top">
+                  <span class="adm-menu-depth-pill">${depthLabel}</span>
+                  <span class="adm-menu-node__title">${cmsEsc(node.title)}</span>
+                  ${node.badge_text ? `<span class="adm-menu-node__badge">${cmsEsc(node.badge_text)}</span>` : ""}
+                  ${!node.is_active ? `<span style="font-size:10.5px; color:#B45309; font-weight:700;">[Hidden]</span>` : ""}
+                </div>
+                <div class="adm-menu-node__url">
+                  ${cmsEsc(urlDisplay)} &bull; ${node.type === "page" ? "CMS Page" : (node.type === "route" ? "Store Link" : "Custom")}
+                  ${node.target === "_blank" ? " &bull; New Tab" : ""}
+                </div>
+              </div>
+
+              <div class="adm-menu-actions">
+                <button type="button" class="adm-mbtn js-menu-move" data-id="${node.id}" data-act="up" ${canUp ? "" : "disabled"} title="Move Up">&uarr;</button>
+                <button type="button" class="adm-mbtn js-menu-move" data-id="${node.id}" data-act="down" ${canDown ? "" : "disabled"} title="Move Down">&darr;</button>
+                <button type="button" class="adm-mbtn js-menu-move" data-id="${node.id}" data-act="outdent" ${canOutdent ? "" : "disabled"} title="Move Out One Level">&larr;</button>
+                <button type="button" class="adm-mbtn js-menu-move" data-id="${node.id}" data-act="indent" ${canIndent ? "" : "disabled"} title="Nest Inside Previous Item">&rarr;</button>
+                <button type="button" class="adm-mbtn js-menu-add-sub" data-id="${node.id}" title="Add Sub-item under ${cmsEsc(node.title)}">+Sub</button>
+                <button type="button" class="adm-mbtn js-menu-edit" data-id="${node.id}" title="Edit Item">Edit</button>
+                <button type="button" class="adm-mbtn adm-mbtn--danger js-menu-del" data-id="${node.id}" title="Delete Item">&times;</button>
+              </div>
+            </div>
+          `;
+        }).join("");
+      }
+
+      async function moveMenuNode(id, action) {
+        const treeCopy = JSON.parse(JSON.stringify(cmsMenuTrees[activeMenuLocation] || []));
+
+        function locate(branch, targetId, parentNode = null) {
+          for (let i = 0; i < branch.length; i++) {
+            if (String(branch[i].id) === String(targetId)) {
+              return { list: branch, index: i, node: branch[i], parent: parentNode };
+            }
+            if (branch[i].children && branch[i].children.length) {
+              const found = locate(branch[i].children, targetId, branch[i]);
+              if (found) return found;
+            }
+          }
+          return null;
+        }
+
+        const loc = locate(treeCopy, id);
+        if (!loc) return;
+
+        if (action === "up" && loc.index > 0) {
+          const tmp = loc.list[loc.index - 1];
+          loc.list[loc.index - 1] = loc.node;
+          loc.list[loc.index] = tmp;
+        } else if (action === "down" && loc.index < loc.list.length - 1) {
+          const tmp = loc.list[loc.index + 1];
+          loc.list[loc.index + 1] = loc.node;
+          loc.list[loc.index] = tmp;
+        } else if (action === "indent" && loc.index > 0) {
+          const newParent = loc.list[loc.index - 1];
+          loc.list.splice(loc.index, 1);
+          newParent.children = newParent.children || [];
+          loc.node.parent_id = newParent.id;
+          newParent.children.push(loc.node);
+        } else if (action === "outdent" && loc.parent) {
+          const parentLoc = locate(treeCopy, loc.parent.id);
+          if (!parentLoc) return;
+          loc.list.splice(loc.index, 1);
+          loc.node.parent_id = parentLoc.parent ? parentLoc.parent.id : null;
+          parentLoc.list.splice(parentLoc.index + 1, 0, loc.node);
+        } else {
+          return;
+        }
+
+        const payloadItems = [];
+        function flatten(nodes, pid) {
+          nodes.forEach((n, idx) => {
+            payloadItems.push({
+              id: Number(n.id),
+              parent_id: pid ? Number(pid) : null,
+              sort_order: (idx + 1) * 10
+            });
+            if (n.children && n.children.length) {
+              flatten(n.children, n.id);
+            }
+          });
+        }
+        flatten(treeCopy, null);
+
+        try {
+          const res = await fetch("/admin/menus/reorder", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify({
+              location: activeMenuLocation,
+              items: payloadItems
+            })
+          });
+          const data = await res.json();
+          if (data.success) {
+            cmsMenuTrees.header = data.header_tree || cmsMenuTrees.header;
+            cmsMenuTrees.footer_care = data.footer_care_tree || cmsMenuTrees.footer_care;
+            renderMenuBuilder();
+            toast("Menu Updated", "Order & hierarchy saved live");
+          } else {
+            alert(data.message || "Could not save menu order");
+          }
+        } catch (err) {
+          alert("Network error: " + err.message);
+        }
+      }
+
+      // Page Events
+      document.querySelector(".js-open-page-drawer")?.addEventListener("click", () => openPageDrawer(null));
+      document.querySelector(".js-page-search-input")?.addEventListener("input", (e) => {
+        pageSearchQuery = e.target.value || "";
+        renderPagesTable();
+      });
+
+      document.getElementById("page-edit-title")?.addEventListener("input", (e) => {
+        const slugEl = document.getElementById("page-edit-slug");
+        if (slugEl && !slugEl.dataset.manualSlug) {
+          slugEl.value = slugifyText(e.target.value);
+          updateSlugPreview();
+        }
+      });
+
+      document.getElementById("page-edit-slug")?.addEventListener("input", (e) => {
+        if (e.target.value.trim() !== "") {
+          e.target.dataset.manualSlug = "1";
+        } else {
+          delete e.target.dataset.manualSlug;
+        }
+        updateSlugPreview();
+      });
+
+      document.querySelector(".js-rte-toggle-source")?.addEventListener("click", () => {
+        setRteMode(!isRteSourceMode);
+      });
+
+      document.querySelectorAll(".js-rte-cmd").forEach(btn => {
+        btn.addEventListener("click", () => {
+          if (isRteSourceMode) return;
+          const rte = document.getElementById("page-edit-rte");
+          if (rte) rte.focus();
+          const cmd = btn.dataset.cmd;
+          const val = btn.dataset.val || null;
+          document.execCommand(cmd, false, val);
+        });
+      });
+
+      document.querySelector(".js-rte-link-btn")?.addEventListener("click", () => {
+        if (isRteSourceMode) return;
+        const url = prompt("Enter link URL (e.g. /shop or https://...):", "/shop");
+        if (url) {
+          document.getElementById("page-edit-rte")?.focus();
+          document.execCommand("createLink", false, url);
+        }
+      });
+
+      document.querySelector(".js-delete-page-drawer-btn")?.addEventListener("click", () => {
+        const id = document.getElementById("page-edit-id")?.value;
+        if (id) deletePageById(id);
+      });
+
+      document.getElementById("js-page-editor-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const id = document.getElementById("page-edit-id").value.trim();
+        const rteEl = document.getElementById("page-edit-rte");
+        const htmlEl = document.getElementById("page-edit-html");
+        const contentHtml = isRteSourceMode ? htmlEl.value : rteEl.innerHTML;
+
+        const payload = {
+          title: document.getElementById("page-edit-title").value.trim(),
+          slug: document.getElementById("page-edit-slug").value.trim(),
+          excerpt: document.getElementById("page-edit-excerpt").value.trim(),
+          content: contentHtml,
+          meta_title: document.getElementById("page-edit-meta-title").value.trim(),
+          meta_description: document.getElementById("page-edit-meta-desc").value.trim(),
+          is_published: document.getElementById("page-edit-published").checked ? 1 : 0
+        };
+
+        const btn = document.querySelector(".js-save-page-btn");
+        if (btn) btn.disabled = true;
+
+        try {
+          const url = id ? `/admin/pages/${id}/update` : "/admin/pages";
+          const res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (data.success) {
+            toast("Page Saved", `"${data.page.title}" is ready at /${data.page.slug}`);
+            closeOverlays();
+            await loadCmsPages();
+            await loadCmsMenus();
+          } else {
+            alert(data.message || "Failed to save page");
+          }
+        } catch (err) {
+          alert("Network error: " + err.message);
+        } finally {
+          if (btn) btn.disabled = false;
+        }
+      });
+
+      document.getElementById("adm-pages-list")?.addEventListener("click", (e) => {
+        const editBtn = e.target.closest(".js-page-edit-btn");
+        if (editBtn) {
+          const page = cmsPages.find(x => String(x.id) === String(editBtn.dataset.id));
+          if (page) openPageDrawer(page);
+          return;
+        }
+
+        const delBtn = e.target.closest(".js-page-del-btn");
+        if (delBtn) {
+          deletePageById(delBtn.dataset.id);
+          return;
+        }
+
+        const addMenuBtn = e.target.closest(".js-page-add-menu");
+        if (addMenuBtn) {
+          const page = cmsPages.find(x => String(x.id) === String(addMenuBtn.dataset.id));
+          if (!page) return;
+          showTab("menus");
+          resetMenuForm();
+          document.getElementById("menu-item-type").value = "page";
+          syncMenuTypeFields();
+          populateMenuPageSelect();
+          document.getElementById("menu-item-page-id").value = String(page.id);
+          document.getElementById("menu-item-title").value = page.title;
+          document.getElementById("menu-item-title").focus();
+          toast("Ready to Add", `Selected "${page.title}" in Menu Builder`);
+        }
+      });
+
+      // Menu Builder Events
+      document.querySelectorAll(".js-menu-loc-tab").forEach(btn => {
+        btn.addEventListener("click", () => {
+          document.querySelectorAll(".js-menu-loc-tab").forEach(b => b.classList.remove("is-active"));
+          btn.classList.add("is-active");
+          activeMenuLocation = btn.dataset.location || "header";
+          resetMenuForm();
+        });
+      });
+
+      document.getElementById("menu-item-type")?.addEventListener("change", syncMenuTypeFields);
+
+      document.getElementById("menu-item-page-id")?.addEventListener("change", (e) => {
+        const page = cmsPages.find(p => String(p.id) === String(e.target.value));
+        const titleEl = document.getElementById("menu-item-title");
+        if (page && titleEl && !document.getElementById("menu-edit-id").value && !titleEl.value.trim()) {
+          titleEl.value = page.title;
+        }
+      });
+
+      document.getElementById("menu-item-preset")?.addEventListener("change", (e) => {
+        const val = e.target.value;
+        if (!val) return;
+        const [url, label] = val.split("|");
+        document.getElementById("menu-item-url").value = url || "/";
+        const titleEl = document.getElementById("menu-item-title");
+        if (titleEl && !titleEl.value.trim()) {
+          titleEl.value = label || "";
+        }
+      });
+
+      document.querySelector(".js-menu-cancel-edit")?.addEventListener("click", resetMenuForm);
+
+      document.getElementById("js-menu-item-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const editId = document.getElementById("menu-edit-id").value.trim();
+        const type = document.getElementById("menu-item-type").value;
+        const pageIdVal = document.getElementById("menu-item-page-id").value;
+        const parentVal = document.getElementById("menu-item-parent-id").value;
+
+        const payload = {
+          location: activeMenuLocation,
+          parent_id: parentVal ? Number(parentVal) : null,
+          title: document.getElementById("menu-item-title").value.trim(),
+          type: type,
+          page_id: type === "page" && pageIdVal ? Number(pageIdVal) : null,
+          url: type === "page" ? null : document.getElementById("menu-item-url").value.trim(),
+          badge_text: document.getElementById("menu-item-badge").value.trim(),
+          target: document.getElementById("menu-item-target").value,
+          is_active: document.getElementById("menu-item-active").checked ? 1 : 0
+        };
+
+        try {
+          const url = editId ? `/admin/menus/${editId}/update` : "/admin/menus";
+          const res = await fetch(url, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json();
+          if (data.success) {
+            cmsMenuTrees.header = data.header_tree || cmsMenuTrees.header;
+            cmsMenuTrees.footer_care = data.footer_care_tree || cmsMenuTrees.footer_care;
+            toast("Menu Saved", editId ? "Menu item updated" : "Menu item added");
+            resetMenuForm();
+          } else {
+            alert(data.message || "Failed to save menu item");
+          }
+        } catch (err) {
+          alert("Network error: " + err.message);
+        }
+      });
+
+      document.getElementById("adm-menu-tree-wrap")?.addEventListener("click", async (e) => {
+        const moveBtn = e.target.closest(".js-menu-move");
+        if (moveBtn && !moveBtn.disabled) {
+          await moveMenuNode(moveBtn.dataset.id, moveBtn.dataset.act);
+          return;
+        }
+
+        const subBtn = e.target.closest(".js-menu-add-sub");
+        if (subBtn) {
+          const parentNode = findMenuNodeById(cmsMenuTrees[activeMenuLocation], subBtn.dataset.id);
+          resetMenuForm();
+          document.getElementById("menu-item-parent-id").value = String(subBtn.dataset.id);
+          document.getElementById("menu-item-title").focus();
+          if (parentNode) {
+            toast("Adding Submenu", `Child item under "${parentNode.title}"`);
+          }
+          return;
+        }
+
+        const editBtn = e.target.closest(".js-menu-edit");
+        if (editBtn) {
+          startEditMenuItem(editBtn.dataset.id);
+          return;
+        }
+
+        const delBtn = e.target.closest(".js-menu-del");
+        if (delBtn) {
+          const node = findMenuNodeById(cmsMenuTrees[activeMenuLocation], delBtn.dataset.id);
+          if (!node) return;
+          const hasKids = node.children && node.children.length > 0;
+          const msg = hasKids
+            ? `Delete "${node.title}" AND all its nested submenu items?`
+            : `Delete menu item "${node.title}"?`;
+          if (!confirm(msg)) return;
+
+          try {
+            const res = await fetch(`/admin/menus/${node.id}`, {
+              method: "DELETE",
+              headers: { "Accept": "application/json", "X-CSRF-TOKEN": CSRF_TOKEN }
+            });
+            const data = await res.json();
+            if (data.success) {
+              cmsMenuTrees.header = data.header_tree || cmsMenuTrees.header;
+              cmsMenuTrees.footer_care = data.footer_care_tree || cmsMenuTrees.footer_care;
+              toast("Removed", `"${node.title}" deleted from menu`);
+              if (document.getElementById("menu-edit-id").value === String(node.id)) {
+                resetMenuForm();
+              } else {
+                renderMenuBuilder();
+              }
+            } else {
+              alert(data.message || "Failed to delete menu item");
+            }
+          } catch (err) {
+            alert("Network error: " + err.message);
+          }
+        }
+      });
+
       /* ---------- Init ---------- */
       initColumnToggles();
       renderNewSizes("winter-hoodie");
@@ -6401,6 +7777,9 @@
       renderCustomers();
       renderUsers();
       renderCoupons();
+      loadCmsPages();
+      loadCmsMenus();
+      syncMenuTypeFields();
     })();
   </script>
 </body>

@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Order;
 use App\Models\OrderItem;
+use App\Models\Page;
 use App\Models\Product;
 use App\Models\Setting;
 use Illuminate\Http\Request;
@@ -295,6 +296,39 @@ class StorefrontController extends Controller
             'success' => true,
             'has_active' => $hasActive,
             'count' => $count,
+        ]);
+    }
+
+    public function page(Request $request, string $slug)
+    {
+        $cleanSlug = trim($slug, '/ ');
+        $page = Page::where('slug', $cleanSlug)->first();
+
+        if (!$page) {
+            abort(404);
+        }
+
+        $isAdminPreview = $request->boolean('preview')
+            && auth()->check()
+            && method_exists(auth()->user(), 'isAdmin')
+            && auth()->user()->isAdmin();
+
+        if (!$page->is_published && !$isAdminPreview) {
+            abort(404);
+        }
+
+        $safeContent = Page::sanitizeHtml($page->content);
+        $relatedPages = Page::published()
+            ->where('id', '!=', $page->id)
+            ->orderBy('sort_order')
+            ->orderBy('id')
+            ->get(['id', 'title', 'slug']);
+
+        return view('storefront.page', [
+            'page' => $page,
+            'safeContent' => $safeContent,
+            'isPreview' => !$page->is_published && $isAdminPreview,
+            'relatedPages' => $relatedPages,
         ]);
     }
 }

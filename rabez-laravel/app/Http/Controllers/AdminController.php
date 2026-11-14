@@ -900,4 +900,384 @@ class AdminController extends Controller
 
         return response()->json(['success' => true, 'message' => count($ids) . ' image(s) deleted']);
     }
+
+    // ==========================================
+    // CMS PAGES & MULTI-LEVEL MENU BUILDER
+    // ==========================================
+
+    public function getPages()
+    {
+        $pages = \App\Models\Page::orderBy('sort_order')
+            ->orderByDesc('id')
+            ->get()
+            ->map(function ($p) {
+                return [
+                    'id' => $p->id,
+                    'title' => $p->title,
+                    'slug' => $p->slug,
+                    'public_url' => $p->public_url,
+                    'excerpt' => $p->excerpt,
+                    'content' => $p->content,
+                    'meta_title' => $p->meta_title,
+                    'meta_description' => $p->meta_description,
+                    'is_published' => (bool) $p->is_published,
+                    'sort_order' => (int) $p->sort_order,
+                    'updated_at' => $p->updated_at ? $p->updated_at->format('d M Y, h:i A') : '',
+                ];
+            });
+
+        return response()->json([
+            'success' => true,
+            'pages' => $pages,
+        ]);
+    }
+
+    public function storePage(Request $request)
+    {
+        $validated = $request->validate([
+            'title' => 'required|string|max:180',
+            'slug' => 'nullable|string|max:180',
+            'excerpt' => 'nullable|string|max:500',
+            'content' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:180',
+            'meta_description' => 'nullable|string|max:500',
+            'is_published' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer',
+        ]);
+
+        $title = strip_tags(trim($validated['title']));
+        $rawSlug = trim((string) ($validated['slug'] ?? ''));
+
+        if ($rawSlug !== '') {
+            $slug = \Illuminate\Support\Str::slug($rawSlug);
+            if ($slug === '') {
+                return response()->json(['success' => false, 'message' => 'Please provide a valid URL slug using letters or numbers.'], 422);
+            }
+            if (\App\Models\Page::isReservedSlug($slug)) {
+                return response()->json(['success' => false, 'message' => "The slug '/{$slug}' is reserved for a store system route."], 422);
+            }
+            if (\App\Models\Page::where('slug', $slug)->exists()) {
+                return response()->json(['success' => false, 'message' => "A page with slug '/{$slug}' already exists."], 422);
+            }
+        } else {
+            $slug = \App\Models\Page::makeUniqueSlug($title);
+        }
+
+        $page = \App\Models\Page::create([
+            'title' => $title,
+            'slug' => $slug,
+            'excerpt' => !empty($validated['excerpt']) ? strip_tags(trim($validated['excerpt'])) : null,
+            'content' => \App\Models\Page::sanitizeHtml($validated['content'] ?? ''),
+            'meta_title' => !empty($validated['meta_title']) ? strip_tags(trim($validated['meta_title'])) : null,
+            'meta_description' => !empty($validated['meta_description']) ? strip_tags(trim($validated['meta_description'])) : null,
+            'is_published' => $request->boolean('is_published', true),
+            'sort_order' => (int) ($validated['sort_order'] ?? 0),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Page created successfully!',
+            'page' => $page->toArray() + ['public_url' => $page->public_url],
+        ]);
+    }
+
+    public function updatePage(Request $request, $id)
+    {
+        $page = \App\Models\Page::findOrFail($id);
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:180',
+            'slug' => 'nullable|string|max:180',
+            'excerpt' => 'nullable|string|max:500',
+            'content' => 'nullable|string',
+            'meta_title' => 'nullable|string|max:180',
+            'meta_description' => 'nullable|string|max:500',
+            'is_published' => 'nullable|boolean',
+            'sort_order' => 'nullable|integer',
+        ]);
+
+        $title = strip_tags(trim($validated['title']));
+        $rawSlug = trim((string) ($validated['slug'] ?? ''));
+
+        if ($rawSlug !== '') {
+            $slug = \Illuminate\Support\Str::slug($rawSlug);
+            if ($slug === '') {
+                return response()->json(['success' => false, 'message' => 'Please provide a valid URL slug using letters or numbers.'], 422);
+            }
+            if (\App\Models\Page::isReservedSlug($slug)) {
+                return response()->json(['success' => false, 'message' => "The slug '/{$slug}' is reserved for a store system route."], 422);
+            }
+            if (\App\Models\Page::where('slug', $slug)->where('id', '!=', $page->id)->exists()) {
+                return response()->json(['success' => false, 'message' => "Another page already uses '/{$slug}'."], 422);
+            }
+        } else {
+            $slug = \App\Models\Page::makeUniqueSlug($title, (int) $page->id);
+        }
+
+        $page->update([
+            'title' => $title,
+            'slug' => $slug,
+            'excerpt' => !empty($validated['excerpt']) ? strip_tags(trim($validated['excerpt'])) : null,
+            'content' => \App\Models\Page::sanitizeHtml($validated['content'] ?? ''),
+            'meta_title' => !empty($validated['meta_title']) ? strip_tags(trim($validated['meta_title'])) : null,
+            'meta_description' => !empty($validated['meta_description']) ? strip_tags(trim($validated['meta_description'])) : null,
+            'is_published' => $request->has('is_published') ? $request->boolean('is_published') : $page->is_published,
+            'sort_order' => (int) ($validated['sort_order'] ?? $page->sort_order),
+        ]);
+
+        // Keep fallback URL aligned on page-linked menu items
+        \App\Models\MenuItem::where('page_id', $page->id)->update(['url' => '/' . $page->slug]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Page updated successfully!',
+            'page' => $page->fresh()->toArray() + ['public_url' => $page->public_url],
+        ]);
+    }
+
+    public function deletePage($id)
+    {
+        $page = \App\Models\Page::findOrFail($id);
+
+        // Detach menu items safely before deleting
+        \App\Models\MenuItem::where('page_id', $page->id)->update([
+            'page_id' => null,
+            'type' => 'custom',
+            'url' => '#',
+        ]);
+
+        $page->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Page deleted successfully.',
+        ]);
+    }
+
+    public function getMenus()
+    {
+        return response()->json([
+            'success' => true,
+            'header_tree' => \App\Models\MenuItem::buildTree('header', false),
+            'footer_care_tree' => \App\Models\MenuItem::buildTree('footer_care', false),
+        ]);
+    }
+
+    public function storeMenuItem(Request $request)
+    {
+        $validated = $request->validate([
+            'location' => 'required|in:header,footer_care',
+            'parent_id' => 'nullable|integer|exists:menu_items,id',
+            'title' => 'required|string|max:120',
+            'type' => 'required|in:page,route,custom',
+            'page_id' => 'nullable|integer|exists:pages,id',
+            'url' => 'nullable|string|max:500',
+            'badge_text' => 'nullable|string|max:32',
+            'target' => 'nullable|in:_self,_blank',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $parentId = !empty($validated['parent_id']) ? (int) $validated['parent_id'] : null;
+        if ($parentId) {
+            $parent = \App\Models\MenuItem::find($parentId);
+            if (!$parent || $parent->location !== $validated['location']) {
+                return response()->json(['success' => false, 'message' => 'Parent menu item must belong to the same menu location.'], 422);
+            }
+        }
+
+        $type = $validated['type'];
+        $pageId = null;
+        $url = trim((string) ($validated['url'] ?? ''));
+
+        if ($type === 'page') {
+            if (empty($validated['page_id'])) {
+                return response()->json(['success' => false, 'message' => 'Please select a CMS Page to link.'], 422);
+            }
+            $page = \App\Models\Page::findOrFail((int) $validated['page_id']);
+            $pageId = (int) $page->id;
+            $url = '/' . ltrim($page->slug, '/');
+        } elseif ($url === '') {
+            $url = '#';
+        }
+
+        $maxSort = (int) \App\Models\MenuItem::where('location', $validated['location'])
+            ->where('parent_id', $parentId)
+            ->max('sort_order');
+
+        $item = \App\Models\MenuItem::create([
+            'location' => $validated['location'],
+            'parent_id' => $parentId,
+            'title' => strip_tags(trim($validated['title'])),
+            'type' => $type,
+            'page_id' => $pageId,
+            'url' => $url,
+            'badge_text' => !empty($validated['badge_text']) ? strtoupper(strip_tags(trim($validated['badge_text']))) : null,
+            'target' => ($validated['target'] ?? '_self') === '_blank' ? '_blank' : '_self',
+            'sort_order' => $maxSort + 10,
+            'is_active' => $request->boolean('is_active', true),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Menu item added!',
+            'item' => $item,
+            'header_tree' => \App\Models\MenuItem::buildTree('header', false),
+            'footer_care_tree' => \App\Models\MenuItem::buildTree('footer_care', false),
+        ]);
+    }
+
+    public function updateMenuItem(Request $request, $id)
+    {
+        $item = \App\Models\MenuItem::findOrFail($id);
+
+        $validated = $request->validate([
+            'location' => 'nullable|in:header,footer_care',
+            'parent_id' => 'nullable|integer|exists:menu_items,id',
+            'title' => 'required|string|max:120',
+            'type' => 'required|in:page,route,custom',
+            'page_id' => 'nullable|integer|exists:pages,id',
+            'url' => 'nullable|string|max:500',
+            'badge_text' => 'nullable|string|max:32',
+            'target' => 'nullable|in:_self,_blank',
+            'is_active' => 'nullable|boolean',
+        ]);
+
+        $location = $validated['location'] ?? $item->location;
+        $parentId = array_key_exists('parent_id', $validated) && $validated['parent_id']
+            ? (int) $validated['parent_id']
+            : null;
+
+        if ($parentId) {
+            if (\App\Models\MenuItem::wouldCreateCycle((int) $item->id, $parentId)) {
+                return response()->json(['success' => false, 'message' => 'Cannot place a menu item inside itself or its own submenu.'], 422);
+            }
+            $parent = \App\Models\MenuItem::find($parentId);
+            if (!$parent || $parent->location !== $location) {
+                return response()->json(['success' => false, 'message' => 'Parent menu item must be in the same menu location.'], 422);
+            }
+        }
+
+        $type = $validated['type'];
+        $pageId = null;
+        $url = trim((string) ($validated['url'] ?? ''));
+
+        if ($type === 'page') {
+            if (empty($validated['page_id'])) {
+                return response()->json(['success' => false, 'message' => 'Please select a CMS Page to link.'], 422);
+            }
+            $page = \App\Models\Page::findOrFail((int) $validated['page_id']);
+            $pageId = (int) $page->id;
+            $url = '/' . ltrim($page->slug, '/');
+        } elseif ($url === '') {
+            $url = '#';
+        }
+
+        $locationChanged = $location !== $item->location;
+
+        $item->update([
+            'location' => $location,
+            'parent_id' => $locationChanged && !$parentId ? null : $parentId,
+            'title' => strip_tags(trim($validated['title'])),
+            'type' => $type,
+            'page_id' => $pageId,
+            'url' => $url,
+            'badge_text' => !empty($validated['badge_text']) ? strtoupper(strip_tags(trim($validated['badge_text']))) : null,
+            'target' => ($validated['target'] ?? '_self') === '_blank' ? '_blank' : '_self',
+            'is_active' => $request->has('is_active') ? $request->boolean('is_active') : $item->is_active,
+        ]);
+
+        if ($locationChanged) {
+            // Move all descendants to new location too so hierarchy never breaks
+            $moveDescendants = function (int $pid, string $newLoc) use (&$moveDescendants) {
+                $children = \App\Models\MenuItem::where('parent_id', $pid)->get();
+                foreach ($children as $child) {
+                    $child->update(['location' => $newLoc]);
+                    $moveDescendants((int) $child->id, $newLoc);
+                }
+            };
+            $moveDescendants((int) $item->id, $location);
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Menu item updated!',
+            'item' => $item->fresh(),
+            'header_tree' => \App\Models\MenuItem::buildTree('header', false),
+            'footer_care_tree' => \App\Models\MenuItem::buildTree('footer_care', false),
+        ]);
+    }
+
+    public function deleteMenuItem($id)
+    {
+        $item = \App\Models\MenuItem::findOrFail($id);
+        $item->delete();
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Menu item removed.',
+            'header_tree' => \App\Models\MenuItem::buildTree('header', false),
+            'footer_care_tree' => \App\Models\MenuItem::buildTree('footer_care', false),
+        ]);
+    }
+
+    public function reorderMenus(Request $request)
+    {
+        $validated = $request->validate([
+            'location' => 'required|in:header,footer_care',
+            'items' => 'required|array|min:1',
+            'items.*.id' => 'required|integer',
+            'items.*.parent_id' => 'nullable|integer',
+            'items.*.sort_order' => 'required|integer',
+        ]);
+
+        $location = $validated['location'];
+        $rows = $validated['items'];
+
+        $validIds = \App\Models\MenuItem::where('location', $location)->pluck('id')->map(fn ($v) => (int) $v)->all();
+        $validLookup = array_flip($validIds);
+
+        // Validate every node & cycle safety on the incoming parent graph
+        $parentGraph = [];
+        foreach ($rows as $row) {
+            $id = (int) $row['id'];
+            $pid = !empty($row['parent_id']) ? (int) $row['parent_id'] : null;
+            if (!isset($validLookup[$id])) {
+                return response()->json(['success' => false, 'message' => 'Invalid menu item in reorder payload.'], 422);
+            }
+            if ($pid !== null && ($pid === $id || !isset($validLookup[$pid]))) {
+                return response()->json(['success' => false, 'message' => 'Invalid parent relationship in reorder payload.'], 422);
+            }
+            $parentGraph[$id] = $pid;
+        }
+
+        foreach (array_keys($parentGraph) as $id) {
+            $cursor = $parentGraph[$id];
+            $steps = 0;
+            while ($cursor !== null) {
+                if ($cursor === $id || $steps > 50) {
+                    return response()->json(['success' => false, 'message' => 'Circular parent hierarchy detected.'], 422);
+                }
+                $cursor = $parentGraph[$cursor] ?? null;
+                $steps++;
+            }
+        }
+
+        \Illuminate\Support\Facades\DB::transaction(function () use ($rows, $location) {
+            foreach ($rows as $row) {
+                \App\Models\MenuItem::where('id', (int) $row['id'])
+                    ->where('location', $location)
+                    ->update([
+                        'parent_id' => !empty($row['parent_id']) ? (int) $row['parent_id'] : null,
+                        'sort_order' => (int) $row['sort_order'],
+                    ]);
+            }
+        });
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Menu structure saved!',
+            'header_tree' => \App\Models\MenuItem::buildTree('header', false),
+            'footer_care_tree' => \App\Models\MenuItem::buildTree('footer_care', false),
+        ]);
+    }
 }
