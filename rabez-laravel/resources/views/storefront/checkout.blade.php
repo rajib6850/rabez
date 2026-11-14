@@ -33,8 +33,8 @@
               @if(($settings['shipping_mode'] ?? 'flat') === 'flat')
                 <div class="rabez-shipping-flat-card" style="background:#191E1B; border:1.5px solid #2B332E; border-radius:8px; padding:14px 16px; display:flex; justify-content:space-between; align-items:center;">
                   <div>
-                    <div style="font-weight:700; color:#fff; font-size:14px;">All Over Bangladesh Delivery (Home Delivery)</div>
-                    <div style="font-size:12px; color:#9BA59F; margin-top:2px;">Flat rate home delivery across all 64 districts in Bangladesh</div>
+                    <div style="font-weight:700; color:#fff; font-size:14px;">Home Delivery (All Bangladesh)</div>
+                    <div style="font-size:12px; color:#9BA59F; margin-top:2px;">Flat rate across all 64 districts in Bangladesh</div>
                   </div>
                   <div style="text-align:right;">
                     <span style="font-size:1.15rem; font-weight:800; color:#04F404;">৳ {{ intval($settings['shipping_flat_fee'] ?? 130) }}</span>

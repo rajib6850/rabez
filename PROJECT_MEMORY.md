@@ -449,6 +449,10 @@ php artisan serve --port=8000
     - Enhanced click delegation in `cart.js` so tapping anywhere across the coupon header box or toggle button smoothly expands/collapses the code input and Apply button, while clicks inside the inputs never accidentally trigger collapse.
     - Kept dynamic visibility intact: if 0 active coupons exist in dashboard, the entire coupon section is completely hidden. Bumped asset to `cart.js?v=3.1`.
 
+30. **Shortened Delivery Method Label on Checkout & Product Pages:**
+    - Shortened `All Over Bangladesh Delivery (Home Delivery)` on the Checkout delivery method card (`checkout.blade.php`) to `Home Delivery (All Bangladesh)` with subtitle `Flat rate across all 64 districts in Bangladesh`.
+    - Shortened `All Over Bangladesh Home Delivery` on Single Product page (`product.blade.php`) to `Home Delivery (All Bangladesh)`.
+
 
 
 

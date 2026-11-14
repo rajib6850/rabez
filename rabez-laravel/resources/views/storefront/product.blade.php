@@ -125,7 +125,7 @@
                   <circle cx="7" cy="18" r="2"/>
                   <circle cx="17" cy="18" r="2"/>
                 </svg>
-                <span><strong>All Over Bangladesh Home Delivery:</strong> ৳ {{ intval($settings['shipping_flat_fee'] ?? 130) }} (Flat Rate Across Bangladesh)</span>
+                <span><strong>Home Delivery (All Bangladesh):</strong> ৳ {{ intval($settings['shipping_flat_fee'] ?? 130) }} (Flat Rate)</span>
               </li>
             @else
               <li>
