@@ -203,6 +203,15 @@
   }
 }
 
+@media (max-width: 920px) {
+  .rabez-topbar__links {
+    display: none;
+  }
+  .rabez-topbar__inner {
+    justify-content: center;
+  }
+}
+
 /* ---------- Mobile & Tablet Accordion Drawer (<=1120px) ---------- */
 @media (max-width: 1120px) {
   .rabez-nav {

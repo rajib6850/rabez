@@ -23,7 +23,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/02-base-reset.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/03-components.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/header-navigation.css') }}?v=2.6">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/nav-dropdown.css') }}?v=1.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/nav-dropdown.css') }}?v=1.2">
   <link rel="stylesheet" href="{{ asset('assets/css/components/hero-banner.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/club-filter-bar.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/product-grid.css') }}?v=2.1">
