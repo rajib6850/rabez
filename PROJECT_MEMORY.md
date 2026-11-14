@@ -444,6 +444,11 @@ php artisan serve --port=8000
     - **Live Dynamic Active Coupons API (`StorefrontController.php`, `routes/web.php`, `cart.js`):** Added `/api/coupons/active-status` endpoint returning live active coupon existence and count. `cart.js` syncs coupon box visibility in real-time on `DOMContentLoaded` and whenever `openCartDrawer()` is triggered, toggling `.rabez-drawer-coupon` and `.rabez-checkout-coupon` between `block` and `none` without requiring full hard refreshes.
     - **Service Worker Cache Invalidation (`sw.js`):** Removed `"/"` from `STATIC_ASSETS` and enforced network-first on all page navigations (`e.request.mode === "navigate"`), preventing mobile browsers from serving stale HTML when coupons or catalog items change. Bumped PWA cache to `rabez-pwa-v4` and script to `cart.js?v=3.0`.
 
+29. **Coupon Form Default Collapsed State with Tap-to-Open Everywhere:**
+    - Set `#drawer-coupon-fields` and `#checkout-coupon-fields` to `display:none;` by default so only the `"Have a Discount Coupon?"` bar with ticket and chevron icons is visible initially when active coupons exist in the dashboard.
+    - Enhanced click delegation in `cart.js` so tapping anywhere across the coupon header box or toggle button smoothly expands/collapses the code input and Apply button, while clicks inside the inputs never accidentally trigger collapse.
+    - Kept dynamic visibility intact: if 0 active coupons exist in dashboard, the entire coupon section is completely hidden. Bumped asset to `cart.js?v=3.1`.
+
 
 
 

@@ -408,7 +408,7 @@
             <polyline points="6 9 12 15 18 9"></polyline>
           </svg>
         </button>
-        <div id="drawer-coupon-fields" style="display:block; margin-top:8px; padding-top:8px; border-top:1px dashed #2B3830;">
+        <div id="drawer-coupon-fields" style="display:none; margin-top:8px; padding-top:8px; border-top:1px dashed #2B3830;">
           <div style="display:flex; gap:6px;">
             <input type="text" id="drawer-coupon-code" placeholder="Enter coupon code" style="flex:1; text-transform:uppercase; font-size:12px; font-weight:700; padding:7px 10px; background:#0A0D0B; border:1px solid #2B3830; color:#fff; border-radius:5px; letter-spacing:0.04em;">
             <button type="button" id="js-drawer-apply-coupon" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:12px; padding:7px 14px; border:none; border-radius:5px; cursor:pointer; white-space:nowrap; transition:background 0.15s;" onmouseover="this.style.background='#22C55E'" onmouseout="this.style.background='#04F404'">Apply</button>
@@ -598,7 +598,7 @@
       window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;
     @endif
   </script>
-  <script src="{{ asset('assets/js/cart.js') }}?v=3.0"></script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=3.1"></script>
   <script src="{{ asset('assets/js/app.js') }}?v=2.7"></script>
 
   @stack('scripts')

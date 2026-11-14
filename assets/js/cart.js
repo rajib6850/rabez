@@ -1346,13 +1346,13 @@
     }
 
     // Coupon Box Toggles (Checkout & Drawer)
-    if (e.target.closest(".js-toggle-checkout-coupon")) {
+    if (e.target.closest(".js-toggle-checkout-coupon") || (e.target.closest(".rabez-checkout-coupon") && !e.target.closest("#checkout-coupon-fields"))) {
       e.preventDefault();
       toggleCheckoutCoupon();
       return;
     }
 
-    if (e.target.closest(".js-toggle-drawer-coupon")) {
+    if (e.target.closest(".js-toggle-drawer-coupon") || (e.target.closest(".rabez-drawer-coupon") && !e.target.closest("#drawer-coupon-fields"))) {
       e.preventDefault();
       toggleDrawerCoupon();
       return;

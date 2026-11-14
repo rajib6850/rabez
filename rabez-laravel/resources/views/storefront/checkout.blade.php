@@ -93,7 +93,7 @@
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
             </button>
-            <div id="checkout-coupon-fields" style="display:block; margin-top:10px; padding-top:10px; border-top:1px dashed #2B332E;">
+            <div id="checkout-coupon-fields" style="display:none; margin-top:10px; padding-top:10px; border-top:1px dashed #2B332E;">
               <div style="display:flex; gap:8px;">
                 <input type="text" id="checkout-coupon-code" name="coupon_code" placeholder="Enter coupon code" style="flex:1; text-transform:uppercase; font-weight:700; font-size:13px; padding:8px 10px; background:#0F1311; border:1px solid #2B332E; color:#fff; border-radius:6px; letter-spacing:0.04em;">
                 <button type="button" id="js-apply-coupon-btn" style="background:#04F404; color:#0A0C0B; font-weight:800; font-size:13px; padding:8px 18px; border:none; border-radius:6px; cursor:pointer; white-space:nowrap; letter-spacing:0.04em; transition:all 0.15s; display:inline-flex; align-items:center; gap:6px;" onmouseover="this.style.background='#22C55E'" onmouseout="this.style.background='#04F404'">Apply</button>
