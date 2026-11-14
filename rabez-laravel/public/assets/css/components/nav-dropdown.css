@@ -329,3 +329,221 @@
     gap: 2px;
   }
 }
+
+/* ==========================================================================
+   Storefront Custom Alert & Confirmation Popup (.rabez-dialog)
+   ========================================================================== */
+.rabez-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 16px;
+  background: rgba(10, 12, 11, 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.2s ease, visibility 0.2s ease;
+}
+
+.rabez-dialog-backdrop.is-open {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.rabez-dialog {
+  position: relative;
+  width: min(100%, 420px);
+  background: var(--rabez-bg, #ffffff);
+  color: var(--rabez-text-main, #111111);
+  border: 1px solid var(--rabez-border, #e4e7e4);
+  border-radius: 16px;
+  padding: 26px 24px 22px;
+  box-shadow: 0 24px 56px rgba(10, 12, 11, 0.24), 0 0 0 1px rgba(10, 12, 11, 0.04);
+  text-align: center;
+  transform: scale(0.94) translateY(8px);
+  transition: transform 0.24s cubic-bezier(0.22, 1, 0.36, 1);
+  box-sizing: border-box;
+}
+
+.rabez-dialog-backdrop.is-open .rabez-dialog {
+  transform: scale(1) translateY(0);
+}
+
+.rabez-dialog__close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  width: 32px;
+  height: 32px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--rabez-text-muted, #6e7672);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.16s ease, color 0.16s ease;
+}
+
+.rabez-dialog__close:hover {
+  background: var(--rabez-bg-alt, #f6f7f5);
+  color: var(--rabez-text-main, #111111);
+}
+
+.rabez-dialog__icon {
+  width: 54px;
+  height: 54px;
+  margin: 0 auto 14px;
+  border-radius: 999px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: 1px solid transparent;
+}
+
+.rabez-dialog__icon svg {
+  width: 26px;
+  height: 26px;
+}
+
+.rabez-dialog__icon--warning {
+  background: #fffbeb;
+  color: #d97706;
+  border-color: #fde68a;
+}
+
+.rabez-dialog__icon--danger {
+  background: #fef2f2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.rabez-dialog__icon--success {
+  background: #ecfdf5;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.rabez-dialog__icon--info {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.rabez-dialog__title {
+  margin: 0 0 8px;
+  font-family: var(--rabez-font-display, 'Barlow Condensed', sans-serif);
+  font-size: 1.4rem;
+  font-weight: 800;
+  letter-spacing: 0.02em;
+  line-height: 1.2;
+  color: var(--rabez-text-main, #111111);
+}
+
+.rabez-dialog__msg {
+  margin: 0;
+  font-family: var(--rabez-font-sans, 'Red Hat Text', sans-serif);
+  font-size: 0.94rem;
+  line-height: 1.55;
+  color: var(--rabez-text-body, #3d4340);
+  white-space: pre-line;
+  word-break: break-word;
+}
+
+.rabez-dialog__actions {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-top: 22px;
+}
+
+.rabez-dialog__btn {
+  flex: 1;
+  min-height: 44px;
+  padding: 10px 18px;
+  border-radius: 10px;
+  font-family: var(--rabez-font-sans, 'Red Hat Text', sans-serif);
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+  border: 1px solid transparent;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.14s ease, background-color 0.16s ease, border-color 0.16s ease, box-shadow 0.16s ease;
+}
+
+.rabez-dialog__btn:focus-visible,
+.rabez-dialog__close:focus-visible {
+  outline: 2px solid rgba(10, 12, 11, 0.55);
+  outline-offset: 2px;
+}
+
+.rabez-dialog__btn--danger:focus-visible {
+  outline-color: #991b1b;
+}
+
+.rabez-dialog__btn--primary {
+  background: var(--rabez-black, #0a0c0b);
+  color: #ffffff;
+  border-color: var(--rabez-black, #0a0c0b);
+}
+
+.rabez-dialog__btn--primary:hover {
+  background: #1c221f;
+  box-shadow: 0 6px 16px rgba(10, 12, 11, 0.18);
+}
+
+.rabez-dialog__btn--danger {
+  background: #dc2626;
+  color: #ffffff;
+  border-color: #dc2626;
+}
+
+.rabez-dialog__btn--danger:hover {
+  background: #b91c1c;
+  box-shadow: 0 6px 16px rgba(220, 38, 38, 0.24);
+}
+
+.rabez-dialog__btn--secondary {
+  background: var(--rabez-bg-alt, #f6f7f5);
+  color: var(--rabez-text-main, #111111);
+  border-color: var(--rabez-border-strong, #c9cfcb);
+}
+
+.rabez-dialog__btn--secondary:hover {
+  background: #ebeeeb;
+}
+
+@media (max-width: 480px) {
+  .rabez-dialog {
+    padding: 22px 16px 18px;
+    border-radius: 14px;
+  }
+
+  .rabez-dialog__title {
+    font-size: 1.25rem;
+  }
+
+  .rabez-dialog__msg {
+    font-size: 0.9rem;
+  }
+
+  .rabez-dialog__actions {
+    flex-direction: column-reverse;
+    gap: 8px;
+    margin-top: 18px;
+  }
+
+  .rabez-dialog__btn {
+    width: 100%;
+  }
+}

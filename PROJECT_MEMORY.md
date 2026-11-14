@@ -471,6 +471,15 @@ php artisan serve --port=8000
         - Added **Pages** management panel and slide-out **Page Editor Drawer** with live slug preview, SEO meta fields, publish/draft toggle, and visual Rich Text toolbar (`H2`, `H3`, `P`, `B`, `I`, `U`, lists, blockquote, links, and raw HTML source toggle).
         - Added **Menu Builder** panel for `Header Navigation` and `Footer Customer Care` supporting Link Source (`CMS Page`, `Storefront Preset`, `Custom URL / #`), live parent picker, optional badges, and instant 1-tap `↑`, `↓`, `← Outdent`, `→ Nest`, `+Sub`, `Edit`, and `Delete` actions.
 
+33. **Custom Responsive Confirmation & Alert Popup System (Storefront + Admin Dashboard):**
+    - Replaced all 51 plain browser `alert()`, `confirm()`, and `prompt()` dialogs across the entire codebase with themed, responsive modal popups featuring backdrop blur, semantic status icons (`danger`, `warning`, `success`, `info`, `prompt`), `Escape`/`Enter` keyboard handling, focus restoration, and full-width stacked mobile buttons (`<= 480px`).
+    - **Storefront (`nav-dropdown.css`, `app.js`, `product.blade.php`, `layouts/storefront.blade.php`, `sw.js`):**
+        - Added `window.RABEZ_POPUP = { alert(message, opts), confirm(message, opts), close() }` returning Promises with lazy DOM injection (`#rabez-dialog-backdrop`), updating all 5 checkout/validation alerts in `app.js` and 1 bag-add fallback alert in `product.blade.php`.
+        - Bumped storefront assets (`nav-dropdown.css?v=1.3`, `app.js?v=2.9`, `sw.js` `rabez-pwa-v6`) and synced updated files to root `assets/`.
+    - **Admin Dashboard (`admin/dashboard.blade.php`):**
+        - Built `#adm-dialog-overlay` (`z-index: 110000`) and Promise-based `admAlert()`, `admConfirm()`, and `admPrompt()` helpers with `closeAdmDialog` wired cleanly into `Escape` handling ahead of `closeOverlays()`.
+        - Converted all 45 admin dialogs across Orders, Bulk Actions, Media Library, Products, Categories, Customers, Users, Coupons, Custom Print toggle, POS, CMS Pages, Menu Builder, and `.js-rte-link-btn` (preserving/restoring `Selection`/`Range` around `await admPrompt(...)` for WYSIWYG links).
+
 
 
 

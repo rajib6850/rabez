@@ -2,7 +2,7 @@
  * RABEZ PWA Service Worker (sw.js)
  * Enables installable app capability & fast cached asset loading
  */
-const CACHE_NAME = "rabez-pwa-v5";
+const CACHE_NAME = "rabez-pwa-v6";
 const STATIC_ASSETS = [
   "/manifest.json",
   "/assets/css/01-variables.css",

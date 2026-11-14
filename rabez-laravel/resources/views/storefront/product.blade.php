@@ -976,8 +976,8 @@
           if (typeof window.RABEZ_STORE.openCartDrawer === "function") {
             window.RABEZ_STORE.openCartDrawer();
           }
-        } else {
-          alert("Jersey added to bag!");
+        } else if (window.RABEZ_POPUP) {
+          window.RABEZ_POPUP.alert("Jersey added to bag!", { type: "success", title: "Added to Bag", confirmText: "OK" });
         }
       });
 

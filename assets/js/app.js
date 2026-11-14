@@ -325,15 +325,22 @@
         // Security: Fraud & Anti-Spam Checks
         if (window.RABEZ_ANALYTICS) {
           if (!window.RABEZ_ANALYTICS.isValidBDPhone(rawPhone)) {
-            alert("অনুগ্রহ করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 01712345678 / 018... / 019...)");
-            const phoneInput = codForm.querySelector('[name="customer_phone"]');
-            if (phoneInput) phoneInput.focus();
+            window.RABEZ_POPUP.alert(
+              "অনুগ্রহ করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 01712345678 / 018... / 019...)",
+              { type: "warning", title: "সঠিক মোবাইল নম্বর দিন", confirmText: "বুঝেছি" }
+            ).then(() => {
+              const phoneInput = codForm.querySelector('[name="customer_phone"]');
+              if (phoneInput) phoneInput.focus();
+            });
             return;
           }
 
           const rateCheck = window.RABEZ_ANALYTICS.canPlaceOrder();
           if (!rateCheck.allowed) {
-            alert(`অনুগ্রহ করে ${rateCheck.waitSeconds} সেকেন্ড অপেক্ষা করুন।`);
+            window.RABEZ_POPUP.alert(
+              `অনুগ্রহ করে ${rateCheck.waitSeconds} সেকেন্ড অপেক্ষা করুন।`,
+              { type: "warning", title: "কিছুক্ষণ অপেক্ষা করুন", confirmText: "ঠিক আছে" }
+            );
             return;
           }
         }
@@ -344,8 +351,12 @@
 
         const cartItems = JSON.parse(localStorage.getItem("rabez_wc_cart_v1") || "[]");
         if (!cartItems.length) {
-          alert("আপনার ব্যাগে কোনো জার্সি বা হুডি নেই! অনুগ্রহ করে শপ থেকে প্রোডাক্ট যুক্ত করুন।");
-          window.location.href = "/shop";
+          window.RABEZ_POPUP.alert(
+            "আপনার ব্যাগে কোনো জার্সি বা হুডি নেই! অনুগ্রহ করে শপ থেকে প্রোডাক্ট যুক্ত করুন।",
+            { type: "info", title: "আপনার ব্যাগ খালি", confirmText: "শপে যান" }
+          ).then(() => {
+            window.location.href = "/shop";
+          });
           return;
         }
 
@@ -391,7 +402,10 @@
             }
 
             if (!data.success) {
-              alert(data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "অর্ডার প্লেস করতে সমস্যা হয়েছে।"));
+              window.RABEZ_POPUP.alert(
+                data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "অর্ডার প্লেস করতে সমস্যা হয়েছে।"),
+                { type: "danger", title: "অর্ডার সম্পন্ন হয়নি", confirmText: "ঠিক আছে" }
+              );
               return;
             }
 
@@ -471,7 +485,10 @@
               submitBtn.innerHTML = originalBtnText;
             }
             console.error("Order error:", err);
-            alert("সার্ভারে অর্ডার পাঠাতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।");
+            window.RABEZ_POPUP.alert(
+              "সার্ভারে অর্ডার পাঠাতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
+              { type: "danger", title: "সংযোগ সমস্যা", confirmText: "আবার চেষ্টা করুন" }
+            );
           });
       });
     }
@@ -543,8 +560,119 @@
     }
   };
 
+  /* --------------------------------------------------------------------------
+     Storefront Custom Alert & Confirmation Popup (window.RABEZ_POPUP)
+  -------------------------------------------------------------------------- */
+  let activePopupResolve = null;
+  let lastPopupOpener = null;
+
+  const POPUP_ICONS = {
+    warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path><line x1="12" y1="9" x2="12" y2="13"></line><line x1="12" y1="17" x2="12.01" y2="17"></line></svg>',
+    danger: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>',
+    success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>',
+    info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>'
+  };
+
+  function getOrCreatePopupDom() {
+    let backdrop = document.getElementById("rabez-dialog-backdrop");
+    if (!backdrop) {
+      backdrop = document.createElement("div");
+      backdrop.id = "rabez-dialog-backdrop";
+      backdrop.className = "rabez-dialog-backdrop";
+      backdrop.setAttribute("aria-hidden", "true");
+      backdrop.innerHTML =
+        '<div class="rabez-dialog" role="dialog" aria-modal="true" aria-labelledby="rabez-dialog-title" aria-describedby="rabez-dialog-msg">' +
+          '<button type="button" class="rabez-dialog__close js-rabez-dialog-close" aria-label="Close">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>' +
+          '</button>' +
+          '<div class="rabez-dialog__icon rabez-dialog__icon--warning js-rabez-dialog-icon" aria-hidden="true"></div>' +
+          '<h3 id="rabez-dialog-title" class="rabez-dialog__title js-rabez-dialog-title">Notification</h3>' +
+          '<p id="rabez-dialog-msg" class="rabez-dialog__msg js-rabez-dialog-msg"></p>' +
+          '<div class="rabez-dialog__actions">' +
+            '<button type="button" class="rabez-dialog__btn rabez-dialog__btn--secondary js-rabez-dialog-cancel" hidden>Cancel</button>' +
+            '<button type="button" class="rabez-dialog__btn rabez-dialog__btn--primary js-rabez-dialog-confirm">OK</button>' +
+          '</div>' +
+        '</div>';
+      document.body.appendChild(backdrop);
+
+      backdrop.addEventListener("click", (ev) => {
+        if (ev.target === backdrop) closeRabezPopup(false);
+      });
+      backdrop.querySelector(".js-rabez-dialog-close").addEventListener("click", () => closeRabezPopup(false));
+      backdrop.querySelector(".js-rabez-dialog-cancel").addEventListener("click", () => closeRabezPopup(false));
+      backdrop.querySelector(".js-rabez-dialog-confirm").addEventListener("click", () => closeRabezPopup(true));
+    }
+    return {
+      backdrop,
+      icon: backdrop.querySelector(".js-rabez-dialog-icon"),
+      title: backdrop.querySelector(".js-rabez-dialog-title"),
+      msg: backdrop.querySelector(".js-rabez-dialog-msg"),
+      cancelBtn: backdrop.querySelector(".js-rabez-dialog-cancel"),
+      confirmBtn: backdrop.querySelector(".js-rabez-dialog-confirm")
+    };
+  }
+
+  function closeRabezPopup(confirmed) {
+    const backdrop = document.getElementById("rabez-dialog-backdrop");
+    if (!backdrop || !backdrop.classList.contains("is-open")) return;
+    backdrop.classList.remove("is-open");
+    backdrop.setAttribute("aria-hidden", "true");
+    const resolve = activePopupResolve;
+    activePopupResolve = null;
+    if (lastPopupOpener && typeof lastPopupOpener.focus === "function") {
+      try { lastPopupOpener.focus(); } catch (e) {}
+    }
+    lastPopupOpener = null;
+    if (resolve) resolve(Boolean(confirmed));
+  }
+
+  function openRabezPopup(message, opts = {}, mode = "alert") {
+    if (activePopupResolve) {
+      const prevResolve = activePopupResolve;
+      activePopupResolve = null;
+      prevResolve(false);
+    }
+    const dom = getOrCreatePopupDom();
+    const type = ["warning", "danger", "success", "info"].includes(opts.type) ? opts.type : (mode === "confirm" ? "warning" : "info");
+    const defaultTitles = { warning: "সতর্কতা", danger: "ত্রুটি", success: "সফল হয়েছে", info: "বার্তা" };
+
+    dom.icon.className = "rabez-dialog__icon js-rabez-dialog-icon rabez-dialog__icon--" + type;
+    dom.icon.innerHTML = POPUP_ICONS[type] || POPUP_ICONS.info;
+    dom.title.textContent = opts.title || defaultTitles[type] || "RABEZ";
+    dom.msg.textContent = message == null ? "" : String(message);
+
+    const confirmBtnClass = type === "danger" ? "rabez-dialog__btn--danger" : "rabez-dialog__btn--primary";
+    dom.confirmBtn.className = "rabez-dialog__btn js-rabez-dialog-confirm " + confirmBtnClass;
+    dom.confirmBtn.textContent = opts.confirmText || (mode === "confirm" ? "নিশ্চিত করুন" : "ঠিক আছে");
+
+    if (mode === "confirm") {
+      dom.cancelBtn.hidden = false;
+      dom.cancelBtn.textContent = opts.cancelText || "বাতিল";
+    } else {
+      dom.cancelBtn.hidden = true;
+    }
+
+    lastPopupOpener = document.activeElement;
+    dom.backdrop.classList.add("is-open");
+    dom.backdrop.setAttribute("aria-hidden", "false");
+
+    return new Promise((resolve) => {
+      activePopupResolve = resolve;
+      requestAnimationFrame(() => {
+        dom.confirmBtn.focus();
+      });
+    });
+  }
+
+  window.RABEZ_POPUP = {
+    alert: (message, opts = {}) => openRabezPopup(message, opts, "alert"),
+    confirm: (message, opts = {}) => openRabezPopup(message, opts, "confirm"),
+    close: () => closeRabezPopup(false)
+  };
+
   document.addEventListener("keydown", (e) => {
     if (e.key === "Escape") {
+      closeRabezPopup(false);
       window.closeAppInstallModal();
     }
   });

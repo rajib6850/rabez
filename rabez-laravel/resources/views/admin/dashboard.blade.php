@@ -1729,6 +1729,239 @@
       }
     }
 
+    /* ---------- Custom Confirmation & Alert Dialog ---------- */
+    .adm-dialog-overlay {
+      position: fixed;
+      inset: 0;
+      z-index: 110000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(11, 13, 12, 0.56);
+      backdrop-filter: blur(5px);
+      -webkit-backdrop-filter: blur(5px);
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+      transition: opacity 0.18s ease, visibility 0.18s ease;
+    }
+
+    .adm-dialog-overlay.is-open {
+      opacity: 1;
+      visibility: visible;
+      pointer-events: auto;
+    }
+
+    .adm-dialog {
+      position: relative;
+      width: min(100%, 430px);
+      background: var(--adm-surface, #ffffff);
+      border: 1px solid var(--adm-border, #e6e9e7);
+      border-radius: 16px;
+      padding: 26px 24px 22px;
+      box-shadow: 0 24px 60px rgba(11, 13, 12, 0.24), 0 0 0 1px rgba(11, 13, 12, 0.04);
+      text-align: center;
+      transform: scale(0.95) translateY(8px);
+      transition: transform 0.22s cubic-bezier(0.22, 1, 0.36, 1);
+    }
+
+    .adm-dialog-overlay.is-open .adm-dialog {
+      transform: scale(1) translateY(0);
+    }
+
+    .adm-dialog__close {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      border: 1px solid transparent;
+      background: transparent;
+      color: var(--adm-muted, #7a827e);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: background-color 0.15s ease, color 0.15s ease;
+    }
+
+    .adm-dialog__close:hover {
+      background: var(--adm-subtle, #fafbfa);
+      color: var(--adm-ink, #0b0d0c);
+    }
+
+    .adm-dialog__icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 999px;
+      margin: 0 auto 14px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid transparent;
+    }
+
+    .adm-dialog__icon svg {
+      width: 24px;
+      height: 24px;
+    }
+
+    .adm-dialog__icon--danger {
+      background: #fef2f2;
+      color: #dc2626;
+      border-color: #fecaca;
+    }
+
+    .adm-dialog__icon--warning {
+      background: #fffbeb;
+      color: #d97706;
+      border-color: #fde68a;
+    }
+
+    .adm-dialog__icon--success {
+      background: #ecfdf5;
+      color: #15803d;
+      border-color: #bbf7d0;
+    }
+
+    .adm-dialog__icon--info,
+    .adm-dialog__icon--prompt {
+      background: #eff6ff;
+      color: #1d4ed8;
+      border-color: #bfdbfe;
+    }
+
+    .adm-dialog__title {
+      margin: 0 0 8px;
+      font-size: 18px;
+      font-weight: 700;
+      color: var(--adm-ink, #0b0d0c);
+      line-height: 1.25;
+      letter-spacing: -0.01em;
+    }
+
+    .adm-dialog__msg {
+      margin: 0;
+      font-size: 13.5px;
+      line-height: 1.55;
+      color: var(--adm-text-2, #4b524e);
+      white-space: pre-line;
+      word-break: break-word;
+    }
+
+    .adm-dialog__input-wrap {
+      margin-top: 14px;
+      text-align: left;
+    }
+
+    .adm-dialog__input {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: 10px;
+      border: 1px solid var(--adm-border-strong, #d5dad7);
+      font-size: 13.5px;
+      font-family: inherit;
+      color: var(--adm-ink, #0b0d0c);
+      background: var(--adm-subtle, #fafbfa);
+      outline: none;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+    }
+
+    .adm-dialog__input:focus {
+      background: #ffffff;
+      border-color: var(--adm-ink, #0b0d0c);
+      box-shadow: 0 0 0 3px rgba(4, 244, 4, 0.2);
+    }
+
+    .adm-dialog__actions {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 22px;
+    }
+
+    .adm-dialog__btn {
+      flex: 1;
+      min-height: 42px;
+      padding: 9px 18px;
+      border-radius: 10px;
+      font-size: 13.5px;
+      font-weight: 600;
+      font-family: inherit;
+      cursor: pointer;
+      border: 1px solid transparent;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      transition: background-color 0.15s ease, border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+
+    .adm-dialog__btn--primary {
+      background: var(--adm-ink, #0b0d0c);
+      color: #ffffff;
+      border-color: var(--adm-ink, #0b0d0c);
+    }
+
+    .adm-dialog__btn--primary:hover {
+      background: #1f2421;
+      box-shadow: 0 6px 16px rgba(11, 13, 12, 0.16);
+    }
+
+    .adm-dialog__btn--danger {
+      background: #dc2626;
+      color: #ffffff;
+      border-color: #dc2626;
+    }
+
+    .adm-dialog__btn--danger:hover {
+      background: #b91c1c;
+      box-shadow: 0 6px 16px rgba(220, 38, 38, 0.22);
+    }
+
+    .adm-dialog__btn--secondary {
+      background: var(--adm-subtle, #fafbfa);
+      color: var(--adm-ink, #0b0d0c);
+      border-color: var(--adm-border-strong, #d5dad7);
+    }
+
+    .adm-dialog__btn--secondary:hover {
+      background: #eef1ef;
+    }
+
+    .adm-dialog__btn:focus-visible,
+    .adm-dialog__close:focus-visible {
+      outline: 2px solid rgba(11, 13, 12, 0.55);
+      outline-offset: 2px;
+    }
+
+    .adm-dialog__btn--danger:focus-visible {
+      outline-color: #991b1b;
+    }
+
+    @media (max-width: 480px) {
+      .adm-dialog {
+        padding: 22px 16px 18px;
+        border-radius: 14px;
+      }
+
+      .adm-dialog__title {
+        font-size: 16.5px;
+      }
+
+      .adm-dialog__actions {
+        flex-direction: column-reverse;
+        gap: 8px;
+        margin-top: 18px;
+      }
+
+      .adm-dialog__btn {
+        width: 100%;
+      }
+    }
+
   </style>
 </head>
 <body class="adm">
@@ -3827,6 +4060,26 @@
     </div>
   </div>
 
+  <div id="adm-dialog-overlay" class="adm-dialog-overlay" aria-hidden="true">
+    <div class="adm-dialog" role="dialog" aria-modal="true" aria-labelledby="adm-dialog-title" aria-describedby="adm-dialog-msg">
+      <button type="button" class="adm-dialog__close js-adm-dialog-close" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+      <div class="adm-dialog__icon adm-dialog__icon--warning js-adm-dialog-icon" aria-hidden="true"></div>
+      <h3 id="adm-dialog-title" class="adm-dialog__title js-adm-dialog-title">Confirm</h3>
+      <p id="adm-dialog-msg" class="adm-dialog__msg js-adm-dialog-msg"></p>
+      <form id="adm-dialog-form">
+        <div class="adm-dialog__input-wrap js-adm-dialog-input-wrap" hidden>
+          <input type="text" class="adm-dialog__input js-adm-dialog-input" autocomplete="off">
+        </div>
+        <div class="adm-dialog__actions">
+          <button type="button" class="adm-dialog__btn adm-dialog__btn--secondary js-adm-dialog-cancel" hidden>Cancel</button>
+          <button type="submit" class="adm-dialog__btn adm-dialog__btn--primary js-adm-dialog-confirm">OK</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <div class="adm-toast js-toast" role="status" aria-live="polite">
     <span class="adm-toast__dot"></span>
     <div>
@@ -3872,6 +4125,125 @@
         clearTimeout(toastTimer);
         toastTimer = setTimeout(() => $(".js-toast").classList.remove("is-visible"), 2800);
       }
+
+      /* ---------- Custom Confirmation, Alert & Prompt Dialogs ---------- */
+      let activeAdmDialog = null;
+      const ADM_DIALOG_ICONS = {
+        danger: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/><line x1="10" y1="11" x2="10" y2="17"/><line x1="14" y1="11" x2="14" y2="17"/></svg>',
+        warning: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>',
+        success: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>',
+        info: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>',
+        prompt: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>'
+      };
+
+      function closeAdmDialog(accepted) {
+        const overlay = document.getElementById("adm-dialog-overlay");
+        if (!overlay || !activeAdmDialog) return;
+        const { resolve, mode, lastFocus } = activeAdmDialog;
+        const inputEl = overlay.querySelector(".js-adm-dialog-input");
+        const val = inputEl ? inputEl.value : "";
+        activeAdmDialog = null;
+        overlay.classList.remove("is-open");
+        overlay.setAttribute("aria-hidden", "true");
+        if (lastFocus && lastFocus.isConnected && typeof lastFocus.focus === "function") {
+          try { lastFocus.focus(); } catch (e) {}
+        }
+        if (mode === "prompt") {
+          resolve(accepted ? val : null);
+        } else if (mode === "confirm") {
+          resolve(Boolean(accepted));
+        } else {
+          resolve(true);
+        }
+      }
+
+      function openAdmDialog({ mode = "alert", type, title, message, confirmText, cancelText, defaultValue = "", placeholder = "" }) {
+        const overlay = document.getElementById("adm-dialog-overlay");
+        if (!overlay) return Promise.resolve(mode === "prompt" ? null : false);
+
+        if (activeAdmDialog) {
+          closeAdmDialog(false);
+        }
+
+        const iconEl = overlay.querySelector(".js-adm-dialog-icon");
+        const titleEl = overlay.querySelector(".js-adm-dialog-title");
+        const msgEl = overlay.querySelector(".js-adm-dialog-msg");
+        const inputWrap = overlay.querySelector(".js-adm-dialog-input-wrap");
+        const inputEl = overlay.querySelector(".js-adm-dialog-input");
+        const cancelBtn = overlay.querySelector(".js-adm-dialog-cancel");
+        const confirmBtn = overlay.querySelector(".js-adm-dialog-confirm");
+
+        const resolvedType = type || (mode === "confirm" ? "danger" : (mode === "prompt" ? "prompt" : "warning"));
+        const defaultTitles = {
+          danger: mode === "confirm" ? "Confirm Delete" : "Action Failed",
+          warning: mode === "confirm" ? "Please Confirm" : "Attention",
+          success: "Success",
+          info: "Information",
+          prompt: "Enter Value"
+        };
+
+        iconEl.className = "adm-dialog__icon js-adm-dialog-icon adm-dialog__icon--" + resolvedType;
+        iconEl.innerHTML = ADM_DIALOG_ICONS[resolvedType] || ADM_DIALOG_ICONS.info;
+        titleEl.textContent = title || defaultTitles[resolvedType] || "Notification";
+        msgEl.textContent = message == null ? "" : String(message);
+
+        if (mode === "prompt") {
+          inputWrap.hidden = false;
+          inputEl.value = defaultValue == null ? "" : String(defaultValue);
+          inputEl.placeholder = placeholder || "";
+        } else {
+          inputWrap.hidden = true;
+          inputEl.value = "";
+        }
+
+        cancelBtn.hidden = mode === "alert";
+        cancelBtn.textContent = cancelText || "Cancel";
+        confirmBtn.className = "adm-dialog__btn js-adm-dialog-confirm " + (resolvedType === "danger" ? "adm-dialog__btn--danger" : "adm-dialog__btn--primary");
+        confirmBtn.textContent = confirmText || (mode === "confirm" ? (resolvedType === "danger" ? "Delete" : "Confirm") : "OK");
+
+        overlay.classList.add("is-open");
+        overlay.setAttribute("aria-hidden", "false");
+
+        return new Promise((resolve) => {
+          activeAdmDialog = { resolve, mode, lastFocus: document.activeElement };
+          requestAnimationFrame(() => {
+            if (mode === "prompt") {
+              inputEl.focus();
+              inputEl.select();
+            } else {
+              confirmBtn.focus();
+            }
+          });
+        });
+      }
+
+      function admAlert(message, opts = {}) {
+        const msgStr = String(message || "");
+        const inferredType = opts.type || (/error|fail|cannot|invalid|problem|required/i.test(msgStr) ? "danger" : "warning");
+        return openAdmDialog({ mode: "alert", type: inferredType, message: msgStr, ...opts });
+      }
+
+      function admConfirm(message, opts = {}) {
+        return openAdmDialog({ mode: "confirm", message, ...opts });
+      }
+
+      function admPrompt(message, defaultValue = "", opts = {}) {
+        return openAdmDialog({ mode: "prompt", message, defaultValue, ...opts });
+      }
+
+      (function bindAdmDialogEvents() {
+        const overlay = document.getElementById("adm-dialog-overlay");
+        if (!overlay) return;
+        overlay.addEventListener("click", (e) => {
+          if (e.target === overlay) closeAdmDialog(false);
+        });
+        overlay.querySelector(".js-adm-dialog-close")?.addEventListener("click", () => closeAdmDialog(false));
+        overlay.querySelector(".js-adm-dialog-cancel")?.addEventListener("click", () => closeAdmDialog(false));
+        document.getElementById("adm-dialog-form")?.addEventListener("submit", (e) => {
+          e.preventDefault();
+          closeAdmDialog(true);
+        });
+      })();
 
       /* ---------- Data (Synced with Laravel DB) ---------- */
       const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || "{{ csrf_token() }}";
@@ -4071,7 +4443,7 @@
       async function handleBulkDelete(type) {
         const ids = Array.from(selectedMap[type]);
         if (!ids.length) return;
-        if (!confirm(`Are you sure you want to permanently delete ${ids.length} selected ${type}?`)) return;
+        if (!(await admConfirm(`Are you sure you want to permanently delete ${ids.length} selected ${type}?`, { title: "Delete Selected Items", confirmText: `Delete ${ids.length} Items` }))) return;
 
         try {
           const res = await fetch(`/admin/${type}/bulk-delete`, {
@@ -4111,7 +4483,7 @@
             }
             updateBulkBar(type);
           } else {
-            alert("Bulk delete failed: " + (data.message || "Unknown error"));
+            admAlert("Bulk delete failed: " + (data.message || "Unknown error"), { title: "Bulk Delete Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -4431,7 +4803,7 @@
             if (openOrderId === id) openFullOrderDrawer(id);
             toast(`Booked with ${courier}`, `#${o.id} · ${o.consignment}`);
           } else {
-            alert("Booking failed: " + (data.message || "Unknown error"));
+            admAlert("Booking failed: " + (data.message || "Unknown error"), { title: "Courier Booking Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -4443,7 +4815,7 @@
         const o = orders.find((x) => x.id === id);
         if (!o) return;
 
-        if (!confirm(`Are you sure you want to permanently delete Order #${o.id}?`)) {
+        if (!(await admConfirm(`Are you sure you want to permanently delete Order #${o.id}?`, { title: "Delete Order", confirmText: "Delete Order" }))) {
           return;
         }
 
@@ -4464,7 +4836,7 @@
             renderOrders();
             toast("Order Deleted", `#${id} removed permanently`);
           } else {
-            alert("Failed to delete order: " + (data.message || "Unknown error"));
+            admAlert("Failed to delete order: " + (data.message || "Unknown error"), { title: "Delete Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -4727,7 +5099,7 @@
             renderOrders();
             toast("Order Updated", `#${o.id} full details saved to database`);
           } else {
-            alert("Failed to update order: " + (data.message || "Unknown error"));
+            admAlert("Failed to update order: " + (data.message || "Unknown error"), { title: "Update Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -4888,7 +5260,7 @@
           navigator.clipboard.writeText(directUrl).then(() => {
             toast("URL Copied to Clipboard", directUrl);
           }).catch(() => {
-            prompt("Copy URL manually:", directUrl);
+            admPrompt("Copy URL manually:", directUrl, { title: "Copy Direct URL", confirmText: "Done" });
           });
         };
         document.getElementById('photo-sheet-del-btn').onclick = () => {
@@ -4933,7 +5305,7 @@
             toast("Upload & WebP Complete", `${data.media.length} image(s) optimized under 250KB`);
             if (typeof onComplete === 'function') onComplete(data.media);
           } else {
-            alert("Upload failed: " + (data.message || "Unknown error"));
+            admAlert("Upload failed: " + (data.message || "Unknown error"), { title: "Upload Failed" });
           }
         } catch (err) {
           console.error("Upload error:", err);
@@ -4942,7 +5314,7 @@
       }
 
       async function deleteMedia(id) {
-        if (!confirm("Are you sure you want to delete this media image?")) return;
+        if (!(await admConfirm("Are you sure you want to delete this media image?", { title: "Delete Image", confirmText: "Delete Image" }))) return;
         try {
           const res = await fetch(`/admin/media/${id}`, {
             method: 'DELETE',
@@ -4959,7 +5331,7 @@
             updateBulkBar('media');
             toast("Image deleted", "Media library updated");
           } else {
-            alert("Delete failed: " + (data.message || "Unknown error"));
+            admAlert("Delete failed: " + (data.message || "Unknown error"), { title: "Delete Failed" });
           }
         } catch (err) {
           toast("Delete failed", err.message);
@@ -5341,7 +5713,7 @@
             renderProducts();
             toast("Product Updated", p.name);
           } else {
-            alert("Failed to update product: " + (data.message || "Unknown error"));
+            admAlert("Failed to update product: " + (data.message || "Unknown error"), { title: "Update Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -5353,7 +5725,7 @@
         const p = products.find((x) => x.id == id);
         if (!p) return;
 
-        if (!confirm(`Are you sure you want to delete '${p.name}'? This will remove it from the store permanently.`)) {
+        if (!(await admConfirm(`Are you sure you want to delete '${p.name}'? This will remove it from the store permanently.`, { title: "Delete Product", confirmText: "Delete Product" }))) {
           return;
         }
 
@@ -5374,7 +5746,7 @@
             renderProducts();
             toast("Product Deleted", p.name);
           } else {
-            alert("Failed to delete product: " + (data.message || "Unknown error"));
+            admAlert("Failed to delete product: " + (data.message || "Unknown error"), { title: "Delete Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -5500,7 +5872,7 @@
             closeOverlays();
             renderCategories();
           } else {
-            alert("Category save failed: " + (data.message || "Unknown error"));
+            admAlert("Category save failed: " + (data.message || "Unknown error"), { title: "Save Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -5511,7 +5883,7 @@
       async function deleteCategory(id) {
         const c = categories.find((x) => x.id == id);
         if (!c) return;
-        if (!confirm(`Are you sure you want to delete category '${c.name}'?`)) return;
+        if (!(await admConfirm(`Are you sure you want to delete category '${c.name}'?`, { title: "Delete Category", confirmText: "Delete Category" }))) return;
 
         try {
           const res = await fetch(`/admin/categories/${id}`, {
@@ -5530,7 +5902,7 @@
             renderCategories();
             toast("Category Deleted", c.name);
           } else {
-            alert("Failed to delete category: " + (data.message || "Unknown error"));
+            admAlert("Failed to delete category: " + (data.message || "Unknown error"), { title: "Delete Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -5644,7 +6016,7 @@
             renderOrders();
             toast("Customer Updated", payload.customer_name);
           } else {
-            alert("Customer update failed: " + (data.message || "Unknown error"));
+            admAlert("Customer update failed: " + (data.message || "Unknown error"), { title: "Update Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -5655,7 +6027,7 @@
       async function deleteCustomer(phone) {
         const cust = customers.find((x) => x.phone === phone);
         if (!cust) return;
-        if (!confirm(`Are you sure you want to delete customer '${cust.name}' and all their orders?`)) return;
+        if (!(await admConfirm(`Are you sure you want to delete customer '${cust.name}' and all their orders?`, { title: "Delete Customer", confirmText: "Delete Customer" }))) return;
 
         try {
           const res = await fetch(`/admin/customers/delete`, {
@@ -5676,7 +6048,7 @@
             renderOrders();
             toast("Customer Deleted", cust.name);
           } else {
-            alert("Delete failed: " + (data.message || "Unknown error"));
+            admAlert("Delete failed: " + (data.message || "Unknown error"), { title: "Delete Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -5839,7 +6211,7 @@
         const password = $("#edit-user-password").value;
 
         if (!id && (!password || password.length < 8)) {
-          alert("Password is required and must be at least 8 characters long.");
+          admAlert("Password is required and must be at least 8 characters long.", { title: "Invalid Password" });
           return;
         }
 
@@ -5894,7 +6266,7 @@
             closeOverlays();
             renderUsers();
           } else {
-            alert("Save failed: " + (data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "Validation error")));
+            admAlert("Save failed: " + (data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "Validation error")), { title: "User Save Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -5904,12 +6276,12 @@
 
       async function deleteUser(id) {
         if (Number(id) === Number(currentUserId)) {
-          alert("You cannot delete your own logged-in account.");
+          admAlert("You cannot delete your own logged-in account.", { title: "Action Not Allowed" });
           return;
         }
         const u = users.find((x) => String(x.id) === String(id));
         if (!u) return;
-        if (!confirm(`Are you sure you want to delete user '${u.name}' (${u.email})? This action cannot be undone.`)) return;
+        if (!(await admConfirm(`Are you sure you want to delete user '${u.name}' (${u.email})? This action cannot be undone.`, { title: "Delete User", confirmText: "Delete User" }))) return;
 
         try {
           const res = await fetch(`/admin/users/${id}`, {
@@ -5927,7 +6299,7 @@
             renderUsers();
             toast("User Deleted", u.name);
           } else {
-            alert("Delete failed: " + (data.message || "Unknown error"));
+            admAlert("Delete failed: " + (data.message || "Unknown error"), { title: "Delete Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -6113,7 +6485,7 @@
       }
 
       async function deleteCoupon(id, code) {
-        if (!confirm(`Are you sure you want to delete coupon ${code}?`)) return;
+        if (!(await admConfirm(`Are you sure you want to delete coupon ${code}?`, { title: "Delete Coupon", confirmText: "Delete Coupon" }))) return;
         try {
           const res = await fetch(`/admin/coupons/${id}`, {
             method: "DELETE",
@@ -6282,7 +6654,7 @@
           navigator.clipboard.writeText(url).then(() => {
             toast("URL Copied to Clipboard", url);
           }).catch(() => {
-            prompt("Copy URL manually:", url);
+            admPrompt("Copy URL manually:", url, { title: "Copy Media URL", confirmText: "Done" });
           });
           return;
         }
@@ -6341,7 +6713,7 @@
                 renderProducts();
                 toast(p.hasCustomPrint ? "Custom Print Enabled" : "Custom Print Disabled", p.name);
               } else {
-                alert("Failed to update custom print setting.");
+                admAlert("Failed to update custom print setting.", { title: "Update Failed" });
                 toggleCustomBtn.disabled = false;
               }
             })
@@ -6497,7 +6869,15 @@
         if (tb) { toast(tb.dataset.title, tb.dataset.sub); return; }
       });
 
-      document.addEventListener("keydown", (e) => { if (e.key === "Escape") closeOverlays(); });
+      document.addEventListener("keydown", (e) => {
+        if (e.key === "Escape") {
+          if (activeAdmDialog) {
+            closeAdmDialog(false);
+            return;
+          }
+          closeOverlays();
+        }
+      });
 
       document.addEventListener("change", (e) => {
         // Master Select-All checkbox
@@ -6674,7 +7054,7 @@
             await syncProductsFromDB();
             showTab("products");
           } else {
-            alert("Error creating product: " + (data.message || "Failed"));
+            admAlert("Error creating product: " + (data.message || "Failed"), { title: "Create Product Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -6724,7 +7104,7 @@
             await syncOrdersFromDB();
             showTab("orders");
           } else {
-            alert("Error creating order: " + (data.message || "Validation error"));
+            admAlert("Error creating order: " + (data.message || "Validation error"), { title: "Create Order Failed" });
           }
         } catch (err) {
           console.error(err);
@@ -6951,7 +7331,7 @@
         const desc = document.getElementById("coupon-desc").value.trim();
 
         if (!code || isNaN(val) || val <= 0) {
-          alert("Please fill in coupon code and a valid discount value.");
+          admAlert("Please fill in coupon code and a valid discount value.", { type: "warning", title: "Invalid Coupon" });
           return;
         }
 
@@ -6992,11 +7372,11 @@
             document.getElementById("js-coupon-form").reset();
             if (document.getElementById("coupon-id")) document.getElementById("coupon-id").value = "";
           } else {
-            alert("Error: " + (data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "Failed to save coupon")));
+            admAlert("Error: " + (data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "Failed to save coupon")), { title: "Coupon Save Failed" });
           }
         } catch (err) {
           console.error(err);
-          alert("Network error: " + err.message);
+          admAlert("Network error: " + err.message, { title: "Network Error" });
         }
       });
 
@@ -7190,7 +7570,7 @@
       async function deletePageById(id) {
         const p = cmsPages.find(x => String(x.id) === String(id));
         if (!p) return;
-        if (!confirm(`Delete page "${p.title}" (/${p.slug})? Links pointing to this page will be detached.`)) return;
+        if (!(await admConfirm(`Delete page "${p.title}" (/${p.slug})? Links pointing to this page will be detached.`, { title: "Delete Page", confirmText: "Delete Page" }))) return;
 
         try {
           const res = await fetch(`/admin/pages/${id}`, {
@@ -7204,10 +7584,10 @@
             await loadCmsPages();
             await loadCmsMenus();
           } else {
-            alert(data.message || "Failed to delete page");
+            admAlert(data.message || "Failed to delete page", { title: "Delete Page Failed" });
           }
         } catch (err) {
-          alert("Network error: " + err.message);
+          admAlert("Network error: " + err.message, { title: "Network Error" });
         }
       }
 
@@ -7495,10 +7875,10 @@
             renderMenuBuilder();
             toast("Menu Updated", "Order & hierarchy saved live");
           } else {
-            alert(data.message || "Could not save menu order");
+            admAlert(data.message || "Could not save menu order", { title: "Menu Update Failed" });
           }
         } catch (err) {
-          alert("Network error: " + err.message);
+          admAlert("Network error: " + err.message, { title: "Network Error" });
         }
       }
 
@@ -7541,12 +7921,26 @@
         });
       });
 
-      document.querySelector(".js-rte-link-btn")?.addEventListener("click", () => {
+      document.querySelector(".js-rte-link-btn")?.addEventListener("click", async () => {
         if (isRteSourceMode) return;
-        const url = prompt("Enter link URL (e.g. /shop or https://...):", "/shop");
-        if (url) {
-          document.getElementById("page-edit-rte")?.focus();
-          document.execCommand("createLink", false, url);
+        const rteEl = document.getElementById("page-edit-rte");
+        const sel = window.getSelection();
+        let savedRange = null;
+        if (sel && sel.rangeCount > 0 && rteEl && rteEl.contains(sel.getRangeAt(0).commonAncestorContainer)) {
+          savedRange = sel.getRangeAt(0).cloneRange();
+        }
+        const url = await admPrompt("Enter link URL (e.g. /shop or https://...):", "/shop", {
+          title: "Insert Link",
+          confirmText: "Insert Link",
+          placeholder: "https:// or /shop"
+        });
+        if (url && url.trim()) {
+          if (rteEl) rteEl.focus();
+          if (savedRange && sel) {
+            sel.removeAllRanges();
+            sel.addRange(savedRange);
+          }
+          document.execCommand("createLink", false, url.trim());
         }
       });
 
@@ -7593,10 +7987,10 @@
             await loadCmsPages();
             await loadCmsMenus();
           } else {
-            alert(data.message || "Failed to save page");
+            admAlert(data.message || "Failed to save page", { title: "Save Page Failed" });
           }
         } catch (err) {
-          alert("Network error: " + err.message);
+          admAlert("Network error: " + err.message, { title: "Network Error" });
         } finally {
           if (btn) btn.disabled = false;
         }
@@ -7702,10 +8096,10 @@
             toast("Menu Saved", editId ? "Menu item updated" : "Menu item added");
             resetMenuForm();
           } else {
-            alert(data.message || "Failed to save menu item");
+            admAlert(data.message || "Failed to save menu item", { title: "Save Menu Failed" });
           }
         } catch (err) {
-          alert("Network error: " + err.message);
+          admAlert("Network error: " + err.message, { title: "Network Error" });
         }
       });
 
@@ -7742,7 +8136,7 @@
           const msg = hasKids
             ? `Delete "${node.title}" AND all its nested submenu items?`
             : `Delete menu item "${node.title}"?`;
-          if (!confirm(msg)) return;
+          if (!(await admConfirm(msg, { title: "Delete Menu Item", confirmText: "Delete" }))) return;
 
           try {
             const res = await fetch(`/admin/menus/${node.id}`, {
@@ -7760,10 +8154,10 @@
                 renderMenuBuilder();
               }
             } else {
-              alert(data.message || "Failed to delete menu item");
+              admAlert(data.message || "Failed to delete menu item", { title: "Delete Menu Failed" });
             }
           } catch (err) {
-            alert("Network error: " + err.message);
+            admAlert("Network error: " + err.message, { title: "Network Error" });
           }
         }
       });
