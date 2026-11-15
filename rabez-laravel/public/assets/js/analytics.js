@@ -7,38 +7,41 @@
 (function () {
   "use strict";
 
-  // Default RABEZ Meta Pixel ID (can be overridden via window.RABEZ_PIXEL_ID or localStorage)
-  const DEFAULT_PIXEL_ID = window.RABEZ_PIXEL_ID || localStorage.getItem("rabez_pixel_id") || "YOUR_PIXEL_ID_HERE";
+  // Resolve Meta Pixel ID: server-injected DB value takes precedence over localStorage fallback
+  const hasServerPixel = Object.prototype.hasOwnProperty.call(window, "RABEZ_PIXEL_ID");
+  const rawPixelId = hasServerPixel ? window.RABEZ_PIXEL_ID : localStorage.getItem("rabez_pixel_id");
+  const DEFAULT_PIXEL_ID = String(rawPixelId || "").replace(/[^0-9]/g, "");
 
   // --- 1. Facebook Pixel Base Loader ---
   function initPixel(pixelId) {
-    if (window.fbq) return;
-    /* eslint-disable */
-    !(function (f, b, e, v, n, t, s) {
-      if (f.fbq) return;
-      n = f.fbq = function () {
-        n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
-      };
-      if (!f._fbq) f._fbq = n;
-      n.push = n;
-      n.loaded = !0;
-      n.version = "2.0";
-      n.queue = [];
-      t = b.createElement(e);
-      t.async = !0;
-      t.src = v;
-      s = b.getElementsByTagName(e)[0];
-      s.parentNode.insertBefore(t, s);
-    })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
-    /* eslint-enable */
-
-    if (pixelId && pixelId !== "YOUR_PIXEL_ID_HERE") {
-      window.fbq("init", pixelId);
-      window.fbq("track", "PageView");
-      console.log(`[RABEZ Analytics] Facebook Pixel initialized: ${pixelId}`);
-    } else {
-      console.info("[RABEZ Analytics] Facebook Pixel ready. Set your Pixel ID in Admin > Settings or via window.RABEZ_PIXEL_ID.");
+    const cleanId = String(pixelId || "").replace(/[^0-9]/g, "");
+    if (!cleanId || cleanId.length < 8) {
+      return;
     }
+    if (!window.fbq) {
+      /* eslint-disable */
+      !(function (f, b, e, v, n, t, s) {
+        if (f.fbq) return;
+        n = f.fbq = function () {
+          n.callMethod ? n.callMethod.apply(n, arguments) : n.queue.push(arguments);
+        };
+        if (!f._fbq) f._fbq = n;
+        n.push = n;
+        n.loaded = !0;
+        n.version = "2.0";
+        n.queue = [];
+        t = b.createElement(e);
+        t.async = !0;
+        t.src = v;
+        s = b.getElementsByTagName(e)[0];
+        s.parentNode.insertBefore(t, s);
+      })(window, document, "script", "https://connect.facebook.net/en_US/fbevents.js");
+      /* eslint-enable */
+    }
+    if (window.__RABEZ_PIXEL_INITED === cleanId) return;
+    window.__RABEZ_PIXEL_INITED = cleanId;
+    window.fbq("init", cleanId);
+    window.fbq("track", "PageView");
   }
 
   // --- 2. Unique Event ID Generator (for 1:1 Browser + Server CAPI Deduplication) ---

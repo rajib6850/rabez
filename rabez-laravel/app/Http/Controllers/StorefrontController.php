@@ -9,6 +9,7 @@ use App\Models\OrderItem;
 use App\Models\Page;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Services\MetaCapiService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -216,6 +217,8 @@ class StorefrontController extends Controller
                 'image' => $item['image'] ?? '/assets/images/products/real-madrid-home-hs.jpg',
             ]);
         }
+
+        (new MetaCapiService())->sendPurchaseEvent($order, $validated['cart_items'], $request);
 
         return response()->json([
             'success' => true,

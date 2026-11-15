@@ -314,6 +314,12 @@
     // Checkout COD Form Submission
     const codForm = document.querySelector(".js-cod-checkout-form");
     if (codForm) {
+      const initialCart = JSON.parse(localStorage.getItem("rabez_wc_cart_v1") || "[]");
+      if (initialCart.length > 0 && window.RABEZ_ANALYTICS && typeof window.RABEZ_ANALYTICS.trackInitiateCheckout === "function") {
+        const initialSubtotal = initialCart.reduce((s, i) => s + (Number(i.price) || 0) * (Number(i.qty) || 1), 0);
+        window.RABEZ_ANALYTICS.trackInitiateCheckout(initialCart, initialSubtotal);
+      }
+
       codForm.addEventListener("submit", (e) => {
         e.preventDefault();
         const rawName = codForm.querySelector('[name="customer_name"]')?.value || "Customer";
@@ -452,7 +458,7 @@
               window.RABEZ_ANALYTICS.recordOrderPlaced();
               window.RABEZ_ANALYTICS.trackPurchase({
                 id: orderId,
-                total: subtotal + shipping,
+                total: Number(data.total) || (subtotal + shipping),
                 eventId: data.event_id,
                 items: cartItems
               });

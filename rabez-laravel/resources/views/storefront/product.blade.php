@@ -945,6 +945,9 @@
         hasCustomPrint: allowCustomPrint
       };
       window.RABEZ_CURRENT_PRODUCT = currentProductData;
+      if (window.RABEZ_ANALYTICS && typeof window.RABEZ_ANALYTICS.trackViewContent === "function") {
+        window.RABEZ_ANALYTICS.trackViewContent(currentProductData);
+      }
       window.RABEZ_PRODUCTS = window.RABEZ_PRODUCTS || [];
       const existingIdx = window.RABEZ_PRODUCTS.findIndex(p => Number(p.id) === Number(currentProductData.id));
       if (existingIdx >= 0) {

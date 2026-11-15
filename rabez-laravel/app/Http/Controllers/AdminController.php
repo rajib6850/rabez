@@ -662,11 +662,23 @@ class AdminController extends Controller
 
     public function saveSettings(Request $request)
     {
-        foreach ($request->except('_token') as $key => $value) {
-            Setting::set($key, $value);
+        $data = $request->except('_token');
+
+        if (array_key_exists('meta_pixel_id', $data)) {
+            $data['meta_pixel_id'] = preg_replace('/[^0-9]/', '', (string) ($data['meta_pixel_id'] ?? ''));
+        }
+        if (array_key_exists('meta_capi_token', $data)) {
+            $data['meta_capi_token'] = trim((string) ($data['meta_capi_token'] ?? ''));
         }
 
-        return response()->json(['success' => true]);
+        foreach ($data as $key => $value) {
+            Setting::set($key, $value ?? '');
+        }
+
+        return response()->json([
+            'success' => true,
+            'meta_pixel_id' => $data['meta_pixel_id'] ?? Setting::get('meta_pixel_id', ''),
+        ]);
     }
 
     public function getCoupons()

@@ -564,6 +564,10 @@
 
     document.body.style.overflow = "hidden";
 
+    if (window.RABEZ_ANALYTICS && typeof window.RABEZ_ANALYTICS.trackViewContent === "function") {
+      window.RABEZ_ANALYTICS.trackViewContent(product);
+    }
+
     const isAdded = isProductInCart(product.id);
     const swatches = buildSizeSwatchesHTML(product);
 

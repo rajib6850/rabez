@@ -3228,14 +3228,14 @@
                 <form class="adm-form js-pixel-settings-form">
                   <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
                     <div class="adm-field">
-                      <label class="adm-label">Meta Pixel ID</label>
-                      <input type="text" class="adm-input js-pixel-id-input" placeholder="e.g. 1029384756102" value="">
-                      <span class="adm-cell-sub">Fires PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase events.</span>
+                      <label class="adm-label" for="setting-meta-pixel-id">Meta Pixel ID (Dataset ID)</label>
+                      <input type="text" id="setting-meta-pixel-id" name="meta_pixel_id" class="adm-input js-pixel-id-input" placeholder="e.g. 1693763272380977" value="{{ $settings['meta_pixel_id'] ?? '' }}">
+                      <span class="adm-cell-sub">Fires PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase across the live storefront. Leave empty to disable.</span>
                     </div>
                     <div class="adm-field">
-                      <label class="adm-label">Server-Side CAPI Access Token</label>
-                      <input type="password" class="adm-input" placeholder="EAABw..." value="">
-                      <span class="adm-cell-sub">Server events bypass ad-blockers and iOS privacy restrictions with 100% accuracy.</span>
+                      <label class="adm-label" for="setting-meta-capi-token">Server-Side CAPI Access Token</label>
+                      <input type="password" id="setting-meta-capi-token" name="meta_capi_token" class="adm-input js-capi-token-input" placeholder="EAABw..." value="{{ $settings['meta_capi_token'] ?? '' }}" autocomplete="off">
+                      <span class="adm-cell-sub">Optional: sends server-side Purchase events from checkout with 1:1 event_id deduplication.</span>
                     </div>
                   </div>
                   <div class="adm-form__actions" style="margin-top:14px;">
@@ -7393,16 +7393,41 @@
         }
       });
 
-      // Pixel settings
+      // Pixel & CAPI settings (persisted in DB via /admin/settings)
       const pixelInput = $(".js-pixel-id-input");
-      if (pixelInput) {
-        pixelInput.value = localStorage.getItem("rabez_pixel_id") || "";
-      }
-      $(".js-pixel-settings-form")?.addEventListener("submit", (e) => {
+      $(".js-pixel-settings-form")?.addEventListener("submit", async (e) => {
         e.preventDefault();
-        const val = (pixelInput ? pixelInput.value : "").trim();
-        localStorage.setItem("rabez_pixel_id", val);
-        toast("Pixel settings saved", val ? `Meta Pixel ID ${val} is now active` : "Pixel ID updated");
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const cleanId = (pixelInput ? pixelInput.value : "").replace(/[^0-9]/g, "");
+        if (pixelInput) pixelInput.value = cleanId;
+
+        const formData = new FormData(form);
+        formData.set("meta_pixel_id", cleanId);
+        formData.append("_token", CSRF_TOKEN);
+
+        if (submitBtn) submitBtn.disabled = true;
+        try {
+          const res = await fetch("/admin/settings", {
+            method: "POST",
+            headers: { "Accept": "application/json", "X-CSRF-TOKEN": CSRF_TOKEN },
+            body: formData
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            throw new Error(data.message || "Could not save tracking settings");
+          }
+          if (cleanId) {
+            localStorage.setItem("rabez_pixel_id", cleanId);
+          } else {
+            localStorage.removeItem("rabez_pixel_id");
+          }
+          toast("Tracking settings saved", cleanId ? `Meta Pixel ID ${cleanId} is live on storefront` : "Meta Pixel disabled");
+        } catch (err) {
+          toast("Save failed", err.message || "Please try again", "err");
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+        }
       });
 
       // Dynamic auto-expanding textareas

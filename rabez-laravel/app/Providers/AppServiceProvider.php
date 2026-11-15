@@ -27,11 +27,13 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         View::composer(['layouts.storefront', 'storefront.*'], function ($view) {
-            static $cached = null;
+            $req = app()->bound('request') ? request() : null;
+            $cached = $req ? $req->attributes->get('rabez_storefront_shared') : null;
 
             if ($cached === null) {
                 $hasActiveCoupons = false;
                 $customPrintFee = 250;
+                $metaPixelId = '';
                 $storefrontProducts = collect();
                 $storefrontProductsJs = [];
                 $headerMenuTree = [];
@@ -47,6 +49,8 @@ class AppServiceProvider extends ServiceProvider
                         if ($feeVal !== null && is_numeric($feeVal)) {
                             $customPrintFee = max(0, intval($feeVal));
                         }
+                        $rawPixel = Setting::where('key', 'meta_pixel_id')->value('value');
+                        $metaPixelId = preg_replace('/[^0-9]/', '', (string) ($rawPixel ?? ''));
                     }
                     if (Schema::hasTable('menu_items')) {
                         $headerMenuTree = MenuItem::buildTree('header', true);
@@ -119,6 +123,7 @@ class AppServiceProvider extends ServiceProvider
                 $cached = [
                     'hasActiveCoupons' => $hasActiveCoupons,
                     'customPrintFee' => $customPrintFee,
+                    'metaPixelId' => $metaPixelId,
                     'storefrontProducts' => $storefrontProducts,
                     'storefrontProductsJs' => $storefrontProductsJs,
                     'customPrintProducts' => $storefrontProducts->where('has_custom_print', true)->values(),
@@ -126,6 +131,9 @@ class AppServiceProvider extends ServiceProvider
                     'footerCareMenu' => $footerCareMenu,
                     'publishedPages' => $publishedPages,
                 ];
+                if ($req) {
+                    $req->attributes->set('rabez_storefront_shared', $cached);
+                }
             }
 
             $view->with($cached);
