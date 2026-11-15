@@ -2030,19 +2030,59 @@
     }
 
     .adm-settings-stack {
-      display: flex;
-      flex-direction: column;
-      gap: 22px;
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+      align-items: stretch;
     }
 
-    .adm-settings-stack > .adm-card + .adm-card {
-      margin-top: 0;
+    .adm-settings-stack > .adm-card {
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      min-width: 0;
+      height: 100%;
+    }
+
+    .adm-settings-stack > .adm-card--span-2 {
+      grid-column: 1 / -1;
+    }
+
+    .adm-settings-stack > .adm-card > .adm-card__head {
+      align-items: flex-start;
+      flex-wrap: nowrap;
+      gap: 12px;
+    }
+
+    .adm-settings-stack > .adm-card > .adm-card__head > .adm-chip {
+      flex-shrink: 0;
+    }
+
+    .adm-settings-stack > .adm-card > .adm-card__body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .adm-settings-stack > .adm-card > .adm-card__body > .adm-form {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+    }
+
+    .adm-settings-form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      align-content: start;
     }
 
     .adm-settings-card__title-row {
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       gap: 12px;
+      flex: 1;
       min-width: 0;
     }
 
@@ -2197,7 +2237,7 @@
       flex-wrap: wrap;
       gap: 12px;
       padding-top: 16px;
-      margin-top: 6px;
+      margin-top: auto;
       border-top: 1px solid var(--adm-border);
     }
 
@@ -2206,9 +2246,21 @@
       color: var(--adm-muted);
     }
 
+    @media (max-width: 1024px) {
+      .adm-settings-stack {
+        grid-template-columns: 1fr;
+      }
+    }
+
     @media (max-width: 860px) {
       .adm-settings-kpis,
       .adm-settings-provider-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 640px) {
+      .adm-settings-form-grid {
         grid-template-columns: 1fr;
       }
     }
@@ -3470,7 +3522,8 @@
               </div>
               <div class="adm-card__body">
                 <form class="adm-form js-settings-form">
-                  <div class="adm-settings-hero-box">
+                  <div class="adm-settings-form-grid">
+                    <div class="adm-settings-hero-box">
                     <div class="adm-settings-hero-box__head">
                       <label class="adm-label" for="setting-shipping-mode" style="font-weight:700; margin:0;">Delivery Charge System</label>
                       <span class="adm-chip adm-chip--delivered" style="font-size:11px;">Live Storefront Rule</span>
@@ -3502,13 +3555,13 @@
                   </div>
 
                   <div class="adm-field">
-                    <label class="adm-label" for="setting-custom-print-fee" style="font-weight:600;">Custom Name &amp; Number Print Fee (৳)</label>
+                    <label class="adm-label" for="setting-custom-print-fee" style="font-weight:600;">Custom Print Fee (৳)</label>
                     <input type="number" id="setting-custom-print-fee" name="custom_print_fee" class="adm-input num" value="{{ $printFee }}">
                     <span class="adm-hint">Added automatically when customer selects custom back print.</span>
                   </div>
 
                   <div class="adm-field">
-                    <label class="adm-label" for="setting-free-shipping-min" style="font-weight:600;">Free Delivery Order Minimum (৳)</label>
+                    <label class="adm-label" for="setting-free-shipping-min" style="font-weight:600;">Free Shipping Minimum (৳)</label>
                     <input type="number" id="setting-free-shipping-min" name="free_shipping_min" class="adm-input num" value="{{ $freeMin }}">
                     <span class="adm-hint">Orders meeting or exceeding this subtotal qualify for free shipping.</span>
                   </div>
@@ -3528,6 +3581,7 @@
                     <label class="adm-label" for="setting-pathao-store" style="font-weight:600;">Pathao Courier Store ID</label>
                     <input type="text" id="setting-pathao-store" name="pathao_store_id" class="adm-input" value="{{ $settings['pathao_store_id'] ?? 'PTH-BARISHAL-1042' }}">
                     <span class="adm-hint">Store identifier registered in your Pathao Merchant panel.</span>
+                  </div>
                   </div>
 
                   <div class="adm-card__foot">
@@ -3554,27 +3608,49 @@
               </div>
               <div class="adm-card__body">
                 <form class="adm-form js-pixel-settings-form">
-                  <div class="adm-field">
-                    <label class="adm-label" for="setting-meta-pixel-id" style="font-weight:600;">Meta Pixel ID (Dataset ID)</label>
-                    <input type="text" id="setting-meta-pixel-id" name="meta_pixel_id" class="adm-input num js-pixel-id-input" placeholder="e.g. 1693763272380977" value="{{ $settings['meta_pixel_id'] ?? '' }}">
-                    <span class="adm-hint">Fires PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase across the live storefront. Leave empty to disable.</span>
-                  </div>
-
-                  <div class="adm-field">
-                    <label class="adm-label" for="setting-meta-capi-test-code" style="font-weight:600;">CAPI Test Event Code <span class="adm-hint">(optional)</span></label>
-                    <input type="text" id="setting-meta-capi-test-code" name="meta_capi_test_code" class="adm-input js-capi-test-code-input" placeholder="e.g. TEST86756" value="{{ $settings['meta_capi_test_code'] ?? '' }}">
-                    <span class="adm-hint">Only needed while verifying server events inside Meta Events Manager Test Events. Clear after testing.</span>
-                  </div>
-
-                  <div class="adm-field adm-field--full">
-                    <label class="adm-label" for="setting-meta-capi-token" style="font-weight:600;">Server-Side CAPI Access Token</label>
-                    <div class="adm-pw-wrap">
-                      <input type="password" id="setting-meta-capi-token" name="meta_capi_token" class="adm-input js-capi-token-input" placeholder="EAABw..." value="{{ $settings['meta_capi_token'] ?? '' }}" autocomplete="off">
-                      <button type="button" class="adm-pw-toggle js-toggle-secret-vis" aria-label="Show or hide token" title="Show/Hide">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                      </button>
+                  <div class="adm-settings-form-grid">
+                    <div class="adm-settings-hero-box">
+                      <div class="adm-settings-hero-box__head">
+                        <span class="adm-label" style="font-weight:700; margin:0;">Event Deduplication Pipeline</span>
+                        <span class="adm-chip adm-chip--delivered" style="font-size:11px;">Browser + CAPI</span>
+                      </div>
+                      <div class="adm-hint" style="margin:0;">Tracks PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase with 1:1 <code>event_id</code> matching.</div>
                     </div>
-                    <span class="adm-hint">Sends server-side Purchase events from checkout with 1:1 <code>event_id</code> deduplication alongside the browser pixel.</span>
+
+                    <div class="adm-field">
+                      <label class="adm-label" for="setting-meta-pixel-id" style="font-weight:600;">Meta Pixel ID (Dataset ID)</label>
+                      <input type="text" id="setting-meta-pixel-id" name="meta_pixel_id" class="adm-input num js-pixel-id-input" placeholder="e.g. 1693763272380977" value="{{ $settings['meta_pixel_id'] ?? '' }}">
+                      <span class="adm-hint">Fires PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase across the live storefront. Leave empty to disable.</span>
+                    </div>
+
+                    <div class="adm-field">
+                      <label class="adm-label" for="setting-meta-capi-test-code" style="font-weight:600;">CAPI Test Event Code <span class="adm-hint">(optional)</span></label>
+                      <input type="text" id="setting-meta-capi-test-code" name="meta_capi_test_code" class="adm-input js-capi-test-code-input" placeholder="e.g. TEST86756" value="{{ $settings['meta_capi_test_code'] ?? '' }}">
+                      <span class="adm-hint">Only needed while verifying server events inside Meta Events Manager Test Events. Clear after testing.</span>
+                    </div>
+
+                    <div class="adm-field adm-field--full">
+                      <label class="adm-label" for="setting-meta-capi-token" style="font-weight:600;">Server-Side CAPI Access Token</label>
+                      <div class="adm-pw-wrap">
+                        <input type="password" id="setting-meta-capi-token" name="meta_capi_token" class="adm-input js-capi-token-input" placeholder="EAABw..." value="{{ $settings['meta_capi_token'] ?? '' }}" autocomplete="off">
+                        <button type="button" class="adm-pw-toggle js-toggle-secret-vis" aria-label="Show or hide token" title="Show/Hide">
+                          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                        </button>
+                      </div>
+                      <span class="adm-hint">Sends server-side Purchase events from checkout with 1:1 <code>event_id</code> deduplication alongside the browser pixel.</span>
+                    </div>
+
+                    <div class="adm-field">
+                      <span class="adm-label" style="font-weight:600;">Event Source URL</span>
+                      <input type="text" class="adm-input" value="{{ url('/') }}" readonly aria-readonly="true" style="background:var(--adm-subtle); color:var(--adm-muted);">
+                      <span class="adm-hint">Sent automatically as <code>event_source_url</code> on CAPI payloads.</span>
+                    </div>
+
+                    <div class="adm-field">
+                      <span class="adm-label" style="font-weight:600;">Attribution Window</span>
+                      <input type="text" class="adm-input" value="7-day click / 1-day view" readonly aria-readonly="true" style="background:var(--adm-subtle); color:var(--adm-muted);">
+                      <span class="adm-hint">Meta Standard conversion optimization window.</span>
+                    </div>
                   </div>
 
                   <div class="adm-card__foot">
@@ -3586,7 +3662,7 @@
             </div>
 
             <!-- Card 3: Google & Facebook Social Login (OAuth 2.0) -->
-            <div class="adm-card" style="width:100%;">
+            <div class="adm-card adm-card--span-2" style="width:100%;">
               <div class="adm-card__head">
                 <div class="adm-settings-card__title-row">
                   <div class="adm-settings-card__icon" style="background:#ECFDF3; border-color:#BBF7D0; color:#15803D;">
