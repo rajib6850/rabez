@@ -26,6 +26,9 @@
       --success: #22C55E;
       --success-bg: rgba(34, 197, 94, 0.12);
     }
+    html {
+      overflow-x: hidden;
+    }
     body {
       font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
       background-color: var(--bg);
@@ -38,6 +41,7 @@
       padding: 32px 16px;
       position: relative;
       overflow-x: hidden;
+      width: 100%;
     }
     body::before {
       content: "";
@@ -45,7 +49,7 @@
       top: -150px;
       left: 50%;
       transform: translateX(-50%);
-      width: 650px;
+      width: min(650px, 100vw);
       height: 650px;
       background: radial-gradient(circle, var(--primary-glow) 0%, transparent 70%);
       pointer-events: none;
@@ -271,13 +275,13 @@
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
-    @media (max-width: 460px) {
+    @media (max-width: 480px) {
       .social-login-grid,
       .pw-grid {
         grid-template-columns: 1fr;
       }
       .auth-card {
-        padding: 26px 20px;
+        padding: 26px 18px;
       }
     }
   </style>
@@ -287,7 +291,7 @@
   <div class="auth-container">
     <div class="brand-header">
       <a href="{{ route('home') }}" class="brand-logo" title="RABEZ Storefront">
-        <img src="{{ asset('assets/images/logo.png') }}" alt="RABEZ" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='inline-block';">
+        <img src="{{ asset('assets/images/brand/rabez-neon-logo.png') }}" alt="RABEZ" onerror="this.style.display='none'; document.getElementById('logo-text').style.display='inline-block';">
         <span id="logo-text" class="brand-logo-fallback" style="display:none;">RA<span>BEZ</span></span>
       </a>
     </div>
