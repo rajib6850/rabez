@@ -356,4 +356,18 @@ class CustomerAccountAndSocialAuthTest extends TestCase
         $this->assertSame('Sakib Facebook', $fbUser->name);
         $this->assertAuthenticatedAs($fbUser);
     }
+
+    public function test_privacy_policy_and_terms_include_oauth_and_data_deletion_disclosures(): void
+    {
+        $this->get('/privacy-policy')
+            ->assertOk()
+            ->assertSee('Google &amp; Facebook Sign-In (OAuth 2.0) Data', false)
+            ->assertSee('Account &amp; Data Deletion Requests', false)
+            ->assertSee('rajib6850@gmail.com');
+
+        $this->get('/terms-and-conditions')
+            ->assertOk()
+            ->assertSee('Customer Accounts &amp; Social Sign-In (Google / Facebook)', false)
+            ->assertSee('rabez.shop/account');
+    }
 }
