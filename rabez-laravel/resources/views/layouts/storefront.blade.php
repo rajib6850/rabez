@@ -644,7 +644,7 @@
   </script>
   @endif
   <script src="{{ asset('assets/js/cart.js') }}?v=3.3"></script>
-  <script src="{{ asset('assets/js/app.js') }}?v=3.0"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=3.1"></script>
 
   @stack('scripts')
 </body>

@@ -474,7 +474,7 @@
                     <div>
                       <span style="display:inline-block; background:#04F404; color:#080A09; font-weight:800; font-size:0.72rem; padding:3px 8px; border-radius:3px; margin-bottom:6px;">ORDER #${orderId}</span>
                       <h3 style="color:#04F404; font-size:1.35rem; margin-bottom:4px;">Order Received! (Cash on Delivery)</h3>
-                      <p style="font-size:0.9rem; color:#D2D8D4;">ধন্যবাদ <strong>${name}</strong> (${phone})। আপনার অর্ডারটি ডাটাবেসে সফলভাবে যুক্ত হয়েছে। ডেলিভারি ঠিকানা: <em>${address}</em>।</p>
+                      <p style="font-size:0.9rem; color:#D2D8D4;">ধন্যবাদ <strong>${name}</strong> (${phone})। আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে! খুব শীঘ্রই আমাদের প্রতিনিধি আপনার সাথে যোগাযোগ করবেন। ডেলিভারি ঠিকানা: <em>${address}</em>।</p>
                     </div>
                     <a href="/track-order?order=${orderId}" class="rabez-btn rabez-btn--primary rabez-btn--sm">
                       Track Order &amp; Invoice &rarr;
