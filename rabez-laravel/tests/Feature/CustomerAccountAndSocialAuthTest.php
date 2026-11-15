@@ -236,16 +236,16 @@ class CustomerAccountAndSocialAuthTest extends TestCase
 
     public function test_google_and_facebook_oauth_settings_redirect_and_callback(): void
     {
-        // 1. Login and Register pages display both social login buttons
+        // 1. Login and Register pages hide unconfigured social login buttons
         $this->get('/login')
             ->assertOk()
-            ->assertSee('Continue with Google')
-            ->assertSee('Continue with Facebook');
+            ->assertDontSee('Continue with Google')
+            ->assertDontSee('Continue with Facebook');
 
         $this->get('/register')
             ->assertOk()
-            ->assertSee('Continue with Google')
-            ->assertSee('Continue with Facebook');
+            ->assertDontSee('Continue with Google')
+            ->assertDontSee('Continue with Facebook');
 
         // 2. Without configured credentials, social redirect returns to /login with a friendly error
         $this->get('/auth/google/redirect')
@@ -256,7 +256,7 @@ class CustomerAccountAndSocialAuthTest extends TestCase
             ->assertRedirect(route('login'))
             ->assertSessionHasErrors('email');
 
-        // 3. Admin saves Google & Facebook OAuth credentials via /admin/settings
+        // 3. Admin saves only Google first -> only Google appears on /login & /register
         $admin = $this->makeAdmin();
         $this->actingAs($admin)
             ->get('/admin')
@@ -266,6 +266,28 @@ class CustomerAccountAndSocialAuthTest extends TestCase
             ->assertSee('name="facebook_client_id"', false)
             ->assertSee('name="facebook_client_secret"', false);
 
+        $this->actingAs($admin)
+            ->postJson('/admin/settings', [
+                'google_client_id' => ' test-google-client-id ',
+                'google_client_secret' => ' test-google-secret ',
+            ])
+            ->assertOk()
+            ->assertJsonPath('success', true);
+
+        $this->post('/logout');
+        $this->assertGuest();
+
+        $this->get('/login')
+            ->assertOk()
+            ->assertSee('Continue with Google')
+            ->assertDontSee('Continue with Facebook');
+
+        $this->get('/register')
+            ->assertOk()
+            ->assertSee('Continue with Google')
+            ->assertDontSee('Continue with Facebook');
+
+        // 3b. Admin saves both Google & Facebook OAuth credentials -> both appear
         $this->actingAs($admin)
             ->postJson('/admin/settings', [
                 'google_client_id' => ' test-google-client-id ',
@@ -283,6 +305,16 @@ class CustomerAccountAndSocialAuthTest extends TestCase
 
         $this->post('/logout');
         $this->assertGuest();
+
+        $this->get('/login')
+            ->assertOk()
+            ->assertSee('Continue with Google')
+            ->assertSee('Continue with Facebook');
+
+        $this->get('/register')
+            ->assertOk()
+            ->assertSee('Continue with Google')
+            ->assertSee('Continue with Facebook');
 
         // 4. Google OAuth Redirect sets state and redirects to Google Accounts
         $googleRedirect = $this->get('/auth/google/redirect');
