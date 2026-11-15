@@ -187,6 +187,7 @@ class StorefrontController extends Controller
 
         $orderNumber = 'RBZ-' . rand(10030, 99999);
         $eventId = 'rbz_pur_' . time() . '_' . rand(1000, 9999);
+        $authId = auth()->id();
 
         $order = DB::transaction(function () use (
             $orderNumber,
@@ -196,9 +197,11 @@ class StorefrontController extends Controller
             $shippingFee,
             $subtotal,
             $discount,
-            $eventId
+            $eventId,
+            $authId
         ) {
             $createdOrder = Order::create([
+                'user_id' => $authId,
                 'order_number' => $orderNumber,
                 'customer_name' => strip_tags(trim($validated['customer_name'])),
                 'customer_phone' => $phone,
@@ -239,6 +242,20 @@ class StorefrontController extends Controller
 
             return $createdOrder;
         });
+
+        if (auth()->check()) {
+            $authUser = auth()->user();
+            $userUpdates = [];
+            if (empty($authUser->phone)) {
+                $userUpdates['phone'] = $phone;
+            }
+            if (empty($authUser->address)) {
+                $userUpdates['address'] = strip_tags(trim($validated['customer_address']));
+            }
+            if (!empty($userUpdates)) {
+                $authUser->update($userUpdates);
+            }
+        }
 
         (new MetaCapiService())->sendPurchaseEvent($order, $validated['cart_items'], $request);
 

@@ -673,6 +673,11 @@ class AdminController extends Controller
         if (array_key_exists('meta_capi_test_code', $data)) {
             $data['meta_capi_test_code'] = strtoupper(preg_replace('/[^A-Za-z0-9_-]/', '', (string) ($data['meta_capi_test_code'] ?? '')));
         }
+        foreach (['google_client_id', 'google_client_secret', 'facebook_client_id', 'facebook_client_secret'] as $oauthKey) {
+            if (array_key_exists($oauthKey, $data)) {
+                $data[$oauthKey] = trim((string) ($data[$oauthKey] ?? ''));
+            }
+        }
 
         foreach ($data as $key => $value) {
             Setting::set($key, $value ?? '');

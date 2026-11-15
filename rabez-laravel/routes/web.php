@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CustomerAccountController;
+use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\StorefrontController;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +45,24 @@ Route::get('/register', [AuthController::class, 'showRegister'])->name('register
 Route::post('/register', [AuthController::class, 'register']);
 
 Route::match(['get', 'post'], '/logout', [AuthController::class, 'logout'])->name('logout');
+
+Route::get('/auth/{provider}/redirect', [SocialAuthController::class, 'redirect'])
+    ->whereIn('provider', ['google', 'facebook'])
+    ->name('auth.social.redirect');
+Route::get('/auth/{provider}/callback', [SocialAuthController::class, 'callback'])
+    ->whereIn('provider', ['google', 'facebook'])
+    ->name('auth.social.callback');
+
+/*
+|--------------------------------------------------------------------------
+| Customer Account Dashboard (Protected by Auth)
+|--------------------------------------------------------------------------
+*/
+Route::middleware('auth')->group(function () {
+    Route::get('/account', [CustomerAccountController::class, 'index'])->name('account.dashboard');
+    Route::post('/account/profile', [CustomerAccountController::class, 'updateProfile'])->name('account.profile.update');
+    Route::post('/account/password', [CustomerAccountController::class, 'updatePassword'])->name('account.password.update');
+});
 
 /*
 |--------------------------------------------------------------------------
@@ -125,5 +145,5 @@ Route::get('/page/{slug}', [StorefrontController::class, 'page'])
     ->name('storefront.page.prefixed');
 
 Route::get('/{slug}', [StorefrontController::class, 'page'])
-    ->where('slug', '[A-Za-z0-9\-]+')
+    ->where('slug', '^(?!account$|auth$)[A-Za-z0-9\-]+')
     ->name('storefront.page');

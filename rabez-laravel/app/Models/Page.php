@@ -24,6 +24,8 @@ class Page extends Model
         'login',
         'register',
         'logout',
+        'account',
+        'auth',
         'api',
         'assets',
         'downloads',

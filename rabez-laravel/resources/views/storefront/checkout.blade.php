@@ -17,15 +17,27 @@
         <div class="rabez-checkout-card" id="customer_details">
           <h2 style="font-size:1.35rem; margin-bottom:16px;">Delivery Information</h2>
 
+          @auth
+            <div style="background:rgba(4,244,4,0.08); border:1px solid rgba(22,163,74,0.3); color:#15803D; padding:10px 13px; border-radius:8px; font-size:12.5px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+              <span>&#10003; আপনার একাউন্ট থেকে নাম, মোবাইল ও ঠিকানা অটো-ফিল করা হয়েছে (প্রয়োজনে পরিবর্তন করতে পারবেন)</span>
+              <a href="{{ route('account.dashboard') }}" style="color:#0A0C0B; text-decoration:underline; font-weight:700; white-space:nowrap;">My Account &rarr;</a>
+            </div>
+          @else
+            <div style="background:#F8FAF9; border:1px dashed #CBD5D0; color:#374151; padding:10px 13px; border-radius:8px; font-size:12.5px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
+              <span>আগে একাউন্ট খুলেছেন বা Google দিয়ে অর্ডার ট্র্যাক করতে চান?</span>
+              <a href="{{ route('login') }}" style="color:#15803D; font-weight:700; text-decoration:none; white-space:nowrap;">দ্রুত চেকআউটের জন্য লগইন করুন &rarr;</a>
+            </div>
+          @endauth
+
           <div class="rabez-form-grid">
             <div class="rabez-form-group">
               <label for="billing_first_name">Full Name *</label>
-              <input type="text" id="billing_first_name" name="customer_name" required placeholder="আপনার পূর্ণ নাম / Your Name">
+              <input type="text" id="billing_first_name" name="customer_name" required value="{{ old('customer_name', auth()->user()->name ?? '') }}" placeholder="আপনার পূর্ণ নাম / Your Name">
             </div>
 
             <div class="rabez-form-group">
               <label for="billing_phone">Mobile Number *</label>
-              <input type="tel" id="billing_phone" name="customer_phone" required placeholder="01XXXXXXXXX">
+              <input type="tel" id="billing_phone" name="customer_phone" required value="{{ old('customer_phone', auth()->user()->phone ?? '') }}" placeholder="01XXXXXXXXX">
             </div>
 
             <div class="rabez-form-group rabez-form-group--full">
@@ -63,7 +75,7 @@
 
             <div class="rabez-form-group rabez-form-group--full">
               <label for="billing_address_1">Full Delivery Address (House, Road, Area, District) *</label>
-              <input type="text" id="billing_address_1" name="customer_address" required placeholder="e.g. House 12, Road 5, Dhanmondi, Dhaka">
+              <input type="text" id="billing_address_1" name="customer_address" required value="{{ old('customer_address', auth()->user()->address ?? '') }}" placeholder="e.g. House 12, Road 5, Dhanmondi, Dhaka">
             </div>
 
             <div class="rabez-form-group rabez-form-group--full">

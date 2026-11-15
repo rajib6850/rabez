@@ -3249,6 +3249,45 @@
                 </form>
               </div>
             </div>
+
+            <!-- Google & Facebook Social Login (OAuth 2.0) -->
+            <div class="adm-card" style="width:100%;">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Google &amp; Facebook Social Login (OAuth 2.0)</h2>
+                  <p class="adm-card__desc">Enable 1-click free Google &amp; Facebook customer login on Sign In &amp; Register pages.</p>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <form class="adm-form js-oauth-settings-form">
+                  <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap:16px;">
+                    <div class="adm-field">
+                      <label class="adm-label" for="setting-google-client-id">Google Client ID</label>
+                      <input type="text" id="setting-google-client-id" name="google_client_id" class="adm-input" placeholder="xxxxx.apps.googleusercontent.com" value="{{ $settings['google_client_id'] ?? '' }}">
+                      <span class="adm-cell-sub">From Google Cloud Console &rarr; APIs &amp; Services &rarr; OAuth 2.0 Client IDs.</span>
+                    </div>
+                    <div class="adm-field">
+                      <label class="adm-label" for="setting-google-client-secret">Google Client Secret</label>
+                      <input type="password" id="setting-google-client-secret" name="google_client_secret" class="adm-input" placeholder="GOCSPX-..." value="{{ $settings['google_client_secret'] ?? '' }}" autocomplete="off">
+                      <span class="adm-cell-sub">Authorized Redirect URI: <code class="js-copy-oauth-uri" style="cursor:pointer; color:#22C55E;" title="Click to copy">{{ url('/auth/google/callback') }}</code></span>
+                    </div>
+                    <div class="adm-field">
+                      <label class="adm-label" for="setting-facebook-client-id">Facebook App ID</label>
+                      <input type="text" id="setting-facebook-client-id" name="facebook_client_id" class="adm-input" placeholder="e.g. 123456789012345" value="{{ $settings['facebook_client_id'] ?? '' }}">
+                      <span class="adm-cell-sub">From Meta for Developers &rarr; App Settings &rarr; Basic.</span>
+                    </div>
+                    <div class="adm-field">
+                      <label class="adm-label" for="setting-facebook-client-secret">Facebook App Secret</label>
+                      <input type="password" id="setting-facebook-client-secret" name="facebook_client_secret" class="adm-input" placeholder="Facebook App Secret" value="{{ $settings['facebook_client_secret'] ?? '' }}" autocomplete="off">
+                      <span class="adm-cell-sub">Valid OAuth Redirect URI: <code class="js-copy-oauth-uri" style="cursor:pointer; color:#22C55E;" title="Click to copy">{{ url('/auth/facebook/callback') }}</code></span>
+                    </div>
+                  </div>
+                  <div class="adm-form__actions" style="margin-top:14px;">
+                    <button type="submit" class="adm-btn adm-btn--primary">Save Social Login Settings</button>
+                  </div>
+                </form>
+              </div>
+            </div>
           </div>
         </section>
 
@@ -7437,6 +7476,42 @@
         } finally {
           if (submitBtn) submitBtn.disabled = false;
         }
+      });
+
+      // Google & Facebook Social Login (OAuth 2.0) settings
+      $(".js-oauth-settings-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const form = e.target;
+        const submitBtn = form.querySelector('button[type="submit"]');
+        const formData = new FormData(form);
+        formData.append("_token", CSRF_TOKEN);
+
+        if (submitBtn) submitBtn.disabled = true;
+        try {
+          const res = await fetch("/admin/settings", {
+            method: "POST",
+            headers: { "Accept": "application/json", "X-CSRF-TOKEN": CSRF_TOKEN },
+            body: formData
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            throw new Error(data.message || "Could not save social login settings");
+          }
+          toast("Social login settings saved", "Google & Facebook OAuth keys updated");
+        } catch (err) {
+          toast("Save failed", err.message || "Please try again", "err");
+        } finally {
+          if (submitBtn) submitBtn.disabled = false;
+        }
+      });
+
+      $$(".js-copy-oauth-uri").forEach((el) => {
+        el.addEventListener("click", () => {
+          const uri = (el.textContent || "").trim();
+          if (uri && navigator.clipboard) {
+            navigator.clipboard.writeText(uri).then(() => toast("Copied Redirect URI", uri)).catch(() => {});
+          }
+        });
       });
 
       // Dynamic auto-expanding textareas

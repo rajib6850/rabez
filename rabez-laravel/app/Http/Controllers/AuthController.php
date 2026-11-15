@@ -19,7 +19,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return Auth::user()->isAdmin()
                 ? redirect()->route('admin.dashboard')
-                : redirect()->route('home');
+                : redirect()->route('account.dashboard');
         }
 
         return view('auth.login');
@@ -61,13 +61,15 @@ class AuthController extends Controller
                     ->withErrors(['email' => 'Your account is currently inactive. Please contact support.']);
             }
 
+            $user->linkGuestOrdersByPhone();
+
             if ($user->isAdmin()) {
                 return redirect()->intended(route('admin.dashboard'))
                     ->with('success', "Welcome back, {$user->name}!");
             }
 
-            return redirect()->intended(route('home'))
-                ->with('success', "Welcome back, {$user->name}!");
+            return redirect()->intended(route('account.dashboard'))
+                ->with('success', "স্বাগতম, {$user->name}!");
         }
 
         RateLimiter::hit($throttleKey, 60);
@@ -85,7 +87,7 @@ class AuthController extends Controller
         if (Auth::check()) {
             return Auth::user()->isAdmin()
                 ? redirect()->route('admin.dashboard')
-                : redirect()->route('home');
+                : redirect()->route('account.dashboard');
         }
 
         return view('auth.register');
@@ -107,21 +109,27 @@ class AuthController extends Controller
             'email.unique' => 'An account with this email address already exists.',
         ]);
 
+        $phone = User::normalizeBdPhone($validated['phone'] ?? null);
+
         $user = User::create([
             'name' => strip_tags(trim($validated['name'])),
             'email' => strtolower(trim($validated['email'])),
-            'phone' => !empty($validated['phone']) ? preg_replace('/[^0-9]/', '', $validated['phone']) : null,
+            'phone' => $phone,
             'password' => Hash::make($validated['password']),
             'role' => 'customer',
             'is_admin' => false,
             'status' => 'active',
         ]);
 
+        if ($phone) {
+            $user->linkGuestOrdersByPhone($phone);
+        }
+
         Auth::login($user);
         $request->session()->regenerate();
 
-        return redirect()->route('home')
-            ->with('success', 'Account created successfully! Welcome to RABEZ.');
+        return redirect()->route('account.dashboard')
+            ->with('success', 'আপনার একাউন্ট সফলভাবে তৈরি হয়েছে!');
     }
 
     /**

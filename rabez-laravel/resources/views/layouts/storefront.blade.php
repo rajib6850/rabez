@@ -72,6 +72,13 @@
                 <span class="rabez-topbar-dropdown__email">{{ Auth::user()->email }}</span>
               </div>
               <div class="rabez-topbar-dropdown__divider"></div>
+              <a href="{{ route('account.dashboard') }}" class="rabez-topbar-dropdown__item" role="menuitem">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="12" cy="7" r="4"></circle>
+                </svg>
+                <span>My Account &amp; Orders</span>
+              </a>
               @if(Auth::user()->isAdmin())
                 <a href="{{ route('admin.dashboard') }}" class="rabez-topbar-dropdown__item rabez-topbar-dropdown__item--admin" role="menuitem">
                   <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
@@ -230,6 +237,13 @@
               </div>
 
               <div class="rabez-nav-mobile-auth-actions">
+                <a href="{{ route('account.dashboard') }}" class="rabez-nav-mobile-auth-btn rabez-nav-mobile-auth-btn--login">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                    <circle cx="12" cy="7" r="4"></circle>
+                  </svg>
+                  <span>My Account</span>
+                </a>
                 @if(Auth::user()->isAdmin())
                   <a href="{{ route('admin.dashboard') }}" class="rabez-nav-mobile-auth-btn rabez-nav-mobile-auth-btn--admin">
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
