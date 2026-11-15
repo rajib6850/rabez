@@ -2,7 +2,7 @@
  * RABEZ Official Jersey Catalog Data (WooCommerce Schema Compatible)
  * Synced with https://rabez.shop/ product IDs, SKUs, and BDT pricing
  */
-window.RABEZ_PRODUCTS = [
+window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ_DB_PRODUCTS.length > 0) ? window.RABEZ_DB_PRODUCTS : [
   {
     id: 1324,
     sku: "RMA-HOME-HS",

@@ -631,16 +631,18 @@
     window.RABEZ_PIXEL_ID = @json($metaPixelId ?? '');
     window.RABEZ_HAS_COUPONS = @json($hasActiveCoupons ?? false);
     window.RABEZ_CUSTOM_PRINT_FEE = {{ intval($customPrintFee ?? 250) }};
-    @if(isset($storefrontProductsJs) && count($storefrontProductsJs) > 0)
-      window.RABEZ_DB_PRODUCTS = @json($storefrontProductsJs);
-      window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;
-    @endif
   </script>
   @if(!empty($metaPixelId))
   <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $metaPixelId }}&ev=PageView&noscript=1" alt=""></noscript>
   @endif
   <script src="{{ asset('assets/js/analytics.js') }}?v=2.0"></script>
-  <script src="{{ asset('assets/js/products-data.js') }}"></script>
+  <script src="{{ asset('assets/js/products-data.js') }}?v=2.0"></script>
+  @if(isset($storefrontProductsJs) && count($storefrontProductsJs) > 0)
+  <script>
+    window.RABEZ_DB_PRODUCTS = @json($storefrontProductsJs);
+    window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;
+  </script>
+  @endif
   <script src="{{ asset('assets/js/cart.js') }}?v=3.3"></script>
   <script src="{{ asset('assets/js/app.js') }}?v=3.0"></script>
 

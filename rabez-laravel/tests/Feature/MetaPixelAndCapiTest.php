@@ -47,9 +47,14 @@ class MetaPixelAndCapiTest extends TestCase
         $html = $shopRes->getContent();
         $pixelPos = strpos($html, 'window.RABEZ_PIXEL_ID');
         $scriptPos = strpos($html, 'assets/js/analytics.js');
+        $productsDataPos = strpos($html, 'assets/js/products-data.js');
+        $dbProductsPos = strpos($html, 'window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;');
         $this->assertNotFalse($pixelPos);
         $this->assertNotFalse($scriptPos);
         $this->assertLessThan($scriptPos, $pixelPos, 'RABEZ_PIXEL_ID must be defined before analytics.js executes');
+        $this->assertNotFalse($productsDataPos);
+        $this->assertNotFalse($dbProductsPos);
+        $this->assertLessThan($dbProductsPos, $productsDataPos, 'RABEZ_DB_PRODUCTS must override static products-data.js');
 
         $this->get('/product/' . $product->slug)
             ->assertOk()
@@ -183,5 +188,30 @@ class MetaPixelAndCapiTest extends TestCase
             return ($evt['event_id'] ?? null) === $eventId2
                 && !array_key_exists('test_event_code', $data);
         });
+
+        // Also ensure legacy/static product IDs in localStorage cart (e.g. 1324, 1383) do not fail checkout foreign key constraint
+        $legacyRes = $this->postJson('/checkout', [
+            'customer_name' => 'Rajib Test',
+            'customer_phone' => '01712345678',
+            'customer_address' => 'Mirpur, Dhaka',
+            'shipping_zone' => 70,
+            'cart_items' => [
+                [
+                    'id' => 1324,
+                    'name' => 'Real Madrid 26/27 Home Half Sleeve Jersey',
+                    'size' => 'L',
+                    'qty' => 1,
+                    'price' => 1150,
+                ],
+                [
+                    'id' => 1383,
+                    'name' => 'Bayern Munich Home Half Sleeve Jersey',
+                    'size' => 'XL',
+                    'qty' => 1,
+                    'price' => 1150,
+                ],
+            ],
+        ]);
+        $legacyRes->assertOk()->assertJsonPath('success', true);
     }
 }

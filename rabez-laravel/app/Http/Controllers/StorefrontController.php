@@ -11,6 +11,7 @@ use App\Models\Product;
 use App\Models\Setting;
 use App\Services\MetaCapiService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 
 class StorefrontController extends Controller
@@ -187,36 +188,57 @@ class StorefrontController extends Controller
         $orderNumber = 'RBZ-' . rand(10030, 99999);
         $eventId = 'rbz_pur_' . time() . '_' . rand(1000, 9999);
 
-        $order = Order::create([
-            'order_number' => $orderNumber,
-            'customer_name' => strip_tags(trim($validated['customer_name'])),
-            'customer_phone' => $phone,
-            'customer_address' => strip_tags(trim($validated['customer_address'])),
-            'zone' => $zoneLabel,
-            'shipping_fee' => $shippingFee,
-            'total' => max(0, ($subtotal - $discount)) + $shippingFee,
-            'subtotal' => $subtotal,
-            'status' => 'Pending',
-            'status_step' => 1,
-            'courier' => 'Steadfast Courier',
-            'consignment_id' => 'Pending Dispatch',
-            'event_id' => $eventId,
-        ]);
-
-        foreach ($validated['cart_items'] as $item) {
-            OrderItem::create([
-                'order_id' => $order->id,
-                'product_id' => $item['id'] ?? null,
-                'product_name' => strip_tags($item['name']),
-                'size' => $item['size'],
-                'qty' => $item['qty'],
-                'unit_price' => $item['price'],
-                'total_price' => $item['price'] * $item['qty'],
-                'custom_name' => !empty($item['custom_name']) ? strip_tags(strtoupper(trim($item['custom_name']))) : null,
-                'custom_number' => !empty($item['custom_number']) ? strip_tags(trim($item['custom_number'])) : null,
-                'image' => $item['image'] ?? '/assets/images/products/real-madrid-home-hs.jpg',
+        $order = DB::transaction(function () use (
+            $orderNumber,
+            $validated,
+            $phone,
+            $zoneLabel,
+            $shippingFee,
+            $subtotal,
+            $discount,
+            $eventId
+        ) {
+            $createdOrder = Order::create([
+                'order_number' => $orderNumber,
+                'customer_name' => strip_tags(trim($validated['customer_name'])),
+                'customer_phone' => $phone,
+                'customer_address' => strip_tags(trim($validated['customer_address'])),
+                'zone' => $zoneLabel,
+                'shipping_fee' => $shippingFee,
+                'total' => max(0, ($subtotal - $discount)) + $shippingFee,
+                'subtotal' => $subtotal,
+                'status' => 'Pending',
+                'status_step' => 1,
+                'courier' => 'Steadfast Courier',
+                'consignment_id' => 'Pending Dispatch',
+                'event_id' => $eventId,
             ]);
-        }
+
+            foreach ($validated['cart_items'] as $item) {
+                $rawPid = isset($item['id']) ? (int) $item['id'] : null;
+                $resolvedProductId = null;
+                if ($rawPid && Product::whereKey($rawPid)->exists()) {
+                    $resolvedProductId = $rawPid;
+                } elseif (!empty($item['name'])) {
+                    $resolvedProductId = Product::where('name', trim((string) $item['name']))->value('id');
+                }
+
+                OrderItem::create([
+                    'order_id' => $createdOrder->id,
+                    'product_id' => $resolvedProductId,
+                    'product_name' => strip_tags($item['name']),
+                    'size' => $item['size'],
+                    'qty' => $item['qty'],
+                    'unit_price' => $item['price'],
+                    'total_price' => $item['price'] * $item['qty'],
+                    'custom_name' => !empty($item['custom_name']) ? strip_tags(strtoupper(trim($item['custom_name']))) : null,
+                    'custom_number' => !empty($item['custom_number']) ? strip_tags(trim($item['custom_number'])) : null,
+                    'image' => $item['image'] ?? '/assets/images/products/real-madrid-home-hs.jpg',
+                ]);
+            }
+
+            return $createdOrder;
+        });
 
         (new MetaCapiService())->sendPurchaseEvent($order, $validated['cart_items'], $request);
 
