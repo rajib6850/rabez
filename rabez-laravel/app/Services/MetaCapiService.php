@@ -18,6 +18,7 @@ class MetaCapiService
     {
         $pixelId = preg_replace('/[^0-9]/', '', (string) Setting::get('meta_pixel_id', ''));
         $token = trim((string) Setting::get('meta_capi_token', ''));
+        $testCode = strtoupper(preg_replace('/[^A-Za-z0-9_-]/', '', (string) Setting::get('meta_capi_test_code', '')));
 
         if ($pixelId === '' || $token === '') {
             return;
@@ -63,6 +64,10 @@ class MetaCapiService
                 ],
             ],
         ];
+
+        if ($testCode !== '') {
+            $payload['test_event_code'] = $testCode;
+        }
 
         try {
             Http::timeout(3)->post(

@@ -670,6 +670,9 @@ class AdminController extends Controller
         if (array_key_exists('meta_capi_token', $data)) {
             $data['meta_capi_token'] = trim((string) ($data['meta_capi_token'] ?? ''));
         }
+        if (array_key_exists('meta_capi_test_code', $data)) {
+            $data['meta_capi_test_code'] = strtoupper(preg_replace('/[^A-Za-z0-9_-]/', '', (string) ($data['meta_capi_test_code'] ?? '')));
+        }
 
         foreach ($data as $key => $value) {
             Setting::set($key, $value ?? '');
@@ -678,6 +681,7 @@ class AdminController extends Controller
         return response()->json([
             'success' => true,
             'meta_pixel_id' => $data['meta_pixel_id'] ?? Setting::get('meta_pixel_id', ''),
+            'meta_capi_test_code' => $data['meta_capi_test_code'] ?? Setting::get('meta_capi_test_code', ''),
         ]);
     }
 

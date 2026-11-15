@@ -66,20 +66,25 @@ class MetaPixelAndCapiTest extends TestCase
             ->assertOk()
             ->assertSee('name="meta_pixel_id"', false)
             ->assertSee('name="meta_capi_token"', false)
-            ->assertSee('1693763272380977');
+            ->assertSee('name="meta_capi_test_code"', false)
+            ->assertSee('1693763272380977')
+            ->assertSee('TEST86756');
 
-        // Update with whitespace/prefix noise -> sanitized to digits
+        // Update with whitespace/prefix noise -> sanitized cleanly
         $this->actingAs($admin)
             ->postJson('/admin/settings', [
                 'meta_pixel_id' => 'ID 9988776655443322 ',
                 'meta_capi_token' => ' EAABwTestToken123 ',
+                'meta_capi_test_code' => ' test86756 ',
             ])
             ->assertOk()
             ->assertJsonPath('success', true)
-            ->assertJsonPath('meta_pixel_id', '9988776655443322');
+            ->assertJsonPath('meta_pixel_id', '9988776655443322')
+            ->assertJsonPath('meta_capi_test_code', 'TEST86756');
 
         $this->assertSame('9988776655443322', Setting::get('meta_pixel_id'));
         $this->assertSame('EAABwTestToken123', Setting::get('meta_capi_token'));
+        $this->assertSame('TEST86756', Setting::get('meta_capi_test_code'));
 
         $this->get('/shop')
             ->assertOk()
@@ -140,8 +145,9 @@ class MetaPixelAndCapiTest extends TestCase
 
         Http::assertNothingSent();
 
-        // Configure CAPI token -> checkout fires Graph API v21.0 Purchase with deduplicated event_id
+        // Configure CAPI token + test_event_code -> checkout fires Graph API v21.0 Purchase with test_event_code
         Setting::set('meta_capi_token', 'EAABwLiveTokenXYZ');
+        Setting::set('meta_capi_test_code', 'TEST86756');
 
         $res = $this->postJson('/checkout', $payload)
             ->assertOk()
@@ -155,12 +161,27 @@ class MetaPixelAndCapiTest extends TestCase
             $data = $request->data();
             $evt = $data['data'][0] ?? [];
             return str_starts_with($request->url(), 'https://graph.facebook.com/v21.0/1693763272380977/events?access_token=EAABwLiveTokenXYZ')
+                && ($data['test_event_code'] ?? null) === 'TEST86756'
                 && ($evt['event_name'] ?? null) === 'Purchase'
                 && ($evt['event_id'] ?? null) === $eventId
                 && ($evt['user_data']['ph'][0] ?? null) === $expectedHash
                 && ($evt['custom_data']['currency'] ?? null) === 'BDT'
                 && ($evt['custom_data']['order_id'] ?? null) === $orderId
                 && (int) ($evt['custom_data']['num_items'] ?? 0) === 2;
+        });
+
+        // When test_event_code is cleared, payload omits test_event_code for production live events
+        Setting::set('meta_capi_test_code', '');
+        $res2 = $this->postJson('/checkout', $payload)
+            ->assertOk()
+            ->assertJsonPath('success', true);
+        $eventId2 = $res2->json('event_id');
+
+        Http::assertSent(function ($request) use ($eventId2) {
+            $data = $request->data();
+            $evt = $data['data'][0] ?? [];
+            return ($evt['event_id'] ?? null) === $eventId2
+                && !array_key_exists('test_event_code', $data);
         });
     }
 }

@@ -3237,6 +3237,11 @@
                       <input type="password" id="setting-meta-capi-token" name="meta_capi_token" class="adm-input js-capi-token-input" placeholder="EAABw..." value="{{ $settings['meta_capi_token'] ?? '' }}" autocomplete="off">
                       <span class="adm-cell-sub">Optional: sends server-side Purchase events from checkout with 1:1 event_id deduplication.</span>
                     </div>
+                    <div class="adm-field">
+                      <label class="adm-label" for="setting-meta-capi-test-code">CAPI Test Event Code</label>
+                      <input type="text" id="setting-meta-capi-test-code" name="meta_capi_test_code" class="adm-input js-capi-test-code-input" placeholder="e.g. TEST86756" value="{{ $settings['meta_capi_test_code'] ?? '' }}">
+                      <span class="adm-cell-sub">Only needed while checking server events in Meta Test Events. Clear this box after testing!</span>
+                    </div>
                   </div>
                   <div class="adm-form__actions" style="margin-top:14px;">
                     <button type="submit" class="adm-btn adm-btn--primary">Save Tracking Settings</button>
@@ -7395,15 +7400,19 @@
 
       // Pixel & CAPI settings (persisted in DB via /admin/settings)
       const pixelInput = $(".js-pixel-id-input");
+      const testCodeInput = $(".js-capi-test-code-input");
       $(".js-pixel-settings-form")?.addEventListener("submit", async (e) => {
         e.preventDefault();
         const form = e.target;
         const submitBtn = form.querySelector('button[type="submit"]');
         const cleanId = (pixelInput ? pixelInput.value : "").replace(/[^0-9]/g, "");
+        const cleanTestCode = (testCodeInput ? testCodeInput.value : "").replace(/[^A-Za-z0-9_-]/g, "").toUpperCase();
         if (pixelInput) pixelInput.value = cleanId;
+        if (testCodeInput) testCodeInput.value = cleanTestCode;
 
         const formData = new FormData(form);
         formData.set("meta_pixel_id", cleanId);
+        if (testCodeInput) formData.set("meta_capi_test_code", cleanTestCode);
         formData.append("_token", CSRF_TOKEN);
 
         if (submitBtn) submitBtn.disabled = true;

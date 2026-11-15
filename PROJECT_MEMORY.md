@@ -493,14 +493,14 @@ php artisan serve --port=8000
         - Bumped `cart.js?v=3.2`, `sw.js` `rabez-pwa-v7`, synced root `assets/js/cart.js`, and added automated coverage (`ProductEditFabricAndSizesTest.php`).
 
 35. **Database-Backed Meta Pixel (`1693763272380977`), Conversions API (CAPI) & E-Commerce Events:**
-    - **Database & Admin Persistence (`2026_11_15_000001_seed_meta_pixel_setting.php`, `AdminController.php`, `admin/dashboard.blade.php`):**
-        - Seeded default `meta_pixel_id` (`1693763272380977`) and `meta_capi_token` (`""`) in `settings`.
-        - Updated `AdminController::saveSettings()` to sanitize `meta_pixel_id` (digits only) and trim `meta_capi_token`.
-        - Wired the **Admin Dashboard → Settings → Meta / Facebook Pixel & CAPI** form (`.js-pixel-settings-form`, `#setting-meta-pixel-id`, `#setting-meta-capi-token`) to persist directly to DB via `POST /admin/settings` instead of `localStorage`-only storage.
+    - **Database & Admin Persistence (`2026_11_15_000001_seed_meta_pixel_setting.php`, `2026_11_15_000002_seed_meta_capi_test_code_setting.php`, `AdminController.php`, `admin/dashboard.blade.php`):**
+        - Seeded default `meta_pixel_id` (`1693763272380977`), `meta_capi_token` (`""`), and `meta_capi_test_code` (`TEST86756`) in `settings`.
+        - Updated `AdminController::saveSettings()` to sanitize `meta_pixel_id` (digits only), trim `meta_capi_token`, and uppercase-sanitize `meta_capi_test_code`.
+        - Wired the **Admin Dashboard → Settings → Meta / Facebook Pixel & CAPI** form (`.js-pixel-settings-form`, `#setting-meta-pixel-id`, `#setting-meta-capi-token`, `#setting-meta-capi-test-code`) to persist directly to DB via `POST /admin/settings` instead of `localStorage`-only storage.
     - **Storefront Pixel Injection & Full Funnel Events (`AppServiceProvider.php`, `layouts/storefront.blade.php`, `analytics.js`, `cart.js`, `app.js`, `product.blade.php`, `sw.js`):**
         - Switched `AppServiceProvider` storefront shared composer cache from cross-request `static` to per-request attributes and shared `$metaPixelId`.
         - Injected `window.RABEZ_PIXEL_ID` and `<noscript>` fallback pixel img before `analytics.js?v=2.0`; updated `analytics.js` to only load `fbevents.js` when a valid numeric ID is present (respecting explicit empty DB value).
         - Wired `ViewContent` on Single Product (`product.blade.php`) and Quick View (`cart.js::openQuickView`), `InitiateCheckout` on `/checkout` load (`app.js`), and server-synced `Purchase` total (`data.total`) with bumped cache versions (`analytics.js?v=2.0`, `cart.js?v=3.3`, `app.js?v=3.0`, `rabez-pwa-v8`) and synced root `assets/js/`.
     - **Server-Side CAPI (`MetaCapiService.php`, `StorefrontController.php`, `MetaPixelAndCapiTest.php`):**
-        - Created `App\Services\MetaCapiService::sendPurchaseEvent()` (Graph API v21.0 `Purchase` event with `event_id` 1:1 deduplication and SHA-256 normalized Bangladesh phone hashing when `meta_capi_token` is configured) and called it in `StorefrontController::processCheckout()`.
+        - Created `App\Services\MetaCapiService::sendPurchaseEvent()` (Graph API v21.0 `Purchase` event with `event_id` 1:1 deduplication, optional `test_event_code` when set, and SHA-256 normalized Bangladesh phone hashing when `meta_capi_token` is configured) and called it in `StorefrontController::processCheckout()`.
         - Added `MetaPixelAndCapiTest.php` covering storefront Pixel script ordering, Admin DB sanitization/disable flow, and conditional CAPI `Purchase` dispatch via `Http::fake()`.
