@@ -442,10 +442,12 @@
     }
     if (!silentToast) {
       if (customToast && customToast.title) {
-        showToast(customToast.title, customToast.message || "Added to your shopping bag.", customToast.action || null);
+        showToast(customToast.title, customToast.message || "Added to your bag.", customToast.action || null);
       } else {
-        const itemLabel = variantTitle ? `${product.name} (${variantTitle})` : `${product.name} (Size ${itemSize})`;
-        showToast(itemLabel, hasCustom ? `With Custom Print: ${cleanName} #${cleanNum}` : `Added to your bag — ${formatBDT(unitPrice)}`);
+        showToast("Added to Bag", "Item added to your bag.", {
+          label: "View Bag",
+          onClick: () => openCartDrawer()
+        });
       }
     }
   }
@@ -1718,7 +1720,7 @@
         return;
       }
       addToCart({ id, size, qty: 1, silentToast: true });
-      showToast("Added to Bag", "Added to your shopping bag.", {
+      showToast("Added to Bag", "Item added to your bag.", {
         label: "View Bag",
         onClick: () => openCartDrawer()
       });
