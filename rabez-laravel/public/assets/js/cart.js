@@ -646,7 +646,6 @@
   function toggleWishlist(id, opts = {}) {
     const numId = Number(id);
     if (!numId) return false;
-    const prod = getProductById(numId);
     const wasWished = wishlist.includes(numId);
 
     if (wasWished) {
@@ -665,16 +664,16 @@
       const onWishlistPage = Boolean(document.querySelector(".js-wishlist-page-grid"));
       if (!wasWished) {
         showToast(
-          prod ? prod.name : "Jersey Saved",
-          "Added to your saved wishlist collection.",
+          "Added to Wishlist",
+          "Saved to your wishlist.",
           !onWishlistPage && window.RABEZ_ROUTES?.wishlist
             ? { label: "View Wishlist", href: window.RABEZ_ROUTES.wishlist }
             : null
         );
       } else {
         showToast(
-          prod ? prod.name : "Removed from Wishlist",
-          "Removed from your wishlist.",
+          "Removed from Wishlist",
+          "Item removed from your wishlist.",
           null
         );
       }
