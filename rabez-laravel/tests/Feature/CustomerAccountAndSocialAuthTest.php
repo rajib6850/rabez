@@ -402,4 +402,78 @@ class CustomerAccountAndSocialAuthTest extends TestCase
             ->assertSee('Customer Accounts &amp; Social Sign-In (Google / Facebook)', false)
             ->assertSee('rabez.shop/account');
     }
+
+    public function test_account_dashboard_renders_smart_status_filters_and_reorder_actions(): void
+    {
+        $user = User::create([
+            'name' => 'Smart Buyer',
+            'email' => 'smart-buyer@example.com',
+            'phone' => '01755556666',
+            'password' => Hash::make('Password123!'),
+            'role' => 'customer',
+            'is_admin' => false,
+            'status' => 'active',
+        ]);
+
+        $pendingOrder = Order::create([
+            'user_id' => $user->id,
+            'order_number' => 'RBZ-55001',
+            'customer_name' => 'Smart Buyer',
+            'customer_phone' => '01755556666',
+            'customer_address' => 'Banani, Dhaka',
+            'zone' => 'All Over Bangladesh',
+            'shipping_fee' => 130,
+            'subtotal' => 1150,
+            'total' => 1280,
+            'status' => 'Pending',
+            'status_step' => 1,
+        ]);
+
+        OrderItem::create([
+            'order_id' => $pendingOrder->id,
+            'product_name' => 'Brazil Home 24/25',
+            'size' => 'L',
+            'variant_title' => 'Fan Edition / L',
+            'qty' => 1,
+            'unit_price' => 1150,
+            'total_price' => 1150,
+        ]);
+
+        $deliveredOrder = Order::create([
+            'user_id' => $user->id,
+            'order_number' => 'RBZ-55002',
+            'customer_name' => 'Smart Buyer',
+            'customer_phone' => '01755556666',
+            'customer_address' => 'Banani, Dhaka',
+            'zone' => 'All Over Bangladesh',
+            'shipping_fee' => 130,
+            'subtotal' => 1450,
+            'total' => 1580,
+            'status' => 'Delivered',
+            'status_step' => 5,
+        ]);
+
+        OrderItem::create([
+            'order_id' => $deliveredOrder->id,
+            'product_name' => 'Portugal Away 24/25',
+            'size' => 'XL',
+            'variant_title' => 'Player Edition / XL',
+            'qty' => 1,
+            'unit_price' => 1450,
+            'total_price' => 1450,
+        ]);
+
+        $res = $this->actingAs($user)->get('/account?status=delivered');
+        $res->assertOk();
+        $res->assertSee('js-order-filter-btn', false);
+        $res->assertSee('data-filter="pending"', false);
+        $res->assertSee('data-filter="delivered"', false);
+        $res->assertSee('js-acc-reorder-btn', false);
+        $res->assertSee('RBZ-55001');
+        $res->assertSee('RBZ-55002');
+        $res->assertSee('Fan Edition / L');
+        $res->assertSee('Player Edition / XL');
+        $res->assertSee('Delivery Profile');
+        $res->assertSee('Password &amp; Security', false);
+    }
 }

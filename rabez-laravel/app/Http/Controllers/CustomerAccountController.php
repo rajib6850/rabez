@@ -34,16 +34,31 @@ class CustomerAccountController extends Controller
             ->latest()
             ->get();
 
+        $statusCounts = [
+            'all' => $orders->count(),
+            'pending' => $orders->where('status', 'Pending')->count(),
+            'printing' => $orders->where('status', 'Printing')->count(),
+            'shipped' => $orders->where('status', 'Shipped')->count(),
+            'delivered' => $orders->where('status', 'Delivered')->count(),
+            'cancelled' => $orders->where('status', 'Cancelled')->count(),
+            'active' => $orders->whereIn('status', ['Pending', 'Printing', 'Shipped'])->count(),
+        ];
+
         $stats = [
-            'total_orders' => $orders->count(),
-            'active_orders' => $orders->whereIn('status', ['Pending', 'Printing', 'Shipped'])->count(),
-            'delivered_orders' => $orders->where('status', 'Delivered')->count(),
+            'total_orders' => $statusCounts['all'],
+            'pending_orders' => $statusCounts['pending'],
+            'active_orders' => $statusCounts['active'],
+            'delivered_orders' => $statusCounts['delivered'],
+            'cancelled_orders' => $statusCounts['cancelled'],
             'total_spent' => (float) $orders->where('status', '!=', 'Cancelled')->sum('total'),
         ];
 
+        $requestedStatus = strtolower(trim((string) $request->query('status', 'all')));
+        $initialStatus = array_key_exists($requestedStatus, $statusCounts) ? $requestedStatus : 'all';
+
         $settings = Setting::pluck('value', 'key')->toArray();
 
-        return view('storefront.account', compact('user', 'orders', 'stats', 'settings'));
+        return view('storefront.account', compact('user', 'orders', 'stats', 'statusCounts', 'initialStatus', 'settings'));
     }
 
     /**

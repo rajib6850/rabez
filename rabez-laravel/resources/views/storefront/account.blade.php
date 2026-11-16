@@ -10,7 +10,7 @@
         radial-gradient(circle at 12% 85%, rgba(4, 244, 4, 0.06), transparent 36%),
         #0A0C0B;
       color: #FFFFFF;
-      padding: 42px 0 46px;
+      padding: 40px 0 46px;
       border-bottom: 1px solid #1E2421;
     }
     .rabez-acc-hero__inner {
@@ -128,26 +128,61 @@
       color: #FFFFFF;
     }
 
+    /* Interactive KPI Cards */
     .rabez-acc-stats {
       display: grid;
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 14px;
-      margin-bottom: 26px;
+      margin-bottom: 24px;
     }
     .rabez-acc-stat {
       background: #FFFFFF;
-      border: 1px solid #DCE3DF;
+      border: 1.5px solid #DCE3DF;
       border-radius: 14px;
-      padding: 18px 20px;
+      padding: 16px 18px;
       box-shadow: 0 8px 24px rgba(10, 12, 11, 0.04);
+      text-align: left;
+      transition: all 0.18s ease;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    button.rabez-acc-stat {
+      cursor: pointer;
+    }
+    button.rabez-acc-stat:hover {
+      border-color: #0A0C0B;
+      transform: translateY(-2px);
+      box-shadow: 0 12px 26px rgba(10, 12, 11, 0.08);
+    }
+    button.rabez-acc-stat.is-active {
+      border-color: #0A0C0B;
+      background: linear-gradient(135deg, #FFFFFF 0%, #F2FDF2 100%);
+      box-shadow: 0 0 0 3px rgba(4, 244, 4, 0.18);
+    }
+    .rabez-acc-stat__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 8px;
     }
     .rabez-acc-stat__label {
-      font-size: 0.76rem;
-      font-weight: 700;
+      font-size: 0.74rem;
+      font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.05em;
       color: #6B7570;
-      margin-bottom: 6px;
+    }
+    .rabez-acc-stat__chip {
+      font-size: 0.68rem;
+      font-weight: 700;
+      color: #166534;
+      background: #DCFCE7;
+      padding: 2px 7px;
+      border-radius: 999px;
+      white-space: nowrap;
     }
     .rabez-acc-stat__value {
       font-family: 'Barlow Condensed', sans-serif;
@@ -160,6 +195,7 @@
       color: #008A00;
     }
 
+    /* Main Grid */
     .rabez-acc-grid {
       display: grid;
       grid-template-columns: 1.55fr 1fr;
@@ -175,7 +211,7 @@
       background: #FFFFFF;
       border: 1px solid #DCE3DF;
       border-radius: 16px;
-      padding: 24px;
+      padding: 22px;
       box-shadow: 0 10px 28px rgba(10, 12, 11, 0.05);
       min-width: 0;
     }
@@ -186,7 +222,7 @@
       gap: 12px;
       flex-wrap: wrap;
       padding-bottom: 14px;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
       border-bottom: 1px solid #E6ECE8;
     }
     .rabez-acc-card__title {
@@ -201,19 +237,140 @@
       margin-top: 3px;
     }
 
+    /* Smart Filter & Search Toolbar */
+    .rabez-acc-toolbar {
+      display: grid;
+      gap: 12px;
+      margin-bottom: 18px;
+    }
+    .rabez-acc-filter-bar {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .rabez-acc-filter-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 13px;
+      border-radius: 999px;
+      border: 1.5px solid #DCE3DF;
+      background: #F8FAF9;
+      color: #334155;
+      font-size: 0.8rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .rabez-acc-filter-btn:hover {
+      border-color: #0A0C0B;
+      color: #0A0C0B;
+    }
+    .rabez-acc-filter-btn.is-active {
+      background: #0A0C0B;
+      border-color: #0A0C0B;
+      color: #04F404;
+    }
+    .rabez-acc-filter-count {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-width: 20px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      font-size: 0.7rem;
+      font-weight: 800;
+      background: rgba(10, 12, 11, 0.08);
+      color: #475569;
+    }
+    .rabez-acc-filter-btn.is-active .rabez-acc-filter-count {
+      background: rgba(4, 244, 4, 0.18);
+      color: #04F404;
+    }
+    .rabez-acc-search-row {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+    .rabez-acc-search-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-width: 0;
+    }
+    .rabez-acc-search-wrap svg.search-icon {
+      position: absolute;
+      left: 12px;
+      color: #64748B;
+      pointer-events: none;
+    }
+    .rabez-acc-search-input {
+      width: 100%;
+      height: 40px;
+      padding: 0 34px 0 36px;
+      border: 1.5px solid #CBD5E1;
+      border-radius: 9px;
+      font-size: 0.86rem;
+      font-weight: 600;
+      color: #0A0C0B;
+      background: #FFFFFF;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    }
+    .rabez-acc-search-input:focus {
+      outline: none;
+      border-color: #0A0C0B;
+      box-shadow: 0 0 0 3px rgba(4, 244, 4, 0.16);
+    }
+    .rabez-acc-search-clear {
+      position: absolute;
+      right: 8px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #E2E8F0;
+      color: #334155;
+      font-size: 0.85rem;
+      font-weight: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+    .rabez-acc-search-clear.is-visible {
+      display: inline-flex;
+    }
+    .rabez-acc-sort-select {
+      height: 40px;
+      padding: 0 12px;
+      border: 1.5px solid #CBD5E1;
+      border-radius: 9px;
+      font-size: 0.84rem;
+      font-weight: 700;
+      color: #0A0C0B;
+      background: #FFFFFF;
+      cursor: pointer;
+    }
+
+    /* Order Cards */
     .rabez-acc-order-list {
       display: grid;
       gap: 16px;
     }
     .rabez-acc-order {
-      border: 1px solid #DCE3DF;
+      border: 1.5px solid #DCE3DF;
       border-radius: 14px;
       padding: 18px;
       background: #FCFDFC;
-      transition: border-color 0.16s ease;
+      transition: border-color 0.16s ease, box-shadow 0.16s ease;
+      min-width: 0;
     }
     .rabez-acc-order:hover {
       border-color: #0A0C0B;
+      box-shadow: 0 8px 22px rgba(10, 12, 11, 0.05);
     }
     .rabez-acc-order__top {
       display: flex;
@@ -240,6 +397,30 @@
       font-size: 0.78rem;
       font-weight: 800;
       letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+    .rabez-acc-copy-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 3px 8px;
+      border-radius: 5px;
+      background: #F1F5F9;
+      border: 1px solid #DCE3DF;
+      color: #475569;
+      font-size: 0.72rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .rabez-acc-copy-btn:hover {
+      border-color: #0A0C0B;
+      color: #0A0C0B;
+    }
+    .rabez-acc-copy-btn.is-copied {
+      background: #DCFCE7;
+      border-color: #22C55E;
+      color: #166534;
     }
     .rabez-acc-order__date {
       font-size: 0.8rem;
@@ -249,12 +430,15 @@
     .rabez-acc-status {
       display: inline-flex;
       align-items: center;
+      gap: 5px;
       padding: 4px 11px;
       border-radius: 999px;
-      font-size: 0.76rem;
+      font-size: 0.75rem;
       font-weight: 800;
       text-transform: uppercase;
       letter-spacing: 0.03em;
+      white-space: nowrap;
+      flex-shrink: 0;
     }
     .rabez-acc-status--pending { background: #FEF3C7; color: #92400E; }
     .rabez-acc-status--printing { background: #E0F2FE; color: #075985; }
@@ -262,23 +446,65 @@
     .rabez-acc-status--delivered { background: #DCFCE7; color: #166534; }
     .rabez-acc-status--cancelled { background: #FEE2E2; color: #991B1B; }
 
+    /* Compact Inline Order Progress */
+    .rabez-acc-progress {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 6px;
+      margin-bottom: 14px;
+      padding: 10px 12px;
+      background: #F4F7F5;
+      border-radius: 9px;
+    }
+    .rabez-acc-prog-step {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+    .rabez-acc-prog-bar {
+      height: 5px;
+      border-radius: 999px;
+      background: #DCE3DF;
+    }
+    .rabez-acc-prog-step.is-done .rabez-acc-prog-bar {
+      background: #00A800;
+    }
+    .rabez-acc-prog-step.is-current .rabez-acc-prog-bar {
+      background: #04F404;
+      box-shadow: 0 0 8px rgba(4, 244, 4, 0.55);
+    }
+    .rabez-acc-prog-label {
+      font-size: 0.69rem;
+      font-weight: 700;
+      color: #64748B;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .rabez-acc-prog-step.is-done .rabez-acc-prog-label,
+    .rabez-acc-prog-step.is-current .rabez-acc-prog-label {
+      color: #0A0C0B;
+      font-weight: 800;
+    }
+
     .rabez-acc-items {
       display: grid;
       gap: 10px;
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
     .rabez-acc-item {
       display: flex;
       align-items: center;
       gap: 12px;
-      padding: 8px 10px;
+      padding: 9px 11px;
       background: #FFFFFF;
       border: 1px solid #EAEFEF;
       border-radius: 10px;
     }
     .rabez-acc-item img {
       width: 50px;
-      height: 50px;
+      height: 56px;
       border-radius: 8px;
       object-fit: cover;
       flex-shrink: 0;
@@ -289,7 +515,8 @@
       min-width: 0;
     }
     .rabez-acc-item__name {
-      font-size: 0.88rem;
+      font-family: 'Red Hat Text', sans-serif;
+      font-size: 0.89rem;
       font-weight: 700;
       color: #0A0C0B;
       line-height: 1.3;
@@ -300,14 +527,14 @@
       flex-wrap: wrap;
       gap: 6px;
       margin-top: 4px;
-      font-size: 0.75rem;
+      font-size: 0.74rem;
       color: #475569;
     }
     .rabez-acc-tag {
       background: #F1F5F9;
       padding: 2px 7px;
       border-radius: 4px;
-      font-weight: 600;
+      font-weight: 700;
     }
     .rabez-acc-tag--print {
       background: #DCFCE7;
@@ -318,10 +545,11 @@
       font-size: 0.9rem;
       color: #0A0C0B;
       white-space: nowrap;
+      flex-shrink: 0;
     }
 
     .rabez-acc-order__meta {
-      font-size: 0.82rem;
+      font-size: 0.81rem;
       color: #475569;
       background: #F4F7F5;
       border-radius: 8px;
@@ -336,16 +564,85 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      gap: 12px;
+      gap: 10px;
       flex-wrap: wrap;
     }
     .rabez-acc-order__total {
-      font-size: 1.05rem;
+      font-size: 1.02rem;
       font-weight: 800;
       color: #0A0C0B;
+      white-space: nowrap;
     }
     .rabez-acc-order__total span {
       color: #008A00;
+    }
+    .rabez-acc-order__btns {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .rabez-acc-mini-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 5px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      border: 1.5px solid #CBD5E1;
+      background: #FFFFFF;
+      color: #0A0C0B;
+      text-decoration: none;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .rabez-acc-mini-btn:hover {
+      border-color: #0A0C0B;
+      background: #F1F5F9;
+    }
+    .rabez-acc-mini-btn--reorder {
+      border-color: #16A34A;
+      color: #15803D;
+      background: #F0FDF4;
+    }
+    .rabez-acc-mini-btn--reorder:hover {
+      background: #04F404;
+      color: #080A09;
+      border-color: #04F404;
+    }
+
+    /* Right Sidebar Tabs */
+    .rabez-acc-side-tabs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px;
+      padding: 4px;
+      background: #F1F5F9;
+      border-radius: 10px;
+      margin-bottom: 18px;
+    }
+    .rabez-acc-side-tab {
+      padding: 9px 10px;
+      border-radius: 8px;
+      font-size: 0.82rem;
+      font-weight: 800;
+      color: #475569;
+      text-align: center;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .rabez-acc-side-tab.is-active {
+      background: #0A0C0B;
+      color: #04F404;
+    }
+    .rabez-acc-side-panel {
+      display: none;
+    }
+    .rabez-acc-side-panel.is-active {
+      display: block;
     }
 
     .rabez-acc-form {
@@ -417,21 +714,59 @@
         grid-template-columns: 1fr;
       }
     }
-    @media (max-width: 520px) {
+    @media (max-width: 560px) {
       .rabez-acc-hero {
-        padding: 30px 0 32px;
+        padding: 28px 0 30px;
       }
       .rabez-acc-card {
-        padding: 18px 16px;
+        padding: 18px 14px;
+      }
+      .rabez-acc-stat {
+        padding: 14px 13px;
+      }
+      .rabez-acc-stat__top {
+        flex-wrap: wrap;
+        gap: 4px;
+      }
+      .rabez-acc-filter-bar {
+        flex-wrap: wrap;
+        gap: 6px;
+      }
+      .rabez-acc-filter-btn {
+        padding: 6px 10px;
+        font-size: 0.75rem;
+      }
+      .rabez-acc-search-row {
+        grid-template-columns: 1fr;
       }
       .rabez-acc-item {
         align-items: flex-start;
+      }
+      .rabez-acc-order__foot {
+        flex-direction: column;
+        align-items: stretch;
+      }
+      .rabez-acc-order__btns {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+      }
+      .rabez-acc-order__btns .rabez-acc-mini-btn {
+        flex: 1 1 0;
+      }
+      .rabez-acc-order__btns .rabez-btn {
+        flex: 1 0 100%;
       }
     }
   </style>
 @endpush
 
 @section('content')
+  @php
+    $openSecurityTab = $errors->has('current_password') || $errors->has('password');
+    $waNumber = preg_replace('/[^0-9]/', '', $settings['whatsapp_number'] ?? '8801612359652');
+  @endphp
+
   <section class="rabez-acc-hero">
     <div class="rabez-container rabez-acc-hero__inner" style="max-width:1200px;">
       <div class="rabez-acc-user">
@@ -450,7 +785,7 @@
             @endif
           </div>
           <h1 class="rabez-acc-title">Welcome, {{ $user->name }}</h1>
-          <p class="rabez-acc-sub">{{ $user->email }} &bull; Manage your order history, invoices, and saved delivery details</p>
+          <p class="rabez-acc-sub">{{ $user->email }} &bull; Track orders, reorder kits, and manage delivery details</p>
         </div>
       </div>
 
@@ -460,7 +795,7 @@
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
           </svg>
-          <span>My Wishlist (<span class="js-wishlist-count">0</span>)</span>
+          <span>Wishlist (<span class="js-wishlist-count">0</span>)</span>
         </a>
         <a href="{{ route('track-order') }}" class="rabez-acc-btn-outline">Track Order</a>
         @if($user->isAdmin())
@@ -495,36 +830,52 @@
         </div>
       @endif
 
-      <!-- Summary KPIs -->
+      <!-- Interactive Summary KPIs (Click to Filter) -->
       <div class="rabez-acc-stats">
-        <div class="rabez-acc-stat">
-          <div class="rabez-acc-stat__label">Total Orders</div>
+        <button type="button" class="rabez-acc-stat js-kpi-filter {{ $initialStatus === 'all' ? 'is-active' : '' }}" data-filter="all">
+          <div class="rabez-acc-stat__top">
+            <span class="rabez-acc-stat__label">Total Orders</span>
+            <span class="rabez-acc-stat__chip">View All</span>
+          </div>
           <div class="rabez-acc-stat__value">{{ $stats['total_orders'] }}</div>
-        </div>
-        <div class="rabez-acc-stat">
-          <div class="rabez-acc-stat__label">Active / In Transit</div>
-          <div class="rabez-acc-stat__value">{{ $stats['active_orders'] }}</div>
-        </div>
-        <div class="rabez-acc-stat">
-          <div class="rabez-acc-stat__label">Delivered</div>
+        </button>
+
+        <button type="button" class="rabez-acc-stat js-kpi-filter {{ $initialStatus === 'pending' ? 'is-active' : '' }}" data-filter="pending">
+          <div class="rabez-acc-stat__top">
+            <span class="rabez-acc-stat__label">Pending</span>
+            @if(($stats['active_orders'] - $stats['pending_orders']) > 0)
+              <span class="rabez-acc-stat__chip" style="background:#E0F2FE; color:#075985;">+{{ $stats['active_orders'] - $stats['pending_orders'] }} Active</span>
+            @endif
+          </div>
+          <div class="rabez-acc-stat__value">{{ $stats['pending_orders'] }}</div>
+        </button>
+
+        <button type="button" class="rabez-acc-stat js-kpi-filter {{ $initialStatus === 'delivered' ? 'is-active' : '' }}" data-filter="delivered">
+          <div class="rabez-acc-stat__top">
+            <span class="rabez-acc-stat__label">Delivered</span>
+            <span class="rabez-acc-stat__chip">Completed</span>
+          </div>
           <div class="rabez-acc-stat__value">{{ $stats['delivered_orders'] }}</div>
-        </div>
+        </button>
+
         <div class="rabez-acc-stat rabez-acc-stat--highlight">
-          <div class="rabez-acc-stat__label">Total Spent</div>
+          <div class="rabez-acc-stat__top">
+            <span class="rabez-acc-stat__label">Total Spent</span>
+          </div>
           <div class="rabez-acc-stat__value">&#2547; {{ number_format($stats['total_spent']) }}</div>
         </div>
       </div>
 
       <div class="rabez-acc-grid">
-        <!-- Left Column: Order History -->
+        <!-- Left Column: Smart Orders Hub -->
         <div class="rabez-acc-col">
-          <section class="rabez-acc-card">
+          <section class="rabez-acc-card" id="my-orders-section">
             <div class="rabez-acc-card__head">
               <div>
                 <h2 class="rabez-acc-card__title">My Orders</h2>
-                <div class="rabez-acc-card__sub">View all your orders and live courier tracking status</div>
+                <div class="rabez-acc-card__sub">Filter by status, search orders, reorder or track live courier</div>
               </div>
-              <span class="rabez-acc-tag" style="font-size:0.8rem;">{{ $orders->count() }} Orders</span>
+              <span class="rabez-acc-tag js-visible-orders-badge" style="font-size:0.8rem; white-space:nowrap;">{{ $orders->count() }} Orders</span>
             </div>
 
             @if($orders->isEmpty())
@@ -541,7 +892,51 @@
                 <a href="{{ route('shop') }}" class="rabez-btn rabez-btn--primary" style="display:inline-flex;">Browse Jerseys &rarr;</a>
               </div>
             @else
-              <div class="rabez-acc-order-list">
+              <!-- Filter Pills & Instant Search -->
+              <div class="rabez-acc-toolbar">
+                <div class="rabez-acc-filter-bar" role="tablist" aria-label="Filter orders by status">
+                  @php
+                    $filterTabs = [
+                      'all' => 'All',
+                      'pending' => 'Pending',
+                      'printing' => 'Printing',
+                      'shipped' => 'Shipped',
+                      'delivered' => 'Delivered',
+                      'cancelled' => 'Cancelled',
+                    ];
+                  @endphp
+                  @foreach($filterTabs as $fKey => $fLabel)
+                    @if($fKey !== 'cancelled' || ($statusCounts['cancelled'] ?? 0) > 0)
+                      <button type="button"
+                        class="rabez-acc-filter-btn js-order-filter-btn {{ $initialStatus === $fKey ? 'is-active' : '' }}"
+                        data-filter="{{ $fKey }}">
+                        <span>{{ $fLabel }}</span>
+                        <span class="rabez-acc-filter-count">{{ $statusCounts[$fKey] ?? 0 }}</span>
+                      </button>
+                    @endif
+                  @endforeach
+                </div>
+
+                <div class="rabez-acc-search-row">
+                  <div class="rabez-acc-search-wrap">
+                    <svg class="search-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                      <circle cx="11" cy="11" r="8"></circle>
+                      <path d="m21 21-4.3-4.3"></path>
+                    </svg>
+                    <input type="text" id="js-acc-order-search" class="rabez-acc-search-input" placeholder="Search Order #, jersey name, custom print, address...">
+                    <button type="button" id="js-acc-search-clear" class="rabez-acc-search-clear" title="Clear search">&times;</button>
+                  </div>
+
+                  <select id="js-acc-order-sort" class="rabez-acc-sort-select" aria-label="Sort orders">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="total_desc">Amount: High to Low</option>
+                    <option value="total_asc">Amount: Low to High</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="rabez-acc-order-list" id="js-acc-order-list">
                 @foreach($orders as $order)
                   @php
                     $statusSlug = strtolower((string) ($order->status ?? 'pending'));
@@ -552,24 +947,96 @@
                       'cancelled' => 'rabez-acc-status--cancelled',
                       default => 'rabez-acc-status--pending',
                     };
+                    $stepVal = match($statusSlug) {
+                      'printing' => 2,
+                      'shipped' => 3,
+                      'delivered' => 4,
+                      'cancelled' => 0,
+                      default => 1,
+                    };
+                    $searchHaystack = strtolower(implode(' ', array_filter([
+                      $order->order_number,
+                      $order->customer_phone,
+                      $order->customer_address,
+                      $order->status,
+                      $order->courier,
+                      $order->consignment_id,
+                      $order->items->pluck('product_name')->implode(' '),
+                      $order->items->pluck('custom_name')->implode(' '),
+                    ])));
+                    $reorderItems = $order->items->map(function ($it) {
+                      return [
+                        'id' => $it->product_id,
+                        'variantId' => $it->variant_id,
+                        'variantTitle' => $it->variant_title ?: $it->size,
+                        'name' => $it->product_name,
+                        'size' => $it->size ?: ($it->variant_title ?: 'L'),
+                        'qty' => (int) ($it->qty ?: 1),
+                        'price' => (float) $it->unit_price,
+                        'customName' => $it->custom_name ?: '',
+                        'customNumber' => $it->custom_number ?: '',
+                        'image' => $it->image ? asset(ltrim($it->image, '/')) : asset('assets/images/products/real-madrid-home-hs.jpg'),
+                      ];
+                    })->values();
+                    $waHelpText = rawurlencode("Hello RABEZ! Regarding my Order #{$order->order_number}: ");
                   @endphp
-                  <article class="rabez-acc-order">
+                  <article class="rabez-acc-order js-acc-order-card"
+                    data-status="{{ $statusSlug }}"
+                    data-date="{{ $order->created_at ? $order->created_at->timestamp : 0 }}"
+                    data-total="{{ (float) $order->total }}"
+                    data-search="{{ $searchHaystack }}">
                     <div class="rabez-acc-order__top">
                       <div class="rabez-acc-order__id">
                         <span class="rabez-acc-order__num">#{{ $order->order_number }}</span>
+                        <button type="button" class="rabez-acc-copy-btn js-copy-order-id" data-order="{{ $order->order_number }}" title="Copy Order ID">
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                          </svg>
+                          <span>Copy</span>
+                        </button>
                         <span class="rabez-acc-order__date">{{ $order->created_at ? $order->created_at->format('d M Y, h:i A') : '' }}</span>
                       </div>
                       <span class="rabez-acc-status {{ $badgeClass }}">{{ $order->status ?? 'Pending' }}</span>
                     </div>
 
+                    @if($statusSlug === 'cancelled')
+                      <div style="padding:8px 12px; border-radius:8px; background:#FEF2F2; border:1px solid #FECACA; color:#991B1B; font-size:0.78rem; font-weight:700; margin-bottom:12px;">
+                        This order was cancelled. Need help? Message us on WhatsApp anytime.
+                      </div>
+                    @else
+                      <div class="rabez-acc-progress" aria-label="Order progress">
+                        @php
+                          $miniSteps = [
+                            1 => 'Placed',
+                            2 => 'Printing / QC',
+                            3 => 'In Courier',
+                            4 => 'Delivered',
+                          ];
+                        @endphp
+                        @foreach($miniSteps as $sNum => $sTitle)
+                          @php
+                            $sCls = $stepVal > $sNum ? 'is-done' : ($stepVal === $sNum ? 'is-current' : '');
+                          @endphp
+                          <div class="rabez-acc-prog-step {{ $sCls }}">
+                            <div class="rabez-acc-prog-bar"></div>
+                            <span class="rabez-acc-prog-label">{{ $sTitle }}</span>
+                          </div>
+                        @endforeach
+                      </div>
+                    @endif
+
                     <div class="rabez-acc-items">
                       @foreach($order->items as $item)
+                        @php
+                          $variantText = $item->variant_title ?: $item->size;
+                        @endphp
                         <div class="rabez-acc-item">
-                          <img src="{{ asset(ltrim($item->image ?: 'assets/images/products/real-madrid-home-hs.jpg', '/')) }}" alt="{{ $item->product_name }}">
+                          <img src="{{ asset(ltrim($item->image ?: 'assets/images/products/real-madrid-home-hs.jpg', '/')) }}" alt="{{ $item->product_name }}" onerror="this.src='/assets/images/products/real-madrid-home-hs.jpg'">
                           <div class="rabez-acc-item__info">
                             <div class="rabez-acc-item__name">{{ $item->product_name }}</div>
                             <div class="rabez-acc-item__tags">
-                              <span class="rabez-acc-tag">Size: {{ $item->size }}</span>
+                              <span class="rabez-acc-tag">{{ $item->variant_title ? $variantText : 'Size: ' . $variantText }}</span>
                               <span class="rabez-acc-tag">Qty: {{ $item->qty }}</span>
                               @if(!empty($item->custom_name) || !empty($item->custom_number))
                                 <span class="rabez-acc-tag rabez-acc-tag--print">
@@ -598,90 +1065,344 @@
 
                     <div class="rabez-acc-order__foot">
                       <div class="rabez-acc-order__total">
-                        Total Payable: <span>&#2547; {{ number_format($order->total) }}</span>
+                        Total: <span>&#2547; {{ number_format($order->total) }}</span>
                       </div>
-                      <a href="{{ route('track-order', ['order' => $order->order_number]) }}" class="rabez-btn rabez-btn--dark" style="padding:9px 15px; font-size:0.82rem;">
-                        Track &amp; Invoice &rarr;
-                      </a>
+                      <div class="rabez-acc-order__btns">
+                        @if($order->items->isNotEmpty())
+                          <button type="button" class="rabez-acc-mini-btn rabez-acc-mini-btn--reorder js-acc-reorder-btn" data-items='@json($reorderItems)'>
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                              <polyline points="23 4 23 10 17 10"></polyline>
+                              <path d="M20.49 15a9 9 0 1 1-2.12-9.36L23 10"></path>
+                            </svg>
+                            <span>Reorder</span>
+                          </button>
+                        @endif
+                        <a href="{{ route('order.confirmed', ['orderNumber' => $order->order_number]) }}" class="rabez-acc-mini-btn">
+                          <span>Receipt</span>
+                        </a>
+                        @if(in_array($statusSlug, ['pending', 'printing', 'shipped']))
+                          <a href="https://api.whatsapp.com/send/?phone={{ $waNumber }}&text={{ $waHelpText }}" target="_blank" rel="noopener" class="rabez-acc-mini-btn">
+                            <span>Help</span>
+                          </a>
+                        @endif
+                        <a href="{{ route('track-order', ['order' => $order->order_number]) }}" class="rabez-btn rabez-btn--dark" style="padding:8px 14px; font-size:0.8rem; min-height:36px;">
+                          Track &amp; Invoice &rarr;
+                        </a>
+                      </div>
                     </div>
                   </article>
                 @endforeach
+              </div>
+
+              <!-- Empty State for Active Filter / Search -->
+              <div id="js-acc-empty-filter" style="display:none; text-align:center; padding:32px 16px; border:1px dashed #CBD5E1; border-radius:12px; background:#F8FAF9;">
+                <div style="font-size:1rem; font-weight:800; color:#0A0C0B; margin-bottom:6px;">No matching orders found</div>
+                <p style="font-size:0.84rem; color:#64748B; margin:0 0 14px;">Try switching the status filter or clearing your search query.</p>
+                <button type="button" id="js-acc-reset-filters" class="rabez-btn rabez-btn--primary" style="min-height:38px; padding:0 18px; font-size:0.82rem;">Show All Orders</button>
               </div>
             @endif
           </section>
         </div>
 
-        <!-- Right Column: Profile, Saved Address & Security -->
+        <!-- Right Column: Smart Tabbed Profile & Security -->
         <div class="rabez-acc-col">
           <section class="rabez-acc-card">
-            <div class="rabez-acc-card__head">
-              <div>
-                <h2 class="rabez-acc-card__title">Profile &amp; Delivery Address</h2>
-                <div class="rabez-acc-card__sub">Your saved name, mobile number, and address will auto-fill at checkout</div>
-              </div>
+            <div class="rabez-acc-side-tabs" role="tablist" aria-label="Account settings tabs">
+              <button type="button" class="rabez-acc-side-tab js-acc-side-tab {{ !$openSecurityTab ? 'is-active' : '' }}" data-tab="profile">
+                Delivery Profile
+              </button>
+              <button type="button" class="rabez-acc-side-tab js-acc-side-tab {{ $openSecurityTab ? 'is-active' : '' }}" data-tab="security">
+                Password &amp; Security
+              </button>
             </div>
 
-            <form action="{{ route('account.profile.update') }}" method="POST" class="rabez-acc-form">
-              @csrf
-              <div class="rabez-acc-field">
-                <label for="acc-name">Full Name *</label>
-                <input type="text" id="acc-name" name="name" value="{{ old('name', $user->name) }}" required maxlength="100" placeholder="Your Full Name">
+            <!-- Panel 1: Profile & Saved Address -->
+            <div class="rabez-acc-side-panel js-acc-side-panel {{ !$openSecurityTab ? 'is-active' : '' }}" data-panel="profile">
+              <div class="rabez-acc-card__head" style="padding-top:0;">
+                <div>
+                  <h2 class="rabez-acc-card__title" style="font-size:1.12rem;">Profile &amp; Delivery Address</h2>
+                  <div class="rabez-acc-card__sub">Auto-fills at checkout for 1-click COD ordering</div>
+                </div>
               </div>
 
-              <div class="rabez-acc-field">
-                <label for="acc-phone">Mobile Number (11 Digits) *</label>
-                <input type="tel" id="acc-phone" name="phone" value="{{ old('phone', $user->phone) }}" required placeholder="01XXXXXXXXX">
-                <span class="rabez-acc-hint">Previous guest orders placed with this number will automatically link to your account.</span>
+              <form action="{{ route('account.profile.update') }}" method="POST" class="rabez-acc-form">
+                @csrf
+                <div class="rabez-acc-field">
+                  <label for="acc-name">Full Name *</label>
+                  <input type="text" id="acc-name" name="name" value="{{ old('name', $user->name) }}" required maxlength="100" placeholder="Your Full Name">
+                </div>
+
+                <div class="rabez-acc-field">
+                  <label for="acc-phone">Mobile Number (11 Digits) *</label>
+                  <input type="tel" id="acc-phone" name="phone" value="{{ old('phone', $user->phone) }}" required placeholder="01XXXXXXXXX">
+                  <span class="rabez-acc-hint">Previous guest orders on this number link automatically.</span>
+                </div>
+
+                <div class="rabez-acc-field">
+                  <label for="acc-email">Email Address</label>
+                  <input type="email" id="acc-email" value="{{ $user->email }}" readonly disabled>
+                </div>
+
+                <div class="rabez-acc-field">
+                  <label for="acc-address">Saved Delivery Address</label>
+                  <textarea id="acc-address" name="address" rows="3" maxlength="255" placeholder="House, Road, Area, Thana, District">{{ old('address', $user->address) }}</textarea>
+                </div>
+
+                <button type="submit" class="rabez-btn rabez-btn--primary rabez-btn--full" style="font-weight:800; padding:12px;">
+                  Save Profile &amp; Address
+                </button>
+              </form>
+            </div>
+
+            <!-- Panel 2: Password & Security -->
+            <div class="rabez-acc-side-panel js-acc-side-panel {{ $openSecurityTab ? 'is-active' : '' }}" data-panel="security">
+              <div class="rabez-acc-card__head" style="padding-top:0;">
+                <div>
+                  <h2 class="rabez-acc-card__title" style="font-size:1.12rem;">Change Password</h2>
+                  <div class="rabez-acc-card__sub">Keep your RABEZ account secure</div>
+                </div>
               </div>
 
-              <div class="rabez-acc-field">
-                <label for="acc-email">Email Address</label>
-                <input type="email" id="acc-email" value="{{ $user->email }}" readonly disabled>
-              </div>
+              <form action="{{ route('account.password.update') }}" method="POST" class="rabez-acc-form">
+                @csrf
+                <div class="rabez-acc-field">
+                  <label for="acc-current-password">Current Password *</label>
+                  <input type="password" id="acc-current-password" name="current_password" required autocomplete="current-password" placeholder="••••••••">
+                </div>
 
-              <div class="rabez-acc-field">
-                <label for="acc-address">Saved Delivery Address</label>
-                <textarea id="acc-address" name="address" rows="3" maxlength="255" placeholder="House, Road, Area, Thana, District">{{ old('address', $user->address) }}</textarea>
-              </div>
+                <div class="rabez-acc-field">
+                  <label for="acc-new-password">New Password *</label>
+                  <input type="password" id="acc-new-password" name="password" required autocomplete="new-password" placeholder="Minimum 8 characters">
+                </div>
 
-              <button type="submit" class="rabez-btn rabez-btn--primary rabez-btn--full" style="font-weight:800; padding:12px;">
-                Save Profile &amp; Address
-              </button>
-            </form>
+                <div class="rabez-acc-field">
+                  <label for="acc-new-password-confirm">Confirm New Password *</label>
+                  <input type="password" id="acc-new-password-confirm" name="password_confirmation" required autocomplete="new-password" placeholder="Repeat new password">
+                </div>
+
+                <button type="submit" class="rabez-btn rabez-btn--dark rabez-btn--full" style="font-weight:700; padding:12px;">
+                  Update Password
+                </button>
+              </form>
+            </div>
           </section>
 
-          <section class="rabez-acc-card">
-            <div class="rabez-acc-card__head">
-              <div>
-                <h2 class="rabez-acc-card__title">Change Password</h2>
-                <div class="rabez-acc-card__sub">Update your password to keep your account secure</div>
-              </div>
+          <!-- Quick Shortcuts Card -->
+          <section class="rabez-acc-card" style="padding:18px 20px;">
+            <div style="font-size:0.9rem; font-weight:800; color:#0A0C0B; margin-bottom:10px;">Quick Shortcuts</div>
+            <div style="display:grid; gap:8px;">
+              <a href="{{ route('wishlist') }}" class="rabez-acc-mini-btn" style="justify-content:space-between; padding:10px 12px;">
+                <span>Saved Wishlist Jerseys</span>
+                <span style="color:#008A00; font-weight:800;"><span class="js-wishlist-count">0</span> items &rarr;</span>
+              </a>
+              <a href="{{ route('track-order') }}" class="rabez-acc-mini-btn" style="justify-content:space-between; padding:10px 12px;">
+                <span>Track Another Order ID</span>
+                <span>&rarr;</span>
+              </a>
+              <a href="https://api.whatsapp.com/send/?phone={{ $waNumber }}" target="_blank" rel="noopener" class="rabez-acc-mini-btn" style="justify-content:space-between; padding:10px 12px;">
+                <span>Direct WhatsApp Support</span>
+                <span style="color:#16A34A; font-weight:800;">Chat &rarr;</span>
+              </a>
             </div>
-
-            <form action="{{ route('account.password.update') }}" method="POST" class="rabez-acc-form">
-              @csrf
-              <div class="rabez-acc-field">
-                <label for="acc-current-password">Current Password *</label>
-                <input type="password" id="acc-current-password" name="current_password" required autocomplete="current-password" placeholder="••••••••">
-              </div>
-
-              <div class="rabez-acc-field">
-                <label for="acc-new-password">New Password *</label>
-                <input type="password" id="acc-new-password" name="password" required autocomplete="new-password" placeholder="Minimum 8 characters">
-              </div>
-
-              <div class="rabez-acc-field">
-                <label for="acc-new-password-confirm">Confirm New Password *</label>
-                <input type="password" id="acc-new-password-confirm" name="password_confirmation" required autocomplete="new-password" placeholder="Repeat new password">
-              </div>
-
-              <button type="submit" class="rabez-btn rabez-btn--dark rabez-btn--full" style="font-weight:700; padding:12px;">
-                Update Password
-              </button>
-            </form>
           </section>
         </div>
       </div>
     </div>
   </main>
 @endsection
+
+@push('scripts')
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      const orderListEl = document.getElementById("js-acc-order-list");
+      const orderCards = Array.from(document.querySelectorAll(".js-acc-order-card"));
+      const filterBtns = document.querySelectorAll(".js-order-filter-btn");
+      const kpiFilterBtns = document.querySelectorAll(".js-kpi-filter");
+      const searchInput = document.getElementById("js-acc-order-search");
+      const clearSearchBtn = document.getElementById("js-acc-search-clear");
+      const sortSelect = document.getElementById("js-acc-order-sort");
+      const emptyFilterEl = document.getElementById("js-acc-empty-filter");
+      const visibleBadge = document.querySelector(".js-visible-orders-badge");
+      const resetFiltersBtn = document.getElementById("js-acc-reset-filters");
+
+      let activeFilter = @json($initialStatus ?? 'all');
+      let searchQuery = "";
+      let activeSort = "newest";
+
+      function applyOrderFilters() {
+        if (!orderListEl) return;
+
+        // Sort DOM cards first
+        const sorted = [...orderCards].sort((a, b) => {
+          const da = Number(a.dataset.date || 0);
+          const db = Number(b.dataset.date || 0);
+          const ta = Number(a.dataset.total || 0);
+          const tb = Number(b.dataset.total || 0);
+          if (activeSort === "oldest") return da - db;
+          if (activeSort === "total_desc") return tb - ta;
+          if (activeSort === "total_asc") return ta - tb;
+          return db - da;
+        });
+        sorted.forEach(card => orderListEl.appendChild(card));
+
+        let visibleCount = 0;
+        const q = searchQuery.trim().toLowerCase();
+
+        sorted.forEach(card => {
+          const st = (card.dataset.status || "pending").toLowerCase();
+          const haystack = (card.dataset.search || "").toLowerCase();
+
+          let statusMatch = true;
+          if (activeFilter === "active") {
+            statusMatch = ["pending", "printing", "shipped"].includes(st);
+          } else if (activeFilter !== "all") {
+            statusMatch = st === activeFilter;
+          }
+
+          const searchMatch = !q || haystack.includes(q);
+          const show = statusMatch && searchMatch;
+          card.style.display = show ? "" : "none";
+          if (show) visibleCount++;
+        });
+
+        if (emptyFilterEl) {
+          emptyFilterEl.style.display = visibleCount === 0 ? "block" : "none";
+        }
+        if (visibleBadge) {
+          const total = orderCards.length;
+          visibleBadge.textContent = (activeFilter === "all" && !q)
+            ? `${total} ${total === 1 ? "Order" : "Orders"}`
+            : `${visibleCount} of ${total} Orders`;
+        }
+      }
+
+      function setActiveStatusFilter(filterKey, scrollToOrders = false) {
+        activeFilter = filterKey || "all";
+        filterBtns.forEach(btn => {
+          btn.classList.toggle("is-active", btn.dataset.filter === activeFilter);
+        });
+        kpiFilterBtns.forEach(btn => {
+          btn.classList.toggle("is-active", btn.dataset.filter === activeFilter);
+        });
+        applyOrderFilters();
+
+        if (scrollToOrders) {
+          document.getElementById("my-orders-section")?.scrollIntoView({ behavior: "smooth", block: "start" });
+        }
+      }
+
+      filterBtns.forEach(btn => {
+        btn.addEventListener("click", () => setActiveStatusFilter(btn.dataset.filter, false));
+      });
+
+      kpiFilterBtns.forEach(btn => {
+        btn.addEventListener("click", () => setActiveStatusFilter(btn.dataset.filter, true));
+      });
+
+      searchInput?.addEventListener("input", () => {
+        searchQuery = searchInput.value || "";
+        if (clearSearchBtn) {
+          clearSearchBtn.classList.toggle("is-visible", searchQuery.length > 0);
+        }
+        applyOrderFilters();
+      });
+
+      clearSearchBtn?.addEventListener("click", () => {
+        if (searchInput) searchInput.value = "";
+        searchQuery = "";
+        clearSearchBtn.classList.remove("is-visible");
+        applyOrderFilters();
+      });
+
+      sortSelect?.addEventListener("change", () => {
+        activeSort = sortSelect.value || "newest";
+        applyOrderFilters();
+      });
+
+      resetFiltersBtn?.addEventListener("click", () => {
+        if (searchInput) searchInput.value = "";
+        searchQuery = "";
+        clearSearchBtn?.classList.remove("is-visible");
+        if (sortSelect) sortSelect.value = "newest";
+        activeSort = "newest";
+        setActiveStatusFilter("all", false);
+      });
+
+      if (orderCards.length > 0) {
+        applyOrderFilters();
+      }
+
+      // Copy Order Number Button
+      document.querySelectorAll(".js-copy-order-id").forEach(btn => {
+        btn.addEventListener("click", () => {
+          const id = btn.dataset.order || "";
+          if (!id) return;
+          navigator.clipboard?.writeText(id).catch(() => {});
+          btn.classList.add("is-copied");
+          const span = btn.querySelector("span");
+          if (span) span.textContent = "Copied!";
+          setTimeout(() => {
+            btn.classList.remove("is-copied");
+            if (span) span.textContent = "Copy";
+          }, 1500);
+        });
+      });
+
+      // 1-Tap Reorder Button
+      document.querySelectorAll(".js-acc-reorder-btn").forEach(btn => {
+        btn.addEventListener("click", () => {
+          let items = [];
+          try {
+            items = JSON.parse(btn.dataset.items || "[]");
+          } catch (e) {}
+          if (!items.length || !window.RABEZ_STORE || typeof window.RABEZ_STORE.addToCart !== "function") return;
+
+          items.forEach((it, idx) => {
+            const hasCustom = Boolean(it.customName || it.customNumber);
+            const customFee = Number(window.RABEZ_CUSTOM_PRINT_FEE || 250);
+            const liveProd = Array.isArray(window.RABEZ_PRODUCTS)
+              ? window.RABEZ_PRODUCTS.find(p => Number(p.id) === Number(it.id))
+              : null;
+            let basePrice = Number(it.price || 1150);
+            if (hasCustom && liveProd && liveProd.hasCustomPrint === true && basePrice > customFee) {
+              basePrice = basePrice - customFee;
+            }
+
+            window.RABEZ_STORE.addToCart({
+              id: it.id || (90000 + idx),
+              variantId: it.variantId || null,
+              variantTitle: it.variantTitle || it.size || "L",
+              name: it.name || "RABEZ Jersey",
+              size: it.size || it.variantTitle || "L",
+              qty: it.qty || 1,
+              price: basePrice,
+              customName: it.customName || "",
+              customNumber: it.customNumber || "",
+              image: it.image || "",
+              silentToast: idx < items.length - 1,
+              customToast: idx === items.length - 1 ? {
+                title: "Added to Bag",
+                message: `${items.length} ${items.length === 1 ? "item" : "items"} from your past order added to bag.`
+              } : null
+            });
+          });
+
+          if (typeof window.RABEZ_STORE.openCartDrawer === "function") {
+            window.RABEZ_STORE.openCartDrawer();
+          }
+        });
+      });
+
+      // Right Sidebar Tabs (Delivery Profile / Password & Security)
+      const sideTabs = document.querySelectorAll(".js-acc-side-tab");
+      const sidePanels = document.querySelectorAll(".js-acc-side-panel");
+      sideTabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          const target = tab.dataset.tab;
+          sideTabs.forEach(t => t.classList.toggle("is-active", t.dataset.tab === target));
+          sidePanels.forEach(p => p.classList.toggle("is-active", p.dataset.panel === target));
+        });
+      });
+    });
+  </script>
+@endpush
