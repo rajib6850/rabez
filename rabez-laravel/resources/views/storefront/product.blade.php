@@ -247,12 +247,17 @@
   <!-- Scoped Styles for Dark Description & Size Modal -->
   <style>
     .js-sp-wishlist-btn.is-active {
-      background: rgba(4, 244, 4, 0.14) !important;
-      border-color: #04F404 !important;
-      color: #04F404 !important;
+      background: #ECFDF3 !important;
+      border-color: #16A34A !important;
+      color: #15803D !important;
+    }
+    .js-sp-wishlist-btn.is-active:hover {
+      background: #DCFCE7 !important;
+      border-color: #15803D !important;
     }
     .js-sp-wishlist-btn.is-active svg {
-      fill: #04F404;
+      fill: #16A34A !important;
+      stroke: #16A34A !important;
     }
     .rabez-product-specs-section {
       background: #0B0F0D !important;
