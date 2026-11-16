@@ -55,7 +55,7 @@ class WishlistTest extends TestCase
         $res = $this->get('/wishlist?items=' . $prodA->id . ',999999,' . $prodB->id);
 
         $res->assertOk()
-            ->assertSee('My Saved Jerseys &amp; Kits', false)
+            ->assertSee('My Wishlist')
             ->assertSee('Saved Jerseys')
             ->assertSee('Move All In-Stock to Bag')
             ->assertSee('window.RABEZ_SHARED_WISHLIST = [' . $prodA->id . ',' . $prodB->id . ']', false);

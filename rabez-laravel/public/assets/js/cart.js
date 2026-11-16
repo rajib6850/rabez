@@ -544,7 +544,7 @@
       const isWished = wishlist.includes(id);
       btn.classList.toggle("is-active", isWished);
       btn.setAttribute("aria-pressed", isWished ? "true" : "false");
-      if (!btn.classList.contains("rabez-wl-icon-act--remove")) {
+      if (!btn.classList.contains("rabez-wl-icon-act--remove") && !btn.classList.contains("rabez-wl-remove-btn")) {
         btn.setAttribute("title", isWished ? "Saved in Wishlist" : "Save to Wishlist");
         const svg = btn.querySelector("svg");
         if (svg) {
@@ -690,14 +690,6 @@
 
   function buildWishlistCardHTML(product) {
     const frontImg = resolveImageURL(product.image);
-    let backImg = null;
-    if (product.gallery && Array.isArray(product.gallery) && product.gallery.length > 0) {
-      const candidate =
-        product.gallery.find((g) => g && resolveImageURL(g) !== frontImg) ||
-        (product.gallery.length > 1 ? product.gallery[1] : null);
-      if (candidate) backImg = resolveImageURL(candidate);
-    }
-
     const inStock = Array.isArray(product.sizes) ? product.sizes : [];
     const allSizes =
       Array.isArray(product.allSizes) && product.allSizes.length ? product.allSizes : inStock;
@@ -707,13 +699,6 @@
     const curPrice = Number(product.price || 0);
     const regPrice = Number(product.regularPrice || 0);
     const hasDiscount = regPrice > curPrice;
-    const saveAmount = hasDiscount ? regPrice - curPrice : 0;
-    const discountPct = hasDiscount ? Math.round((saveAmount / regPrice) * 100) : 0;
-
-    const wlCfg = window.RABEZ_WISHLIST_SETTINGS || {};
-    const printFee = Number.isFinite(Number(wlCfg.printFee)) ? Number(wlCfg.printFee) : getCustomPrintFee();
-    const freeMin = Number.isFinite(Number(wlCfg.freeShippingMin)) ? Number(wlCfg.freeShippingMin) : 3500;
-    const flatFee = Number.isFinite(Number(wlCfg.flatFee)) ? Number(wlCfg.flatFee) : 130;
 
     const sizeSwatchesHTML = allSizes
       .map((s) => {
@@ -728,109 +713,46 @@
     const safeName = escapeHTML(product.name);
     const safeClub = escapeHTML(product.clubLabel || "Club Kit");
     const safeSleeve = escapeHTML(product.sleeveLabel || "Jersey");
-    const safeSku = escapeHTML(product.sku || `RBZ-${product.id}`);
-    const safeDesc = escapeHTML(product.shortDesc || product.name);
-    const safeFabric = escapeHTML(product.fabric || "190-210 GSM Breathable Mesh");
-    const stockSummary = hasStock
-      ? `${inStock.length} of ${allSizes.length || inStock.length} Sizes`
-      : "Currently Sold Out";
-    const deliverySummary =
-      curPrice >= freeMin ? "Qualifies for Free Delivery" : `৳ ${flatFee} All Bangladesh`;
-    const printSummary =
-      product.hasCustomPrint === true ? `+৳ ${printFee} Custom Name/No.` : "Standard Official Edition";
 
     return `
-      <article class="rabez-wl-card ${backImg ? "has-back-view" : ""}" data-product-id="${product.id}">
-        <div class="rabez-wl-card__media">
-          <a href="${productUrl}">
-            <img src="${frontImg}" class="rabez-wl-card__img rabez-wl-card__img--front" alt="${safeName}" loading="lazy" width="500" height="625">
-            ${backImg ? `<img src="${backImg}" class="rabez-wl-card__img rabez-wl-card__img--back" alt="${safeName} Back View" loading="lazy" width="500" height="625">` : ""}
-          </a>
-          <div class="rabez-wl-card__badges">
-            <span class="rabez-wl-tag ${hasStock ? "rabez-wl-tag--stock" : "rabez-wl-tag--out"}">
-              ${hasStock ? "&#10003; Ready Stock" : "Out of Stock"}
+      <article class="rabez-wl-card rabez-wl-row" data-product-id="${product.id}">
+        <a href="${productUrl}" class="rabez-wl-row__thumb">
+          <img src="${frontImg}" alt="${safeName}" loading="lazy" width="88" height="108">
+        </a>
+
+        <div class="rabez-wl-row__info">
+          <div class="rabez-wl-row__meta">
+            <span>${safeClub} &bull; ${safeSleeve}</span>
+            <span class="rabez-wl-row__status ${hasStock ? "rabez-wl-row__status--in" : "rabez-wl-row__status--out"}">
+              ${hasStock ? "In Stock" : "Out of Stock"}
             </span>
-            ${hasDiscount ? `<span class="rabez-wl-tag rabez-wl-tag--off">-${discountPct}% OFF</span>` : ""}
-            ${product.hasCustomPrint === true ? `<span class="rabez-wl-tag rabez-wl-tag--print">Custom Print Ready</span>` : ""}
           </div>
-          <div class="rabez-wl-card__top-btns">
-            <button type="button" class="rabez-wl-icon-act js-quick-view" data-product-id="${product.id}" aria-label="Quick View ${safeName}" title="Quick View">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
-                <circle cx="12" cy="12" r="3"/>
-              </svg>
-            </button>
-            <button type="button" class="rabez-wl-icon-act rabez-wl-icon-act--remove js-wishlist-toggle" data-product-id="${product.id}" aria-label="Remove ${safeName} from Wishlist" title="Remove from Wishlist">
-              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
-              </svg>
-            </button>
+          <h3 class="rabez-wl-row__title">
+            <a href="${productUrl}">${safeName}</a>
+          </h3>
+        </div>
+
+        <div class="rabez-wl-row__size">
+          <span class="rabez-wl-row__size-label">Size:</span>
+          <div class="rabez-size-swatches js-wl-size-group">
+            ${sizeSwatchesHTML}
           </div>
         </div>
 
-        <div class="rabez-wl-card__body">
-          <div class="rabez-wl-card__meta">
-            <span>${safeClub} &bull; ${safeSleeve}</span>
-            <span class="rabez-wl-card__sku">${safeSku}</span>
-          </div>
+        <div class="rabez-wl-row__price">
+          <span class="rabez-wl-row__price-now num">${formatBDT(curPrice)}</span>
+          ${hasDiscount ? `<del class="rabez-wl-row__price-was num">${formatBDT(regPrice)}</del>` : ""}
+        </div>
 
-          <h3 class="rabez-wl-card__title">
-            <a href="${productUrl}">${safeName}</a>
-          </h3>
-
-          <p class="rabez-wl-card__desc">${safeDesc}</p>
-
-          <div class="rabez-wl-specs">
-            <div class="rabez-wl-spec">
-              <span class="rabez-wl-spec__k">Fabric</span>
-              <span class="rabez-wl-spec__v" title="${safeFabric}">${safeFabric}</span>
-            </div>
-            <div class="rabez-wl-spec">
-              <span class="rabez-wl-spec__k">Availability</span>
-              <span class="rabez-wl-spec__v">${escapeHTML(stockSummary)}</span>
-            </div>
-            <div class="rabez-wl-spec">
-              <span class="rabez-wl-spec__k">Personalization</span>
-              <span class="rabez-wl-spec__v">${escapeHTML(printSummary)}</span>
-            </div>
-            <div class="rabez-wl-spec">
-              <span class="rabez-wl-spec__k">Delivery</span>
-              <span class="rabez-wl-spec__v">${escapeHTML(deliverySummary)}</span>
-            </div>
-          </div>
-
-          <div class="rabez-wl-price-row">
-            <div class="rabez-wl-price-main">
-              <span class="rabez-wl-price-now num">${formatBDT(curPrice)}</span>
-              ${hasDiscount ? `<del class="rabez-wl-price-was num">${formatBDT(regPrice)}</del>` : ""}
-            </div>
-            ${hasDiscount ? `<span class="rabez-wl-save-pill">Save ${formatBDT(saveAmount)}</span>` : ""}
-          </div>
-
-          <div class="rabez-wl-sizes-wrap">
-            <div class="rabez-wl-sizes-head">
-              <span>Preferred Size: <strong class="js-wl-selected-size">${escapeHTML(selectedSize || "N/A")}</strong></span>
-              <a href="${productUrl}#size-guide" style="font-size:0.72rem; color:#008A00; text-decoration:underline;">Size Guide</a>
-            </div>
-            <div class="rabez-size-swatches js-wl-size-group">
-              ${sizeSwatchesHTML}
-            </div>
-          </div>
-
-          <div class="rabez-wl-card__actions">
-            <button type="button" class="rabez-btn rabez-btn--primary rabez-btn--sm js-wl-move-item" data-product-id="${product.id}" ${!hasStock ? 'disabled style="opacity:0.55; cursor:not-allowed;"' : 'style="font-weight:800;"'}>
-              ${hasStock ? "Move to Bag" : "Out of Stock"}
-            </button>
-            <button type="button" class="rabez-btn rabez-btn--outline rabez-btn--sm js-wl-add-item" data-product-id="${product.id}" ${!hasStock ? 'disabled style="opacity:0.55; cursor:not-allowed;"' : 'style="font-weight:700;"'}>
-              Add to Bag
-            </button>
-            <button type="button" class="rabez-btn rabez-btn--dark rabez-btn--sm rabez-wl-act-wa js-wl-whatsapp-item" data-product-id="${product.id}" style="display:flex; align-items:center; justify-content:center; gap:6px; font-weight:700;">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-              </svg>
-              <span>Order on WhatsApp</span>
-            </button>
-          </div>
+        <div class="rabez-wl-row__actions">
+          <button type="button" class="rabez-wl-action-btn rabez-wl-action-btn--primary js-wl-move-item" data-product-id="${product.id}" ${!hasStock ? 'disabled style="opacity:0.55; cursor:not-allowed;"' : ""}>
+            ${hasStock ? "Move to Bag" : "Out of Stock"}
+          </button>
+          <button type="button" class="rabez-wl-remove-btn js-wishlist-toggle" data-product-id="${product.id}" aria-label="Remove ${safeName} from Wishlist" title="Remove">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/>
+            </svg>
+          </button>
         </div>
       </article>
     `;
@@ -842,31 +764,14 @@
 
     const toolbar = document.querySelector(".js-wl-toolbar");
     const emptyBox = document.querySelector(".js-wl-empty");
-    const filterEmptyBox = document.querySelector(".js-wl-filter-empty");
     const moveAllBtn = document.querySelector(".js-wl-move-all");
 
     const allSaved = getWishlistProductsList();
     const inStockItems = allSaved.filter((p) => Array.isArray(p.sizes) && p.sizes.length > 0 && p.isReadyStock !== false);
-    const customItems = allSaved.filter((p) => p.hasCustomPrint === true);
-    const saleItems = allSaved.filter((p) => Number(p.regularPrice || 0) > Number(p.price || 0));
 
-    const totalValue = allSaved.reduce((s, p) => s + Number(p.price || 0), 0);
-    const totalSavings = allSaved.reduce(
-      (s, p) => s + Math.max(0, Number(p.regularPrice || 0) - Number(p.price || 0)),
-      0
-    );
-
-    const setStat = (sel, text) => {
-      document.querySelectorAll(sel).forEach((el) => (el.textContent = text));
-    };
-    setStat(".js-wl-stat-total", String(allSaved.length));
-    setStat(".js-wl-stat-stock", String(inStockItems.length));
-    setStat(".js-wl-stat-value", formatBDT(totalValue));
-    setStat(".js-wl-stat-savings", formatBDT(totalSavings));
-    setStat(".js-wl-count-all", String(allSaved.length));
-    setStat(".js-wl-count-instock", String(inStockItems.length));
-    setStat(".js-wl-count-custom", String(customItems.length));
-    setStat(".js-wl-count-sale", String(saleItems.length));
+    document.querySelectorAll(".js-wl-stat-total").forEach((el) => {
+      el.textContent = String(allSaved.length);
+    });
 
     if (moveAllBtn) {
       moveAllBtn.disabled = inStockItems.length === 0;
@@ -877,7 +782,6 @@
       grid.style.display = "none";
       grid.innerHTML = "";
       if (toolbar) toolbar.style.display = "none";
-      if (filterEmptyBox) filterEmptyBox.style.display = "none";
       if (emptyBox) emptyBox.style.display = "block";
       return;
     }
@@ -885,37 +789,8 @@
     if (emptyBox) emptyBox.style.display = "none";
     if (toolbar) toolbar.style.display = "flex";
 
-    let filtered = [...allSaved];
-    if (activeWishlistFilter === "in-stock") {
-      filtered = inStockItems;
-    } else if (activeWishlistFilter === "custom-print") {
-      filtered = customItems;
-    } else if (activeWishlistFilter === "on-sale") {
-      filtered = saleItems;
-    }
-
-    if (activeWishlistSort === "price-asc") {
-      filtered.sort((a, b) => Number(a.price) - Number(b.price));
-    } else if (activeWishlistSort === "price-desc") {
-      filtered.sort((a, b) => Number(b.price) - Number(a.price));
-    } else if (activeWishlistSort === "discount-desc") {
-      filtered.sort((a, b) => {
-        const dA = Math.max(0, Number(a.regularPrice || 0) - Number(a.price || 0));
-        const dB = Math.max(0, Number(b.regularPrice || 0) - Number(b.price || 0));
-        return dB - dA;
-      });
-    }
-
-    if (!filtered.length) {
-      grid.style.display = "none";
-      grid.innerHTML = "";
-      if (filterEmptyBox) filterEmptyBox.style.display = "block";
-      return;
-    }
-
-    if (filterEmptyBox) filterEmptyBox.style.display = "none";
-    grid.style.display = "grid";
-    grid.innerHTML = filtered.map(buildWishlistCardHTML).join("");
+    grid.style.display = "flex";
+    grid.innerHTML = allSaved.map(buildWishlistCardHTML).join("");
   }
 
   function initWishlistSyncAndRender() {
