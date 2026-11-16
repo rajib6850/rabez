@@ -25,20 +25,9 @@
     return "/" + src;
   }
 
-  let cart = loadJSON(STORAGE_CART_KEY, [
-    {
-      key: "1324_L_",
-      id: 1324,
-      sku: "RMA-HOME-HS",
-      name: "Real Madrid 26/27 Home Half Sleeve Jersey",
-      size: "L",
-      customName: "",
-      customNumber: "",
-      price: 1150,
-      qty: 1,
-      image: "/assets/images/products/real-madrid-home-hs.jpg"
-    }
-  ]).map((item) => ({
+  let rawCart = loadJSON(STORAGE_CART_KEY, []);
+  if (!Array.isArray(rawCart)) rawCart = [];
+  let cart = rawCart.map((item) => ({
     ...item,
     image: resolveImageURL(item.image)
   }));
@@ -2012,6 +2001,7 @@
   window.RABEZ_STORE = {
     addToCart,
     clearCart,
+    getCart: () => cart.slice(),
     toggleWishlist,
     renderWishlistPage,
     openCartDrawer,

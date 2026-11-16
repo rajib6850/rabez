@@ -314,7 +314,9 @@
     // Checkout COD Form Submission
     const codForm = document.querySelector(".js-cod-checkout-form");
     if (codForm) {
-      const initialCart = JSON.parse(localStorage.getItem("rabez_wc_cart_v1") || "[]");
+      const initialCart = (window.RABEZ_STORE && typeof window.RABEZ_STORE.getCart === "function")
+        ? window.RABEZ_STORE.getCart()
+        : JSON.parse(localStorage.getItem("rabez_wc_cart_v1") || "[]");
       if (initialCart.length > 0 && window.RABEZ_ANALYTICS && typeof window.RABEZ_ANALYTICS.trackInitiateCheckout === "function") {
         const initialSubtotal = initialCart.reduce((s, i) => s + (Number(i.price) || 0) * (Number(i.qty) || 1), 0);
         window.RABEZ_ANALYTICS.trackInitiateCheckout(initialCart, initialSubtotal);
@@ -325,8 +327,8 @@
         const rawName = codForm.querySelector('[name="customer_name"]')?.value || "Customer";
         const rawPhone = codForm.querySelector('[name="customer_phone"]')?.value || "";
         const rawAddress = codForm.querySelector('[name="customer_address"]')?.value || "";
-        const zoneInput = codForm.querySelector('input[name="shipping_zone"]:checked');
-        const shipping = zoneInput ? Number(zoneInput.value) : 70;
+        const zoneInput = codForm.querySelector('input[name="shipping_zone"]:checked') || codForm.querySelector('input[name="shipping_zone"][type="hidden"]');
+        const shipping = zoneInput ? Number(zoneInput.value) : 130;
 
         // Security: Fraud & Anti-Spam Checks
         if (window.RABEZ_ANALYTICS) {
@@ -355,7 +357,9 @@
         const phone = window.RABEZ_ANALYTICS ? window.RABEZ_ANALYTICS.normalizeBDPhone(rawPhone) : rawPhone;
         const address = window.RABEZ_ANALYTICS ? window.RABEZ_ANALYTICS.sanitizeInput(rawAddress) : rawAddress;
 
-        const cartItems = JSON.parse(localStorage.getItem("rabez_wc_cart_v1") || "[]");
+        const cartItems = (window.RABEZ_STORE && typeof window.RABEZ_STORE.getCart === "function")
+          ? window.RABEZ_STORE.getCart()
+          : JSON.parse(localStorage.getItem("rabez_wc_cart_v1") || "[]");
         if (!cartItems.length) {
           window.RABEZ_POPUP.alert(
             "Your bag is empty! Please add a jersey or hoodie from the shop first.",
