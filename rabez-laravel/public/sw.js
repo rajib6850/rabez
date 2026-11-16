@@ -2,7 +2,7 @@
  * RABEZ PWA Service Worker (sw.js)
  * Enables installable app capability & fast cached asset loading
  */
-const CACHE_NAME = "rabez-pwa-v11";
+const CACHE_NAME = "rabez-pwa-v12";
 const STATIC_ASSETS = [
   "/manifest.json",
   "/assets/css/01-variables.css",
@@ -54,6 +54,56 @@ self.addEventListener("fetch", (e) => {
     fetch(e.request).catch(() => {
       return caches.match(e.request);
     })
+  );
+});
+
+self.addEventListener("push", (e) => {
+  let payload = {
+    title: "New Order Received!",
+    body: "Tap to view order details in RABEZ Admin",
+    url: "/admin",
+    tag: "rabez-order-" + Date.now(),
+    open_count: 1
+  };
+  if (e.data) {
+    try {
+      const parsed = e.data.json();
+      if (parsed && typeof parsed === "object") {
+        payload = { ...payload, ...parsed };
+      }
+    } catch (err) {
+      payload.body = e.data.text() || payload.body;
+    }
+  }
+
+  const options = {
+    body: payload.body,
+    icon: "/icon-192.png",
+    badge: "/icon-192.png",
+    tag: payload.tag || "rabez-new-order",
+    renotify: true,
+    vibrate: [250, 120, 250, 120, 300],
+    requireInteraction: true,
+    data: {
+      url: payload.url || "/admin",
+      order_id: payload.order_id || null
+    }
+  };
+
+  e.waitUntil(
+    Promise.all([
+      self.registration.showNotification(payload.title, options),
+      (typeof self.navigator !== "undefined" && typeof self.navigator.setAppBadge === "function")
+        ? self.navigator.setAppBadge(Math.max(1, Number(payload.open_count) || 1)).catch(() => {})
+        : Promise.resolve(),
+      self.clients.matchAll({ type: "window", includeUncontrolled: true }).then((list) => {
+        list.forEach((client) => {
+          try {
+            client.postMessage({ type: "RABEZ_PUSH_ORDER", payload });
+          } catch (err) {}
+        });
+      })
+    ])
   );
 });
 

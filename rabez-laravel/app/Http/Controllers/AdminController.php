@@ -71,6 +71,12 @@ class AdminController extends Controller
             ->get(['id', 'name', 'role', 'avatar']);
         $media = Media::latest()->get();
         $mediaCount = $media->count();
+        $vapidPublicKey = '';
+        try {
+            $vapidPublicKey = app(\App\Services\WebPushService::class)->getPublicKey();
+        } catch (\Throwable $e) {
+        }
+        unset($settings['vapid_private_pem']);
 
         return view('admin.dashboard', compact(
             'revenueToday',
@@ -87,7 +93,8 @@ class AdminController extends Controller
             'media',
             'mediaCount',
             'coupons',
-            'settings'
+            'settings',
+            'vapidPublicKey'
         ));
     }
 
@@ -1848,6 +1855,66 @@ class AdminController extends Controller
         return response()->json([
             'success' => true,
             'message' => 'Admin password updated successfully!',
+        ]);
+    }
+
+    /**
+     * Save or refresh a browser/PWA Web Push subscription for the signed-in admin or staff user.
+     */
+    public function subscribePush(Request $request)
+    {
+        $validated = $request->validate([
+            'endpoint' => ['required', 'url', 'max:1500'],
+            'public_key' => ['required', 'string', 'max:255'],
+            'auth_token' => ['required', 'string', 'max:255'],
+            'content_encoding' => ['nullable', 'string', 'max:20'],
+        ]);
+
+        $endpointHash = hash('sha256', $validated['endpoint']);
+        $sub = \App\Models\PushSubscription::updateOrCreate(
+            ['endpoint_hash' => $endpointHash],
+            [
+                'user_id' => Auth::id(),
+                'endpoint' => $validated['endpoint'],
+                'public_key' => $validated['public_key'],
+                'auth_token' => $validated['auth_token'],
+                'content_encoding' => $validated['content_encoding'] ?? 'aes128gcm',
+                'user_agent' => substr((string) $request->userAgent(), 0, 250),
+            ]
+        );
+
+        return response()->json([
+            'success' => true,
+            'subscription_id' => $sub->id,
+        ]);
+    }
+
+    /**
+     * Remove an expired or muted Web Push subscription.
+     */
+    public function unsubscribePush(Request $request)
+    {
+        $endpoint = (string) $request->input('endpoint', '');
+        if ($endpoint !== '') {
+            \App\Models\PushSubscription::where('endpoint_hash', hash('sha256', $endpoint))
+                ->where('user_id', Auth::id())
+                ->delete();
+        }
+
+        return response()->json(['success' => true]);
+    }
+
+    /**
+     * Send a real background Web Push test notification to the signed-in user's registered devices.
+     */
+    public function testPush(\App\Services\WebPushService $push)
+    {
+        $result = $push->sendTestPushToUser((int) Auth::id());
+        return response()->json([
+            'success' => true,
+            'sent' => $result['sent'],
+            'failed' => $result['failed'],
+            'cleaned' => $result['cleaned'],
         ]);
     }
 }

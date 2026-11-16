@@ -83,6 +83,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     // Orders
     Route::get('/api/orders', [AdminController::class, 'getOrders'])->name('admin.orders.list');
     Route::get('/api/orders/poll', [AdminController::class, 'pollOrders'])->name('admin.orders.poll');
+    Route::post('/api/push/subscribe', [AdminController::class, 'subscribePush'])->name('admin.push.subscribe');
+    Route::post('/api/push/unsubscribe', [AdminController::class, 'unsubscribePush'])->name('admin.push.unsubscribe');
+    Route::post('/api/push/test', [AdminController::class, 'testPush'])->name('admin.push.test');
     Route::post('/orders/{id}/claim', [AdminController::class, 'claimOrder'])->name('admin.orders.claim');
     Route::post('/orders/{id}/release', [AdminController::class, 'releaseOrder'])->name('admin.orders.release');
     Route::post('/orders/{id}/assign', [AdminController::class, 'assignOrder'])->name('admin.orders.assign');

@@ -306,6 +306,95 @@
       50% { box-shadow: 0 0 0 5px rgba(4, 244, 4, 0); }
     }
 
+    @keyframes admOnlineDotPulse {
+      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(4, 244, 4, 0.65); }
+      50% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(4, 244, 4, 0); }
+    }
+
+    .adm-online-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 11px;
+      border-radius: 999px;
+      border: 1px solid #BBF7D0;
+      background: #F0FDF4;
+      color: #166534;
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.2s ease;
+    }
+
+    .adm-online-pill__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #16A34A;
+      flex-shrink: 0;
+      animation: admOnlineDotPulse 1.9s infinite;
+    }
+
+    .adm-online-pill.is-alerting {
+      background: #0B0D0C;
+      border-color: #04F404;
+      color: #04F404;
+      box-shadow: 0 0 14px rgba(4, 244, 4, 0.25);
+    }
+
+    .adm-online-pill.is-alerting .adm-online-pill__dot {
+      background: #04F404;
+    }
+
+    .adm-online-pill.is-offline {
+      background: #FEF2F2;
+      border-color: #FCA5A5;
+      color: #991B1B;
+    }
+
+    .adm-online-pill.is-offline .adm-online-pill__dot {
+      background: #EF4444;
+      animation: none;
+    }
+
+    .adm-bottom-btn {
+      position: relative;
+    }
+
+    .adm-bottom-badge {
+      position: absolute;
+      top: 4px;
+      right: 16%;
+      min-width: 16px;
+      height: 16px;
+      padding: 0 4px;
+      border-radius: 999px;
+      background: #04F404;
+      color: #070908;
+      font-size: 10px;
+      font-weight: 800;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      line-height: 1;
+      box-shadow: 0 0 0 2px #0F1110;
+    }
+
+    .adm-bottom-badge.is-visible {
+      display: inline-flex;
+    }
+
+    @media (max-width: 640px) {
+      .adm-online-pill {
+        height: 32px;
+        padding: 0 8px;
+        font-size: 11px;
+        gap: 5px;
+      }
+    }
+
     .adm-notif-badge {
       position: absolute;
       top: -5px;
@@ -1745,10 +1834,14 @@
         border-radius: 8px;
         color: #FFFFFF;
         background: rgba(255, 255, 255, 0.06);
+        flex-shrink: 0;
       }
 
       .adm-topbar__menu svg { width: 18px; height: 18px; }
-      .adm-topbar__logo { display: block; height: 24px; width: auto; }
+      .adm-topbar__logo { display: block; height: 22px; width: auto; flex-shrink: 0; }
+      .adm-topbar__left { min-width: 0; gap: 8px; }
+      .adm-topbar__actions { gap: 5px; flex-shrink: 0; }
+      .adm-online-pill { height: 30px; padding: 0 7px; font-size: 10.5px; gap: 4px; }
       .adm-topbar__heading { display: none; }
       .adm-topbar__actions > .adm-btn--secondary,
       .adm-topbar__actions > .adm-avatar { display: none; }
@@ -3165,6 +3258,11 @@
           </div>
         </div>
         <div class="adm-topbar__actions">
+          <button type="button" class="adm-online-pill js-adm-online-pill js-tab" data-tab="orders" title="Live connection & new orders status">
+            <span class="adm-online-pill__dot"></span>
+            <span class="js-adm-online-text">Online</span>
+          </button>
+
           <button type="button" class="adm-btn adm-btn--secondary js-tab" data-tab="pos-order">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             New order
@@ -5630,6 +5728,7 @@
     </button>
     <button type="button" class="adm-bottom-btn js-tab" data-tab="orders">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>
+      <span class="adm-bottom-badge js-adm-bottom-orders-badge">0</span>
       Orders
     </button>
     <button type="button" class="adm-bottom-btn js-tab" data-tab="products">
@@ -6516,6 +6615,7 @@
         updateBulkBar('orders');
         renderOverviewStats();
         renderPrintQueue();
+        if (typeof window.__updateRabezOnlinePill === "function") window.__updateRabezOnlinePill();
       }
 
       function renderOverviewStats() {
@@ -11092,6 +11192,112 @@
           document.title = unreadCount > 0 ? `(${unreadCount}) New Order! — RABEZ Admin` : BASE_TITLE;
         }
 
+        const VAPID_PUBLIC_KEY = @json($vapidPublicKey ?? '');
+
+        function updateLiveOnlineIndicator() {
+          const pill = $(".js-adm-online-pill");
+          const pillText = $(".js-adm-online-text");
+          const bottomBadge = $(".js-adm-bottom-orders-badge");
+
+          const unreadCount = notifs.filter((n) => !n.read).length;
+          const openOrderCount = orders.filter((o) => ["Pending", "Printing"].includes(o.status)).length;
+          const alertTotal = unreadCount > 0 ? unreadCount : openOrderCount;
+          const isOnline = navigator.onLine !== false;
+
+          if (pill && pillText) {
+            pill.classList.toggle("is-offline", !isOnline);
+            pill.classList.toggle("is-alerting", isOnline && alertTotal > 0);
+            if (!isOnline) {
+              pillText.textContent = "Offline";
+            } else if (unreadCount > 0) {
+              pillText.textContent = `${unreadCount} New Order${unreadCount > 1 ? "s" : ""}`;
+            } else if (openOrderCount > 0) {
+              pillText.textContent = `Online · ${openOrderCount} Open`;
+            } else {
+              pillText.textContent = "Online";
+            }
+          }
+
+          if (bottomBadge) {
+            bottomBadge.textContent = alertTotal > 99 ? "99+" : String(alertTotal);
+            bottomBadge.classList.toggle("is-visible", alertTotal > 0);
+          }
+
+          if ("setAppBadge" in navigator) {
+            try {
+              if (alertTotal > 0) {
+                navigator.setAppBadge(alertTotal).catch(() => {});
+              } else if ("clearAppBadge" in navigator) {
+                navigator.clearAppBadge().catch(() => {});
+              }
+            } catch (e) {}
+          }
+        }
+        window.__updateRabezOnlinePill = updateLiveOnlineIndicator;
+
+        function urlBase64ToUint8Array(base64String) {
+          const padding = "=".repeat((4 - (base64String.length % 4)) % 4);
+          const base64 = (base64String + padding).replace(/-/g, "+").replace(/_/g, "/");
+          const rawData = atob(base64);
+          const outputArray = new Uint8Array(rawData.length);
+          for (let i = 0; i < rawData.length; ++i) {
+            outputArray[i] = rawData.charCodeAt(i);
+          }
+          return outputArray;
+        }
+
+        function bufferToBase64Url(buf) {
+          if (!buf) return "";
+          const bytes = new Uint8Array(buf);
+          let binary = "";
+          for (let i = 0; i < bytes.byteLength; i++) {
+            binary += String.fromCharCode(bytes[i]);
+          }
+          return btoa(binary).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+        }
+
+        async function syncWebPushSubscription() {
+          if (!("Notification" in window) || Notification.permission !== "granted") return false;
+          if (!VAPID_PUBLIC_KEY || !("PushManager" in window)) return false;
+
+          const reg = await ensureServiceWorkerReady();
+          if (!reg || !reg.pushManager) return false;
+
+          try {
+            let sub = await reg.pushManager.getSubscription();
+            if (!sub) {
+              sub = await reg.pushManager.subscribe({
+                userVisibleOnly: true,
+                applicationServerKey: urlBase64ToUint8Array(VAPID_PUBLIC_KEY)
+              });
+            }
+            if (!sub) return false;
+
+            const p256dh = bufferToBase64Url(sub.getKey("p256dh"));
+            const auth = bufferToBase64Url(sub.getKey("auth"));
+            if (!sub.endpoint || !p256dh || !auth) return false;
+
+            const res = await fetch("/admin/api/push/subscribe", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+                "Accept": "application/json",
+                "X-CSRF-TOKEN": CSRF_TOKEN
+              },
+              body: JSON.stringify({
+                endpoint: sub.endpoint,
+                public_key: p256dh,
+                auth_token: auth,
+                content_encoding: "aes128gcm",
+                _token: CSRF_TOKEN
+              })
+            });
+            return res.ok;
+          } catch (err) {
+            return false;
+          }
+        }
+
         function renderNotifCenter() {
           const unreadCount = notifs.filter(n => !n.read).length;
 
@@ -11106,6 +11312,7 @@
             unreadPill.textContent = unreadCount > 0 ? `${unreadCount} unread` : "All read";
           }
           updatePageTitle(unreadCount);
+          updateLiveOnlineIndicator();
 
           if (!notifListEl) return;
           if (!notifs.length) {
@@ -11350,7 +11557,7 @@
           });
         });
 
-        // Browser Desktop/Mobile Popup Notification Permission
+        // Browser Desktop/Mobile Popup & Background Push Notification Permission
         browserNotifBtn?.addEventListener("click", async (e) => {
           e.stopPropagation();
           if (!("Notification" in window)) return;
@@ -11360,10 +11567,27 @@
           if (perm === "granted") {
             await unlockAudio();
             playOrderAlertSound();
-            const shown = await fireBrowserNotification({}, true);
+            const subscribed = await syncWebPushSubscription();
+            let serverSent = false;
+            if (subscribed) {
+              try {
+                const pushRes = await fetch("/admin/api/push/test", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json", "Accept": "application/json", "X-CSRF-TOKEN": CSRF_TOKEN },
+                  body: JSON.stringify({ _token: CSRF_TOKEN })
+                });
+                const pushData = await pushRes.json().catch(() => ({}));
+                serverSent = (pushData.sent || 0) > 0;
+              } catch (err) {}
+            }
+            if (!serverSent) {
+              await fireBrowserNotification({}, true);
+            }
             toast(
-              shown ? "Shutter Alerts Active" : "Permission Granted",
-              shown ? "Test notification sent to Chrome shutter!" : "Allow Chrome notifications in Android Settings if shutter doesn't appear."
+              "Background Alerts Active",
+              serverSent
+                ? "Real background push sent! Works even when minimized."
+                : "Shutter alerts enabled on this device."
             );
           } else {
             toast("Permission Blocked", "Allow Notifications for rabez.shop in Chrome Site Settings");
@@ -11374,10 +11598,27 @@
           e.stopPropagation();
           await unlockAudio();
           playOrderAlertSound();
-          const shown = await fireBrowserNotification({}, true);
+          const subscribed = await syncWebPushSubscription();
+          let serverSent = false;
+          if (subscribed) {
+            try {
+              const pushRes = await fetch("/admin/api/push/test", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "Accept": "application/json", "X-CSRF-TOKEN": CSRF_TOKEN },
+                body: JSON.stringify({ _token: CSRF_TOKEN })
+              });
+              const pushData = await pushRes.json().catch(() => ({}));
+              serverSent = (pushData.sent || 0) > 0;
+            } catch (err) {}
+          }
+          if (!serverSent) {
+            await fireBrowserNotification({}, true);
+          }
           toast(
-            shown ? "Test Push Sent" : "Push Blocked",
-            shown ? "Check your phone's notification shutter" : "Enable Chrome notifications in phone settings"
+            serverSent ? "Background Push Sent!" : "Local Shutter Test Sent",
+            serverSent
+              ? "Received via Web Push (works while app is minimized)."
+              : "Check your phone notification bar."
           );
         });
 
@@ -11466,9 +11707,26 @@
         updateSoundUI();
         updateBrowserNotifBtnUI();
         renderNotifCenter();
-        ensureServiceWorkerReady();
+        updateLiveOnlineIndicator();
+        ensureServiceWorkerReady().then(() => {
+          syncWebPushSubscription();
+        });
 
-        // Poll every 10 seconds for live incoming orders
+        window.addEventListener("online", () => {
+          updateLiveOnlineIndicator();
+          pollForNewOrders();
+        });
+        window.addEventListener("offline", updateLiveOnlineIndicator);
+
+        if ("serviceWorker" in navigator) {
+          navigator.serviceWorker.addEventListener("message", (evt) => {
+            if (evt.data && evt.data.type === "RABEZ_PUSH_ORDER") {
+              pollForNewOrders();
+            }
+          });
+        }
+
+        // Poll every 10 seconds while open (Web Push handles minimized/closed background delivery)
         setInterval(pollForNewOrders, 10000);
       }
 

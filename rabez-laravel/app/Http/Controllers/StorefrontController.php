@@ -267,6 +267,12 @@ class StorefrontController extends Controller
 
         (new MetaCapiService())->sendPurchaseEvent($order, $validated['cart_items'], $request);
 
+        try {
+            app(\App\Services\WebPushService::class)->sendNewOrderPush($order);
+        } catch (\Throwable $e) {
+            // Never block order completion if a push endpoint times out
+        }
+
         $confirmToken = substr(hash_hmac('sha256', $order->order_number . '|' . ($order->event_id ?? ''), config('app.key')), 0, 24);
         session()->put('confirmed_order_' . $order->order_number, true);
 
