@@ -209,7 +209,7 @@
           if (window.RABEZ_STORE && typeof window.RABEZ_STORE.openQuickView === "function") {
             window.RABEZ_STORE.openQuickView(prodId);
           } else {
-            window.location.href = `product.html?id=${prodId}`;
+            window.location.href = `/product/${prodId}`;
           }
         }
       });

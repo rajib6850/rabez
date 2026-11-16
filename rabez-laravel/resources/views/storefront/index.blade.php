@@ -288,9 +288,14 @@
             <button type="button" class="rabez-sleeve-btn js-sleeve-filter" data-sleeve="winter-hoodie">Winter Hoodies (৳1,450)</button>
           </div>
 
+          @php
+            $totalCatalogCount = isset($storefrontProducts) && $storefrontProducts->count() > 0
+              ? $storefrontProducts->count()
+              : \App\Models\Product::count();
+          @endphp
           <div style="display:flex; align-items:center; flex-wrap:wrap; gap:12px;">
-            <span class="js-product-result-count" style="font-size:0.84rem; font-weight:700; color:#6E7672;">Showing 18 Items</span>
-            <a href="shop.html" class="rabez-btn rabez-btn--outline rabez-btn--sm">All 31 Kits &rarr;</a>
+            <span class="js-product-result-count" style="font-size:0.84rem; font-weight:700; color:#6E7672;">Showing {{ $totalCatalogCount }} Items</span>
+            <a href="{{ route('shop') }}" class="rabez-btn rabez-btn--outline rabez-btn--sm">All {{ $totalCatalogCount }} Kits &rarr;</a>
             <label for="catalog-sort" class="screen-reader-text">Sort Jerseys</label>
             <select id="catalog-sort" class="rabez-sort-select js-sort-select">
               <option value="default">Sort: Featured</option>
