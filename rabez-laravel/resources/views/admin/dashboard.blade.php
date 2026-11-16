@@ -485,6 +485,120 @@
       flex-shrink: 0;
     }
 
+    /* ---------- Admin Profile Avatar & Dropdown ---------- */
+    .adm-profile-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .adm-profile-btn {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      height: 36px;
+      padding: 2px 8px 2px 3px;
+      border-radius: 999px;
+      border: 1px solid var(--adm-border-strong);
+      background: var(--adm-surface);
+      color: var(--adm-text);
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .adm-profile-btn:hover {
+      border-color: var(--adm-ink);
+    }
+
+    .adm-profile-btn .adm-avatar {
+      width: 28px;
+      height: 28px;
+      margin: 0;
+      font-size: 11px;
+    }
+
+    .adm-profile-chevron {
+      color: var(--adm-muted);
+      transition: transform 0.18s ease;
+    }
+
+    .adm-profile-btn[aria-expanded="true"] .adm-profile-chevron {
+      transform: rotate(180deg);
+    }
+
+    .adm-profile-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 248px;
+      max-width: calc(100vw - 24px);
+      background: #FFFFFF;
+      border: 1px solid var(--adm-border-strong);
+      border-radius: 14px;
+      box-shadow: 0 20px 44px rgba(10, 12, 11, 0.16);
+      z-index: 985;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .adm-profile-dropdown.is-open {
+      display: flex;
+    }
+
+    .adm-profile-dropdown__head {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 13px 14px;
+      background: var(--adm-ink);
+      color: #FFFFFF;
+    }
+
+    .adm-profile-dropdown__links {
+      padding: 6px;
+      display: grid;
+      gap: 2px;
+    }
+
+    .adm-profile-dropdown__foot {
+      padding: 6px;
+      border-top: 1px solid var(--adm-border);
+      background: #FAFBFA;
+    }
+
+    .adm-profile-item {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+      width: 100%;
+      padding: 9px 10px;
+      border-radius: 8px;
+      border: none;
+      background: transparent;
+      color: var(--adm-text);
+      font-size: 13px;
+      font-weight: 600;
+      text-decoration: none;
+      text-align: left;
+      cursor: pointer;
+      transition: background 0.14s ease, color 0.14s ease;
+    }
+
+    .adm-profile-item:hover {
+      background: #F1F5F3;
+      color: #0A0C0B;
+    }
+
+    .adm-profile-item--danger {
+      color: #DC2626;
+    }
+
+    .adm-profile-item--danger:hover {
+      background: #FEF2F2;
+      color: #991B1B;
+    }
+
     .adm-content {
       width: 100%;
       max-width: 1320px;
@@ -1418,6 +1532,29 @@
       .adm-topbar__heading { display: none; }
       .adm-topbar__actions > .adm-btn--secondary,
       .adm-topbar__actions > .adm-avatar { display: none; }
+      .adm-topbar__actions > .adm-btn--primary {
+        background: var(--adm-brand);
+        color: #0B0D0C;
+        border-color: var(--adm-brand);
+        height: 34px;
+        padding: 0 11px;
+        font-size: 12px;
+        font-weight: 700;
+      }
+      .adm-profile-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.18);
+        color: #FFFFFF;
+        height: 34px;
+        padding: 2px 7px 2px 2px;
+      }
+      .adm-profile-btn .adm-avatar {
+        background: var(--adm-brand);
+        color: #0B0D0C;
+      }
+      .adm-profile-chevron {
+        color: #CBD5E1;
+      }
       .adm-notif-dropdown .adm-btn--secondary {
         display: inline-flex !important;
       }
@@ -1496,7 +1633,8 @@
     }
 
     @media (max-width: 640px) {
-      .adm-notif-dropdown {
+      .adm-notif-dropdown,
+      .adm-profile-dropdown {
         position: fixed;
         top: 62px;
         left: 12px;
@@ -1504,6 +1642,7 @@
         width: auto;
         max-width: none;
       }
+      .adm-drawer__body { padding: 16px !important; }
       .adm-form { grid-template-columns: 1fr; }
       .adm-toolbar { padding: 12px 14px; }
       .adm-toolbar__group, .adm-search { width: 100%; }
@@ -1535,6 +1674,10 @@
         flex-shrink: 0 !important;
         white-space: nowrap !important;
       }
+    }
+    @media (max-width: 520px) {
+      .adm-topbar__actions > .adm-btn--primary { display: none; }
+      .adm-quick-actions { grid-template-columns: 1fr; }
     }
     @media (max-width: 380px) {
       .adm-coupons-toolbar {
@@ -2863,13 +3006,50 @@
             </div>
           </div>
 
-          <a href="{{ route('logout') }}" class="adm-btn adm-btn--secondary adm-btn--sm" title="Sign out" style="padding:6px 10px; color:#F87171; font-size:12px; display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
-            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-            Sign Out
-          </a>
-          <span class="adm-avatar" title="{{ Auth::user()->name ?? 'RABEZ Admin' }}">
-            {{ strtoupper(substr(Auth::user()->name ?? 'RZ', 0, 2)) }}
-          </span>
+          <!-- Admin Profile Dropdown -->
+          <div class="adm-profile-wrap">
+            <button type="button" class="adm-profile-btn js-adm-profile-btn" title="{{ Auth::user()->name ?? 'RABEZ Admin' }}" aria-label="Account menu" aria-expanded="false">
+              <span class="adm-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'RZ', 0, 2)) }}</span>
+              <svg class="adm-profile-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+
+            <div class="adm-profile-dropdown js-adm-profile-dropdown" role="menu">
+              <div class="adm-profile-dropdown__head">
+                <span class="adm-avatar" style="width:36px; height:36px; margin:0; flex-shrink:0;">{{ strtoupper(substr(Auth::user()->name ?? 'RZ', 0, 2)) }}</span>
+                <div style="min-width:0; flex:1;">
+                  <div style="font-size:13px; font-weight:700; color:#FFFFFF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ Auth::user()->name ?? 'RABEZ Admin' }}</div>
+                  <div style="font-size:11.5px; color:#9CA3AF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ Auth::user()->email ?? 'admin@rabez.shop' }}</div>
+                </div>
+              </div>
+
+              <div class="adm-profile-dropdown__links">
+                <a href="{{ route('home') }}" target="_blank" class="adm-profile-item">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+                  <span>View Storefront</span>
+                </a>
+                <a href="{{ route('account.dashboard') }}" class="adm-profile-item">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                  <span>My Customer Account</span>
+                </a>
+                <button type="button" class="adm-profile-item js-tab js-adm-profile-close" data-tab="settings">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+                  <span>Store Settings</span>
+                </button>
+              </div>
+
+              <div class="adm-profile-dropdown__foot">
+                <form action="{{ route('logout') }}" method="POST" style="margin:0;">
+                  @csrf
+                  <button type="submit" class="adm-profile-item adm-profile-item--danger">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                    <span>Sign Out</span>
+                  </button>
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </header>
 
@@ -4543,7 +4723,7 @@
         <input type="hidden" id="edit-prod-id">
 
         <!-- Top 2-Column Section: Left Images | Right Core Info -->
-        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(340px, 1fr)); gap:20px; align-items:start;">
+        <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(min(100%, 300px), 1fr)); gap:20px; align-items:start;">
 
           <!-- LEFT COLUMN: Product Images & Gallery -->
           <div style="display:flex; flex-direction:column; gap:16px;">
@@ -5118,8 +5298,8 @@
         <button type="button" class="adm-icon-btn" onclick="closeMediaPicker()" style="font-size:20px; line-height:1;">&times;</button>
       </div>
       <!-- Toolbar -->
-      <div style="padding:12px 20px; border-bottom:1px solid var(--adm-border); display:flex; gap:12px; align-items:center; background:var(--adm-surface);">
-        <input type="text" id="adm-modal-search" class="adm-input" placeholder="Search images by name..." style="flex:1; height:36px; font-size:13px;" oninput="renderMediaModalGrid()">
+      <div style="padding:12px 20px; border-bottom:1px solid var(--adm-border); display:flex; gap:10px; align-items:center; flex-wrap:wrap; background:var(--adm-surface);">
+        <input type="text" id="adm-modal-search" class="adm-input" placeholder="Search images by name..." style="flex:1; min-width:170px; height:36px; font-size:13px;" oninput="renderMediaModalGrid()">
         <input type="file" id="adm-modal-file-input" multiple accept="image/*" hidden onchange="handleModalUpload(this.files)">
         <button type="button" class="adm-btn adm-btn--primary adm-btn--sm" onclick="document.getElementById('adm-modal-file-input').click()">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="margin-right:4px;"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="17 8 12 3 7 8"></polyline><line x1="12" y1="3" x2="12" y2="15"></line></svg>
@@ -10337,6 +10517,8 @@
         notifBtn?.addEventListener("click", (e) => {
           e.stopPropagation();
           unlockAudio();
+          $(".js-adm-profile-dropdown")?.classList.remove("is-open");
+          $(".js-adm-profile-btn")?.setAttribute("aria-expanded", "false");
           const willOpen = !notifDropdown?.classList.contains("is-open");
           notifDropdown?.classList.toggle("is-open", willOpen);
           notifBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
@@ -10421,11 +10603,50 @@
         setInterval(pollForNewOrders, 10000);
       }
 
+      function initAdminProfileDropdown() {
+        const btn = $(".js-adm-profile-btn");
+        const dropdown = $(".js-adm-profile-dropdown");
+        if (!btn || !dropdown) return;
+
+        btn.addEventListener("click", (e) => {
+          e.stopPropagation();
+          $(".js-adm-notif-dropdown")?.classList.remove("is-open");
+          $(".js-adm-notif-btn")?.setAttribute("aria-expanded", "false");
+          const willOpen = !dropdown.classList.contains("is-open");
+          dropdown.classList.toggle("is-open", willOpen);
+          btn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        });
+
+        $$(".js-adm-profile-close").forEach((el) => {
+          el.addEventListener("click", () => {
+            dropdown.classList.remove("is-open");
+            btn.setAttribute("aria-expanded", "false");
+          });
+        });
+
+        document.addEventListener("click", (e) => {
+          if (dropdown.classList.contains("is-open") && !e.target.closest(".adm-profile-wrap")) {
+            dropdown.classList.remove("is-open");
+            btn.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        document.addEventListener("keydown", (e) => {
+          if (e.key === "Escape") {
+            dropdown.classList.remove("is-open");
+            btn.setAttribute("aria-expanded", "false");
+            $(".js-adm-notif-dropdown")?.classList.remove("is-open");
+            $(".js-adm-notif-btn")?.setAttribute("aria-expanded", "false");
+          }
+        });
+      }
+
       /* ---------- Init ---------- */
       initColumnToggles();
       renderNewSizes("winter-hoodie");
       renderOrders();
       initOrderNotifications();
+      initAdminProfileDropdown();
       renderProducts();
       renderCategories();
       renderCustomers();

@@ -111,6 +111,8 @@ class AdminOrderNotificationTest extends TestCase
         $res->assertSee('js-adm-sound-tone', false);
         $res->assertSee('js-adm-test-sound', false);
         $res->assertSee('js-adm-order-alert', false);
+        $res->assertSee('js-adm-profile-btn', false);
+        $res->assertSee('js-adm-profile-dropdown', false);
         $res->assertSee('/admin/api/orders/poll', false);
     }
 }
