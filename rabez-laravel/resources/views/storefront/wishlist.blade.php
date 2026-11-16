@@ -251,9 +251,12 @@
 
     .rabez-wl-row__title {
       margin: 0;
+      font-family: 'Red Hat Text', var(--rabez-font-body, sans-serif);
       font-size: 1rem;
-      font-weight: 800;
-      line-height: 1.3;
+      font-weight: 700;
+      letter-spacing: -0.01em;
+      text-transform: none;
+      line-height: 1.35;
       color: #0A0C0B;
     }
 
