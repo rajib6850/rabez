@@ -1346,6 +1346,134 @@
       color: var(--adm-text);
     }
 
+    /* Multi-Staff Order Handling & Lock Badges */
+    .adm-handler-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 3px 9px;
+      border-radius: 999px;
+      white-space: nowrap;
+      line-height: 1.3;
+    }
+    .adm-handler-chip--mine {
+      background: #DCFCE7;
+      color: #166534;
+      border: 1px solid #86EFAC;
+    }
+    .adm-handler-chip--locked {
+      background: #FEF2F2;
+      color: #991B1B;
+      border: 1px solid #FCA5A5;
+    }
+    .adm-handler-chip--staff {
+      background: #EEF2FF;
+      color: #3730A3;
+      border: 1px solid #C7D2FE;
+    }
+    .adm-handler-chip--open {
+      background: #FEFCE8;
+      color: #854D0E;
+      border: 1px solid #FDE047;
+    }
+    .adm-handling-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+      padding: 10px 16px;
+      background: #FAFBFA;
+      border-bottom: 1px solid var(--adm-border);
+    }
+    .adm-handling-scopes {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .adm-scope-pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--adm-border-strong);
+      background: #FFFFFF;
+      color: var(--adm-text-2);
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+    .adm-scope-pill:hover {
+      border-color: #0B0D0C;
+      color: #0B0D0C;
+    }
+    .adm-scope-pill.is-active {
+      background: #0B0D0C;
+      border-color: #0B0D0C;
+      color: #04F404;
+    }
+    .adm-team-workload {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .adm-drawer-lock-card {
+      border-radius: 10px;
+      padding: 12px 14px;
+      margin-bottom: 14px;
+      border: 1px solid;
+      display: grid;
+      gap: 8px;
+    }
+    .adm-drawer-lock-card--open {
+      background: #FEFCE8;
+      border-color: #FDE047;
+      color: #713F12;
+    }
+    .adm-drawer-lock-card--mine {
+      background: #F0FDF4;
+      border-color: #86EFAC;
+      color: #14532D;
+    }
+    .adm-drawer-lock-card--locked {
+      background: #FEF2F2;
+      border-color: #FCA5A5;
+      color: #7F1D1D;
+    }
+    .adm-drawer-lock-card--admin {
+      background: #EEF2FF;
+      border-color: #C7D2FE;
+      color: #1E1B4B;
+    }
+    .adm-drawer-lock-card__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+    .adm-drawer-assign-row {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+      padding-top: 6px;
+      border-top: 1px dashed rgba(0, 0, 0, 0.12);
+    }
+    tr.is-locked-row {
+      background: rgba(254, 242, 242, 0.35);
+    }
+    .table-orders th,
+    .table-orders td {
+      padding: 11px 10px;
+    }
+
     /* Bulk Action Bar */
     .adm-bulk-bar {
       display: none;
@@ -1404,6 +1532,7 @@
     .table-orders.hide-col-total [data-col="total"],
     .table-orders.hide-col-risk [data-col="risk"],
     .table-orders.hide-col-courier [data-col="courier"],
+    .table-orders.hide-col-handler [data-col="handler"],
     .table-orders.hide-col-status [data-col="status"],
     .table-orders.hide-col-actions [data-col="actions"] { display: none !important; }
 
@@ -2881,7 +3010,7 @@
         <a href="{{ route('home') }}" target="_blank" aria-label="RABEZ store home">
           <img src="{{ asset('assets/') }}/images/brand/rabez-neon-logo.png" alt="RABEZ">
         </a>
-        <span class="adm-brand__tag">Admin</span>
+        <span class="adm-brand__tag">{{ Auth::user()?->isMainAdmin() ? 'Main Admin' : ucfirst(strtolower(Auth::user()?->role ?? 'Staff')) }}</span>
       </div>
 
       <div class="adm-nav-group" style="margin-top:6px;">
@@ -2938,11 +3067,13 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
           <span>Customers</span>
         </button>
+        @if(Auth::user()?->isMainAdmin())
         <button type="button" class="adm-nav-item js-tab" data-tab="users">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/><circle cx="19" cy="11" r="2"/></svg>
           <span>Users</span>
           <span class="adm-nav-count js-users-count-badge">{{ count($users ?? []) }}</span>
         </button>
+        @endif
         <button type="button" class="adm-nav-item js-tab" data-tab="discounts">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="19" y1="5" x2="5" y2="19"></line><circle cx="6.5" cy="6.5" r="2.5"></circle><circle cx="17.5" cy="17.5" r="2.5"></circle></svg>
           <span>Discount</span>
@@ -2957,10 +3088,12 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="6" x2="20" y2="6"/><line x1="8" y1="12" x2="20" y2="12"/><line x1="12" y1="18" x2="20" y2="18"/><circle cx="4.5" cy="12" r="1"/><circle cx="8.5" cy="18" r="1"/></svg>
           <span>Menu Builder</span>
         </button>
+        @if(Auth::user()?->isMainAdmin())
         <button type="button" class="adm-nav-item js-tab" data-tab="settings">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
           <span>Settings</span>
         </button>
+        @endif
       </div>
 
       @php
@@ -3159,10 +3292,12 @@
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
                   <span>My Customer Account</span>
                 </a>
+                @if(Auth::user()?->isMainAdmin())
                 <button type="button" class="adm-profile-item js-tab js-adm-profile-close" data-tab="settings">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
                   <span>Store Settings</span>
                 </button>
+                @endif
               </div>
 
               <div class="adm-profile-dropdown__foot">
@@ -3328,6 +3463,15 @@
               <button type="button" class="adm-tab js-order-filter" data-status="Shipped">In courier <span class="adm-tab__count" data-count="Shipped">0</span></button>
               <button type="button" class="adm-tab js-order-filter" data-status="Delivered">Delivered <span class="adm-tab__count" data-count="Delivered">0</span></button>
             </div>
+            <div class="adm-handling-bar">
+              <div class="adm-handling-scopes" role="group" aria-label="Order handling queue filter">
+                <button type="button" class="adm-scope-pill is-active js-order-scope" data-scope="all">All Queue</button>
+                <button type="button" class="adm-scope-pill js-order-scope" data-scope="unassigned">Unassigned <span class="num js-scope-count-unassigned">0</span></button>
+                <button type="button" class="adm-scope-pill js-order-scope" data-scope="mine">My Handling <span class="num js-scope-count-mine">0</span></button>
+                <button type="button" class="adm-scope-pill js-order-scope" data-scope="others">Locked by Others <span class="num js-scope-count-others">0</span></button>
+              </div>
+              <div class="adm-team-workload js-team-workload-pills"></div>
+            </div>
             <div class="adm-toolbar">
               <label class="adm-search">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -3348,6 +3492,7 @@
                     <label><input type="checkbox" class="adm-cb js-col-toggle" data-table="orders" data-col="total" checked> Total</label>
                     <label><input type="checkbox" class="adm-cb js-col-toggle" data-table="orders" data-col="risk" checked> Delivery Rate</label>
                     <label><input type="checkbox" class="adm-cb js-col-toggle" data-table="orders" data-col="courier" checked> Courier</label>
+                    <label><input type="checkbox" class="adm-cb js-col-toggle" data-table="orders" data-col="handler" checked> Handler</label>
                     <label><input type="checkbox" class="adm-cb js-col-toggle" data-table="orders" data-col="status" checked> Status</label>
                     <label><input type="checkbox" class="adm-cb js-col-toggle" data-table="orders" data-col="actions" checked> Actions</label>
                   </div>
@@ -3389,6 +3534,7 @@
                     <th data-col="total">Total</th>
                     <th data-col="risk">Delivery rate</th>
                     <th data-col="courier">Courier</th>
+                    <th data-col="handler">Handler</th>
                     <th data-col="status">Status</th>
                     <th data-col="actions" style="text-align:right;">Actions</th>
                   </tr>
@@ -5828,6 +5974,7 @@
 
       /* ---------- Data (Synced with Laravel DB) ---------- */
       const CSRF_TOKEN = document.querySelector('meta[name="csrf-token"]')?.content || "{{ csrf_token() }}";
+      const escText = (s) => String(s ?? "").replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 
       function mapOrderFromDB(o) {
         let dateStr = "Recently";
@@ -5850,6 +5997,10 @@
           status: o.status || "Pending",
           courier: o.courier || "",
           consignment: (o.consignment_id && o.consignment_id !== 'Pending Dispatch') ? o.consignment_id : "",
+          handledById: o.handled_by_user_id ? Number(o.handled_by_user_id) : null,
+          handledByName: o.handled_by_name || (o.handler ? o.handler.name : ""),
+          handledAt: o.handled_at || null,
+          handlerRole: o.handler?.role || "",
           subtotal: Number(o.subtotal) || 0,
           shipping: Number(o.shipping_fee) || 70,
           total: Number(o.total) || 0,
@@ -5938,6 +6089,8 @@
         : [];
 
       let orderFilter = "all";
+      let orderScope = "all";
+      let orderHandlerId = "";
       let orderQuery = "";
       let prodFilter = "all";
       let prodQuery = "";
@@ -5957,6 +6110,9 @@
       };
 
       const currentUserId = {{ Auth::id() ?? 0 }};
+      const currentUserRole = @json(strtolower(Auth::user()->role ?? 'staff'));
+      const isMainAdmin = @json(Auth::user()?->isMainAdmin() ?? false);
+      let teamHandlers = @json($teamHandlers ?? []);
       const initialServerUsers = @json($users ?? []);
       let users = (initialServerUsers && initialServerUsers.length)
         ? initialServerUsers
@@ -6070,7 +6226,12 @@
               mediaList = mediaList.filter(m => !ids.includes(String(m.id)));
               renderMedia();
             } else if (type === 'orders') {
-              orders = orders.filter(o => !ids.includes(String(o.id)) && !ids.includes(String(o.dbId)));
+              if (Array.isArray(data.deleted_ids)) {
+                const delSet = new Set(data.deleted_ids.map(String));
+                orders = orders.filter(o => !delSet.has(String(o.dbId)) && !delSet.has(String(o.id)));
+              } else {
+                orders = orders.filter(o => !ids.includes(String(o.id)) && !ids.includes(String(o.dbId)));
+              }
               renderOrders();
             } else if (type === 'products') {
               products = products.filter(p => !ids.includes(String(p.id)));
@@ -6116,7 +6277,71 @@
         });
       }
 
-      /* ---------- Orders ---------- */
+      /* ---------- Orders & Multi-Staff Handling ---------- */
+      function isOrderLockedForMe(o) {
+        return !!(o && o.handledById && Number(o.handledById) !== Number(currentUserId) && !isMainAdmin);
+      }
+
+      function applyServerOrder(raw) {
+        if (!raw) return null;
+        const mapped = mapOrderFromDB(raw);
+        const idx = orders.findIndex((x) => Number(x.dbId) === Number(mapped.dbId) || x.id === mapped.id);
+        if (idx !== -1) {
+          orders[idx] = mapped;
+        } else {
+          orders.unshift(mapped);
+        }
+        return mapped;
+      }
+
+      function handlerCellHTML(o, compact = false) {
+        if (!o.handledById) {
+          return compact
+            ? `<span class="adm-handler-chip adm-handler-chip--open">Open</span>`
+            : `<button type="button" class="adm-btn adm-btn--primary adm-btn--sm js-claim-order" data-id="${o.id}" style="padding:4px 9px; font-size:11.5px; white-space:nowrap;">Handle</button>`;
+        }
+        if (Number(o.handledById) === Number(currentUserId)) {
+          return `<span class="adm-handler-chip adm-handler-chip--mine" title="Handled by you">&#9679; You</span>`;
+        }
+        if (isOrderLockedForMe(o)) {
+          return `<span class="adm-handler-chip adm-handler-chip--locked" title="Locked by ${escText(o.handledByName || 'Staff')}">&#128274; ${escText(o.handledByName || 'Staff')}</span>`;
+        }
+        return `<span class="adm-handler-chip adm-handler-chip--staff" title="Handled by ${escText(o.handledByName || 'Staff')}">${escText(o.handledByName || 'Staff')}</span>`;
+      }
+
+      function renderTeamWorkload() {
+        const unassigned = orders.filter((o) => !o.handledById && !['Delivered', 'Cancelled'].includes(o.status)).length;
+        const mine = orders.filter((o) => Number(o.handledById) === Number(currentUserId)).length;
+        const others = orders.filter((o) => o.handledById && Number(o.handledById) !== Number(currentUserId)).length;
+
+        if ($(".js-scope-count-unassigned")) $(".js-scope-count-unassigned").textContent = unassigned;
+        if ($(".js-scope-count-mine")) $(".js-scope-count-mine").textContent = mine;
+        if ($(".js-scope-count-others")) $(".js-scope-count-others").textContent = others;
+
+        $$(".js-order-scope").forEach((b) => b.classList.toggle("is-active", b.dataset.scope === orderScope && !orderHandlerId));
+
+        const pillsWrap = $(".js-team-workload-pills");
+        if (!pillsWrap) return;
+
+        const countsByUser = {};
+        orders.forEach((o) => {
+          if (!o.handledById) return;
+          countsByUser[o.handledById] = (countsByUser[o.handledById] || 0) + 1;
+        });
+
+        const list = (Array.isArray(teamHandlers) && teamHandlers.length) ? teamHandlers : [];
+        if (!list.length) {
+          pillsWrap.innerHTML = "";
+          return;
+        }
+
+        pillsWrap.innerHTML = `<span style="font-size:11.5px; color:var(--adm-muted); font-weight:600;">Team:</span>` + list.map((h) => {
+          const cnt = countsByUser[h.id] || 0;
+          const active = String(orderHandlerId) === String(h.id);
+          return `<button type="button" class="adm-scope-pill js-handler-workload-filter ${active ? 'is-active' : ''}" data-handler-id="${h.id}" title="Filter orders handled by ${escText(h.name)}">${escText(h.name)} <span class="num">(${cnt})</span></button>`;
+        }).join("");
+      }
+
       function riskHTML(o) {
         const warn = o.ratio < 60;
         return `<span class="adm-risk ${warn ? "adm-risk--warn" : ""}"><span class="adm-risk__bar"><span style="width:${o.ratio}%"></span></span>${o.ratio}%</span>`;
@@ -6131,17 +6356,22 @@
       function orderRowCardHTML(o) {
         const thumbs = o.items.slice(0, 3).map((i) => `<img src="${i.img}" alt="">`).join("");
         const count = o.items.reduce((s, i) => s + i.qty, 0);
+        const locked = isOrderLockedForMe(o);
         let action = "";
-        if (o.status === "Pending" && o.ratio >= 60) {
+        if (locked) {
+          action = `<span class="adm-cell-sub" style="font-size:11px; color:#991B1B; font-weight:600;">Locked</span>`;
+        } else if (!o.handledById && (o.status === "Pending" || o.status === "Printing")) {
+          action = `<button type="button" class="adm-btn adm-btn--primary adm-btn--sm js-claim-order" data-id="${o.id}">Handle</button>`;
+        } else if (o.status === "Pending" && o.ratio >= 60) {
           action = `<button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-book" data-id="${o.id}" data-courier="Steadfast">Book</button>`;
         } else if (o.status === "Pending") {
           action = `<a href="tel:${o.phone}" class="adm-btn adm-btn--secondary adm-btn--sm js-stop">Call first</a>`;
         }
         return `
-          <div class="adm-order-row js-order-row" data-id="${o.id}">
+          <div class="adm-order-row js-order-row ${locked ? 'is-locked-row' : ''}" data-id="${o.id}">
             <div class="c-id">
               <div class="adm-cell-main">#${o.id}</div>
-              <div class="adm-cell-sub">${o.date} &middot; ${o.source}</div>
+              <div class="adm-cell-sub">${o.date} &middot; ${handlerCellHTML(o, true)}</div>
             </div>
             <div class="c-cust">
               <div class="adm-cell-main">${o.customer}</div>
@@ -6167,17 +6397,20 @@
       function orderTableRowHTML(o) {
         const thumbs = o.items.slice(0, 3).map((i) => `<img src="${i.img}" alt="" style="width:28px; height:28px; object-fit:cover; border-radius:4px; border:1px solid #E6E9E7;">`).join("");
         const count = o.items.reduce((s, i) => s + i.qty, 0);
-        const isChecked = selectedMap.orders.has(String(o.id)) || selectedMap.orders.has(String(o.dbId));
+        const locked = isOrderLockedForMe(o);
+        const isChecked = !locked && (selectedMap.orders.has(String(o.id)) || selectedMap.orders.has(String(o.dbId)));
         let action = "";
-        if (o.status === "Pending" && o.ratio >= 60) {
-          action = `<button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-book" data-id="${o.id}" data-courier="Steadfast" style="padding:4px 8px; font-size:12px;">Book</button>`;
-        } else if (o.status === "Pending") {
-          action = `<a href="tel:${o.phone}" class="adm-btn adm-btn--secondary adm-btn--sm js-stop" style="padding:4px 8px; font-size:12px;">Call</a>`;
+        if (!locked) {
+          if (o.status === "Pending" && o.ratio >= 60) {
+            action = `<button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-book" data-id="${o.id}" data-courier="Steadfast" style="padding:4px 8px; font-size:12px;">Book</button>`;
+          } else if (o.status === "Pending") {
+            action = `<a href="tel:${o.phone}" class="adm-btn adm-btn--secondary adm-btn--sm js-stop" style="padding:4px 8px; font-size:12px;">Call</a>`;
+          }
         }
         return `
-          <tr class="js-order-table-row" data-id="${o.id}">
+          <tr class="js-order-table-row ${locked ? 'is-locked-row' : ''}" data-id="${o.id}">
             <td style="width:36px;">
-              <input type="checkbox" class="adm-cb js-row-cb" data-type="orders" data-id="${o.id}" ${isChecked ? 'checked' : ''}>
+              <input type="checkbox" class="adm-cb js-row-cb" data-type="orders" data-id="${o.id}" ${isChecked ? 'checked' : ''} ${locked ? `disabled title="Locked by ${escText(o.handledByName || 'another staff')}"` : ''}>
             </td>
             <td data-col="id">
               <div class="adm-cell-main"><strong style="color:var(--adm-ink);">#${o.id}</strong></div>
@@ -6203,12 +6436,15 @@
                 ? `<div><span class="adm-cell-main">${o.courier}</span><div class="adm-cell-sub num">${o.consignment}</div></div>`
                 : `<span class="adm-cell-sub">Unassigned</span>`}
             </td>
+            <td data-col="handler">${handlerCellHTML(o, false)}</td>
             <td data-col="status">${chipHTML(o.status)}</td>
             <td data-col="actions" style="text-align:right;">
               <div style="display:inline-flex; gap:6px; align-items:center;">
                 ${action}
-                <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-edit-order" data-id="${o.id}" style="padding:4px 8px; font-size:12px;">Edit</button>
-                <button type="button" class="adm-btn adm-btn--danger adm-btn--sm js-delete-order-btn" data-id="${o.id}" style="padding:4px 8px; font-size:12px; background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">Del</button>
+                ${locked
+                  ? `<button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-edit-order" data-id="${o.id}" title="Locked — View Only" style="padding:4px 9px; font-size:12px;">View</button>`
+                  : `<button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-edit-order" data-id="${o.id}" style="padding:4px 8px; font-size:12px;">Edit</button>
+                     <button type="button" class="adm-btn adm-btn--danger adm-btn--sm js-delete-order-btn" data-id="${o.id}" style="padding:4px 8px; font-size:12px; background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">Del</button>`}
               </div>
             </td>
           </tr>`;
@@ -6223,6 +6459,8 @@
           if (counts[el.dataset.count] !== undefined) el.textContent = counts[el.dataset.count];
         });
         $$(".js-order-count").forEach((el) => (el.textContent = counts.Pending + counts.Printing));
+
+        renderTeamWorkload();
 
         const open = counts.Pending + counts.Printing;
         $$(".js-kpi-open").forEach((el) => (el.textContent = open));
@@ -6242,15 +6480,29 @@
         // Filter and render Full Orders Table
         let list = orders.slice();
         if (orderFilter !== "all") list = list.filter((o) => o.status === orderFilter);
+        if (orderHandlerId) {
+          list = list.filter((o) => String(o.handledById || "") === String(orderHandlerId));
+        } else if (orderScope === "unassigned") {
+          list = list.filter((o) => !o.handledById);
+        } else if (orderScope === "mine") {
+          list = list.filter((o) => Number(o.handledById) === Number(currentUserId));
+        } else if (orderScope === "others") {
+          list = list.filter((o) => o.handledById && Number(o.handledById) !== Number(currentUserId));
+        }
         if (orderQuery) {
           const q = orderQuery.toLowerCase();
-          list = list.filter((o) => o.id.toLowerCase().includes(q) || o.customer.toLowerCase().includes(q) || o.phone.includes(q));
+          list = list.filter((o) =>
+            o.id.toLowerCase().includes(q) ||
+            o.customer.toLowerCase().includes(q) ||
+            o.phone.includes(q) ||
+            (o.handledByName || "").toLowerCase().includes(q)
+          );
         }
 
         const root = $("#adm-orders");
         if (root) {
           if (!list.length) {
-            root.innerHTML = `<tr><td colspan="9" class="adm-empty" style="text-align:center; padding:32px;">No orders found matching filters.</td></tr>`;
+            root.innerHTML = `<tr><td colspan="10" class="adm-empty" style="text-align:center; padding:32px;">No orders found matching filters.</td></tr>`;
           } else {
             root.innerHTML = list.map(orderTableRowHTML).join("");
           }
@@ -6395,9 +6647,125 @@
         }
       }
 
+      async function handleLockedOrderResponse(data, fallbackTitle = "Order Locked") {
+        if (data && data.order) {
+          applyServerOrder(data.order);
+          renderOrders();
+          if (openOrderId && (openOrderId === data.order.order_number || Number(orders.find(x => x.id === openOrderId)?.dbId) === Number(data.order.id))) {
+            openFullOrderDrawer(openOrderId);
+          }
+        }
+        admAlert((data && data.message) || "This order is currently being handled by another staff member.", { title: fallbackTitle });
+      }
+
+      async function claimOrder(id, opts = {}) {
+        const o = orders.find((x) => x.id === id || String(x.dbId) === String(id));
+        const targetId = o ? (o.dbId || o.id) : id;
+        try {
+          const res = await fetch(`/admin/orders/${targetId}/claim`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify({ force: !!opts.force, _token: CSRF_TOKEN })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.status === 423 || data.locked) {
+            if (!opts.silent) await handleLockedOrderResponse(data, "Already Handled by Another Staff");
+            return false;
+          }
+          if (res.ok && data.success && data.order) {
+            const updated = applyServerOrder(data.order);
+            renderOrders();
+            if (!opts.silent) {
+              toast("Handling Order", `#${updated.id} assigned to you`);
+              if (openOrderId === updated.id) openFullOrderDrawer(updated.id);
+            }
+            return true;
+          }
+          if (!opts.silent) {
+            admAlert(data.message || "Could not claim order.", { title: "Claim Failed" });
+          }
+        } catch (err) {
+          console.error(err);
+          if (!opts.silent) toast("Claim error", err.message);
+        }
+        return false;
+      }
+
+      async function releaseOrder(id) {
+        const o = orders.find((x) => x.id === id || String(x.dbId) === String(id));
+        if (!o) return;
+        try {
+          const res = await fetch(`/admin/orders/${o.dbId || o.id}/release`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify({ _token: CSRF_TOKEN })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.status === 423 || data.locked) {
+            await handleLockedOrderResponse(data, "Order Locked");
+            return;
+          }
+          if (res.ok && data.success && data.order) {
+            const updated = applyServerOrder(data.order);
+            renderOrders();
+            if (openOrderId === updated.id) openFullOrderDrawer(updated.id);
+            toast("Lock Released", `#${updated.id} returned to unassigned queue`);
+          } else {
+            admAlert(data.message || "Could not release order.", { title: "Release Failed" });
+          }
+        } catch (err) {
+          console.error(err);
+          toast("Release error", err.message);
+        }
+      }
+
+      async function assignOrder(id, targetUserId) {
+        if (!isMainAdmin) return;
+        const o = orders.find((x) => x.id === id || String(x.dbId) === String(id));
+        if (!o) return;
+        try {
+          const res = await fetch(`/admin/orders/${o.dbId || o.id}/assign`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify({
+              handled_by_user_id: targetUserId ? Number(targetUserId) : null,
+              _token: CSRF_TOKEN
+            })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.success && data.order) {
+            const updated = applyServerOrder(data.order);
+            renderOrders();
+            if (openOrderId === updated.id) openFullOrderDrawer(updated.id);
+            toast("Handler Updated", data.message || `#${updated.id} updated`);
+          } else {
+            admAlert(data.message || "Could not assign order.", { title: "Assign Failed" });
+          }
+        } catch (err) {
+          console.error(err);
+          toast("Assign error", err.message);
+        }
+      }
+
       async function bookOrder(id, courier) {
         const o = orders.find((x) => x.id === id);
         if (!o) return;
+        if (isOrderLockedForMe(o)) {
+          admAlert(`Order #${o.id} is currently handled by ${o.handledByName || 'another staff'}.`, { title: "Order Locked" });
+          return;
+        }
 
         try {
           const res = await fetch(`/admin/orders/${o.dbId || o.id}/book-courier`, {
@@ -6410,13 +6778,21 @@
             body: JSON.stringify({ courier: courier, _token: CSRF_TOKEN })
           });
           const data = await res.json();
+          if (res.status === 423 || data.locked) {
+            await handleLockedOrderResponse(data, "Order Locked by Staff");
+            return;
+          }
           if (data.success) {
-            o.courier = data.courier || courier;
-            o.consignment = data.consignment_id;
-            o.status = "Shipped";
+            if (data.order) {
+              applyServerOrder(data.order);
+            } else {
+              o.courier = data.courier || courier;
+              o.consignment = data.consignment_id;
+              o.status = "Shipped";
+            }
             renderOrders();
             if (openOrderId === id) openFullOrderDrawer(id);
-            toast(`Booked with ${courier}`, `#${o.id} · ${o.consignment}`);
+            toast(`Booked with ${courier}`, `#${o.id} · ${data.consignment_id || o.consignment}`);
           } else {
             admAlert("Booking failed: " + (data.message || "Unknown error"), { title: "Courier Booking Failed" });
           }
@@ -6429,6 +6805,10 @@
       async function deleteOrder(id) {
         const o = orders.find((x) => x.id === id);
         if (!o) return;
+        if (isOrderLockedForMe(o)) {
+          admAlert(`Order #${o.id} is currently handled by ${o.handledByName || 'another staff'}. Only they or Main Admin can delete it.`, { title: "Order Locked" });
+          return;
+        }
 
         if (!(await admConfirm(`Are you sure you want to permanently delete Order #${o.id}?`, { title: "Delete Order", confirmText: "Delete Order" }))) {
           return;
@@ -6445,6 +6825,10 @@
             body: JSON.stringify({ _token: CSRF_TOKEN })
           });
           const data = await res.json();
+          if (res.status === 423 || data.locked) {
+            await handleLockedOrderResponse(data, "Order Locked by Staff");
+            return;
+          }
           if (data.success) {
             orders = orders.filter((x) => x.id !== id);
             closeOverlays();
@@ -6507,19 +6891,79 @@
         return { subtotal, shipping, total };
       }
 
+      function buildDrawerHandlingCard(o) {
+        const locked = isOrderLockedForMe(o);
+        const isMine = !!(o.handledById && Number(o.handledById) === Number(currentUserId));
+        let cardCls = "adm-drawer-lock-card--open";
+        let titleHTML = `&#128993; Unassigned Order &mdash; Waiting for Staff`;
+        let descHTML = `Click <strong>Handle Order</strong> before calling or shipping so no other staff claims this order simultaneously.`;
+        let actionBtns = `<button type="button" class="adm-btn adm-btn--primary adm-btn--sm js-claim-order" data-id="${o.id}">Handle Order</button>`;
+
+        if (locked) {
+          cardCls = "adm-drawer-lock-card--locked";
+          titleHTML = `&#128274; Locked &mdash; Currently Handled by ${escText(o.handledByName || 'Staff')}`;
+          descHTML = `Read-only mode active. Another staff member is handling this order; only ${escText(o.handledByName || 'them')} or Main Admin can edit or release it.`;
+          actionBtns = `<span class="adm-handler-chip adm-handler-chip--locked">View Only</span>`;
+        } else if (isMine) {
+          cardCls = "adm-drawer-lock-card--mine";
+          titleHTML = `&#10004; You are actively handling this order`;
+          descHTML = `Locked against edits by other staff members until completed or released.`;
+          actionBtns = `<button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-release-order" data-id="${o.id}">Release Lock</button>`;
+        } else if (o.handledById && isMainAdmin) {
+          cardCls = "adm-drawer-lock-card--admin";
+          titleHTML = `&#128100; Handled by ${escText(o.handledByName || 'Staff')} (Main Admin Override)`;
+          descHTML = `As Main Admin, you can modify, take over, reassign to another staff member, or release this lock.`;
+          actionBtns = `
+            <div style="display:flex; gap:6px; flex-wrap:wrap;">
+              <button type="button" class="adm-btn adm-btn--primary adm-btn--sm js-claim-order" data-id="${o.id}" data-force="1">Take Over</button>
+              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-release-order" data-id="${o.id}">Release</button>
+            </div>`;
+        }
+
+        let adminAssignHTML = "";
+        if (isMainAdmin) {
+          const opts = (Array.isArray(teamHandlers) ? teamHandlers : []).map((h) =>
+            `<option value="${h.id}" ${Number(o.handledById) === Number(h.id) ? "selected" : ""}>${escText(h.name)} (${escText((h.role || 'staff').toUpperCase())})</option>`
+          ).join("");
+          adminAssignHTML = `
+            <div class="adm-drawer-assign-row">
+              <label for="drawer-assign-handler" style="font-size:11.5px; font-weight:700;">Assign Handler:</label>
+              <select id="drawer-assign-handler" class="adm-select" style="flex:1; min-width:140px; padding:5px 8px; font-size:12.5px;">
+                <option value="">-- Unassigned Queue --</option>
+                ${opts}
+              </select>
+              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-assign-order" data-id="${o.id}">Assign</button>
+            </div>`;
+        }
+
+        return `
+          <div class="adm-drawer-lock-card ${cardCls}">
+            <div class="adm-drawer-lock-card__top">
+              <div style="min-width:0; flex:1;">
+                <div style="font-size:12.5px; font-weight:800;">${titleHTML}</div>
+                <div style="font-size:11.5px; opacity:0.9; margin-top:2px;">${descHTML}</div>
+              </div>
+              <div>${actionBtns}</div>
+            </div>
+            ${adminAssignHTML}
+          </div>`;
+      }
+
       function openFullOrderDrawer(id) {
         const o = orders.find((x) => x.id === id);
         if (!o) return;
         openOrderId = id;
+        const locked = isOrderLockedForMe(o);
 
         $(".js-d-date").textContent = `${o.date} · ${o.source}`;
         $(".js-d-id").textContent = `Order #${o.id}`;
         $(".js-d-status").innerHTML = chipHTML(o.status);
 
         const itemsHTML = o.items.map((item, idx) => renderOrderItemRow(item, idx)).join("");
-        const warn = o.ratio < 60;
+        const handlingCardHTML = buildDrawerHandlingCard(o);
 
         $(".js-d-body").innerHTML = `
+          ${handlingCardHTML}
           <div style="margin-bottom:14px;">
             <div class="adm-section-label">Quick Actions</div>
             <div class="adm-quick-actions" style="margin-top:4px;">
@@ -6619,9 +7063,15 @@
 
         const booked = !!o.consignment;
         $(".js-d-foot").innerHTML = `
-          <button type="button" class="adm-btn adm-btn--secondary js-book" data-id="${o.id}" data-courier="Pathao" ${booked ? "disabled" : ""}>Book Pathao</button>
-          <button type="button" class="adm-btn adm-btn--primary js-book" data-id="${o.id}" data-courier="Steadfast" ${booked ? "disabled" : ""}>${ICON.truck} ${booked ? "Booked" : "Book Steadfast"}</button>
-          <button type="button" class="adm-btn adm-btn--danger js-delete-order-btn" data-id="${o.id}" style="grid-column: 1 / -1; background:#fee2e2; color:#b91c1c; border-color:#fca5a5; margin-top:4px;">Delete Order</button>`;
+          <button type="button" class="adm-btn adm-btn--secondary js-book" data-id="${o.id}" data-courier="Pathao" ${(booked || locked) ? "disabled" : ""}>Book Pathao</button>
+          <button type="button" class="adm-btn adm-btn--primary js-book" data-id="${o.id}" data-courier="Steadfast" ${(booked || locked) ? "disabled" : ""}>${ICON.truck} ${booked ? "Booked" : "Book Steadfast"}</button>
+          <button type="button" class="adm-btn adm-btn--danger js-delete-order-btn" data-id="${o.id}" ${locked ? "disabled" : ""} style="grid-column: 1 / -1; background:#fee2e2; color:#b91c1c; border-color:#fca5a5; margin-top:4px; ${locked ? 'opacity:0.5; cursor:not-allowed;' : ''}">Delete Order</button>`;
+
+        if (locked) {
+          $("#js-full-order-form")?.querySelectorAll("input, select, textarea, button").forEach((el) => {
+            el.disabled = true;
+          });
+        }
 
         document.body.classList.add("is-drawer-open");
       }
@@ -6688,27 +7138,35 @@
             body: JSON.stringify(payload)
           });
           const data = await res.json();
+          if (res.status === 423 || data.locked) {
+            await handleLockedOrderResponse(data, "Order Locked by Staff");
+            return;
+          }
           if (data.success) {
-            o.customer = customerName;
-            o.phone = customerPhone;
-            o.address = customerAddress;
-            o.zone = zone;
-            o.shipping = shipping;
-            o.status = status;
-            o.courier = courier;
-            o.consignment = consignmentId;
-            o.items = items.map(i => ({
-              id: Math.floor(Math.random() * 1000),
-              name: i.product_name,
-              size: i.size,
-              qty: i.qty,
-              price: i.unit_price,
-              print: (i.custom_name ? (i.custom_name + (i.custom_number ? ' ' + i.custom_number : '')) : ''),
-              img: '/assets/images/products/real-madrid-home-hs.jpg'
-            }));
-            const { subtotal, total } = calcOrderTotals();
-            o.subtotal = subtotal;
-            o.total = total;
+            if (data.order) {
+              applyServerOrder(data.order);
+            } else {
+              o.customer = customerName;
+              o.phone = customerPhone;
+              o.address = customerAddress;
+              o.zone = zone;
+              o.shipping = shipping;
+              o.status = status;
+              o.courier = courier;
+              o.consignment = consignmentId;
+              o.items = items.map(i => ({
+                id: Math.floor(Math.random() * 1000),
+                name: i.product_name,
+                size: i.size,
+                qty: i.qty,
+                price: i.unit_price,
+                print: (i.custom_name ? (i.custom_name + (i.custom_number ? ' ' + i.custom_number : '')) : ''),
+                img: '/assets/images/products/real-madrid-home-hs.jpg'
+              }));
+              const { subtotal, total } = calcOrderTotals();
+              o.subtotal = subtotal;
+              o.total = total;
+            }
 
             closeOverlays();
             renderOrders();
@@ -8226,7 +8684,10 @@
               toast("User Created", `${name} (${role.toUpperCase()})`);
             }
             closeOverlays();
+            teamHandlers = users.filter((u) => ["admin", "manager", "staff"].includes((u.role || "").toLowerCase()) && (u.status || "active").toLowerCase() !== "inactive")
+              .map((u) => ({ id: u.id, name: u.name, role: u.role, avatar: u.avatar || null }));
             renderUsers();
+            renderOrders();
           } else {
             admAlert("Save failed: " + (data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "Validation error")), { title: "User Save Failed" });
           }
@@ -8258,7 +8719,10 @@
           if (data.success) {
             users = users.filter((x) => String(x.id) !== String(id));
             closeOverlays();
+            teamHandlers = users.filter((u) => ["admin", "manager", "staff"].includes((u.role || "").toLowerCase()) && (u.status || "active").toLowerCase() !== "inactive")
+              .map((u) => ({ id: u.id, name: u.name, role: u.role, avatar: u.avatar || null }));
             renderUsers();
+            renderOrders();
             toast("User Deleted", u.name);
           } else {
             admAlert("Delete failed: " + (data.message || "Unknown error"), { title: "Delete Failed" });
@@ -8731,6 +9195,45 @@
           return;
         }
 
+        // Order Handling & Team Queue Filter Actions
+        const claimBtn = t.closest(".js-claim-order");
+        if (claimBtn) {
+          e.stopPropagation();
+          claimOrder(claimBtn.dataset.id, { force: claimBtn.dataset.force === "1" });
+          return;
+        }
+
+        const releaseBtn = t.closest(".js-release-order");
+        if (releaseBtn) {
+          e.stopPropagation();
+          releaseOrder(releaseBtn.dataset.id);
+          return;
+        }
+
+        const assignBtn = t.closest(".js-assign-order");
+        if (assignBtn) {
+          e.stopPropagation();
+          const targetId = $("#drawer-assign-handler")?.value || null;
+          assignOrder(assignBtn.dataset.id, targetId);
+          return;
+        }
+
+        const scopeBtn = t.closest(".js-order-scope");
+        if (scopeBtn) {
+          orderScope = scopeBtn.dataset.scope || "all";
+          orderHandlerId = "";
+          renderOrders();
+          return;
+        }
+
+        const workloadBtn = t.closest(".js-handler-workload-filter");
+        if (workloadBtn) {
+          const hid = workloadBtn.dataset.handlerId || "";
+          orderHandlerId = (String(orderHandlerId) === String(hid)) ? "" : hid;
+          renderOrders();
+          return;
+        }
+
         // Courier Book button
         const book = t.closest(".js-book");
         if (book) { e.stopPropagation(); bookOrder(book.dataset.id, book.dataset.courier); return; }
@@ -8780,8 +9283,8 @@
 
         // Bulk Book
         if (t.closest(".js-bulk-book")) {
-          const ready = orders.filter((o) => o.status === "Pending" && o.ratio >= 60);
-          if (!ready.length) { toast("Nothing to book", "No safe pending orders right now"); return; }
+          const ready = orders.filter((o) => o.status === "Pending" && o.ratio >= 60 && !isOrderLockedForMe(o));
+          if (!ready.length) { toast("Nothing to book", "No unlocked safe pending orders right now"); return; }
           ready.forEach((o) => {
             bookOrder(o.id, "Steadfast");
           });
@@ -9158,7 +9661,10 @@
           });
           const data = await res.json();
           if (data.success) {
-            toast(`Order #${data.order_id} created`, "Saved to database");
+            if (data.order_id) {
+              await claimOrder(data.order_id, { silent: true });
+            }
+            toast(`Order #${data.order_id} created`, "Saved to database & assigned to you");
             e.target.reset();
             await syncOrdersFromDB();
             showTab("orders");
@@ -10701,6 +11207,34 @@
             const data = await res.json();
             lastPollAt = Date.now();
             if (data.success) {
+              if (Array.isArray(data.handling_states) && data.handling_states.length > 0) {
+                let stateChanged = false;
+                let openChanged = false;
+                data.handling_states.forEach((st) => {
+                  const local = orders.find((x) => Number(x.dbId) === Number(st.id) || x.id === st.order_number);
+                  if (!local) return;
+                  const nextHandlerId = st.handled_by_user_id ? Number(st.handled_by_user_id) : null;
+                  const nextHandlerName = st.handled_by_name || (st.handler ? st.handler.name : "");
+                  const nextConsign = (st.consignment_id && st.consignment_id !== "Pending Dispatch") ? st.consignment_id : "";
+                  if (
+                    local.handledById !== nextHandlerId ||
+                    local.handledByName !== nextHandlerName ||
+                    local.status !== (st.status || local.status) ||
+                    local.consignment !== nextConsign
+                  ) {
+                    local.handledById = nextHandlerId;
+                    local.handledByName = nextHandlerName;
+                    local.handledAt = st.handled_at || null;
+                    if (st.status) local.status = st.status;
+                    if (st.courier) local.courier = st.courier;
+                    local.consignment = nextConsign;
+                    stateChanged = true;
+                    if (openOrderId && local.id === openOrderId) openChanged = true;
+                  }
+                });
+                if (stateChanged) renderOrders();
+                if (openChanged && openOrderId) openFullOrderDrawer(openOrderId);
+              }
               if (Array.isArray(data.new_orders) && data.new_orders.length > 0) {
                 handleIncomingOrders(data.new_orders);
               }

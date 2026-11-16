@@ -37,6 +37,11 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function handledOrders(): HasMany
+    {
+        return $this->hasMany(Order::class, 'handled_by_user_id');
+    }
+
     public function wishlistItems(): HasMany
     {
         return $this->hasMany(WishlistItem::class);
@@ -74,10 +79,32 @@ class User extends Authenticatable
     }
 
     /**
-     * Check if user is an administrator.
+     * Check if user is a Main Administrator with full system & override authority.
+     */
+    public function isMainAdmin(): bool
+    {
+        if (strtolower($this->status ?? 'active') === 'inactive') {
+            return false;
+        }
+
+        $role = strtolower($this->role ?? '');
+        if ($role === 'admin') {
+            return true;
+        }
+
+        return (bool) $this->is_admin && !in_array($role, ['manager', 'staff', 'customer'], true);
+    }
+
+    /**
+     * Check if user can access the Admin Panel (Main Admin, Manager, or active Staff).
      */
     public function isAdmin(): bool
     {
-        return (bool)$this->is_admin || strtolower($this->role ?? '') === 'admin';
+        if (strtolower($this->status ?? 'active') === 'inactive') {
+            return false;
+        }
+
+        return $this->isMainAdmin()
+            || in_array(strtolower($this->role ?? ''), ['admin', 'manager', 'staff'], true);
     }
 }

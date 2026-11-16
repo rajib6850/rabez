@@ -26,8 +26,8 @@ class AdminController extends Controller
         $codWithCourier = Order::where('status', 'Shipped')->sum('total');
         $productsCount = Product::count();
 
-        $recentOrders = Order::with('items')->latest()->take(10)->get();
-        $allOrders = Order::with('items')->latest()->get();
+        $recentOrders = Order::with(['items', 'handler:id,name,role,avatar'])->latest()->take(10)->get();
+        $allOrders = Order::with(['items', 'handler:id,name,role,avatar'])->latest()->get();
         $products = Product::with('variants')->latest()->get();
         $categories = Category::withCount('products')->orderBy('sort_order')->get();
         $settings = Setting::pluck('value', 'key')->toArray();
@@ -60,7 +60,15 @@ class AdminController extends Controller
                 ];
             });
 
-        $users = User::latest()->get();
+        $actor = Auth::user();
+        $users = ($actor && $actor->isMainAdmin()) ? User::latest()->get() : collect();
+        $teamHandlers = User::whereIn('role', ['admin', 'manager', 'staff'])
+            ->where(function ($q) {
+                $q->whereNull('status')->orWhere('status', '!=', 'inactive');
+            })
+            ->orderByRaw("CASE LOWER(role) WHEN 'admin' THEN 1 WHEN 'manager' THEN 2 ELSE 3 END")
+            ->orderBy('name')
+            ->get(['id', 'name', 'role', 'avatar']);
         $media = Media::latest()->get();
         $mediaCount = $media->count();
 
@@ -75,6 +83,7 @@ class AdminController extends Controller
             'categories',
             'customers',
             'users',
+            'teamHandlers',
             'media',
             'mediaCount',
             'coupons',
@@ -82,9 +91,83 @@ class AdminController extends Controller
         ));
     }
 
+    private function findOrderByIdentifier($id): Order
+    {
+        return Order::with(['items', 'handler:id,name,role,avatar'])
+            ->where('id', $id)
+            ->orWhere('order_number', $id)
+            ->firstOrFail();
+    }
+
+    private function requireMainAdmin(): ?\Illuminate\Http\JsonResponse
+    {
+        if (!Auth::user()?->isMainAdmin()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Only Main Admin can perform this action.',
+            ], 403);
+        }
+
+        return null;
+    }
+
+    /**
+     * Verify whether the current admin/staff user may modify an order.
+     * Atomically claims unassigned orders when $claimIfUnassigned is true.
+     */
+    private function ensureOrderHandlingAccess(Order $order, bool $claimIfUnassigned = true): ?\Illuminate\Http\JsonResponse
+    {
+        /** @var User $actor */
+        $actor = Auth::user();
+
+        if ($order->isLockedFor($actor)) {
+            $order->loadMissing(['items', 'handler:id,name,role,avatar']);
+            return response()->json([
+                'success' => false,
+                'locked' => true,
+                'handled_by_user_id' => $order->handled_by_user_id,
+                'handled_by_name' => $order->handled_by_name,
+                'message' => "Order #{$order->order_number} is currently being handled by " . ($order->handled_by_name ?: 'another staff member') . ". Only they or Main Admin can modify it.",
+                'order' => $order,
+            ], 423);
+        }
+
+        if ($claimIfUnassigned && $order->handled_by_user_id === null) {
+            $now = now();
+            $claimed = Order::where('id', $order->id)
+                ->whereNull('handled_by_user_id')
+                ->update([
+                    'handled_by_user_id' => $actor->id,
+                    'handled_by_name' => $actor->name,
+                    'handled_at' => $now,
+                ]);
+
+            if ($claimed === 0) {
+                $fresh = Order::with(['items', 'handler:id,name,role,avatar'])->findOrFail($order->id);
+                if ($fresh->isLockedFor($actor)) {
+                    return response()->json([
+                        'success' => false,
+                        'locked' => true,
+                        'handled_by_user_id' => $fresh->handled_by_user_id,
+                        'handled_by_name' => $fresh->handled_by_name,
+                        'message' => "Order #{$fresh->order_number} was just claimed by " . ($fresh->handled_by_name ?: 'another staff member') . ".",
+                        'order' => $fresh,
+                    ], 423);
+                }
+                $order->setRawAttributes($fresh->getAttributes());
+            } else {
+                $order->handled_by_user_id = $actor->id;
+                $order->handled_by_name = $actor->name;
+                $order->handled_at = $now;
+            }
+        }
+
+        return null;
+    }
+
     public function getOrders()
     {
-        $orders = Order::with('items')->latest()->get();
+        $orders = Order::with(['items', 'handler:id,name,role,avatar'])->latest()->get();
         return response()->json(['success' => true, 'orders' => $orders]);
     }
 
@@ -96,24 +179,119 @@ class AdminController extends Controller
 
         $newOrders = collect();
         if ($hasAfterParam && $latestId > $afterId) {
-            $newOrders = Order::with('items')
+            $newOrders = Order::with(['items', 'handler:id,name,role,avatar'])
                 ->where('id', '>', $afterId)
                 ->orderBy('id', 'asc')
                 ->limit(25)
                 ->get();
         }
 
+        $handlingStates = Order::with('handler:id,name,role,avatar')
+            ->where(function ($q) {
+                $q->whereNotNull('handled_by_user_id')
+                    ->orWhere('updated_at', '>=', now()->subHours(12));
+            })
+            ->latest('updated_at')
+            ->limit(150)
+            ->get(['id', 'order_number', 'handled_by_user_id', 'handled_by_name', 'handled_at', 'status', 'courier', 'consignment_id']);
+
         return response()->json([
             'success' => true,
             'latest_id' => $latestId,
             'new_orders' => $newOrders,
+            'handling_states' => $handlingStates,
             'open_count' => Order::whereIn('status', ['Pending', 'Printing'])->count(),
+        ]);
+    }
+
+    public function claimOrder(Request $request, $id)
+    {
+        $order = $this->findOrderByIdentifier($id);
+        /** @var User $actor */
+        $actor = Auth::user();
+
+        if ($actor->isMainAdmin() && $request->boolean('force') && (int) $order->handled_by_user_id !== (int) $actor->id) {
+            $order->handled_by_user_id = $actor->id;
+            $order->handled_by_name = $actor->name;
+            $order->handled_at = now();
+            $order->save();
+        } else {
+            if ($lockError = $this->ensureOrderHandlingAccess($order, true)) {
+                return $lockError;
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => "You are now handling Order #{$order->order_number}.",
+            'order' => $order->fresh(['items', 'handler:id,name,role,avatar']),
+        ]);
+    }
+
+    public function releaseOrder($id)
+    {
+        $order = $this->findOrderByIdentifier($id);
+        if ($lockError = $this->ensureOrderHandlingAccess($order, false)) {
+            return $lockError;
+        }
+
+        $order->handled_by_user_id = null;
+        $order->handled_by_name = null;
+        $order->handled_at = null;
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => "Order #{$order->order_number} released back to unassigned queue.",
+            'order' => $order->fresh(['items', 'handler:id,name,role,avatar']),
+        ]);
+    }
+
+    public function assignOrder(Request $request, $id)
+    {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
+        $order = $this->findOrderByIdentifier($id);
+        $validated = $request->validate([
+            'handled_by_user_id' => ['nullable', 'integer', 'exists:users,id'],
+        ]);
+
+        if (!empty($validated['handled_by_user_id'])) {
+            $target = User::findOrFail($validated['handled_by_user_id']);
+            if (!$target->isAdmin()) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Orders can only be assigned to active admin, manager, or staff members.',
+                ], 422);
+            }
+            $order->handled_by_user_id = $target->id;
+            $order->handled_by_name = $target->name;
+            $order->handled_at = now();
+            $message = "Order #{$order->order_number} assigned to {$target->name}.";
+        } else {
+            $order->handled_by_user_id = null;
+            $order->handled_by_name = null;
+            $order->handled_at = null;
+            $message = "Order #{$order->order_number} returned to unassigned queue.";
+        }
+
+        $order->save();
+
+        return response()->json([
+            'success' => true,
+            'message' => $message,
+            'order' => $order->fresh(['items', 'handler:id,name,role,avatar']),
         ]);
     }
 
     public function updateOrder(Request $request, $id)
     {
-        $order = Order::where('id', $id)->orWhere('order_number', $id)->firstOrFail();
+        $order = $this->findOrderByIdentifier($id);
+        if ($lockError = $this->ensureOrderHandlingAccess($order, true)) {
+            return $lockError;
+        }
 
         $validated = $request->validate([
             'customer_name' => 'nullable|string|max:100',
@@ -149,12 +327,15 @@ class AdminController extends Controller
 
         $order->save();
 
-        return response()->json(['success' => true, 'order' => $order->load('items')]);
+        return response()->json(['success' => true, 'order' => $order->load(['items', 'handler:id,name,role,avatar'])]);
     }
 
     public function deleteOrder($id)
     {
-        $order = Order::where('id', $id)->orWhere('order_number', $id)->firstOrFail();
+        $order = $this->findOrderByIdentifier($id);
+        if ($lockError = $this->ensureOrderHandlingAccess($order, false)) {
+            return $lockError;
+        }
         $order->delete();
 
         return response()->json(['success' => true, 'message' => "Order #{$order->order_number} deleted successfully."]);
@@ -162,7 +343,10 @@ class AdminController extends Controller
 
     public function updateOrderStatus(Request $request, $id)
     {
-        $order = Order::where('id', $id)->orWhere('order_number', $id)->firstOrFail();
+        $order = $this->findOrderByIdentifier($id);
+        if ($lockError = $this->ensureOrderHandlingAccess($order, true)) {
+            return $lockError;
+        }
         $status = $request->input('status');
         $stepMap = [
             'Pending' => 1,
@@ -178,12 +362,15 @@ class AdminController extends Controller
         }
         $order->save();
 
-        return response()->json(['success' => true, 'order' => $order]);
+        return response()->json(['success' => true, 'order' => $order->load(['items', 'handler:id,name,role,avatar'])]);
     }
 
     public function bookCourier(Request $request, $id)
     {
-        $order = Order::where('id', $id)->orWhere('order_number', $id)->firstOrFail();
+        $order = $this->findOrderByIdentifier($id);
+        if ($lockError = $this->ensureOrderHandlingAccess($order, true)) {
+            return $lockError;
+        }
         $courier = $request->input('courier', 'Steadfast');
 
         $order->status = 'Shipped';
@@ -196,6 +383,7 @@ class AdminController extends Controller
             'success' => true,
             'consignment_id' => $order->consignment_id,
             'courier' => $order->courier,
+            'order' => $order->load(['items', 'handler:id,name,role,avatar']),
         ]);
     }
 
@@ -550,15 +738,48 @@ class AdminController extends Controller
     public function bulkDeleteOrders(Request $request)
     {
         $ids = $request->input('ids', []);
-        if (!empty($ids)) {
-            Order::whereIn('id', $ids)->orWhereIn('order_number', $ids)->delete();
+        if (empty($ids) || !is_array($ids)) {
+            return response()->json(['success' => true, 'message' => '0 orders deleted.']);
         }
-        return response()->json(['success' => true, 'message' => count($ids) . ' orders deleted.']);
+
+        /** @var User $actor */
+        $actor = Auth::user();
+        $query = Order::where(function ($q) use ($ids) {
+            $q->whereIn('id', $ids)->orWhereIn('order_number', $ids);
+        });
+
+        $matchedOrders = $query->get();
+        if (!$actor->isMainAdmin()) {
+            $lockedCount = $matchedOrders->filter(fn ($o) => $o->isLockedFor($actor))->count();
+            $deletableIds = $matchedOrders->reject(fn ($o) => $o->isLockedFor($actor))->pluck('id')->all();
+
+            if (empty($deletableIds)) {
+                return response()->json([
+                    'success' => false,
+                    'locked' => true,
+                    'message' => 'Selected order(s) are currently handled by other staff members. Only they or Main Admin can delete them.',
+                ], 423);
+            }
+
+            $deleted = Order::whereIn('id', $deletableIds)->delete();
+            $msg = $deleted . ' order(s) deleted.';
+            if ($lockedCount > 0) {
+                $msg .= " ({$lockedCount} locked order(s) skipped.)";
+            }
+
+            return response()->json(['success' => true, 'deleted_ids' => $deletableIds, 'message' => $msg]);
+        }
+
+        $deleted = Order::whereIn('id', $matchedOrders->pluck('id')->all())->delete();
+        return response()->json(['success' => true, 'deleted_ids' => $matchedOrders->pluck('id')->all(), 'message' => $deleted . ' orders deleted.']);
     }
 
     public function updateOrderFull(Request $request, $id)
     {
-        $order = Order::where('id', $id)->orWhere('order_number', $id)->firstOrFail();
+        $order = $this->findOrderByIdentifier($id);
+        if ($lockError = $this->ensureOrderHandlingAccess($order, true)) {
+            return $lockError;
+        }
 
         $order->customer_name = strip_tags($request->input('customer_name', $order->customer_name));
         $order->customer_phone = strip_tags($request->input('customer_phone', $order->customer_phone));
@@ -605,7 +826,7 @@ class AdminController extends Controller
 
         $order->save();
 
-        return response()->json(['success' => true, 'order' => $order->load('items')]);
+        return response()->json(['success' => true, 'order' => $order->load(['items', 'handler:id,name,role,avatar'])]);
     }
 
     public function bulkDeleteProducts(Request $request)
@@ -804,6 +1025,10 @@ class AdminController extends Controller
 
     public function saveSettings(Request $request)
     {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
         $data = $request->except('_token');
 
         if (array_key_exists('meta_pixel_id', $data)) {
@@ -905,6 +1130,10 @@ class AdminController extends Controller
 
     public function getUsers()
     {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
         $users = User::latest()->get()->map(function ($u) {
             return [
                 'id' => $u->id,
@@ -938,6 +1167,10 @@ class AdminController extends Controller
 
     public function storeUser(Request $request)
     {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'email' => ['required', 'string', 'email', 'max:150', 'unique:users,email'],
@@ -952,7 +1185,7 @@ class AdminController extends Controller
             'email' => strtolower(trim($validated['email'])),
             'phone' => !empty($validated['phone']) ? preg_replace('/[^0-9]/', '', $validated['phone']) : null,
             'role' => $validated['role'],
-            'is_admin' => in_array($validated['role'], ['admin', 'manager']),
+            'is_admin' => $validated['role'] === 'admin',
             'status' => $validated['status'],
             'password' => Hash::make($validated['password']),
         ]);
@@ -966,6 +1199,10 @@ class AdminController extends Controller
 
     public function updateUser(Request $request, $id)
     {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
         $user = User::findOrFail($id);
 
         $validated = $request->validate([
@@ -990,7 +1227,7 @@ class AdminController extends Controller
         $user->email = strtolower(trim($validated['email']));
         $user->phone = !empty($validated['phone']) ? preg_replace('/[^0-9]/', '', $validated['phone']) : null;
         $user->role = $validated['role'];
-        $user->is_admin = in_array($validated['role'], ['admin', 'manager']);
+        $user->is_admin = $validated['role'] === 'admin';
         $user->status = $validated['status'];
 
         if (!empty($validated['password'])) {
@@ -998,6 +1235,8 @@ class AdminController extends Controller
         }
 
         $user->save();
+
+        Order::where('handled_by_user_id', $user->id)->update(['handled_by_name' => $user->name]);
 
         return response()->json([
             'success' => true,
@@ -1008,6 +1247,10 @@ class AdminController extends Controller
 
     public function deleteUser($id)
     {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
         $user = User::findOrFail($id);
 
         if ((int)$user->id === (int)Auth::id() || strtolower($user->email) === 'admin@rabez.shop') {
@@ -1021,6 +1264,10 @@ class AdminController extends Controller
 
     public function bulkDeleteUsers(Request $request)
     {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
         $ids = $request->input('ids', []);
         if (empty($ids) || !is_array($ids)) {
             return response()->json(['success' => false, 'message' => 'No users selected.'], 422);
@@ -1545,6 +1792,8 @@ class AdminController extends Controller
             'address' => !empty($validated['address']) ? strip_tags(trim($validated['address'])) : null,
             'avatar' => $avatarUrl,
         ]);
+
+        Order::where('handled_by_user_id', $user->id)->update(['handled_by_name' => $user->name]);
 
         $resolvedAvatar = $user->avatar
             ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset(ltrim($user->avatar, '/')))
