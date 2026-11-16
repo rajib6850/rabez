@@ -3220,12 +3220,18 @@
                   </button>
                 </div>
 
-                <div class="adm-notif-ctrl-row">
-                  <span style="font-size:11.5px; color:var(--adm-text-2); font-weight:600;">Desktop / Mobile Push:</span>
-                  <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-adm-browser-notif-btn" style="height:28px; font-size:11px; padding:0 10px; white-space:nowrap;">
-                    Enable Popups
-                  </button>
+                <div class="adm-notif-ctrl-row" style="gap:6px;">
+                  <span style="font-size:11.5px; color:var(--adm-text-2); font-weight:600;">Phone / Chrome Push:</span>
+                  <div style="display:inline-flex; gap:5px; align-items:center;">
+                    <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-adm-browser-notif-btn" style="height:28px; font-size:11px; padding:0 9px; white-space:nowrap;">
+                      Enable Popups
+                    </button>
+                    <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-adm-test-push" style="height:28px; font-size:11px; padding:0 8px; white-space:nowrap; display:none;">
+                      Test Push
+                    </button>
+                  </div>
                 </div>
+                <div class="js-adm-push-help" style="display:none; font-size:11px; line-height:1.4; padding:6px 8px; border-radius:6px; background:#FEF2F2; color:#991B1B; border:1px solid #FCA5A5;"></div>
               </div>
 
               <div class="adm-notif-list js-adm-notif-list">
@@ -11037,9 +11043,16 @@
 
         function updateBrowserNotifBtnUI() {
           if (!browserNotifBtn) return;
+          const testPushBtn = $(".js-adm-test-push");
+          const helpEl = $(".js-adm-push-help");
           if (!("Notification" in window)) {
             browserNotifBtn.textContent = "Unsupported";
             browserNotifBtn.disabled = true;
+            if (testPushBtn) testPushBtn.style.display = "none";
+            if (helpEl) {
+              helpEl.style.display = "block";
+              helpEl.textContent = "This browser does not support system push notifications. Use Chrome on Android/Desktop.";
+            }
             return;
           }
           if (Notification.permission === "granted") {
@@ -11047,14 +11060,31 @@
             browserNotifBtn.style.borderColor = "#16A34A";
             browserNotifBtn.style.color = "#15803D";
             browserNotifBtn.style.background = "#F0FDF4";
+            if (testPushBtn) testPushBtn.style.display = "inline-flex";
+            if (helpEl) helpEl.style.display = "none";
           } else if (Notification.permission === "denied") {
             browserNotifBtn.textContent = "Blocked in Browser";
             browserNotifBtn.style.color = "#B91C1C";
+            browserNotifBtn.style.borderColor = "#FCA5A5";
+            browserNotifBtn.style.background = "#FEF2F2";
+            if (testPushBtn) testPushBtn.style.display = "none";
+            if (helpEl) {
+              helpEl.style.display = "block";
+              helpEl.textContent = "Chrome Notification permission is blocked on this phone. Tap the lock/settings icon in address bar (or Chrome Settings → Site settings → Notifications) and Allow rabez.shop.";
+            }
           } else {
-            browserNotifBtn.textContent = "Enable Popups";
-            browserNotifBtn.style.borderColor = "";
-            browserNotifBtn.style.color = "";
-            browserNotifBtn.style.background = "";
+            browserNotifBtn.textContent = "Enable Alerts";
+            browserNotifBtn.style.borderColor = "#16A34A";
+            browserNotifBtn.style.color = "#15803D";
+            browserNotifBtn.style.background = "#F0FDF4";
+            if (testPushBtn) testPushBtn.style.display = "none";
+            if (helpEl) {
+              helpEl.style.display = "block";
+              helpEl.style.background = "#FFFBEB";
+              helpEl.style.color = "#92400E";
+              helpEl.style.borderColor = "#FDE68A";
+              helpEl.textContent = "Tap \"Enable Alerts\" above so new orders show in your phone's notification shutter.";
+            }
           }
         }
 
@@ -11118,25 +11148,49 @@
           }, 9500);
         }
 
-        async function fireBrowserNotification(orderObj) {
-          if (!("Notification" in window) || Notification.permission !== "granted") return;
-          const title = `New Order #${orderObj.id} (${money(orderObj.total)})`;
-          const body = `${orderObj.customer} (${orderObj.phone}) ordered ${(orderObj.items || []).map(i => `${i.qty}x ${i.name}`).slice(0, 2).join(", ")}`;
+        let swRegistrationPromise = null;
+        async function ensureServiceWorkerReady() {
+          if (!("serviceWorker" in navigator)) return null;
+          if (!swRegistrationPromise) {
+            swRegistrationPromise = (async () => {
+              try {
+                let reg = await navigator.serviceWorker.getRegistration("/");
+                if (!reg) {
+                  reg = await navigator.serviceWorker.register("/sw.js");
+                }
+                const readyReg = await navigator.serviceWorker.ready;
+                return readyReg || reg;
+              } catch (e) {
+                return null;
+              }
+            })();
+          }
+          return swRegistrationPromise;
+        }
+
+        async function fireBrowserNotification(orderObj, isTest = false) {
+          if (!("Notification" in window) || Notification.permission !== "granted") return false;
+          const title = isTest
+            ? "RABEZ Order Alerts Active!"
+            : `New Order #${orderObj.id} (${money(orderObj.total)})`;
+          const body = isTest
+            ? "Chrome notification shutter is working on this phone. New orders will appear here."
+            : `${orderObj.customer} (${orderObj.phone}) ordered ${(orderObj.items || []).map(i => `${i.qty}x ${i.name}`).slice(0, 2).join(", ")}`;
           const opts = {
             body,
             icon: "/assets/images/brand/rabez-emblem.jpg",
             badge: "/assets/images/brand/rabez-emblem.jpg",
-            tag: `rabez-order-${orderObj.id}`,
-            renotify: true
+            tag: isTest ? `rabez-order-test-${Date.now()}` : `rabez-order-${orderObj.id}`,
+            renotify: true,
+            vibrate: [200, 100, 200],
+            data: { url: "/admin" }
           };
 
           try {
-            if ("serviceWorker" in navigator) {
-              const reg = await navigator.serviceWorker.getRegistration();
-              if (reg && typeof reg.showNotification === "function") {
-                await reg.showNotification(title, opts);
-                return;
-              }
+            const reg = await ensureServiceWorkerReady();
+            if (reg && typeof reg.showNotification === "function") {
+              await reg.showNotification(title, opts);
+              return true;
             }
           } catch (e) {}
 
@@ -11145,9 +11199,11 @@
             n.onclick = () => {
               window.focus();
               n.close();
-              openFullOrderDrawer(orderObj.id);
+              if (!isTest && orderObj?.id) openFullOrderDrawer(orderObj.id);
             };
+            return true;
           } catch (e) {}
+          return false;
         }
 
         function handleIncomingOrders(rawOrders) {
@@ -11298,15 +11354,31 @@
         browserNotifBtn?.addEventListener("click", async (e) => {
           e.stopPropagation();
           if (!("Notification" in window)) return;
+          await ensureServiceWorkerReady();
           const perm = await Notification.requestPermission();
           updateBrowserNotifBtnUI();
           if (perm === "granted") {
             await unlockAudio();
             playOrderAlertSound();
-            toast("Desktop Alerts Active", "You will get popup notifications for new orders");
+            const shown = await fireBrowserNotification({}, true);
+            toast(
+              shown ? "Shutter Alerts Active" : "Permission Granted",
+              shown ? "Test notification sent to Chrome shutter!" : "Allow Chrome notifications in Android Settings if shutter doesn't appear."
+            );
           } else {
-            toast("Permission Not Granted", "Allow notifications in browser site settings");
+            toast("Permission Blocked", "Allow Notifications for rabez.shop in Chrome Site Settings");
           }
+        });
+
+        $(".js-adm-test-push")?.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          await unlockAudio();
+          playOrderAlertSound();
+          const shown = await fireBrowserNotification({}, true);
+          toast(
+            shown ? "Test Push Sent" : "Push Blocked",
+            shown ? "Check your phone's notification shutter" : "Enable Chrome notifications in phone settings"
+          );
         });
 
         // Toggle Notification Bell Dropdown
@@ -11394,6 +11466,7 @@
         updateSoundUI();
         updateBrowserNotifBtnUI();
         renderNotifCenter();
+        ensureServiceWorkerReady();
 
         // Poll every 10 seconds for live incoming orders
         setInterval(pollForNewOrders, 10000);
