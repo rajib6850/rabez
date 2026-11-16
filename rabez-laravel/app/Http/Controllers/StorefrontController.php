@@ -147,7 +147,7 @@ class StorefrontController extends Controller
             'cart_items.*.custom_name' => 'nullable|string|max:50',
             'cart_items.*.custom_number' => 'nullable|string|max:10',
         ], [
-            'customer_phone.regex' => 'অনুগ্রহ করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 01712345678)',
+            'customer_phone.regex' => 'Please enter a valid 11-digit Bangladesh mobile number (e.g. 01712345678).',
         ]);
 
         // Security: Normalize BD Phone number

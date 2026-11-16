@@ -522,7 +522,7 @@
           <div>
             <div style="display:flex; align-items:center; gap:8px;">
               <h2 id="size-modal-title" class="rabez-size-modal-title">Jersey Size Guide</h2>
-              <span class="rabez-size-badge">Inches / ইঞ্চি</span>
+              <span class="rabez-size-badge">Inches</span>
             </div>
             <p class="rabez-size-modal-sub">Measure around chest in inches with a measuring tape for exact fit</p>
           </div>
@@ -553,8 +553,8 @@
                 <thead>
                   <tr>
                     <th>Size</th>
-                    <th>Chest (ইন)</th>
-                    <th>Length (ইন)</th>
+                    <th>Chest (in)</th>
+                    <th>Length (in)</th>
                     <th>Weight Fit</th>
                   </tr>
                 </thead>
@@ -630,8 +630,8 @@
                 <thead>
                   <tr>
                     <th>Size</th>
-                    <th>Chest (ইন)</th>
-                    <th>Length (ইন)</th>
+                    <th>Chest (in)</th>
+                    <th>Length (in)</th>
                     <th>Weight Fit</th>
                   </tr>
                 </thead>
@@ -992,7 +992,7 @@
       addBtn?.addEventListener("click", () => {
         if (!currentSize) {
           if (window.RABEZ_POPUP) {
-            window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+            window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
           }
           return;
         }
@@ -1124,7 +1124,7 @@
       waBtn?.addEventListener("click", () => {
         if (!currentSize) {
           if (window.RABEZ_POPUP) {
-            window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+            window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
           }
           return;
         }

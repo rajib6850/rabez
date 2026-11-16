@@ -56,7 +56,7 @@ class CustomerAccountController extends Controller
             'phone' => ['required', 'string', 'regex:/^(?:\+?88)?(01[3-9]\d{8})$/'],
             'address' => ['nullable', 'string', 'max:255'],
         ], [
-            'phone.regex' => 'অনুগ্রহ করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 01712345678)',
+            'phone.regex' => 'Please enter a valid 11-digit Bangladesh mobile number (e.g. 01712345678).',
         ]);
 
         $phone = User::normalizeBdPhone($validated['phone']);
@@ -74,7 +74,7 @@ class CustomerAccountController extends Controller
         }
 
         return redirect()->route('account.dashboard')
-            ->with('success', 'আপনার প্রোফাইল ও ডেলিভারি তথ্য সফলভাবে আপডেট হয়েছে!');
+            ->with('success', 'Your profile and delivery details have been updated successfully!');
     }
 
     /**
@@ -86,9 +86,9 @@ class CustomerAccountController extends Controller
             'current_password' => ['required', 'current_password'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
         ], [
-            'current_password.current_password' => 'বর্তমান পাসওয়ার্ডটি সঠিক নয়।',
-            'password.min' => 'নতুন পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।',
-            'password.confirmed' => 'নতুন পাসওয়ার্ড দুটি মেলেনি।',
+            'current_password.current_password' => 'The current password you entered is incorrect.',
+            'password.min' => 'Your new password must be at least 8 characters long.',
+            'password.confirmed' => 'New password confirmation does not match.',
         ]);
 
         /** @var User $user */
@@ -98,6 +98,6 @@ class CustomerAccountController extends Controller
         ]);
 
         return redirect()->route('account.dashboard')
-            ->with('success', 'আপনার পাসওয়ার্ড সফলভাবে পরিবর্তন করা হয়েছে!');
+            ->with('success', 'Your password has been updated successfully!');
     }
 }

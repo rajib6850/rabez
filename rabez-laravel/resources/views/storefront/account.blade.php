@@ -449,8 +449,8 @@
               <span class="rabez-acc-pill rabez-acc-pill--muted">{{ $user->phone }}</span>
             @endif
           </div>
-          <h1 class="rabez-acc-title">স্বাগতম, {{ $user->name }}</h1>
-          <p class="rabez-acc-sub">{{ $user->email }} &bull; আপনার অর্ডার হিস্ট্রি, ইনভয়েস ও ডেলিভারি তথ্য এখান থেকে ম্যানেজ করুন</p>
+          <h1 class="rabez-acc-title">Welcome, {{ $user->name }}</h1>
+          <p class="rabez-acc-sub">{{ $user->email }} &bull; Manage your order history, invoices, and saved delivery details</p>
         </div>
       </div>
 
@@ -515,8 +515,8 @@
           <section class="rabez-acc-card">
             <div class="rabez-acc-card__head">
               <div>
-                <h2 class="rabez-acc-card__title">আমার অর্ডারসমূহ (My Orders)</h2>
-                <div class="rabez-acc-card__sub">আপনার সব অর্ডার ও কুরিয়ার ট্র্যাকিং স্ট্যাটাস</div>
+                <h2 class="rabez-acc-card__title">My Orders</h2>
+                <div class="rabez-acc-card__sub">View all your orders and live courier tracking status</div>
               </div>
               <span class="rabez-acc-tag" style="font-size:0.8rem;">{{ $orders->count() }} Orders</span>
             </div>
@@ -528,9 +528,9 @@
                   <line x1="3" y1="6" x2="21" y2="6"></line>
                   <path d="M16 10a4 4 0 0 1-8 0"></path>
                 </svg>
-                <div style="font-size:1.05rem; font-weight:800; color:#0A0C0B; margin-bottom:6px;">আপনার একাউন্টে এখনো কোনো অর্ডার নেই</div>
+                <div style="font-size:1.05rem; font-weight:800; color:#0A0C0B; margin-bottom:6px;">No orders found in your account yet</div>
                 <p style="font-size:0.86rem; color:#64748B; max-width:420px; margin:0 auto 18px;">
-                  আগে লগইন ছাড়া অর্ডার করে থাকলে নিচের প্রোফাইল ফর্মে সেই ১১ ডিজিটের মোবাইল নম্বরটি সেভ করুন &mdash; আপনার সব পুরনো অর্ডার অটোমেটিক চলে আসবে!
+                  Placed an order as a guest before? Save that 11-digit mobile number in your profile form &mdash; your previous orders will link automatically!
                 </p>
                 <a href="{{ route('shop') }}" class="rabez-btn rabez-btn--primary" style="display:inline-flex;">Browse Jerseys &rarr;</a>
               </div>
@@ -578,11 +578,11 @@
                     </div>
 
                     <div class="rabez-acc-order__meta">
-                      <div><strong>ডেলিভারি ঠিকানা:</strong> {{ $order->customer_address }}</div>
+                      <div><strong>Delivery Address:</strong> {{ $order->customer_address }}</div>
                       <div>
-                        <strong>মোবাইল:</strong> {{ $order->customer_phone }}
+                        <strong>Phone:</strong> {{ $order->customer_phone }}
                         @if(!empty($order->courier))
-                          &bull; <strong>কুরিয়ার:</strong> {{ $order->courier }}
+                          &bull; <strong>Courier:</strong> {{ $order->courier }}
                           @if(!empty($order->consignment_id) && $order->consignment_id !== 'Pending Dispatch')
                             ({{ $order->consignment_id }})
                           @endif
@@ -610,8 +610,8 @@
           <section class="rabez-acc-card">
             <div class="rabez-acc-card__head">
               <div>
-                <h2 class="rabez-acc-card__title">প্রোফাইল ও ডেলিভারি ঠিকানা</h2>
-                <div class="rabez-acc-card__sub">এখানে সেভ করা নাম, মোবাইল ও ঠিকানা চেকআউটে অটো-ফিল হবে</div>
+                <h2 class="rabez-acc-card__title">Profile &amp; Delivery Address</h2>
+                <div class="rabez-acc-card__sub">Your saved name, mobile number, and address will auto-fill at checkout</div>
               </div>
             </div>
 
@@ -619,13 +619,13 @@
               @csrf
               <div class="rabez-acc-field">
                 <label for="acc-name">Full Name *</label>
-                <input type="text" id="acc-name" name="name" value="{{ old('name', $user->name) }}" required maxlength="100" placeholder="আপনার পূর্ণ নাম">
+                <input type="text" id="acc-name" name="name" value="{{ old('name', $user->name) }}" required maxlength="100" placeholder="Your Full Name">
               </div>
 
               <div class="rabez-acc-field">
                 <label for="acc-phone">Mobile Number (11 Digits) *</label>
                 <input type="tel" id="acc-phone" name="phone" value="{{ old('phone', $user->phone) }}" required placeholder="01XXXXXXXXX">
-                <span class="rabez-acc-hint">এই নম্বরে করা আগের অর্ডারগুলো অটোমেটিক আপনার একাউন্টে যুক্ত হয়ে যাবে।</span>
+                <span class="rabez-acc-hint">Previous guest orders placed with this number will automatically link to your account.</span>
               </div>
 
               <div class="rabez-acc-field">
@@ -647,8 +647,8 @@
           <section class="rabez-acc-card">
             <div class="rabez-acc-card__head">
               <div>
-                <h2 class="rabez-acc-card__title">পাসওয়ার্ড পরিবর্তন</h2>
-                <div class="rabez-acc-card__sub">আপনার একাউন্টের নিরাপত্তার জন্য পাসওয়ার্ড আপডেট করুন</div>
+                <h2 class="rabez-acc-card__title">Change Password</h2>
+                <div class="rabez-acc-card__sub">Update your password to keep your account secure</div>
               </div>
             </div>
 

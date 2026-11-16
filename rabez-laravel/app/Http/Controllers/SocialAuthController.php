@@ -56,7 +56,7 @@ class SocialAuthController extends Controller
         if ($creds['client_id'] === '' || $creds['client_secret'] === '') {
             $label = ucfirst($provider);
             return redirect()->route('login')->withErrors([
-                'email' => "{$label} লগইন এখনো অ্যাক্টিভ করা হয়নি। অনুগ্রহ করে ইমেইল ও পাসওয়ার্ড দিয়ে লগইন করুন অথবা Admin Settings থেকে {$label} Client ID ও Secret যুক্ত করুন।",
+                'email' => "{$label} sign-in is not currently enabled. Please sign in with your email and password.",
             ]);
         }
 
@@ -91,7 +91,7 @@ class SocialAuthController extends Controller
 
         if ($request->filled('error')) {
             return redirect()->route('login')->withErrors([
-                'email' => ucfirst($provider) . ' লগইন বাতিল করা হয়েছে বা অনুমোদন পাওয়া যায়নি।',
+                'email' => ucfirst($provider) . ' sign-in was cancelled or authorization was denied.',
             ]);
         }
 
@@ -108,21 +108,21 @@ class SocialAuthController extends Controller
             $code === ''
         ) {
             return redirect()->route('login')->withErrors([
-                'email' => 'নিরাপত্তা যাচাই ব্যর্থ হয়েছে। অনুগ্রহ করে আবার ' . ucfirst($provider) . ' দিয়ে লগইন করুন।',
+                'email' => 'Security verification failed. Please try signing in with ' . ucfirst($provider) . ' again.',
             ]);
         }
 
         $creds = $this->getCredentials($provider);
         if ($creds['client_id'] === '' || $creds['client_secret'] === '') {
             return redirect()->route('login')->withErrors([
-                'email' => ucfirst($provider) . ' OAuth credentials Admin Settings-এ সেট করা নেই।',
+                'email' => ucfirst($provider) . ' OAuth credentials are not configured in Admin Settings.',
             ]);
         }
 
         $profile = $this->fetchSocialProfile($provider, $code, $creds);
         if ($profile === null || $profile['id'] === '') {
             return redirect()->route('login')->withErrors([
-                'email' => ucfirst($provider) . ' থেকে প্রোফাইল তথ্য আনা যায়নি। কিছুক্ষণ পর আবার চেষ্টা করুন।',
+                'email' => 'Could not retrieve profile details from ' . ucfirst($provider) . '. Please try again.',
             ]);
         }
 
@@ -170,7 +170,7 @@ class SocialAuthController extends Controller
         }
 
         return redirect()->route('account.dashboard')
-            ->with('success', "স্বাগতম, {$user->name}!");
+            ->with('success', "Welcome, {$user->name}!");
     }
 
     /**

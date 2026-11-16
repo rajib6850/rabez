@@ -19,20 +19,20 @@
 
           @auth
             <div style="background:rgba(4,244,4,0.08); border:1px solid rgba(22,163,74,0.3); color:#15803D; padding:10px 13px; border-radius:8px; font-size:12.5px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-              <span>&#10003; আপনার একাউন্ট থেকে নাম, মোবাইল ও ঠিকানা অটো-ফিল করা হয়েছে (প্রয়োজনে পরিবর্তন করতে পারবেন)</span>
+              <span>&#10003; Your saved name, phone number, and delivery address have been auto-filled (you can edit if needed)</span>
               <a href="{{ route('account.dashboard') }}" style="color:#0A0C0B; text-decoration:underline; font-weight:700; white-space:nowrap;">My Account &rarr;</a>
             </div>
           @else
             <div style="background:#F8FAF9; border:1px dashed #CBD5D0; color:#374151; padding:10px 13px; border-radius:8px; font-size:12.5px; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-              <span>আগে একাউন্ট খুলেছেন বা Google দিয়ে অর্ডার ট্র্যাক করতে চান?</span>
-              <a href="{{ route('login') }}" style="color:#15803D; font-weight:700; text-decoration:none; white-space:nowrap;">দ্রুত চেকআউটের জন্য লগইন করুন &rarr;</a>
+              <span>Already have an account or want to track your order easily?</span>
+              <a href="{{ route('login') }}" style="color:#15803D; font-weight:700; text-decoration:none; white-space:nowrap;">Sign in for faster checkout &rarr;</a>
             </div>
           @endauth
 
           <div class="rabez-form-grid">
             <div class="rabez-form-group">
               <label for="billing_first_name">Full Name *</label>
-              <input type="text" id="billing_first_name" name="customer_name" required value="{{ old('customer_name', auth()->user()->name ?? '') }}" placeholder="আপনার পূর্ণ নাম / Your Name">
+              <input type="text" id="billing_first_name" name="customer_name" required value="{{ old('customer_name', auth()->user()->name ?? '') }}" placeholder="Enter your full name">
             </div>
 
             <div class="rabez-form-group">

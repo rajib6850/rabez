@@ -332,8 +332,8 @@
         if (window.RABEZ_ANALYTICS) {
           if (!window.RABEZ_ANALYTICS.isValidBDPhone(rawPhone)) {
             window.RABEZ_POPUP.alert(
-              "অনুগ্রহ করে সঠিক ১১ ডিজিটের মোবাইল নম্বর দিন (যেমন: 01712345678 / 018... / 019...)",
-              { type: "warning", title: "সঠিক মোবাইল নম্বর দিন", confirmText: "বুঝেছি" }
+              "Please enter a valid 11-digit Bangladesh mobile number (e.g. 01712345678).",
+              { type: "warning", title: "Invalid Phone Number", confirmText: "Got It" }
             ).then(() => {
               const phoneInput = codForm.querySelector('[name="customer_phone"]');
               if (phoneInput) phoneInput.focus();
@@ -344,8 +344,8 @@
           const rateCheck = window.RABEZ_ANALYTICS.canPlaceOrder();
           if (!rateCheck.allowed) {
             window.RABEZ_POPUP.alert(
-              `অনুগ্রহ করে ${rateCheck.waitSeconds} সেকেন্ড অপেক্ষা করুন।`,
-              { type: "warning", title: "কিছুক্ষণ অপেক্ষা করুন", confirmText: "ঠিক আছে" }
+              `Please wait ${rateCheck.waitSeconds} seconds before placing another order.`,
+              { type: "warning", title: "Please Wait", confirmText: "OK" }
             );
             return;
           }
@@ -358,8 +358,8 @@
         const cartItems = JSON.parse(localStorage.getItem("rabez_wc_cart_v1") || "[]");
         if (!cartItems.length) {
           window.RABEZ_POPUP.alert(
-            "আপনার ব্যাগে কোনো জার্সি বা হুডি নেই! অনুগ্রহ করে শপ থেকে প্রোডাক্ট যুক্ত করুন।",
-            { type: "info", title: "আপনার ব্যাগ খালি", confirmText: "শপে যান" }
+            "Your bag is empty! Please add a jersey or hoodie from the shop first.",
+            { type: "info", title: "Your Bag is Empty", confirmText: "Browse Shop" }
           ).then(() => {
             window.location.href = "/shop";
           });
@@ -370,7 +370,7 @@
         const originalBtnText = submitBtn ? submitBtn.innerHTML : "Confirm Order";
         if (submitBtn) {
           submitBtn.disabled = true;
-          submitBtn.innerHTML = "অর্ডার প্রসেসিং হচ্ছে...";
+          submitBtn.innerHTML = "Processing Order...";
         }
 
         const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
@@ -409,8 +409,8 @@
 
             if (!data.success) {
               window.RABEZ_POPUP.alert(
-                data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "অর্ডার প্লেস করতে সমস্যা হয়েছে।"),
-                { type: "danger", title: "অর্ডার সম্পন্ন হয়নি", confirmText: "ঠিক আছে" }
+                data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "Could not place your order. Please check your details."),
+                { type: "danger", title: "Order Failed", confirmText: "OK" }
               );
               return;
             }
@@ -474,7 +474,7 @@
                     <div>
                       <span style="display:inline-block; background:#04F404; color:#080A09; font-weight:800; font-size:0.72rem; padding:3px 8px; border-radius:3px; margin-bottom:6px;">ORDER #${orderId}</span>
                       <h3 style="color:#04F404; font-size:1.35rem; margin-bottom:4px;">Order Received! (Cash on Delivery)</h3>
-                      <p style="font-size:0.9rem; color:#D2D8D4;">ধন্যবাদ <strong>${name}</strong> (${phone})। আপনার অর্ডারটি সফলভাবে সম্পন্ন হয়েছে! খুব শীঘ্রই আমাদের প্রতিনিধি আপনার সাথে যোগাযোগ করবেন। ডেলিভারি ঠিকানা: <em>${address}</em>।</p>
+                      <p style="font-size:0.9rem; color:#D2D8D4;">Thank you <strong>${name}</strong> (${phone}). Your order has been placed successfully! Our team will contact you shortly. Delivery Address: <em>${address}</em>.</p>
                     </div>
                     <a href="/track-order?order=${orderId}" class="rabez-btn rabez-btn--primary rabez-btn--sm">
                       Track Order &amp; Invoice &rarr;
@@ -492,8 +492,8 @@
             }
             console.error("Order error:", err);
             window.RABEZ_POPUP.alert(
-              "সার্ভারে অর্ডার পাঠাতে সমস্যা হয়েছে। অনুগ্রহ করে আবার চেষ্টা করুন।",
-              { type: "danger", title: "সংযোগ সমস্যা", confirmText: "আবার চেষ্টা করুন" }
+              "Could not connect to the server to place your order. Please try again.",
+              { type: "danger", title: "Connection Error", confirmText: "Try Again" }
             );
           });
       });
@@ -640,7 +640,7 @@
     }
     const dom = getOrCreatePopupDom();
     const type = ["warning", "danger", "success", "info"].includes(opts.type) ? opts.type : (mode === "confirm" ? "warning" : "info");
-    const defaultTitles = { warning: "সতর্কতা", danger: "ত্রুটি", success: "সফল হয়েছে", info: "বার্তা" };
+    const defaultTitles = { warning: "Warning", danger: "Error", success: "Success", info: "Notice" };
 
     dom.icon.className = "rabez-dialog__icon js-rabez-dialog-icon rabez-dialog__icon--" + type;
     dom.icon.innerHTML = POPUP_ICONS[type] || POPUP_ICONS.info;
@@ -649,11 +649,11 @@
 
     const confirmBtnClass = type === "danger" ? "rabez-dialog__btn--danger" : "rabez-dialog__btn--primary";
     dom.confirmBtn.className = "rabez-dialog__btn js-rabez-dialog-confirm " + confirmBtnClass;
-    dom.confirmBtn.textContent = opts.confirmText || (mode === "confirm" ? "নিশ্চিত করুন" : "ঠিক আছে");
+    dom.confirmBtn.textContent = opts.confirmText || (mode === "confirm" ? "Confirm" : "OK");
 
     if (mode === "confirm") {
       dom.cancelBtn.hidden = false;
-      dom.cancelBtn.textContent = opts.cancelText || "বাতিল";
+      dom.cancelBtn.textContent = opts.cancelText || "Cancel";
     } else {
       dom.cancelBtn.hidden = true;
     }

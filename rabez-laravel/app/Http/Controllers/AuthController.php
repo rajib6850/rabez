@@ -69,7 +69,7 @@ class AuthController extends Controller
             }
 
             return redirect()->intended(route('account.dashboard'))
-                ->with('success', "স্বাগতম, {$user->name}!");
+                ->with('success', "Welcome back, {$user->name}!");
         }
 
         RateLimiter::hit($throttleKey, 60);
@@ -129,7 +129,7 @@ class AuthController extends Controller
         $request->session()->regenerate();
 
         return redirect()->route('account.dashboard')
-            ->with('success', 'আপনার একাউন্ট সফলভাবে তৈরি হয়েছে!');
+            ->with('success', 'Your account has been created successfully!');
     }
 
     /**

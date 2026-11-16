@@ -4164,7 +4164,7 @@
           <div class="adm-field">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
               <label class="adm-label" for="edit-prod-desc" style="font-weight:700; margin:0;">
-                Short Description (সংক্ষিপ্ত বিবরণ)
+                Short Description
               </label>
               <span style="font-size:11px; color:var(--adm-muted);">Shown on product cards, quick view &amp; summary</span>
             </div>
@@ -4174,7 +4174,7 @@
           <div class="adm-field">
             <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
               <label class="adm-label" for="edit-prod-long-desc" style="font-weight:700; margin:0;">
-                Detailed Long Description (বিস্তারিত বিবরণ)
+                Detailed Long Description
               </label>
               <span style="font-size:11px; color:var(--adm-muted);">Shown on Single Product Page &bull; Product Overview Tab</span>
             </div>

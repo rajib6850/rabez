@@ -739,7 +739,7 @@
     }
     const { subtotal } = getCartTotals();
     if (!cart.length) {
-      const msg = "আসসালামু আলাইকুম, RABEZ-এর জার্সি কালেকশন দেখতে চাই এবং অর্ডার করতে চাই।";
+      const msg = "Hello RABEZ! I would like to browse your jersey collection and place an order.";
       return `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`;
     }
     const lines = cart.map(
@@ -748,9 +748,9 @@
           item.customName || item.customNumber ? ` | Print: ${item.customName} #${item.customNumber}` : ""
         } = ৳${item.price * item.qty}`
     );
-    const fullMsg = `আসসালামু আলাইকুম RABEZ,\nআমি নিচের জার্সিগুলো অর্ডার করতে চাই:\n\n${lines.join(
+    const fullMsg = `Hello RABEZ,\nI would like to order the following jerseys:\n\n${lines.join(
       "\n"
-    )}\n\nSubtotal: ৳${subtotal}\nআমার নাম ও ঠিকানা: `;
+    )}\n\nSubtotal: ৳${subtotal}\nMy Name & Delivery Address: `;
     return `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(fullMsg)}`;
   }
 
@@ -1105,7 +1105,7 @@
       const selectedSwatch = card?.querySelector(".rabez-size-swatch.is-selected");
       const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "");
       if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
-        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
         return;
       }
       addToCart({ id, size, qty: 1 });
@@ -1192,7 +1192,7 @@
       const selectedSwatch = modal?.querySelector(".rabez-size-swatch.is-selected");
       const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "");
       if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
-        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
         return;
       }
       const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
@@ -1203,14 +1203,14 @@
       const unitPrice = prod ? (prod.price + (allowCustom ? getCustomPrintFee() : 0)) : 0;
       const total = unitPrice * qty;
       const customLine = allowCustom && (customName || customNumber)
-        ? `\n\u2022 কাস্টম প্রিন্ট: ${customName} #${customNumber} (+৳${getCustomPrintFee()})`
+        ? `\n\u2022 Custom Print: ${customName} #${customNumber} (+৳${getCustomPrintFee()})`
         : "";
-      const msg = `আসসালামু আলাইকুম RABEZ, আমি Quick View থেকে সরাসরি এই জার্সিটি অর্ডার করতে চাই:\n\n` +
-        `\u2022 জার্সি: ${prod?.name || 'Jersey'}\n` +
-        `\u2022 সাইজ: ${size}\n` +
-        `\u2022 পরিমাণ: ${qty}${customLine}\n` +
-        `\u2022 মোট মূল্য: ${formatBDT(total)}\n\n` +
-        `আমার নাম ও ডেলিভারি ঠিকানা: `;
+      const msg = `Hello RABEZ, I would like to order this jersey from Quick View:\n\n` +
+        `\u2022 Jersey: ${prod?.name || 'Jersey'}\n` +
+        `\u2022 Size: ${size}\n` +
+        `\u2022 Quantity: ${qty}${customLine}\n` +
+        `\u2022 Total Price: ${formatBDT(total)}\n\n` +
+        `My Name & Delivery Address: `;
       const url = `https://api.whatsapp.com/send/?phone=${WHATSAPP_NUMBER}&text=${encodeURIComponent(msg)}`;
       window.open(url, "_blank");
       return;
@@ -1225,7 +1225,7 @@
       const selectedSwatch = modal?.querySelector(".rabez-size-swatch.is-selected");
       const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "");
       if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
-        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("দুঃখিত, এই প্রোডাক্টটির কোনো সাইজ বর্তমানে স্টকে নেই।", { type: "warning", title: "স্টক শেষ" });
+        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
         return;
       }
       const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
