@@ -139,8 +139,6 @@
     const deck = stage.querySelector(".rabez-hero-deck");
     const cards = Array.from(stage.querySelectorAll(".js-hero-deck-card"));
     const dockBtns = Array.from(stage.querySelectorAll(".js-hero-dock-btn"));
-    const prevBtn = stage.querySelector(".js-hero-prev");
-    const nextBtn = stage.querySelector(".js-hero-next");
     const total = cards.length;
     if (!total) return;
 
@@ -217,18 +215,6 @@
       });
     });
 
-    prevBtn?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      setActiveSlide(currentIndex - 1);
-      startAutoPlay();
-    });
-
-    nextBtn?.addEventListener("click", (e) => {
-      e.stopPropagation();
-      setActiveSlide(currentIndex + 1);
-      startAutoPlay();
-    });
-
     dockBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetIdx = Number(btn.dataset.index || 0);
@@ -292,7 +278,6 @@
 
       if (window.PointerEvent) {
         deck.addEventListener("pointerdown", (e) => {
-          if (e.target.closest(".js-hero-prev, .js-hero-next")) return;
           if (e.pointerType === "mouse" && e.button !== 0) return;
           startDrag(e.clientX, e.clientY);
         });
@@ -301,7 +286,7 @@
         window.addEventListener("pointercancel", endDrag);
       } else {
         deck.addEventListener("touchstart", (e) => {
-          if (e.target.closest(".js-hero-prev, .js-hero-next") || !e.touches.length) return;
+          if (!e.touches.length) return;
           startDrag(e.touches[0].clientX, e.touches[0].clientY);
         }, { passive: true });
         deck.addEventListener("touchmove", (e) => {

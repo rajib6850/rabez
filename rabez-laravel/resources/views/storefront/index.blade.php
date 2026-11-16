@@ -168,13 +168,6 @@
                 </span>
               </div>
             </article>
-
-            <button type="button" class="rabez-hero-deck__nav rabez-hero-deck__nav--prev js-hero-prev" aria-label="Previous jersey card" title="Previous jersey">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
-            </button>
-            <button type="button" class="rabez-hero-deck__nav rabez-hero-deck__nav--next js-hero-next" aria-label="Next jersey card" title="Next jersey">
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
-            </button>
           </div>
 
           <!-- Club Crest Switcher Dock -->
