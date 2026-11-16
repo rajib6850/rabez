@@ -267,13 +267,40 @@ class StorefrontController extends Controller
 
         (new MetaCapiService())->sendPurchaseEvent($order, $validated['cart_items'], $request);
 
+        $confirmToken = substr(hash_hmac('sha256', $order->order_number . '|' . ($order->event_id ?? ''), config('app.key')), 0, 24);
+        session()->put('confirmed_order_' . $order->order_number, true);
+
         return response()->json([
             'success' => true,
             'order_id' => $order->order_number,
             'total' => $order->total,
             'event_id' => $eventId,
-            'redirect_url' => route('track-order', ['order' => $order->order_number]),
+            'redirect_url' => route('order.confirmed', ['orderNumber' => $order->order_number, 'token' => $confirmToken]),
         ]);
+    }
+
+    public function orderConfirmed(Request $request, $orderNumber)
+    {
+        $clean = strtoupper(trim((string) $orderNumber));
+        $order = Order::with('items')->where('order_number', $clean)->first();
+
+        if (!$order) {
+            return redirect()->route('track-order', ['order' => $clean]);
+        }
+
+        $expectedToken = substr(hash_hmac('sha256', $order->order_number . '|' . ($order->event_id ?? ''), config('app.key')), 0, 24);
+        $givenToken = (string) $request->query('token', '');
+        $hasValidToken = !empty($givenToken) && hash_equals($expectedToken, $givenToken);
+        $hasSession = session()->has('confirmed_order_' . $order->order_number);
+        $isOwner = auth()->check() && $order->user_id && ((int) auth()->id() === (int) $order->user_id || auth()->user()->role === 'admin');
+
+        if (!$hasValidToken && !$hasSession && !$isOwner) {
+            return redirect()->route('track-order', ['order' => $order->order_number]);
+        }
+
+        $settings = Setting::pluck('value', 'key')->toArray();
+
+        return view('storefront.order-confirmed', compact('order', 'settings'));
     }
 
     public function trackOrder(Request $request)

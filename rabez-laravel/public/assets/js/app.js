@@ -404,12 +404,11 @@
         })
           .then((res) => res.json())
           .then((data) => {
-            if (submitBtn) {
-              submitBtn.disabled = false;
-              submitBtn.innerHTML = originalBtnText;
-            }
-
             if (!data.success) {
+              if (submitBtn) {
+                submitBtn.disabled = false;
+                submitBtn.innerHTML = originalBtnText;
+              }
               window.RABEZ_POPUP.alert(
                 data.message || (data.errors ? Object.values(data.errors).flat().join("\n") : "Could not place your order. Please check your details."),
                 { type: "danger", title: "Order Failed", confirmText: "OK" }
@@ -419,6 +418,7 @@
 
             const orderId = data.order_id;
             const subtotal = cartItems.reduce((s, i) => s + i.price * i.qty, 0);
+            const finalTotal = Number(data.total) || (subtotal + shipping);
 
             // Record locally for fallback & offline
             const savedOrders = JSON.parse(localStorage.getItem("rabez_orders_v1") || "[]");
@@ -435,10 +435,10 @@
               consignmentId: "Pending Dispatch",
               subtotal: subtotal,
               shipping: shipping,
-              total: subtotal + shipping,
+              total: finalTotal,
               items: cartItems.map((c) => ({
                 name: c.name,
-                size: c.size,
+                size: c.variantTitle || c.size,
                 qty: c.qty,
                 price: c.price,
                 print: c.customName ? `${c.customName} #${c.customNumber}` : ""
@@ -460,13 +460,25 @@
               window.RABEZ_ANALYTICS.recordOrderPlaced();
               window.RABEZ_ANALYTICS.trackPurchase({
                 id: orderId,
-                total: Number(data.total) || (subtotal + shipping),
+                total: finalTotal,
                 eventId: data.event_id,
                 items: cartItems
               });
             }
 
-            // Success UI
+            if (submitBtn) {
+              submitBtn.disabled = true;
+              submitBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg> <span>Order Confirmed! Redirecting...</span>`;
+            }
+
+            if (data.redirect_url) {
+              setTimeout(() => {
+                window.location.href = data.redirect_url;
+              }, 220);
+              return;
+            }
+
+            // Fallback Success UI if redirect_url is absent
             const successBox = document.querySelector(".js-order-success-banner");
             if (successBox) {
               successBox.style.display = "block";

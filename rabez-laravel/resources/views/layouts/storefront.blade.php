@@ -683,7 +683,7 @@
   </script>
   @endif
   <script src="{{ asset('assets/js/cart.js') }}?v=4.4"></script>
-  <script src="{{ asset('assets/js/app.js') }}?v=3.3"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=3.4"></script>
 
   @stack('scripts')
 </body>
