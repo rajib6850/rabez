@@ -82,6 +82,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
 
     // Orders
     Route::get('/api/orders', [AdminController::class, 'getOrders'])->name('admin.orders.list');
+    Route::get('/api/orders/poll', [AdminController::class, 'pollOrders'])->name('admin.orders.poll');
     Route::post('/orders/{id}/status', [AdminController::class, 'updateOrderStatus'])->name('admin.orders.status');
     Route::post('/orders/{id}/update', [AdminController::class, 'updateOrder'])->name('admin.orders.update');
     Route::post('/orders/{id}/update-full', [AdminController::class, 'updateOrderFull'])->name('admin.orders.update_full');

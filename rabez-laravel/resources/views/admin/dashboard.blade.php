@@ -237,6 +237,254 @@
       margin-left: 4px;
     }
 
+    /* ---------- Live Order Notifications & Sound ---------- */
+    .adm-notif-wrap {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+    }
+
+    .adm-sound-btn,
+    .adm-notif-btn {
+      position: relative;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      height: 36px;
+      padding: 0 10px;
+      border-radius: 9px;
+      border: 1px solid var(--adm-border-strong);
+      background: var(--adm-surface);
+      color: var(--adm-text);
+      font-size: 12.5px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.16s ease;
+    }
+
+    .adm-sound-btn svg,
+    .adm-notif-btn svg {
+      width: 17px;
+      height: 17px;
+      flex-shrink: 0;
+    }
+
+    .adm-sound-btn.is-enabled {
+      border-color: #16A34A;
+      background: #F0FDF4;
+      color: #15803D;
+    }
+
+    .adm-sound-btn.is-muted {
+      border-color: #FCA5A5;
+      background: #FEF2F2;
+      color: #B91C1C;
+    }
+
+    .adm-notif-btn:hover,
+    .adm-sound-btn:hover {
+      border-color: var(--adm-ink);
+    }
+
+    .adm-notif-btn.has-unread {
+      border-color: #16A34A;
+      background: #F0FDF4;
+      animation: admNotifBellPulse 2.2s infinite;
+    }
+
+    @keyframes admNotifBellPulse {
+      0%, 100% { box-shadow: 0 0 0 0 rgba(4, 244, 4, 0.35); }
+      50% { box-shadow: 0 0 0 5px rgba(4, 244, 4, 0); }
+    }
+
+    .adm-notif-badge {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      min-width: 18px;
+      height: 18px;
+      padding: 0 5px;
+      border-radius: 999px;
+      background: #EF4444;
+      color: #FFFFFF;
+      font-size: 10.5px;
+      font-weight: 700;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border: 2px solid #FFFFFF;
+      line-height: 1;
+    }
+
+    .adm-notif-badge.is-visible {
+      display: inline-flex;
+    }
+
+    .adm-notif-dropdown {
+      position: absolute;
+      top: calc(100% + 10px);
+      right: 0;
+      width: 370px;
+      max-width: calc(100vw - 24px);
+      background: #FFFFFF;
+      border: 1px solid var(--adm-border-strong);
+      border-radius: 14px;
+      box-shadow: 0 20px 44px rgba(10, 12, 11, 0.16);
+      z-index: 980;
+      display: none;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .adm-notif-dropdown.is-open {
+      display: flex;
+    }
+
+    .adm-notif-dropdown__head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 13px 15px;
+      background: var(--adm-ink);
+      color: #FFFFFF;
+    }
+
+    .adm-notif-dropdown__title {
+      font-size: 13.5px;
+      font-weight: 700;
+      color: #FFFFFF;
+      display: flex;
+      align-items: center;
+      gap: 7px;
+    }
+
+    .adm-notif-controls {
+      padding: 11px 14px;
+      background: #F8FAF9;
+      border-bottom: 1px solid var(--adm-border);
+      display: grid;
+      gap: 9px;
+    }
+
+    .adm-notif-ctrl-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+
+    .adm-notif-unlock-hint {
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      color: #92400E;
+      font-size: 11.5px;
+      font-weight: 600;
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+
+    .adm-notif-unlock-hint.is-visible {
+      display: flex;
+    }
+
+    .adm-notif-list {
+      max-height: 310px;
+      overflow-y: auto;
+      divide-y: 1px solid var(--adm-border);
+    }
+
+    .adm-notif-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--adm-border);
+      cursor: pointer;
+      transition: background 0.14s ease;
+      text-align: left;
+      width: 100%;
+    }
+
+    .adm-notif-item:hover {
+      background: #F4F6F5;
+    }
+
+    .adm-notif-item.is-unread {
+      background: #F0FDF4;
+    }
+
+    .adm-notif-item__dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #CBD5E1;
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .adm-notif-item.is-unread .adm-notif-item__dot {
+      background: #16A34A;
+      box-shadow: 0 0 0 3px rgba(22, 163, 74, 0.2);
+    }
+
+    .adm-notif-dropdown__foot {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      padding: 10px 14px;
+      background: #FAFBFA;
+      border-top: 1px solid var(--adm-border);
+      font-size: 11.5px;
+      color: var(--adm-muted);
+    }
+
+    /* High-Priority Incoming Order Alert Banner */
+    .adm-order-alert-toast {
+      position: fixed;
+      right: 20px;
+      bottom: 76px;
+      z-index: 1250;
+      width: min(390px, calc(100vw - 24px));
+      background: #0A0C0B;
+      color: #FFFFFF;
+      border: 1.5px solid #04F404;
+      border-radius: 14px;
+      padding: 14px 16px;
+      box-shadow: 0 18px 44px rgba(0, 0, 0, 0.42);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transform: translateY(130%);
+      opacity: 0;
+      pointer-events: none;
+      transition: transform 0.3s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.25s ease;
+    }
+
+    .adm-order-alert-toast.is-visible {
+      transform: translateY(0);
+      opacity: 1;
+      pointer-events: auto;
+    }
+
+    .adm-order-alert-toast__icon {
+      width: 38px;
+      height: 38px;
+      border-radius: 10px;
+      background: rgba(4, 244, 4, 0.16);
+      color: #04F404;
+      display: grid;
+      place-items: center;
+      flex-shrink: 0;
+    }
+
     .adm-content {
       width: 100%;
       max-width: 1320px;
@@ -1168,8 +1416,38 @@
       .adm-topbar__menu svg { width: 18px; height: 18px; }
       .adm-topbar__logo { display: block; height: 24px; width: auto; }
       .adm-topbar__heading { display: none; }
-      .adm-topbar__actions .adm-btn--secondary,
-      .adm-topbar__actions .adm-avatar { display: none; }
+      .adm-topbar__actions > .adm-btn--secondary,
+      .adm-topbar__actions > .adm-avatar { display: none; }
+      .adm-notif-dropdown .adm-btn--secondary {
+        display: inline-flex !important;
+      }
+      .adm-sound-btn,
+      .adm-notif-btn {
+        background: rgba(255, 255, 255, 0.08);
+        border-color: rgba(255, 255, 255, 0.16);
+        color: #FFFFFF;
+        height: 34px;
+        padding: 0 9px;
+      }
+      .adm-sound-btn__label { display: none; }
+      .adm-sound-btn.is-enabled {
+        background: rgba(4, 244, 4, 0.14);
+        border-color: rgba(4, 244, 4, 0.45);
+        color: #04F404;
+      }
+      .adm-sound-btn.is-muted {
+        background: rgba(239, 68, 68, 0.18);
+        border-color: rgba(239, 68, 68, 0.45);
+        color: #FCA5A5;
+      }
+      .adm-notif-btn.has-unread {
+        background: rgba(4, 244, 4, 0.16);
+        border-color: #04F404;
+        color: #04F404;
+      }
+      .adm-notif-badge {
+        border-color: var(--adm-ink);
+      }
 
       .adm-content { padding: 16px 14px 32px; }
       .adm-kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; margin-bottom: 16px; }
@@ -1214,9 +1492,18 @@
       .adm-bottom-btn.is-active svg { color: var(--adm-brand); }
 
       .adm-toast { bottom: 84px; }
+      .adm-order-alert-toast { bottom: 84px; right: 12px; left: 12px; width: auto; }
     }
 
     @media (max-width: 640px) {
+      .adm-notif-dropdown {
+        position: fixed;
+        top: 62px;
+        left: 12px;
+        right: 12px;
+        width: auto;
+        max-width: none;
+      }
       .adm-form { grid-template-columns: 1fr; }
       .adm-toolbar { padding: 12px 14px; }
       .adm-toolbar__group, .adm-search { width: 100%; }
@@ -2502,6 +2789,80 @@
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             Add product
           </button>
+
+          <!-- Order Sound Quick Toggle -->
+          <button type="button" class="adm-sound-btn is-enabled js-adm-sound-btn" title="Toggle new order alert sound" aria-label="Toggle order sound alert">
+            <svg class="js-adm-sound-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+              <path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+              <path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>
+            </svg>
+            <span class="adm-sound-btn__label js-adm-sound-label">Sound On</span>
+          </button>
+
+          <!-- Live Order Notification Bell & Dropdown -->
+          <div class="adm-notif-wrap">
+            <button type="button" class="adm-notif-btn js-adm-notif-btn" title="Order Notifications" aria-label="Order Notifications" aria-expanded="false">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+              </svg>
+              <span class="adm-notif-badge js-adm-notif-badge">0</span>
+            </button>
+
+            <div class="adm-notif-dropdown js-adm-notif-dropdown" role="dialog" aria-label="Order notifications panel">
+              <div class="adm-notif-dropdown__head">
+                <div class="adm-notif-dropdown__title">
+                  <span>Order Alerts</span>
+                  <span class="js-adm-notif-unread-pill" style="background:rgba(4,244,4,0.18); color:#04F404; font-size:11px; padding:1px 7px; border-radius:999px;">0 new</span>
+                </div>
+                <button type="button" class="js-adm-notif-markall" style="background:none; border:none; color:#9CA3AF; font-size:11.5px; font-weight:600; cursor:pointer;">Mark all read</button>
+              </div>
+
+              <div class="adm-notif-controls">
+                <div class="adm-notif-unlock-hint js-adm-sound-hint">
+                  <span>Click "Test Sound" once to enable background chimes</span>
+                  <button type="button" class="js-adm-test-sound" style="background:#92400E; color:#fff; border:none; border-radius:5px; padding:3px 8px; font-size:11px; font-weight:700; cursor:pointer; white-space:nowrap;">Enable</button>
+                </div>
+
+                <div class="adm-notif-ctrl-row">
+                  <select class="adm-select js-adm-sound-tone" aria-label="Alert sound tone" style="height:30px; font-size:12px; padding:0 8px; flex:1; min-width:135px;">
+                    <option value="chime">Cha-Ching Chime</option>
+                    <option value="bell">Classic Counter Bell</option>
+                    <option value="urgent">Double Urgent Ring</option>
+                  </select>
+                  <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-adm-test-sound" style="height:30px; font-size:11.5px; padding:0 10px; white-space:nowrap;">
+                    Test Sound
+                  </button>
+                </div>
+
+                <div class="adm-notif-ctrl-row">
+                  <span style="font-size:11.5px; color:var(--adm-text-2); font-weight:600;">Desktop / Mobile Push:</span>
+                  <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-adm-browser-notif-btn" style="height:28px; font-size:11px; padding:0 10px; white-space:nowrap;">
+                    Enable Popups
+                  </button>
+                </div>
+              </div>
+
+              <div class="adm-notif-list js-adm-notif-list">
+                <div style="padding:28px 16px; text-align:center; color:var(--adm-muted); font-size:12.5px;">
+                  Listening for live storefront orders...
+                </div>
+              </div>
+
+              <div class="adm-notif-dropdown__foot">
+                <span class="js-adm-poll-status" style="display:inline-flex; align-items:center; gap:5px;">
+                  <span style="width:6px; height:6px; border-radius:50%; background:#16A34A; display:inline-block;"></span>
+                  <span>Live checking every 10s</span>
+                </span>
+                <div style="display:inline-flex; gap:10px;">
+                  <button type="button" class="js-adm-poll-now" style="background:none; border:none; color:#0A0C0B; font-weight:700; font-size:11.5px; cursor:pointer;">Check now</button>
+                  <button type="button" class="js-adm-notif-clear" style="background:none; border:none; color:#EF4444; font-weight:600; font-size:11.5px; cursor:pointer;">Clear</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
           <a href="{{ route('logout') }}" class="adm-btn adm-btn--secondary adm-btn--sm" title="Sign out" style="padding:6px 10px; color:#F87171; font-size:12px; display:inline-flex; align-items:center; gap:4px; text-decoration:none;">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" stroke-linecap="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sign Out
@@ -4844,6 +5205,21 @@
     </div>
   </div>
 
+  <div class="adm-order-alert-toast js-adm-order-alert" role="alert" aria-live="assertive">
+    <div class="adm-order-alert-toast__icon">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+        <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+      </svg>
+    </div>
+    <div style="flex:1; min-width:0;">
+      <div class="js-adm-alert-title" style="font-size:13px; font-weight:800; color:#04F404;">New Order Received!</div>
+      <div class="js-adm-alert-sub" style="font-size:12px; color:#E5E7EB; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;"></div>
+    </div>
+    <button type="button" class="adm-btn adm-btn--primary adm-btn--sm js-adm-alert-view" style="height:30px; padding:0 10px; font-size:11.5px; white-space:nowrap;">View</button>
+    <button type="button" class="js-adm-alert-close" aria-label="Dismiss" style="background:none; border:none; color:#9CA3AF; cursor:pointer; font-size:16px; line-height:1; padding:2px 4px;">&times;</button>
+  </div>
+
   <div class="adm-toast js-toast" role="status" aria-live="polite">
     <span class="adm-toast__dot"></span>
     <div>
@@ -5555,12 +5931,20 @@
         `).join("");
       }
 
+      let lastKnownOrderDbId = orders.reduce((m, o) => Math.max(m, Number(o.dbId) || 0), 0);
+
+      function updateMaxKnownOrderDbId() {
+        const mx = orders.reduce((m, o) => Math.max(m, Number(o.dbId) || 0), 0);
+        if (mx > lastKnownOrderDbId) lastKnownOrderDbId = mx;
+      }
+
       async function syncOrdersFromDB() {
         try {
           const res = await fetch("/admin/api/orders");
           const data = await res.json();
           if (data.success && Array.isArray(data.orders)) {
             orders = data.orders.map(mapOrderFromDB);
+            updateMaxKnownOrderDbId();
             renderOrders();
             toast("Orders Synced", `${orders.length} orders loaded from database`);
           }
@@ -9536,10 +9920,512 @@
         }
       });
 
+      /* ---------- Live Order Notifications & Web Audio Sound Engine ---------- */
+      function initOrderNotifications() {
+        const SOUND_ENABLED_KEY = "rabez_adm_sound_enabled";
+        const SOUND_TONE_KEY = "rabez_adm_sound_tone";
+        const NOTIFS_KEY = "rabez_adm_notifs_v1";
+        const BASE_TITLE = "RABEZ Admin - Dashboard";
+
+        const soundBtn = $(".js-adm-sound-btn");
+        const soundLabel = $(".js-adm-sound-label");
+        const soundIcon = $(".js-adm-sound-icon");
+        const notifBtn = $(".js-adm-notif-btn");
+        const notifBadge = $(".js-adm-notif-badge");
+        const notifDropdown = $(".js-adm-notif-dropdown");
+        const notifListEl = $(".js-adm-notif-list");
+        const unreadPill = $(".js-adm-notif-unread-pill");
+        const toneSelect = $(".js-adm-sound-tone");
+        const unlockHint = $(".js-adm-sound-hint");
+        const browserNotifBtn = $(".js-adm-browser-notif-btn");
+        const pollStatusEl = $(".js-adm-poll-status");
+        const alertBanner = $(".js-adm-order-alert");
+        const alertTitle = $(".js-adm-alert-title");
+        const alertSub = $(".js-adm-alert-sub");
+        const alertViewBtn = $(".js-adm-alert-view");
+        const alertCloseBtn = $(".js-adm-alert-close");
+
+        let soundEnabled = localStorage.getItem(SOUND_ENABLED_KEY) !== "0";
+        let soundTone = localStorage.getItem(SOUND_TONE_KEY) || "chime";
+        let audioCtx = null;
+        let pendingAudioReplay = false;
+        let alertBannerTimer = null;
+        let currentAlertOrderId = null;
+        let isPolling = false;
+        let lastPollAt = Date.now();
+
+        let notifs = [];
+        try {
+          const rawNotifs = localStorage.getItem(NOTIFS_KEY);
+          if (rawNotifs) {
+            const parsed = JSON.parse(rawNotifs);
+            if (Array.isArray(parsed)) notifs = parsed;
+          } else if (orders.length) {
+            notifs = orders.filter(o => o.status === "Pending").slice(0, 4).map(o => ({
+              orderId: o.id,
+              dbId: Number(o.dbId) || 0,
+              customer: o.customer,
+              phone: o.phone,
+              total: Number(o.total) || 0,
+              itemsSummary: (o.items || []).map(i => `${i.qty}x ${i.name}`).slice(0, 2).join(", ") || "Jersey Order",
+              time: o.date || "Recently",
+              read: true
+            }));
+          }
+        } catch (e) { notifs = []; }
+
+        function escHtml(str) {
+          return String(str || "")
+            .replace(/&/g, "&amp;")
+            .replace(/</g, "&lt;")
+            .replace(/>/g, "&gt;")
+            .replace(/"/g, "&quot;")
+            .replace(/'/g, "&#39;");
+        }
+
+        function ensureAudioCtx() {
+          if (!audioCtx) {
+            const Ctx = window.AudioContext || window.webkitAudioContext;
+            if (Ctx) audioCtx = new Ctx();
+          }
+          return audioCtx;
+        }
+
+        function refreshAudioHint() {
+          if (!unlockHint) return;
+          const ctx = audioCtx;
+          const locked = soundEnabled && (!ctx || ctx.state === "suspended");
+          unlockHint.classList.toggle("is-visible", locked);
+        }
+
+        async function unlockAudio() {
+          const ctx = ensureAudioCtx();
+          if (!ctx) return false;
+          if (ctx.state === "suspended") {
+            try { await ctx.resume(); } catch (e) {}
+          }
+          refreshAudioHint();
+          if (ctx.state === "running" && pendingAudioReplay && soundEnabled) {
+            pendingAudioReplay = false;
+            playOrderAlertSound();
+          }
+          return ctx.state === "running";
+        }
+
+        function scheduleTone(ctx, startAt, freq, duration, type = "sine", peakGain = 0.22) {
+          const osc = ctx.createOscillator();
+          const gain = ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, startAt);
+
+          gain.gain.setValueAtTime(0.0001, startAt);
+          gain.gain.linearRampToValueAtTime(peakGain, startAt + 0.015);
+          gain.gain.exponentialRampToValueAtTime(0.0001, startAt + duration);
+
+          osc.connect(gain);
+          gain.connect(ctx.destination);
+          osc.start(startAt);
+          osc.stop(startAt + duration + 0.02);
+        }
+
+        async function playOrderAlertSound(toneOverride) {
+          const tone = toneOverride || soundTone;
+          const ctx = ensureAudioCtx();
+          if (!ctx) return false;
+          if (ctx.state === "suspended") {
+            try { await ctx.resume(); } catch (e) {}
+          }
+          refreshAudioHint();
+          if (ctx.state !== "running") {
+            pendingAudioReplay = true;
+            return false;
+          }
+
+          const now = ctx.currentTime + 0.02;
+          if (tone === "bell") {
+            // Classic Double Counter Bell
+            [0, 0.28].forEach((offset) => {
+              scheduleTone(ctx, now + offset, 1174.66, 0.35, "sine", 0.25);
+              scheduleTone(ctx, now + offset, 2349.32, 0.25, "triangle", 0.10);
+            });
+          } else if (tone === "urgent") {
+            // Double Urgent 3-Note Alert
+            [0, 0.44].forEach((offset) => {
+              scheduleTone(ctx, now + offset, 783.99, 0.13, "triangle", 0.22);
+              scheduleTone(ctx, now + offset + 0.11, 987.77, 0.13, "triangle", 0.22);
+              scheduleTone(ctx, now + offset + 0.22, 1318.51, 0.24, "sine", 0.26);
+            });
+          } else {
+            // Default: Shopify-style Cha-Ching Chime
+            scheduleTone(ctx, now, 659.25, 0.14, "triangle", 0.18);        // E5
+            scheduleTone(ctx, now + 0.09, 830.61, 0.14, "triangle", 0.18); // G#5
+            scheduleTone(ctx, now + 0.18, 987.77, 0.22, "sine", 0.22);     // B5
+            scheduleTone(ctx, now + 0.27, 1318.51, 0.52, "sine", 0.28);    // E6
+            scheduleTone(ctx, now + 0.27, 1975.53, 0.35, "sine", 0.10);    // Harmonic shimmer
+          }
+          return true;
+        }
+
+        function saveNotifs() {
+          try {
+            localStorage.setItem(NOTIFS_KEY, JSON.stringify(notifs.slice(0, 25)));
+          } catch (e) {}
+        }
+
+        function updateSoundUI() {
+          if (soundBtn) {
+            soundBtn.classList.toggle("is-enabled", soundEnabled);
+            soundBtn.classList.toggle("is-muted", !soundEnabled);
+          }
+          if (soundLabel) soundLabel.textContent = soundEnabled ? "Sound On" : "Muted";
+          if (soundIcon) {
+            soundIcon.innerHTML = soundEnabled
+              ? `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><path d="M15.54 8.46a5 5 0 0 1 0 7.07"></path><path d="M19.07 4.93a10 10 0 0 1 0 14.14"></path>`
+              : `<polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon><line x1="23" y1="9" x2="17" y2="15"></line><line x1="17" y1="9" x2="23" y2="15"></line>`;
+          }
+          if (toneSelect) toneSelect.value = soundTone;
+          refreshAudioHint();
+        }
+
+        function updateBrowserNotifBtnUI() {
+          if (!browserNotifBtn) return;
+          if (!("Notification" in window)) {
+            browserNotifBtn.textContent = "Unsupported";
+            browserNotifBtn.disabled = true;
+            return;
+          }
+          if (Notification.permission === "granted") {
+            browserNotifBtn.textContent = "Active ✓";
+            browserNotifBtn.style.borderColor = "#16A34A";
+            browserNotifBtn.style.color = "#15803D";
+            browserNotifBtn.style.background = "#F0FDF4";
+          } else if (Notification.permission === "denied") {
+            browserNotifBtn.textContent = "Blocked in Browser";
+            browserNotifBtn.style.color = "#B91C1C";
+          } else {
+            browserNotifBtn.textContent = "Enable Popups";
+            browserNotifBtn.style.borderColor = "";
+            browserNotifBtn.style.color = "";
+            browserNotifBtn.style.background = "";
+          }
+        }
+
+        function updatePageTitle(unreadCount) {
+          document.title = unreadCount > 0 ? `(${unreadCount}) New Order! — RABEZ Admin` : BASE_TITLE;
+        }
+
+        function renderNotifCenter() {
+          const unreadCount = notifs.filter(n => !n.read).length;
+
+          if (notifBadge) {
+            notifBadge.textContent = unreadCount > 99 ? "99+" : String(unreadCount);
+            notifBadge.classList.toggle("is-visible", unreadCount > 0);
+          }
+          if (notifBtn) {
+            notifBtn.classList.toggle("has-unread", unreadCount > 0);
+          }
+          if (unreadPill) {
+            unreadPill.textContent = unreadCount > 0 ? `${unreadCount} unread` : "All read";
+          }
+          updatePageTitle(unreadCount);
+
+          if (!notifListEl) return;
+          if (!notifs.length) {
+            notifListEl.innerHTML = `
+              <div style="padding:28px 16px; text-align:center; color:var(--adm-muted); font-size:12.5px;">
+                No recent order alerts yet. New storefront orders will appear here with sound.
+              </div>
+            `;
+            return;
+          }
+
+          notifListEl.innerHTML = notifs.map((n, idx) => `
+            <button type="button" class="adm-notif-item ${n.read ? "" : "is-unread"} js-adm-notif-item" data-index="${idx}" data-order-id="${escHtml(n.orderId)}">
+              <span class="adm-notif-item__dot"></span>
+              <div style="flex:1; min-width:0;">
+                <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                  <strong style="font-size:12.5px; color:#0B0D0C;">#${escHtml(n.orderId)} &bull; ${escHtml(n.customer)}</strong>
+                  <span class="num" style="font-size:12px; font-weight:700; color:#15803D; white-space:nowrap;">${money(n.total)}</span>
+                </div>
+                <div style="font-size:11.5px; color:#4B524E; margin-top:2px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">
+                  ${escHtml(n.itemsSummary || "New COD Order")}
+                </div>
+                <div style="font-size:11px; color:#7A827E; margin-top:2px;">
+                  ${escHtml(n.phone || "")} &middot; ${escHtml(n.time || "Just now")}
+                </div>
+              </div>
+            </button>
+          `).join("");
+        }
+
+        function showFloatingOrderAlert(orderObj) {
+          if (!alertBanner) return;
+          currentAlertOrderId = orderObj.id;
+          if (alertTitle) alertTitle.textContent = `New Order #${orderObj.id}!`;
+          if (alertSub) alertSub.textContent = `${orderObj.customer} • ${money(orderObj.total)} (${orderObj.items.length || 1} item)`;
+          alertBanner.classList.add("is-visible");
+          clearTimeout(alertBannerTimer);
+          alertBannerTimer = setTimeout(() => {
+            alertBanner.classList.remove("is-visible");
+          }, 9500);
+        }
+
+        async function fireBrowserNotification(orderObj) {
+          if (!("Notification" in window) || Notification.permission !== "granted") return;
+          const title = `New Order #${orderObj.id} (${money(orderObj.total)})`;
+          const body = `${orderObj.customer} (${orderObj.phone}) ordered ${(orderObj.items || []).map(i => `${i.qty}x ${i.name}`).slice(0, 2).join(", ")}`;
+          const opts = {
+            body,
+            icon: "/assets/images/brand/rabez-emblem.jpg",
+            badge: "/assets/images/brand/rabez-emblem.jpg",
+            tag: `rabez-order-${orderObj.id}`,
+            renotify: true
+          };
+
+          try {
+            if ("serviceWorker" in navigator) {
+              const reg = await navigator.serviceWorker.getRegistration();
+              if (reg && typeof reg.showNotification === "function") {
+                await reg.showNotification(title, opts);
+                return;
+              }
+            }
+          } catch (e) {}
+
+          try {
+            const n = new Notification(title, opts);
+            n.onclick = () => {
+              window.focus();
+              n.close();
+              openFullOrderDrawer(orderObj.id);
+            };
+          } catch (e) {}
+        }
+
+        function handleIncomingOrders(rawOrders) {
+          let addedCount = 0;
+          let latestMapped = null;
+
+          rawOrders.forEach((raw) => {
+            const mapped = mapOrderFromDB(raw);
+            latestMapped = mapped;
+            const exists = orders.some(o => Number(o.dbId) === Number(mapped.dbId) || o.id === mapped.id);
+            if (!exists) {
+              orders.unshift(mapped);
+              addedCount++;
+            }
+
+            if (!notifs.some(n => n.orderId === mapped.id)) {
+              notifs.unshift({
+                orderId: mapped.id,
+                dbId: Number(mapped.dbId) || 0,
+                customer: mapped.customer,
+                phone: mapped.phone,
+                total: Number(mapped.total) || 0,
+                itemsSummary: (mapped.items || []).map(i => `${i.qty}x ${i.name}`).slice(0, 2).join(", ") || "Jersey Order",
+                time: "Just now",
+                read: false
+              });
+            }
+          });
+
+          if (notifs.length > 25) notifs = notifs.slice(0, 25);
+          saveNotifs();
+          renderNotifCenter();
+
+          if (addedCount > 0 || latestMapped) {
+            renderOrders();
+            if (soundEnabled) {
+              playOrderAlertSound();
+            }
+            if (latestMapped) {
+              showFloatingOrderAlert(latestMapped);
+              fireBrowserNotification(latestMapped);
+            }
+          }
+        }
+
+        async function pollForNewOrders() {
+          if (isPolling) return;
+          isPolling = true;
+          try {
+            const res = await fetch(`/admin/api/orders/poll?after_id=${lastKnownOrderDbId}`, {
+              headers: { "Accept": "application/json" }
+            });
+            if (res.status === 401 || res.status === 419) {
+              isPolling = false;
+              return;
+            }
+            const data = await res.json();
+            lastPollAt = Date.now();
+            if (data.success) {
+              if (Array.isArray(data.new_orders) && data.new_orders.length > 0) {
+                handleIncomingOrders(data.new_orders);
+              }
+              if (Number(data.latest_id) > lastKnownOrderDbId) {
+                lastKnownOrderDbId = Number(data.latest_id);
+              }
+              if (pollStatusEl) {
+                const nowStr = new Date().toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", second: "2-digit" });
+                pollStatusEl.innerHTML = `<span style="width:6px; height:6px; border-radius:50%; background:#16A34A; display:inline-block;"></span><span>Checked ${nowStr}</span>`;
+              }
+            }
+          } catch (e) {
+            if (pollStatusEl) {
+              pollStatusEl.innerHTML = `<span style="width:6px; height:6px; border-radius:50%; background:#F59E0B; display:inline-block;"></span><span>Retrying live check...</span>`;
+            }
+          } finally {
+            isPolling = false;
+          }
+        }
+
+        // Bind Audio Unlock on First User Interaction
+        ["pointerdown", "keydown", "touchstart"].forEach((evtName) => {
+          document.addEventListener(evtName, () => { unlockAudio(); }, { passive: true, once: false });
+        });
+
+        // Sound Mute / Unmute Button
+        soundBtn?.addEventListener("click", async () => {
+          soundEnabled = !soundEnabled;
+          localStorage.setItem(SOUND_ENABLED_KEY, soundEnabled ? "1" : "0");
+          if (soundEnabled) {
+            await unlockAudio();
+            playOrderAlertSound();
+            toast("Order Sound Enabled", "You will hear an alert when new orders arrive");
+          } else {
+            toast("Order Sound Muted", "Sound alerts paused");
+          }
+          updateSoundUI();
+        });
+
+        // Tone Selector
+        toneSelect?.addEventListener("change", async (e) => {
+          soundTone = e.target.value || "chime";
+          localStorage.setItem(SOUND_TONE_KEY, soundTone);
+          await unlockAudio();
+          playOrderAlertSound(soundTone);
+        });
+
+        // Test Sound Buttons
+        $$(".js-adm-test-sound").forEach((btn) => {
+          btn.addEventListener("click", async (e) => {
+            e.stopPropagation();
+            await unlockAudio();
+            const played = await playOrderAlertSound();
+            if (played) {
+              toast("Sound Ready!", "Order alert chime played successfully");
+            }
+          });
+        });
+
+        // Browser Desktop/Mobile Popup Notification Permission
+        browserNotifBtn?.addEventListener("click", async (e) => {
+          e.stopPropagation();
+          if (!("Notification" in window)) return;
+          const perm = await Notification.requestPermission();
+          updateBrowserNotifBtnUI();
+          if (perm === "granted") {
+            await unlockAudio();
+            playOrderAlertSound();
+            toast("Desktop Alerts Active", "You will get popup notifications for new orders");
+          } else {
+            toast("Permission Not Granted", "Allow notifications in browser site settings");
+          }
+        });
+
+        // Toggle Notification Bell Dropdown
+        notifBtn?.addEventListener("click", (e) => {
+          e.stopPropagation();
+          unlockAudio();
+          const willOpen = !notifDropdown?.classList.contains("is-open");
+          notifDropdown?.classList.toggle("is-open", willOpen);
+          notifBtn.setAttribute("aria-expanded", willOpen ? "true" : "false");
+        });
+
+        document.addEventListener("click", (e) => {
+          if (notifDropdown?.classList.contains("is-open") && !e.target.closest(".adm-notif-wrap")) {
+            notifDropdown.classList.remove("is-open");
+            notifBtn?.setAttribute("aria-expanded", "false");
+          }
+        });
+
+        // Mark All Read
+        $(".js-adm-notif-markall")?.addEventListener("click", () => {
+          notifs = notifs.map(n => ({ ...n, read: true }));
+          saveNotifs();
+          renderNotifCenter();
+        });
+
+        // Clear Feed
+        $(".js-adm-notif-clear")?.addEventListener("click", () => {
+          notifs = [];
+          saveNotifs();
+          renderNotifCenter();
+        });
+
+        // Manual Poll Now
+        $(".js-adm-poll-now")?.addEventListener("click", () => {
+          pollForNewOrders();
+        });
+
+        // Click on Notification Item -> Open Order Drawer & Mark Read
+        notifListEl?.addEventListener("click", (e) => {
+          const itemBtn = e.target.closest(".js-adm-notif-item");
+          if (!itemBtn) return;
+          const idx = Number(itemBtn.dataset.index);
+          const orderId = itemBtn.dataset.orderId;
+          if (notifs[idx]) {
+            notifs[idx].read = true;
+            saveNotifs();
+            renderNotifCenter();
+          }
+          notifDropdown?.classList.remove("is-open");
+          notifBtn?.setAttribute("aria-expanded", "false");
+          if (orderId) {
+            showTab("orders");
+            openFullOrderDrawer(orderId);
+          }
+        });
+
+        // Floating Alert Banner Actions
+        alertViewBtn?.addEventListener("click", () => {
+          alertBanner?.classList.remove("is-visible");
+          if (currentAlertOrderId) {
+            const found = notifs.find(n => n.orderId === currentAlertOrderId);
+            if (found) {
+              found.read = true;
+              saveNotifs();
+              renderNotifCenter();
+            }
+            showTab("orders");
+            openFullOrderDrawer(currentAlertOrderId);
+          }
+        });
+
+        alertCloseBtn?.addEventListener("click", () => {
+          alertBanner?.classList.remove("is-visible");
+        });
+
+        // Re-check immediately when returning to browser tab
+        document.addEventListener("visibilitychange", () => {
+          if (document.visibilityState === "visible" && (Date.now() - lastPollAt) > 5000) {
+            pollForNewOrders();
+          }
+        });
+
+        updateSoundUI();
+        updateBrowserNotifBtnUI();
+        renderNotifCenter();
+
+        // Poll every 10 seconds for live incoming orders
+        setInterval(pollForNewOrders, 10000);
+      }
+
       /* ---------- Init ---------- */
       initColumnToggles();
       renderNewSizes("winter-hoodie");
       renderOrders();
+      initOrderNotifications();
       renderProducts();
       renderCategories();
       renderCustomers();

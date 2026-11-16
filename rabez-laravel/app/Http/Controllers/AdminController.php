@@ -88,6 +88,29 @@ class AdminController extends Controller
         return response()->json(['success' => true, 'orders' => $orders]);
     }
 
+    public function pollOrders(Request $request)
+    {
+        $hasAfterParam = $request->has('after_id');
+        $afterId = max(0, (int) $request->query('after_id', 0));
+        $latestId = (int) (Order::max('id') ?? 0);
+
+        $newOrders = collect();
+        if ($hasAfterParam && $latestId > $afterId) {
+            $newOrders = Order::with('items')
+                ->where('id', '>', $afterId)
+                ->orderBy('id', 'asc')
+                ->limit(25)
+                ->get();
+        }
+
+        return response()->json([
+            'success' => true,
+            'latest_id' => $latestId,
+            'new_orders' => $newOrders,
+            'open_count' => Order::whereIn('status', ['Pending', 'Printing'])->count(),
+        ]);
+    }
+
     public function updateOrder(Request $request, $id)
     {
         $order = Order::where('id', $id)->orWhere('order_number', $id)->firstOrFail();
