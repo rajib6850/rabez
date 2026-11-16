@@ -171,6 +171,10 @@
       gap: 24px;
       align-items: start;
     }
+    .rabez-confirm-grid > div,
+    .rabez-confirm-steps > div {
+      min-width: 0;
+    }
     .rabez-confirm-panel {
       background: #F9FBFA;
       border: 1px solid #E2E8E5;
@@ -510,7 +514,7 @@
             <div class="rabez-confirm-panel">
               <div class="rabez-confirm-panel__title">
                 <span>Delivery &amp; Customer Information</span>
-                <span style="font-size:0.76rem; font-weight:700; color:#008A00; background:rgba(4,244,4,0.12); padding:3px 9px; border-radius:4px;">COD Verified</span>
+                <span style="font-size:0.76rem; font-weight:700; color:#008A00; background:rgba(4,244,4,0.12); padding:3px 9px; border-radius:4px; white-space:nowrap; flex-shrink:0;">COD Verified</span>
               </div>
               <div class="rabez-info-grid">
                 <div>
@@ -584,7 +588,7 @@
             <div class="rabez-summary-box">
               <div class="rabez-confirm-panel__title" style="margin-bottom:6px;">
                 <span>Order Summary ({{ $order->items->sum('qty') }} {{ $order->items->sum('qty') === 1 ? 'Item' : 'Items' }})</span>
-                <span style="font-size:0.78rem; color:#6B7570; font-weight:700;">#{{ $order->order_number }}</span>
+                <span style="font-size:0.78rem; color:#6B7570; font-weight:700; white-space:nowrap; flex-shrink:0;">#{{ $order->order_number }}</span>
               </div>
 
               <div>
@@ -632,7 +636,7 @@
 
               <div class="rabez-summary-grand">
                 <span>Total Payable (COD)</span>
-                <span style="color:#008A00;">৳ {{ number_format($order->total) }}</span>
+                <span style="color:#008A00; white-space:nowrap; flex-shrink:0;">৳ {{ number_format($order->total) }}</span>
               </div>
             </div>
 
@@ -656,9 +660,14 @@
   <script>
     document.addEventListener("DOMContentLoaded", function () {
       try {
-        localStorage.removeItem("rabez_wc_cart_v1");
+        if (window.RABEZ_STORE && typeof window.RABEZ_STORE.clearCart === "function") {
+          window.RABEZ_STORE.clearCart();
+        } else {
+          localStorage.setItem("rabez_wc_cart_v1", "[]");
+        }
         localStorage.removeItem("rabez_applied_coupon_v1");
         document.querySelectorAll(".js-cart-count").forEach((el) => (el.textContent = "0"));
+        document.querySelectorAll(".js-cart-subtotal").forEach((el) => (el.textContent = "৳ 0"));
       } catch (e) {}
     });
   </script>

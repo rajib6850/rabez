@@ -448,12 +448,17 @@
             localStorage.setItem("rabez_orders_v1", JSON.stringify(savedOrders));
 
             // Clear Cart & Coupon
-            localStorage.removeItem("rabez_wc_cart_v1");
+            if (window.RABEZ_STORE && typeof window.RABEZ_STORE.clearCart === 'function') {
+              window.RABEZ_STORE.clearCart();
+            } else {
+              localStorage.setItem("rabez_wc_cart_v1", "[]");
+            }
             localStorage.removeItem("rabez_applied_coupon_v1");
             if (window.RABEZ_STORE && typeof window.RABEZ_STORE.removeAppliedCoupon === 'function') {
               window.RABEZ_STORE.removeAppliedCoupon();
             }
             document.querySelectorAll(".js-cart-count").forEach((el) => (el.textContent = "0"));
+            document.querySelectorAll(".js-cart-subtotal").forEach((el) => (el.textContent = "৳ 0"));
 
             // Analytics: Meta Pixel Purchase event
             if (window.RABEZ_ANALYTICS) {

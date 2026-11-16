@@ -466,6 +466,11 @@
     saveCart();
   }
 
+  function clearCart() {
+    cart = [];
+    saveCart();
+  }
+
   function getCartTotals() {
     const count = cart.reduce((acc, item) => acc + item.qty, 0);
     const subtotal = cart.reduce((acc, item) => acc + item.price * item.qty, 0);
@@ -2006,6 +2011,7 @@
   // Expose API globally for RABEZ UI components and Livewire/SPA integrations
   window.RABEZ_STORE = {
     addToCart,
+    clearCart,
     toggleWishlist,
     renderWishlistPage,
     openCartDrawer,
