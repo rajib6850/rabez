@@ -682,8 +682,8 @@
     window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;
   </script>
   @endif
-  <script src="{{ asset('assets/js/cart.js') }}?v=4.3"></script>
-  <script src="{{ asset('assets/js/app.js') }}?v=3.2"></script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=4.4"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=3.3"></script>
 
   @stack('scripts')
 </body>

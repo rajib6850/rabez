@@ -144,6 +144,9 @@ class StorefrontController extends Controller
             'cart_items.*.size' => 'required|string',
             'cart_items.*.qty' => 'required|integer|min:1',
             'cart_items.*.price' => 'required|numeric',
+            'cart_items.*.variant_id' => 'nullable|integer',
+            'cart_items.*.variant_title' => 'nullable|string|max:191',
+            'cart_items.*.image' => 'nullable|string|max:500',
             'cart_items.*.custom_name' => 'nullable|string|max:50',
             'cart_items.*.custom_number' => 'nullable|string|max:10',
         ], [
@@ -226,11 +229,16 @@ class StorefrontController extends Controller
                     $resolvedProductId = Product::where('name', trim((string) $item['name']))->value('id');
                 }
 
+                $variantId = !empty($item['variant_id']) ? (int) $item['variant_id'] : null;
+                $variantTitle = !empty($item['variant_title']) ? strip_tags((string) $item['variant_title']) : ($item['size'] ?? null);
+
                 OrderItem::create([
                     'order_id' => $createdOrder->id,
                     'product_id' => $resolvedProductId,
+                    'variant_id' => $variantId,
+                    'variant_title' => $variantTitle,
                     'product_name' => strip_tags($item['name']),
-                    'size' => $item['size'],
+                    'size' => $variantTitle ?: ($item['size'] ?? 'L'),
                     'qty' => $item['qty'],
                     'unit_price' => $item['price'],
                     'total_price' => $item['price'] * $item['qty'],

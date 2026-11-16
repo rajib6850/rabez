@@ -363,6 +363,11 @@
     let id, size, qty = 1, customName = "", customNumber = "";
     let silentToast = false;
     let customToast = null;
+    let variantId = null;
+    let variantTitle = "";
+    let customPrice = null;
+    let customImage = "";
+    let customSku = "";
 
     if (typeof arg1 === "object" && arg1 !== null) {
       id = Number(arg1.id);
@@ -372,6 +377,13 @@
       customNumber = arg1.customNumber || "";
       silentToast = Boolean(arg1.silentToast);
       if (arg1.customToast) customToast = arg1.customToast;
+      if (arg1.variantId) variantId = Number(arg1.variantId);
+      if (arg1.variantTitle) variantTitle = String(arg1.variantTitle);
+      if (arg1.price !== undefined && arg1.price !== null && !isNaN(Number(arg1.price))) {
+        customPrice = Number(arg1.price);
+      }
+      if (arg1.image) customImage = arg1.image;
+      if (arg1.sku) customSku = arg1.sku;
     } else {
       id = Number(arg1);
       size = arg2;
@@ -381,6 +393,13 @@
         customNumber = arg4.customNumber || "";
         silentToast = Boolean(arg4.silentToast);
         if (arg4.customToast) customToast = arg4.customToast;
+        if (arg4.variantId) variantId = Number(arg4.variantId);
+        if (arg4.variantTitle) variantTitle = String(arg4.variantTitle);
+        if (arg4.price !== undefined && arg4.price !== null && !isNaN(Number(arg4.price))) {
+          customPrice = Number(arg4.price);
+        }
+        if (arg4.image) customImage = arg4.image;
+        if (arg4.sku) customSku = arg4.sku;
       }
     }
 
@@ -388,23 +407,25 @@
     if (!product && typeof arg1 === "object" && arg1 !== null) {
       product = {
         id: id,
-        sku: arg1.sku || ("RBZ-" + id),
+        sku: customSku || arg1.sku || ("RBZ-" + id),
         name: arg1.name || "Football Jersey",
-        price: Number(arg1.price) || 1150,
-        image: resolveImageURL(arg1.image),
-        defaultSize: size || "L"
+        price: customPrice !== null ? customPrice : (Number(arg1.price) || 1150),
+        image: resolveImageURL(customImage || arg1.image),
+        defaultSize: size || variantTitle || "L"
       };
       window.RABEZ_PRODUCTS = window.RABEZ_PRODUCTS || [];
       window.RABEZ_PRODUCTS.push(product);
     }
     if (!product) return;
 
+    const baseItemPrice = customPrice !== null ? customPrice : Number(product.price);
+    const itemSize = variantTitle || size || product.defaultSize || "L";
     const allowCustomPrint = product.hasCustomPrint === true;
     const cleanName = allowCustomPrint ? (customName || "").trim().toUpperCase() : "";
     const cleanNum = allowCustomPrint ? (customNumber || "").trim() : "";
     const hasCustom = Boolean(allowCustomPrint && (cleanName || cleanNum));
-    const unitPrice = product.price + (hasCustom ? getCustomPrintFee() : 0);
-    const key = `${product.id}_${size}_${cleanName}_${cleanNum}`;
+    const unitPrice = baseItemPrice + (hasCustom ? getCustomPrintFee() : 0);
+    const key = `${product.id}_${variantId || itemSize}_${cleanName}_${cleanNum}`;
 
     const existing = cart.find((item) => item.key === key);
     if (existing) {
@@ -413,26 +434,29 @@
       cart.push({
         key,
         id: product.id,
-        sku: product.sku,
+        variantId: variantId,
+        variantTitle: variantTitle || (variantId ? itemSize : ""),
+        sku: customSku || product.sku,
         name: product.name,
-        size: size || product.defaultSize || "L",
+        size: itemSize,
         customName: cleanName,
         customNumber: cleanNum,
         price: unitPrice,
         qty: Number(qty),
-        image: resolveImageURL(product.image)
+        image: resolveImageURL(customImage || product.image)
       });
     }
 
     saveCart();
     if (window.RABEZ_ANALYTICS && typeof window.RABEZ_ANALYTICS.trackAddToCart === "function") {
-      window.RABEZ_ANALYTICS.trackAddToCart(product, size);
+      window.RABEZ_ANALYTICS.trackAddToCart(product, itemSize);
     }
     if (!silentToast) {
       if (customToast && customToast.title) {
         showToast(customToast.title, customToast.message || "Added to your shopping bag.", customToast.action || null);
       } else {
-        showToast(`${product.name} (Size ${size})`, hasCustom ? `With Custom Print: ${cleanName} #${cleanNum}` : `Added to your bag — ${formatBDT(unitPrice)}`);
+        const itemLabel = variantTitle ? `${product.name} (${variantTitle})` : `${product.name} (Size ${itemSize})`;
+        showToast(itemLabel, hasCustom ? `With Custom Print: ${cleanName} #${cleanNum}` : `Added to your bag — ${formatBDT(unitPrice)}`);
       }
     }
   }
@@ -487,7 +511,7 @@
                 <div style="flex:1; min-width:0;">
                   <div class="rabez-cart-item__title" style="font-weight:700; font-size:13px; color:#FFFFFF; line-height:1.3; margin-bottom:4px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;">${item.name}</div>
                   <div class="rabez-cart-item__meta" style="display:flex; align-items:center; gap:8px; margin:4px 0;">
-                    <span style="font-size:11.5px; color:#9CA3AF;">Size: <strong style="color:#04F404;">${item.size}</strong></span>
+                    <span style="font-size:11.5px; color:#9CA3AF;">${item.variantTitle ? 'Variant:' : 'Size:'} <strong style="color:#04F404;">${item.variantTitle || item.size}</strong></span>
                     <div class="rabez-cart-qty-stepper" style="display:inline-flex; align-items:center; background:#18221D; border:1px solid #2B3830; border-radius:5px; height:24px; padding:0 2px;">
                       <button type="button" class="js-cart-qty-btn js-cart-qty-minus" data-key="${item.key}" title="Decrease quantity" style="width:22px; height:100%; background:none; border:none; color:#CBD5E1; cursor:pointer; font-size:13px; font-weight:700; display:flex; align-items:center; justify-content:center; line-height:1; transition:color 0.15s;" onmouseover="this.style.color='#EF4444'" onmouseout="this.style.color='#CBD5E1'">&minus;</button>
                       <span style="font-size:11.5px; font-weight:800; color:#FFFFFF; min-width:18px; text-align:center;">${item.qty}</span>
@@ -1078,7 +1102,7 @@
     }
     const lines = cart.map(
       (item, idx) =>
-        `${idx + 1}. ${item.name} | Size: ${item.size} | Qty: ${item.qty}${
+        `${idx + 1}. ${item.name} | ${item.variantTitle ? item.variantTitle : 'Size: ' + item.size} | Qty: ${item.qty}${
           item.customName || item.customNumber ? ` | Print: ${item.customName} #${item.customNumber}` : ""
         } = ৳${item.price * item.qty}`
     );
@@ -1331,7 +1355,7 @@
           <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #E4E7E4; font-size:0.88rem;">
             <div>
               <strong>${item.name}</strong>
-              <div style="font-size:0.76rem; color:#6E7672;">Size: ${item.size} &times; ${item.qty} ${
+              <div style="font-size:0.76rem; color:#6E7672;">${item.variantTitle ? item.variantTitle : 'Size: ' + item.size} &times; ${item.qty} ${
             item.customName ? `| Print: ${item.customName} #${item.customNumber}` : ""
           }</div>
             </div>
@@ -2030,10 +2054,10 @@
           cartSanitized = true;
           return {
             ...item,
-            key: `${prod.id}_${item.size}__`,
+            key: `${prod.id}_${item.variantId || item.size}__`,
             customName: "",
             customNumber: "",
-            price: Number(prod.price)
+            price: item.price ? (item.price - getCustomPrintFee()) : Number(prod.price)
           };
         }
         return item;

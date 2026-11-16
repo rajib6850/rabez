@@ -13,6 +13,24 @@
     $allSizes = $hasVariants ? $product->variants->pluck('size')->toArray() : $defaultSet;
     $sizes = $hasVariants ? $product->variants->where('is_in_stock', true)->pluck('size')->toArray() : $allSizes;
     $defaultSize = in_array('L', $sizes, true) ? 'L' : ($sizes[0] ?? '');
+    $shopifyOptions = is_array($product->options) ? $product->options : (json_decode($product->options ?? '[]', true) ?: []);
+    $hasShopifyOptions = (bool) $product->has_variants && !empty($shopifyOptions);
+    $variantsList = $product->variants->map(function ($v) use ($product) {
+      return [
+        'id' => $v->id,
+        'title' => $v->title ?: ($v->size ?: 'Default'),
+        'option1' => $v->option1 ?: ($v->size ?: ''),
+        'option2' => $v->option2 ?: '',
+        'option3' => $v->option3 ?: '',
+        'size' => $v->size ?: $v->option1,
+        'price' => (float) ($v->price ?? $product->price),
+        'regular_price' => (float) ($v->regular_price ?? ($product->regular_price ?? ($product->price + 200))),
+        'stock_qty' => $v->stock_qty,
+        'is_in_stock' => (bool) $v->is_in_stock,
+        'sku' => $v->sku ?: ($product->sku . '-' . $v->id),
+        'image' => $v->image ? asset($v->image) : null,
+      ];
+    })->values();
   @endphp
 
   <!-- WooCommerce Single Product Container -->
@@ -47,14 +65,18 @@
 
           <div class="rabez-summary__price-row">
             <span class="price rabez-summary__price js-sp-price-display">৳ {{ number_format($product->price) }}</span>
-            @if($product->regular_price && $product->regular_price > $product->price)
-              <del style="color:#7D8782; font-size:1.15rem; font-weight:600; margin-left:8px;">৳ {{ number_format($product->regular_price) }}</del>
-            @endif
-            @if($product->is_ready_stock)
-              <span class="rabez-summary__stock">&#10003; Ready Stock</span>
-            @else
-              <span class="rabez-summary__stock" style="background:rgba(239,68,68,0.15); color:#EF4444; border-color:rgba(239,68,68,0.3);">Pre-Order Only</span>
-            @endif
+            <span class="js-sp-regular-price-wrap">
+              @if($product->regular_price && $product->regular_price > $product->price)
+                <del class="js-sp-regular-price" style="color:#7D8782; font-size:1.15rem; font-weight:600; margin-left:8px;">৳ {{ number_format($product->regular_price) }}</del>
+              @endif
+            </span>
+            <span class="rabez-summary__stock js-sp-stock-badge" @if(!$product->is_ready_stock) style="background:rgba(239,68,68,0.15); color:#EF4444; border-color:rgba(239,68,68,0.3);" @endif>
+              @if($product->is_ready_stock)
+                &#10003; Ready Stock
+              @else
+                Pre-Order Only
+              @endif
+            </span>
           </div>
 
           <p class="rabez-summary__desc js-sp-desc">
@@ -68,25 +90,57 @@
             </div>
           @endif
 
-          <!-- Size Swatches (pa_size) -->
-          <div class="rabez-variation-block variations_form">
-            <div class="rabez-variation-header">
-              <span>Select Jersey Size: <strong id="js-selected-size-label" style="color:{{ $defaultSize ? 'var(--rabez-neon)' : '#EF4444' }};">{{ $defaultSize ?: 'Out of Stock' }}</strong></span>
-              <button type="button" class="rabez-size-chart-link js-open-size-chart-modal" style="background:none; border:none; color:#04F404; text-decoration:underline; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:0;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                  <path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path>
-                  <path d="M14.5 4.5l5 5"></path>
-                </svg>
-                <span>Size Chart</span>
-              </button>
-            </div>
-            <div class="rabez-size-swatches js-sp-swatches">
-              @foreach($allSizes as $s)
-                @php $isAvail = in_array($s, $sizes, true); @endphp
-                <button type="button" class="rabez-size-swatch {{ ($isAvail && $s === $defaultSize) ? 'is-selected' : '' }} {{ !$isAvail ? 'is-out-of-stock' : '' }}" data-size="{{ $s }}" aria-pressed="{{ ($isAvail && $s === $defaultSize) ? 'true' : 'false' }}" @if(!$isAvail) disabled title="Out of stock" @endif>{{ $s }}</button>
+          @if($hasShopifyOptions)
+            <!-- Shopify Multi-Option Variations -->
+            <div class="rabez-shopify-options js-sp-shopify-options" style="margin:18px 0; display:flex; flex-direction:column; gap:16px;">
+              @foreach($shopifyOptions as $optIdx => $opt)
+                @php $firstVal = $opt['values'][0] ?? ''; @endphp
+                <div class="rabez-option-row js-sp-option-row" data-option-idx="{{ $optIdx }}" data-option-name="{{ $opt['name'] }}">
+                  <div class="rabez-variation-header" style="margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <span style="font-size:13.5px; font-weight:700; color:#D1D5DB;">
+                      Select {{ $opt['name'] }}: <strong class="js-sp-opt-val-label" style="color:var(--rabez-neon);">{{ $firstVal }}</strong>
+                    </span>
+                    @if(stripos($opt['name'], 'size') !== false)
+                      <button type="button" class="rabez-size-chart-link js-open-size-chart-modal" style="background:none; border:none; color:#04F404; text-decoration:underline; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:0;">
+                        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                          <path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path>
+                          <path d="M14.5 4.5l5 5"></path>
+                        </svg>
+                        <span>Size Chart</span>
+                      </button>
+                    @endif
+                  </div>
+                  <div class="rabez-option-pills js-sp-option-pills" style="display:flex; flex-wrap:wrap; gap:8px;">
+                    @foreach($opt['values'] as $vIdx => $val)
+                      <button type="button" class="rabez-option-pill js-sp-opt-btn {{ $vIdx === 0 ? 'is-selected' : '' }}" data-option-idx="{{ $optIdx }}" data-value="{{ $val }}" style="padding:8px 16px; border-radius:6px; border:1px solid {{ $vIdx === 0 ? 'var(--rabez-neon)' : '#2B332E' }}; background:{{ $vIdx === 0 ? 'var(--rabez-neon)' : '#121614' }}; color:{{ $vIdx === 0 ? '#000000' : '#FFFFFF' }}; font-weight:700; font-size:13px; cursor:pointer; transition:all 0.15s ease;">
+                        {{ $val }}
+                      </button>
+                    @endforeach
+                  </div>
+                </div>
               @endforeach
             </div>
-          </div>
+          @else
+            <!-- Standard Size Swatches (pa_size) -->
+            <div class="rabez-variation-block variations_form">
+              <div class="rabez-variation-header">
+                <span>Select Jersey Size: <strong id="js-selected-size-label" style="color:{{ $defaultSize ? 'var(--rabez-neon)' : '#EF4444' }};">{{ $defaultSize ?: 'Out of Stock' }}</strong></span>
+                <button type="button" class="rabez-size-chart-link js-open-size-chart-modal" style="background:none; border:none; color:#04F404; text-decoration:underline; font-weight:700; font-size:13px; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:0;">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path>
+                    <path d="M14.5 4.5l5 5"></path>
+                  </svg>
+                  <span>Size Chart</span>
+                </button>
+              </div>
+              <div class="rabez-size-swatches js-sp-swatches">
+                @foreach($allSizes as $s)
+                  @php $isAvail = in_array($s, $sizes, true); @endphp
+                  <button type="button" class="rabez-size-swatch {{ ($isAvail && $s === $defaultSize) ? 'is-selected' : '' }} {{ !$isAvail ? 'is-out-of-stock' : '' }}" data-size="{{ $s }}" aria-pressed="{{ ($isAvail && $s === $defaultSize) ? 'true' : 'false' }}" @if(!$isAvail) disabled title="Out of stock" @endif>{{ $s }}</button>
+                @endforeach
+              </div>
+            </div>
+          @endif
 
           @if($product->has_custom_print)
             <!-- Optional Custom Name & Number Addon -->
@@ -814,12 +868,19 @@
   @push('scripts')
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      const basePrice = {{ (float) $product->price }};
+      let basePrice = {{ (float) $product->price }};
       const allowCustomPrint = {{ $product->has_custom_print ? 'true' : 'false' }};
       const customPrintFee = Number({{ intval($customPrintFee ?? ($settings['custom_print_fee'] ?? 250)) }});
       let hasCustomPrint = false;
       let currentSize = "{{ $defaultSize }}";
       let qty = 1;
+
+      // Shopify Multi-Option Variations Setup
+      const hasShopifyOptions = {{ $hasShopifyOptions ? 'true' : 'false' }};
+      const shopifyOptions = @json($shopifyOptions);
+      const productVariants = @json($variantsList);
+      let selectedOptions = hasShopifyOptions ? shopifyOptions.map(o => (o.values && o.values.length ? o.values[0] : '')) : [];
+      let currentVariant = null;
 
       const mainImg = document.querySelector(".js-sp-main-img");
       const thumbBtns = document.querySelectorAll(".js-sp-thumb-btn");
@@ -847,6 +908,134 @@
         if (btnPrice) {
           btnPrice.textContent = `৳ ${totalPrice.toLocaleString("en-IN")}`;
         }
+      }
+
+      function resolveSelectedVariant() {
+        if (!hasShopifyOptions) return;
+
+        // Find variant matching selected option values
+        const matched = productVariants.find(v => {
+          const m1 = !shopifyOptions[0] || String(v.option1).trim().toLowerCase() === String(selectedOptions[0] || '').trim().toLowerCase();
+          const m2 = !shopifyOptions[1] || String(v.option2).trim().toLowerCase() === String(selectedOptions[1] || '').trim().toLowerCase();
+          const m3 = !shopifyOptions[2] || String(v.option3).trim().toLowerCase() === String(selectedOptions[2] || '').trim().toLowerCase();
+          return m1 && m2 && m3;
+        });
+
+        currentVariant = matched || null;
+
+        if (currentVariant) {
+          basePrice = Number(currentVariant.price || {{ (float) $product->price }});
+          currentSize = currentVariant.title || selectedOptions.join(' / ');
+
+          // Update SKU
+          const skuEl = document.querySelector(".js-sp-sku");
+          if (skuEl && currentVariant.sku) {
+            skuEl.textContent = currentVariant.sku;
+          }
+
+          // Update Regular Price
+          const regWrap = document.querySelector(".js-sp-regular-price-wrap");
+          if (regWrap) {
+            if (currentVariant.regular_price && currentVariant.regular_price > currentVariant.price) {
+              regWrap.innerHTML = `<del class="js-sp-regular-price" style="color:#7D8782; font-size:1.15rem; font-weight:600; margin-left:8px;">৳ ${Number(currentVariant.regular_price).toLocaleString('en-IN')}</del>`;
+            } else {
+              regWrap.innerHTML = "";
+            }
+          }
+
+          // Update Stock Badge
+          const stockBadge = document.querySelector(".js-sp-stock-badge");
+          if (stockBadge) {
+            if (!currentVariant.is_in_stock) {
+              stockBadge.textContent = "Sold Out";
+              stockBadge.style.background = "rgba(239, 68, 68, 0.15)";
+              stockBadge.style.color = "#EF4444";
+              stockBadge.style.borderColor = "rgba(239, 68, 68, 0.3)";
+            } else if (currentVariant.stock_qty && currentVariant.stock_qty > 0) {
+              stockBadge.textContent = `✓ In Stock (${currentVariant.stock_qty} left)`;
+              stockBadge.style.background = "rgba(4, 244, 4, 0.15)";
+              stockBadge.style.color = "var(--rabez-neon)";
+              stockBadge.style.borderColor = "rgba(4, 244, 4, 0.3)";
+            } else {
+              stockBadge.textContent = "✓ Ready Stock";
+              stockBadge.style.background = "rgba(4, 244, 4, 0.15)";
+              stockBadge.style.color = "var(--rabez-neon)";
+              stockBadge.style.borderColor = "rgba(4, 244, 4, 0.3)";
+            }
+          }
+
+          // Update Add to Bag button
+          if (addBtn) {
+            const btnSpan = addBtn.querySelector("span");
+            if (!currentVariant.is_in_stock) {
+              addBtn.disabled = true;
+              addBtn.style.opacity = "0.5";
+              addBtn.style.cursor = "not-allowed";
+              if (btnSpan) btnSpan.textContent = "Sold Out";
+            } else {
+              addBtn.disabled = false;
+              addBtn.style.opacity = "1";
+              addBtn.style.cursor = "pointer";
+              if (btnSpan) btnSpan.textContent = "Add to Bag";
+            }
+          }
+
+          // If variant has image, switch main image
+          if (currentVariant.image && mainImg) {
+            mainImg.src = currentVariant.image;
+          }
+        } else {
+          // Combination not available
+          const stockBadge = document.querySelector(".js-sp-stock-badge");
+          if (stockBadge) {
+            stockBadge.textContent = "Unavailable";
+            stockBadge.style.background = "rgba(239, 68, 68, 0.15)";
+            stockBadge.style.color = "#EF4444";
+            stockBadge.style.borderColor = "rgba(239, 68, 68, 0.3)";
+          }
+          if (addBtn) {
+            addBtn.disabled = true;
+            addBtn.style.opacity = "0.5";
+            addBtn.style.cursor = "not-allowed";
+            const btnSpan = addBtn.querySelector("span");
+            if (btnSpan) btnSpan.textContent = "Unavailable";
+          }
+        }
+
+        updatePriceDisplay();
+      }
+
+      // Shopify Option Pill Clicks
+      if (hasShopifyOptions) {
+        document.querySelectorAll(".js-sp-option-row").forEach(row => {
+          const optIdx = parseInt(row.dataset.optionIdx, 10);
+          const pills = row.querySelectorAll(".js-sp-opt-btn");
+          const valLabel = row.querySelector(".js-sp-opt-val-label");
+
+          pills.forEach(pill => {
+            pill.addEventListener("click", () => {
+              pills.forEach(p => {
+                p.classList.remove("is-selected");
+                p.style.background = "#121614";
+                p.style.color = "#FFFFFF";
+                p.style.borderColor = "#2B332E";
+              });
+              pill.classList.add("is-selected");
+              pill.style.background = "var(--rabez-neon)";
+              pill.style.color = "#000000";
+              pill.style.borderColor = "var(--rabez-neon)";
+
+              const val = pill.dataset.value;
+              selectedOptions[optIdx] = val;
+              if (valLabel) valLabel.textContent = val;
+
+              resolveSelectedVariant();
+            });
+          });
+        });
+
+        // Initialize variant on load
+        resolveSelectedVariant();
       }
 
       // 1. Gallery Thumbnail clicks
@@ -1015,7 +1204,13 @@
 
       // 6. Add to Bag
       addBtn?.addEventListener("click", () => {
-        if (!currentSize) {
+        if (hasShopifyOptions && (!currentVariant || !currentVariant.is_in_stock)) {
+          if (window.RABEZ_POPUP) {
+            window.RABEZ_POPUP.alert("Sorry, this selected variation is currently unavailable or out of stock.", { type: "warning", title: "Out of Stock" });
+          }
+          return;
+        }
+        if (!hasShopifyOptions && !currentSize) {
           if (window.RABEZ_POPUP) {
             window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
           }
@@ -1025,14 +1220,22 @@
         const customName = (allowCustomPrint && hasCustomPrint) ? (customNameInput?.value.trim().toUpperCase() || "") : "";
         const customNum = (allowCustomPrint && hasCustomPrint) ? (customNumInput?.value.trim() || "") : "";
 
+        const finalVariantTitle = currentVariant ? currentVariant.title : currentSize;
+        const finalVariantId = currentVariant ? currentVariant.id : null;
+        const finalSku = (currentVariant && currentVariant.sku) ? currentVariant.sku : currentProductData.sku;
+        const finalPrice = basePrice;
+        const finalImage = (currentVariant && currentVariant.image) ? currentVariant.image : currentProductData.image;
+
         if (window.RABEZ_STORE && typeof window.RABEZ_STORE.addToCart === "function") {
           window.RABEZ_STORE.addToCart({
             id: prodId,
-            sku: currentProductData.sku,
+            sku: finalSku,
             name: currentProductData.name,
-            price: currentProductData.price,
-            image: currentProductData.image,
-            size: currentSize,
+            price: finalPrice,
+            variantId: finalVariantId,
+            variantTitle: finalVariantTitle,
+            image: finalImage,
+            size: finalVariantTitle,
             qty: qty,
             customName: customName,
             customNumber: customNum
@@ -1123,7 +1326,8 @@
       document.querySelectorAll(".js-quick-select").forEach((btn) => {
         btn.addEventListener("click", () => {
           const size = btn.dataset.size;
-          const targetBtn = document.querySelector(`.js-sp-swatches .rabez-size-swatch[data-size="${size}"]`);
+          const targetBtn = document.querySelector(`.js-sp-swatches .rabez-size-swatch[data-size="${size}"]`) ||
+                            document.querySelector(`.js-sp-option-row[data-option-name*="Size" i] .js-sp-opt-btn[data-value="${size}"]`);
           if (targetBtn && !targetBtn.disabled) {
             targetBtn.click();
             syncSizeChartSelection(size);
@@ -1137,7 +1341,8 @@
         row.style.cursor = "pointer";
         row.addEventListener("click", () => {
           const size = row.dataset.rowSize;
-          const targetBtn = document.querySelector(`.js-sp-swatches .rabez-size-swatch[data-size="${size}"]`);
+          const targetBtn = document.querySelector(`.js-sp-swatches .rabez-size-swatch[data-size="${size}"]`) ||
+                            document.querySelector(`.js-sp-option-row[data-option-name*="Size" i] .js-sp-opt-btn[data-value="${size}"]`);
           if (targetBtn && !targetBtn.disabled) {
             targetBtn.click();
             syncSizeChartSelection(size);
@@ -1147,7 +1352,13 @@
 
       // 7. WhatsApp Order Direct
       waBtn?.addEventListener("click", () => {
-        if (!currentSize) {
+        if (hasShopifyOptions && (!currentVariant || !currentVariant.is_in_stock)) {
+          if (window.RABEZ_POPUP) {
+            window.RABEZ_POPUP.alert("Sorry, this selected variation is currently unavailable or out of stock.", { type: "warning", title: "Out of Stock" });
+          }
+          return;
+        }
+        if (!hasShopifyOptions && !currentSize) {
           if (window.RABEZ_POPUP) {
             window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
           }
@@ -1155,10 +1366,13 @@
         }
         const customName = (allowCustomPrint && hasCustomPrint) ? (customNameInput?.value.trim().toUpperCase() || "") : "";
         const customNum = (allowCustomPrint && hasCustomPrint) ? (customNumInput?.value.trim() || "") : "";
+        const finalVariantTitle = currentVariant ? currentVariant.title : currentSize;
+        const finalSku = (currentVariant && currentVariant.sku) ? currentVariant.sku : currentProductData.sku;
+
         let msg = `Hello RABEZ! I want to order this jersey:\n\n`;
         msg += `Product: {{ $product->name }}\n`;
-        msg += `SKU: {{ $product->sku }}\n`;
-        msg += `Size: ${currentSize}\n`;
+        msg += `SKU: ${finalSku}\n`;
+        msg += `${hasShopifyOptions ? 'Variation' : 'Size'}: ${finalVariantTitle}\n`;
         msg += `Quantity: ${qty}\n`;
         if (allowCustomPrint && hasCustomPrint && (customName || customNum)) {
           msg += `Custom Print: ${customName} #${customNum} (+৳${customPrintFee})\n`;

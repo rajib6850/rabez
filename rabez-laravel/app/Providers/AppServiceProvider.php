@@ -105,6 +105,23 @@ class AppServiceProvider extends ServiceProvider
                                 ? (str_starts_with($p->image, 'http') ? $p->image : asset(ltrim($p->image, '/')))
                                 : asset('assets/images/products/real-madrid-home-hs.jpg');
 
+                            $variantsList = $variants->map(function ($v) use ($p) {
+                                return [
+                                    'id' => (int) $v->id,
+                                    'title' => $v->title ?: ($v->size ?: 'Standard'),
+                                    'option1' => $v->option1 ?: ($v->size ?: 'Standard'),
+                                    'option2' => $v->option2,
+                                    'option3' => $v->option3,
+                                    'size' => $v->size ?: ($v->option2 ?: ($v->option1 ?: $v->title)),
+                                    'price' => (float) ($v->price ?? $p->price),
+                                    'regularPrice' => $v->regular_price ? (float) $v->regular_price : ($p->regular_price ? (float) $p->regular_price : null),
+                                    'sku' => $v->sku ?: ($p->sku . '-' . ($v->size ?: $v->id)),
+                                    'stockQty' => (int) ($v->stock_qty ?? 25),
+                                    'isInStock' => (bool) $v->is_in_stock,
+                                    'image' => $v->image ? (str_starts_with($v->image, 'http') ? $v->image : asset(ltrim($v->image, '/'))) : null,
+                                ];
+                            })->values()->all();
+
                             return [
                                 'id' => (int) $p->id,
                                 'sku' => $p->sku ?: ('RBZ-' . $p->id),
@@ -122,6 +139,9 @@ class AppServiceProvider extends ServiceProvider
                                 'sizes' => $sizes,
                                 'allSizes' => $allSizes,
                                 'defaultSize' => in_array('L', $sizes, true) ? 'L' : ($sizes[0] ?? ($allSizes[0] ?? '')),
+                                'hasVariants' => (bool) $p->has_variants,
+                                'options' => is_array($p->options) ? $p->options : (json_decode($p->options ?? '[]', true) ?: []),
+                                'variants' => $variantsList,
                                 'image' => $image,
                                 'gallery' => $gallery,
                                 'shortDesc' => $p->short_desc ?: $p->name,

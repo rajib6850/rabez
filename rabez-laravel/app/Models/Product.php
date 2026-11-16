@@ -13,6 +13,8 @@ class Product extends Model
     protected $casts = [
         'gallery' => 'array',
         'badges' => 'array',
+        'options' => 'array',
+        'has_variants' => 'boolean',
         'is_featured' => 'boolean',
         'is_ready_stock' => 'boolean',
         'has_custom_print' => 'boolean',

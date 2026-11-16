@@ -2265,6 +2265,88 @@
       }
     }
 
+    /* Shopify-Style Product Variants */
+    .adm-shopify-box {
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: 10px;
+      padding: 16px;
+      margin-top: 14px;
+    }
+    .adm-opt-card {
+      background: var(--adm-subtle);
+      border: 1px solid var(--adm-border);
+      border-radius: 8px;
+      padding: 12px 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .adm-opt-tags-wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      align-items: center;
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border-strong);
+      border-radius: 6px;
+      padding: 6px 8px;
+      min-height: 38px;
+    }
+    .adm-tag-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      background: rgba(34, 197, 94, 0.15);
+      color: #22C55E;
+      border: 1px solid rgba(34, 197, 94, 0.3);
+      padding: 3px 8px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 700;
+    }
+    .adm-tag-chip__del {
+      background: none;
+      border: none;
+      color: #EF4444;
+      cursor: pointer;
+      padding: 0;
+      font-size: 13px;
+      line-height: 1;
+      display: inline-flex;
+      align-items: center;
+    }
+    .adm-tag-input-bare {
+      border: none;
+      background: transparent;
+      outline: none;
+      color: var(--adm-text);
+      font-size: 12.5px;
+      flex: 1;
+      min-width: 120px;
+      padding: 2px 4px;
+    }
+    .adm-matrix-table th, .adm-matrix-table td {
+      border-bottom: 1px solid var(--adm-border);
+      padding: 8px 10px;
+      vertical-align: middle;
+    }
+    .adm-matrix-table tr:last-child td {
+      border-bottom: none;
+    }
+    .adm-matrix-input {
+      background: var(--adm-subtle);
+      border: 1px solid var(--adm-border-strong);
+      color: var(--adm-text);
+      border-radius: 5px;
+      padding: 5px 8px;
+      font-size: 12px;
+      width: 100%;
+    }
+    .adm-matrix-input:focus {
+      border-color: #22C55E;
+      outline: none;
+    }
   </style>
 </head>
 <body class="adm">
@@ -2853,10 +2935,82 @@
                     </label>
                   </div>
 
-                  <div class="adm-field adm-field--full">
-                    <span class="adm-label">Sizes in stock</span>
-                    <div class="adm-sizes" id="adm-new-sizes"></div>
-                    <span class="adm-hint">Tap a size to mark it out of stock.</span>
+                  <!-- Product Variants (Shopify Style) -->
+                  <div class="adm-field adm-field--full adm-shopify-box" id="adm-add-variants-wrapper">
+                    <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+                      <div>
+                        <div style="display:flex; align-items:center; gap:8px;">
+                          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                          <span class="adm-label" style="margin:0; font-weight:800; font-size:14px; color:var(--adm-text);">Product Variants &amp; Options</span>
+                        </div>
+                        <div style="font-size:11.5px; color:var(--adm-muted); margin-top:2px;">Like Shopify: Add options (Size, Edition, Sleeve) with custom price &amp; stock per variant.</div>
+                      </div>
+                      <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; background:var(--adm-subtle); padding:6px 12px; border-radius:6px; border:1px solid var(--adm-border); user-select:none;">
+                        <input type="checkbox" id="adm-add-has-variants" class="js-variants-toggle" style="width:16px; height:16px; accent-color:#04F404; cursor:pointer;">
+                        <span style="font-size:12.5px; font-weight:700; color:var(--adm-text);">This product has options</span>
+                      </label>
+                    </div>
+
+                    <!-- Simple Sizes View (Default) -->
+                    <div class="js-simple-sizes-wrap" id="adm-add-simple-sizes-wrap">
+                      <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
+                        <span class="adm-label" style="font-weight:700; margin:0; font-size:12px;">Sizes in stock (Single Price)</span>
+                        <span style="font-size:11px; color:var(--adm-muted);">Tap a size to toggle in stock / out of stock</span>
+                      </div>
+                      <div class="adm-sizes" id="adm-new-sizes"></div>
+                      <div style="margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                        <input type="text" id="adm-add-custom-size-input" class="adm-input js-custom-size-input" placeholder="Add custom size (e.g. 3XL, Kids 24)" style="max-width:240px; height:34px; font-size:12px;">
+                        <button type="button" id="adm-add-custom-size-btn" class="adm-btn adm-btn--secondary adm-btn--sm js-add-custom-size-btn">+ Add Size</button>
+                      </div>
+                    </div>
+
+                    <!-- Shopify Options & Matrix View (When checked) -->
+                    <div class="js-matrix-wrap" id="adm-add-matrix-wrap" style="display:none;">
+                      <!-- Quick presets -->
+                      <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+                        <span style="font-size:11.5px; color:var(--adm-muted); font-weight:600;">Presets:</span>
+                        <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-preset-edition-size" style="font-size:11px; padding:3px 8px;">+ Edition &amp; Size</button>
+                        <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-preset-sleeve-size" style="font-size:11px; padding:3px 8px;">+ Sleeve &amp; Size</button>
+                        <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-preset-sizes-only" style="font-size:11px; padding:3px 8px;">+ Sizes with Custom Prices</button>
+                      </div>
+
+                      <!-- Options List -->
+                      <div class="js-options-list" id="adm-add-options-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;"></div>
+
+                      <button type="button" id="adm-add-opt-btn" class="adm-btn adm-btn--secondary adm-btn--sm js-add-opt-btn" style="display:inline-flex; align-items:center; gap:6px; margin-bottom:16px;">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                        Add another option
+                      </button>
+
+                      <!-- Variants Matrix Table -->
+                      <div style="border-top:1px solid var(--adm-border); padding-top:14px;">
+                        <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                          <div style="display:flex; align-items:center; gap:8px;">
+                            <strong class="js-variants-count" id="adm-add-variants-count" style="background:rgba(34,197,94,0.15); color:#22C55E; font-size:11.5px; padding:2px 8px; border-radius:12px;">0 Variants</strong>
+                            <span style="font-size:11.5px; color:var(--adm-muted);">Manage price &amp; stock per variant</span>
+                          </div>
+                          <div style="display:flex; gap:6px;">
+                            <button type="button" id="adm-add-bulk-price-btn" class="adm-btn adm-btn--secondary adm-btn--sm js-bulk-price-btn" style="font-size:11px; padding:3px 8px;">Apply Base Price</button>
+                            <button type="button" id="adm-add-bulk-stock-btn" class="adm-btn adm-btn--secondary adm-btn--sm js-bulk-stock-btn" style="font-size:11px; padding:3px 8px;">All In-Stock</button>
+                          </div>
+                        </div>
+
+                        <div style="overflow-x:auto; max-height:340px; border:1px solid var(--adm-border); border-radius:8px; background:var(--adm-surface);">
+                          <table class="adm-matrix-table" style="width:100%; font-size:12px; border-collapse:collapse;">
+                            <thead style="background:var(--adm-subtle); position:sticky; top:0; z-index:2;">
+                              <tr>
+                                <th style="text-align:left; font-weight:700;">Variant</th>
+                                <th style="text-align:left; font-weight:700; width:120px;">Price (৳)</th>
+                                <th style="text-align:left; font-weight:700; width:120px;">Regular (৳)</th>
+                                <th style="text-align:left; font-weight:700; width:140px;">SKU</th>
+                                <th style="text-align:center; font-weight:700; width:90px;">In Stock</th>
+                              </tr>
+                            </thead>
+                            <tbody class="js-matrix-tbody" id="adm-add-matrix-tbody"></tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
                   </div>
 
                   <!-- Descriptions for New Product -->
@@ -4141,10 +4295,14 @@
 
             <div class="adm-field" style="background:var(--adm-surface); padding:12px 14px; border-radius:8px; border:1px solid var(--adm-border);">
               <div style="display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:8px; flex-wrap:wrap;">
-                <span class="adm-label" style="font-weight:700; margin:0;">Sizes in stock</span>
+                <span class="adm-label" style="font-weight:700; margin:0;">Sizes in stock (Single Price)</span>
                 <span style="font-size:11px; color:var(--adm-muted);">Tap a size to toggle in stock / out of stock</span>
               </div>
               <div class="adm-sizes" id="edit-prod-sizes"></div>
+              <div style="margin-top:10px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+                <input type="text" id="edit-prod-custom-size-input" class="adm-input js-custom-size-input" placeholder="Add custom size (e.g. 3XL, Kids 24)" style="max-width:200px; height:32px; font-size:11.5px;">
+                <button type="button" id="edit-prod-custom-size-btn" class="adm-btn adm-btn--secondary adm-btn--sm js-add-custom-size-btn">+ Add</button>
+              </div>
             </div>
 
             <div class="adm-field" style="background:var(--adm-surface); padding:12px 14px; border-radius:8px; border:1px solid var(--adm-border);">
@@ -4155,6 +4313,71 @@
                 </div>
                 <input type="checkbox" id="edit-prod-custom-print" style="width:18px; height:18px; accent-color:#04F404; cursor:pointer; flex-shrink:0;">
               </label>
+            </div>
+          </div>
+        </div>
+
+        <!-- SHOPIFY-STYLE PRODUCT VARIATIONS & OPTIONS BLOCK (FULL WIDTH) -->
+        <div class="adm-shopify-box" id="edit-prod-variants-wrapper" style="margin-top:0;">
+          <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap;">
+            <div>
+              <div style="display:flex; align-items:center; gap:8px;">
+                <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                <span class="adm-label" style="margin:0; font-weight:800; font-size:14px; color:var(--adm-text);">Product Variants &amp; Options</span>
+              </div>
+              <div style="font-size:11.5px; color:var(--adm-muted); margin-top:2px;">Like Shopify: Add options (Size, Edition, Sleeve) with custom price &amp; stock per variant.</div>
+            </div>
+            <label style="display:inline-flex; align-items:center; gap:8px; cursor:pointer; background:var(--adm-subtle); padding:6px 12px; border-radius:6px; border:1px solid var(--adm-border); user-select:none;">
+              <input type="checkbox" id="edit-prod-has-variants" class="js-variants-toggle" style="width:16px; height:16px; accent-color:#04F404; cursor:pointer;">
+              <span style="font-size:12.5px; font-weight:700; color:var(--adm-text);">This product has options</span>
+            </label>
+          </div>
+
+          <!-- Shopify Options & Matrix View (When checked) -->
+          <div class="js-matrix-wrap" id="edit-prod-matrix-wrap" style="display:none;">
+            <!-- Quick presets -->
+            <div style="display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap;">
+              <span style="font-size:11.5px; color:var(--adm-muted); font-weight:600;">Presets:</span>
+              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-preset-edition-size" style="font-size:11px; padding:3px 8px;">+ Edition &amp; Size</button>
+              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-preset-sleeve-size" style="font-size:11px; padding:3px 8px;">+ Sleeve &amp; Size</button>
+              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-preset-sizes-only" style="font-size:11px; padding:3px 8px;">+ Sizes with Custom Prices</button>
+            </div>
+
+            <!-- Options List -->
+            <div class="js-options-list" id="edit-prod-options-list" style="display:flex; flex-direction:column; gap:10px; margin-bottom:14px;"></div>
+
+            <button type="button" id="edit-prod-opt-btn" class="adm-btn adm-btn--secondary adm-btn--sm js-add-opt-btn" style="display:inline-flex; align-items:center; gap:6px; margin-bottom:16px;">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+              Add another option
+            </button>
+
+            <!-- Variants Matrix Table -->
+            <div style="border-top:1px solid var(--adm-border); padding-top:14px;">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:10px; flex-wrap:wrap;">
+                <div style="display:flex; align-items:center; gap:8px;">
+                  <strong class="js-variants-count" id="edit-prod-variants-count" style="background:rgba(34,197,94,0.15); color:#22C55E; font-size:11.5px; padding:2px 8px; border-radius:12px;">0 Variants</strong>
+                  <span style="font-size:11.5px; color:var(--adm-muted);">Manage price &amp; stock per variant</span>
+                </div>
+                <div style="display:flex; gap:6px;">
+                  <button type="button" id="edit-prod-bulk-price-btn" class="adm-btn adm-btn--secondary adm-btn--sm js-bulk-price-btn" style="font-size:11px; padding:3px 8px;">Apply Base Price</button>
+                  <button type="button" id="edit-prod-bulk-stock-btn" class="adm-btn adm-btn--secondary adm-btn--sm js-bulk-stock-btn" style="font-size:11px; padding:3px 8px;">All In-Stock</button>
+                </div>
+              </div>
+
+              <div style="overflow-x:auto; max-height:340px; border:1px solid var(--adm-border); border-radius:8px; background:var(--adm-surface);">
+                <table class="adm-matrix-table" style="width:100%; font-size:12px; border-collapse:collapse;">
+                  <thead style="background:var(--adm-subtle); position:sticky; top:0; z-index:2;">
+                    <tr>
+                      <th style="text-align:left; font-weight:700;">Variant</th>
+                      <th style="text-align:left; font-weight:700; width:120px;">Price (৳)</th>
+                      <th style="text-align:left; font-weight:700; width:120px;">Regular (৳)</th>
+                      <th style="text-align:left; font-weight:700; width:140px;">SKU</th>
+                      <th style="text-align:center; font-weight:700; width:90px;">In Stock</th>
+                    </tr>
+                  </thead>
+                  <tbody class="js-matrix-tbody" id="edit-prod-matrix-tbody"></tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
@@ -4856,6 +5079,22 @@
           slug: p.slug || '',
           sizes: inStockSizes,
           allSizes: allSizes,
+          hasVariants: !!p.has_variants,
+          options: Array.isArray(p.options) ? p.options : (typeof p.options === 'string' ? (JSON.parse(p.options || '[]') || []) : []),
+          variants: variantsList.map(v => ({
+            id: v.id,
+            title: v.title || v.size,
+            option1: v.option1 || v.size,
+            option2: v.option2 || null,
+            option3: v.option3 || null,
+            size: v.size || v.option2 || v.option1 || v.title,
+            price: v.price !== null && v.price !== undefined ? Number(v.price) : Number(p.price),
+            regular_price: v.regular_price !== null && v.regular_price !== undefined ? Number(v.regular_price) : Number(p.regular_price || p.price),
+            sku: v.sku || (p.sku + '-' + (v.size || v.id)),
+            stock_qty: v.stock_qty !== undefined ? Number(v.stock_qty) : 25,
+            is_in_stock: v.is_in_stock !== undefined ? !!v.is_in_stock : true,
+            image: v.image || null
+          })),
           isReadyStock: !!p.is_ready_stock,
           hasCustomPrint: !!p.has_custom_print
         };
@@ -5685,14 +5924,28 @@
       }
 
       function productTableRowHTML(p) {
-        const all = sizesFor(p);
-        const inStock = all.filter((s) => p.sizes.includes(s)).length;
-        const stock = inStock === 0
-          ? `<span class="adm-chip adm-chip--danger">Sold out</span>`
-          : inStock < all.length
-            ? `<span class="adm-chip adm-chip--pending">${inStock} of ${all.length}</span>`
-            : `<span class="adm-chip adm-chip--delivered">In stock</span>`;
-        const sizes = all.map((s) => `<button type="button" class="adm-size ${p.sizes.includes(s) ? "" : "is-out"} js-size" data-id="${p.id}" data-size="${s}">${s}</button>`).join("");
+        let stock;
+        let sizes;
+        if (p.hasVariants && Array.isArray(p.variants) && p.variants.length > 0) {
+          const totalV = p.variants.length;
+          const inStockV = p.variants.filter((v) => v.isInStock || v.is_in_stock).length;
+          stock = inStockV === 0
+            ? `<span class="adm-chip adm-chip--danger">Sold out (${totalV} vars)</span>`
+            : inStockV < totalV
+              ? `<span class="adm-chip adm-chip--pending">${inStockV} of ${totalV} vars</span>`
+              : `<span class="adm-chip adm-chip--delivered">${totalV} variants</span>`;
+          const optNames = (p.options && Array.isArray(p.options) && p.options.length) ? p.options.map(o => o.name).join(" &middot; ") : "Shopify Options";
+          sizes = `<span style="font-size:11px; color:#22C55E; font-weight:700; background:rgba(34,197,94,0.12); padding:3px 8px; border-radius:4px; display:inline-flex; align-items:center; gap:4px;"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>${optNames}</span>`;
+        } else {
+          const all = sizesFor(p);
+          const inStock = all.filter((s) => p.sizes.includes(s)).length;
+          stock = inStock === 0
+            ? `<span class="adm-chip adm-chip--danger">Sold out</span>`
+            : inStock < all.length
+              ? `<span class="adm-chip adm-chip--pending">${inStock} of ${all.length}</span>`
+              : `<span class="adm-chip adm-chip--delivered">In stock</span>`;
+          sizes = all.map((s) => `<button type="button" class="adm-size ${p.sizes.includes(s) ? "" : "is-out"} js-size" data-id="${p.id}" data-size="${s}">${s}</button>`).join("");
+        }
         const isChecked = selectedMap.products.has(String(p.id));
         return `
           <tr data-id="${p.id}">
@@ -6185,6 +6438,303 @@
         renderEditImages();
       };
 
+      /* ---------- Shopify-Style Product Variants Manager Engine ---------- */
+      function createShopifyVariantsManager(config) {
+        const root = document.getElementById(config.rootId);
+        if (!root) return null;
+
+        const toggleCheckbox = root.querySelector(".js-variants-toggle");
+        const simpleWrap = root.querySelector(".js-simple-sizes-wrap");
+        const matrixWrap = root.querySelector(".js-matrix-wrap");
+        const optionsListEl = root.querySelector(".js-options-list");
+        const addOptBtn = root.querySelector(".js-add-opt-btn");
+        const countBadge = root.querySelector(".js-variants-count");
+        const tbodyEl = root.querySelector(".js-matrix-tbody");
+        const bulkPriceBtn = root.querySelector(".js-bulk-price-btn");
+        const bulkStockBtn = root.querySelector(".js-bulk-stock-btn");
+
+        let state = {
+          hasVariants: false,
+          options: [],
+          variants: []
+        };
+
+        function updateVisibility() {
+          state.hasVariants = Boolean(toggleCheckbox && toggleCheckbox.checked);
+          if (simpleWrap) simpleWrap.style.display = state.hasVariants ? "none" : "block";
+          if (matrixWrap) matrixWrap.style.display = state.hasVariants ? "block" : "none";
+        }
+
+        if (toggleCheckbox) {
+          toggleCheckbox.addEventListener("change", () => {
+            updateVisibility();
+            if (state.hasVariants && (!state.options || state.options.length === 0)) {
+              applyPreset("sizes");
+            }
+          });
+        }
+
+        function renderOptions() {
+          if (!optionsListEl) return;
+          optionsListEl.innerHTML = state.options.map((opt, optIdx) => `
+            <div class="adm-opt-card" data-idx="${optIdx}">
+              <div style="display:flex; justify-content:space-between; align-items:center; gap:8px;">
+                <input type="text" class="adm-input js-opt-name" value="${cmsEsc(opt.name)}" placeholder="Option name (e.g. Size, Edition, Color)" style="font-weight:700; height:32px; font-size:12.5px; max-width:200px;">
+                <button type="button" class="adm-tag-chip__del js-remove-opt-btn" data-idx="${optIdx}" title="Remove option" style="font-size:12px; font-weight:700; color:#EF4444; background:none; border:none; cursor:pointer;">&times; Remove</button>
+              </div>
+              <div class="adm-opt-tags-wrap">
+                ${(opt.values || []).map((val, vIdx) => `
+                  <span class="adm-tag-chip">
+                    <span>${cmsEsc(val)}</span>
+                    <button type="button" class="adm-tag-chip__del js-del-tag-btn" data-opt="${optIdx}" data-val="${vIdx}" style="border:none; background:none; cursor:pointer; color:#EF4444; font-size:14px; line-height:1;">&times;</button>
+                  </span>
+                `).join("")}
+                <input type="text" class="adm-tag-input-bare js-tag-input" placeholder="Type value &amp; press Enter or comma..." data-opt="${optIdx}">
+              </div>
+            </div>
+          `).join("");
+
+          optionsListEl.querySelectorAll(".js-tag-input").forEach((input) => {
+            input.addEventListener("keydown", (e) => {
+              if (e.key === "Enter" || e.key === ",") {
+                e.preventDefault();
+                const val = input.value.trim().replace(/^,|,$/g, "");
+                const optIdx = Number(input.dataset.opt);
+                if (val && state.options[optIdx] && !state.options[optIdx].values.includes(val)) {
+                  state.options[optIdx].values.push(val);
+                  regenerateMatrix();
+                  render();
+                }
+              }
+            });
+          });
+
+          optionsListEl.querySelectorAll(".js-opt-name").forEach((input) => {
+            input.addEventListener("change", (e) => {
+              const card = e.target.closest(".adm-opt-card");
+              const optIdx = card ? Number(card.dataset.idx) : -1;
+              if (optIdx >= 0 && state.options[optIdx]) {
+                state.options[optIdx].name = e.target.value.trim() || ("Option " + (optIdx + 1));
+                regenerateMatrix();
+                renderTableOnly();
+              }
+            });
+          });
+
+          optionsListEl.querySelectorAll(".js-remove-opt-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const idx = Number(btn.dataset.idx);
+              state.options.splice(idx, 1);
+              regenerateMatrix();
+              render();
+            });
+          });
+
+          optionsListEl.querySelectorAll(".js-del-tag-btn").forEach((btn) => {
+            btn.addEventListener("click", () => {
+              const oIdx = Number(btn.dataset.opt);
+              const vIdx = Number(btn.dataset.val);
+              if (state.options[oIdx] && state.options[oIdx].values) {
+                state.options[oIdx].values.splice(vIdx, 1);
+                regenerateMatrix();
+                render();
+              }
+            });
+          });
+        }
+
+        function regenerateMatrix() {
+          const activeOpts = state.options.filter((o) => Array.isArray(o.values) && o.values.length > 0);
+          if (!activeOpts.length) {
+            state.variants = [];
+            return;
+          }
+
+          const combos = activeOpts.reduce((acc, opt) => {
+            const next = [];
+            acc.forEach((prev) => {
+              opt.values.forEach((v) => {
+                next.push([...prev, v]);
+              });
+            });
+            return next;
+          }, [[]]);
+
+          const oldVariants = new Map(state.variants.map((v) => [v.title, v]));
+          const basePrice = Number(config.getBasePrice()) || 1150;
+          const baseRegPrice = Number(config.getBaseRegPrice()) || (basePrice + 200);
+          const baseSku = (config.getBaseSku() || "RBZ").trim().toUpperCase();
+
+          state.variants = combos.map((combo) => {
+            const title = combo.join(" / ");
+            const existing = oldVariants.get(title);
+            return {
+              id: existing?.id || null,
+              title: title,
+              option1: combo[0] || null,
+              option2: combo[1] || null,
+              option3: combo[2] || null,
+              price: existing?.price !== undefined ? Number(existing.price) : basePrice,
+              regular_price: existing?.regular_price !== undefined ? Number(existing.regular_price) : baseRegPrice,
+              sku: existing?.sku || (baseSku + "-" + combo.map((s) => s.replace(/[^a-zA-Z0-9]/g, "-").toUpperCase()).join("-")),
+              stock_qty: existing?.stock_qty !== undefined ? Number(existing.stock_qty) : 25,
+              is_in_stock: existing?.is_in_stock !== undefined ? Boolean(existing.is_in_stock) : true,
+            };
+          });
+        }
+
+        function renderTableOnly() {
+          if (countBadge) countBadge.textContent = `${state.variants.length} Variants`;
+          if (!tbodyEl) return;
+          if (!state.variants.length) {
+            tbodyEl.innerHTML = `<tr><td colspan="5" style="text-align:center; padding:18px; color:var(--adm-muted);">No options configured yet. Add values above or select a preset.</td></tr>`;
+            return;
+          }
+
+          tbodyEl.innerHTML = state.variants.map((v, idx) => `
+            <tr data-idx="${idx}">
+              <td style="font-weight:700; color:var(--adm-text); padding:8px 10px;">
+                <div style="display:flex; align-items:center; gap:6px;">
+                  <span style="display:inline-block; width:8px; height:8px; border-radius:50%; background:${v.is_in_stock ? "#22C55E" : "#EF4444"}; flex-shrink:0;"></span>
+                  <span>${cmsEsc(v.title)}</span>
+                </div>
+              </td>
+              <td>
+                <input type="number" class="adm-matrix-input js-v-price" data-idx="${idx}" value="${v.price}" placeholder="৳">
+              </td>
+              <td>
+                <input type="number" class="adm-matrix-input js-v-reg-price" data-idx="${idx}" value="${v.regular_price || ""}" placeholder="৳">
+              </td>
+              <td>
+                <input type="text" class="adm-matrix-input js-v-sku" data-idx="${idx}" value="${cmsEsc(v.sku || "")}">
+              </td>
+              <td style="text-align:center;">
+                <input type="checkbox" class="js-v-stock" data-idx="${idx}" ${v.is_in_stock ? "checked" : ""} style="width:16px; height:16px; accent-color:#04F404; cursor:pointer;">
+              </td>
+            </tr>
+          `).join("");
+
+          tbodyEl.querySelectorAll(".js-v-price").forEach((input) => {
+            input.addEventListener("input", (e) => {
+              const idx = Number(e.target.dataset.idx);
+              if (state.variants[idx]) state.variants[idx].price = Number(e.target.value) || 0;
+            });
+          });
+          tbodyEl.querySelectorAll(".js-v-reg-price").forEach((input) => {
+            input.addEventListener("input", (e) => {
+              const idx = Number(e.target.dataset.idx);
+              if (state.variants[idx]) state.variants[idx].regular_price = Number(e.target.value) || 0;
+            });
+          });
+          tbodyEl.querySelectorAll(".js-v-sku").forEach((input) => {
+            input.addEventListener("input", (e) => {
+              const idx = Number(e.target.dataset.idx);
+              if (state.variants[idx]) state.variants[idx].sku = e.target.value.trim().toUpperCase();
+            });
+          });
+          tbodyEl.querySelectorAll(".js-v-stock").forEach((input) => {
+            input.addEventListener("change", (e) => {
+              const idx = Number(e.target.dataset.idx);
+              if (state.variants[idx]) {
+                state.variants[idx].is_in_stock = e.target.checked;
+                const dot = e.target.closest("tr")?.querySelector("td span:first-child");
+                if (dot) dot.style.background = e.target.checked ? "#22C55E" : "#EF4444";
+              }
+            });
+          });
+        }
+
+        function render() {
+          updateVisibility();
+          renderOptions();
+          renderTableOnly();
+        }
+
+        function applyPreset(type) {
+          if (type === "edition-size") {
+            state.options = [
+              { name: "Edition", values: ["Player Edition", "Fan Edition"] },
+              { name: "Size", values: ["M", "L", "XL", "XXL"] }
+            ];
+          } else if (type === "sleeve-size") {
+            state.options = [
+              { name: "Sleeve", values: ["Half Sleeve", "Full Sleeve"] },
+              { name: "Size", values: ["M", "L", "XL", "XXL"] }
+            ];
+          } else if (type === "sizes") {
+            state.options = [
+              { name: "Size", values: ["S", "M", "L", "XL", "XXL", "3XL"] }
+            ];
+          }
+          regenerateMatrix();
+          render();
+        }
+
+        root.querySelector(".js-preset-edition-size")?.addEventListener("click", () => applyPreset("edition-size"));
+        root.querySelector(".js-preset-sleeve-size")?.addEventListener("click", () => applyPreset("sleeve-size"));
+        root.querySelector(".js-preset-sizes-only")?.addEventListener("click", () => applyPreset("sizes"));
+
+        if (addOptBtn) {
+          addOptBtn.addEventListener("click", () => {
+            if (state.options.length >= 3) {
+              admAlert("Maximum 3 option types allowed (e.g. Edition, Size, Color).", { title: "Limit Reached" });
+              return;
+            }
+            const names = ["Edition", "Size", "Color", "Sleeve", "Material"];
+            const used = state.options.map((o) => o.name);
+            const available = names.find((n) => !used.includes(n)) || ("Option " + (state.options.length + 1));
+            state.options.push({ name: available, values: [] });
+            render();
+          });
+        }
+
+        if (bulkPriceBtn) {
+          bulkPriceBtn.addEventListener("click", () => {
+            const basePrice = Number(config.getBasePrice()) || 1150;
+            const baseRegPrice = Number(config.getBaseRegPrice()) || (basePrice + 200);
+            state.variants.forEach((v) => {
+              v.price = basePrice;
+              v.regular_price = baseRegPrice;
+            });
+            renderTableOnly();
+            toast("Price Applied", `Base price ৳${basePrice} set for all variants`);
+          });
+        }
+
+        if (bulkStockBtn) {
+          bulkStockBtn.addEventListener("click", () => {
+            state.variants.forEach((v) => { v.is_in_stock = true; });
+            renderTableOnly();
+            toast("Stock Updated", "All variants marked in stock");
+          });
+        }
+
+        return {
+          setState: (opts, vars, hasVars) => {
+            state.hasVariants = Boolean(hasVars);
+            if (toggleCheckbox) toggleCheckbox.checked = state.hasVariants;
+            state.options = Array.isArray(opts) ? JSON.parse(JSON.stringify(opts)) : [];
+            state.variants = Array.isArray(vars) ? JSON.parse(JSON.stringify(vars)) : [];
+            render();
+          },
+          getPayload: () => ({
+            has_variants: Boolean(toggleCheckbox && toggleCheckbox.checked),
+            options: state.options,
+            variants: state.variants
+          }),
+          reset: () => {
+            state.hasVariants = false;
+            state.options = [];
+            state.variants = [];
+            if (toggleCheckbox) toggleCheckbox.checked = false;
+            render();
+          }
+        };
+      }
+
+      let addVariantsManager = null;
+      let editVariantsManager = null;
+
       /* ---------- Product Edit & Delete Handlers ---------- */
       function openProductDrawer(id) {
         const p = products.find((x) => x.id == id);
@@ -6202,6 +6752,9 @@
           $("#edit-prod-fabric").value = p.fabric || "";
         }
         renderEditSizes(sizesFor(p), p.sizes);
+        if (editVariantsManager) {
+          editVariantsManager.setState(p.options || [], p.variants || [], !!p.hasVariants);
+        }
         if ($("#edit-prod-custom-print")) {
           $("#edit-prod-custom-print").checked = !!p.hasCustomPrint;
         }
@@ -6231,6 +6784,7 @@
         const sizeEls = $$("#edit-prod-sizes .js-edit-size");
         const allSizes = sizeEls.map((el) => el.dataset.size).filter(Boolean);
         const inStockSizes = sizeEls.filter((el) => !el.classList.contains("is-out")).map((el) => el.dataset.size).filter(Boolean);
+        const vPayload = editVariantsManager ? editVariantsManager.getPayload() : { has_variants: false, options: [], variants: [] };
 
         const payload = {
           name: $("#edit-prod-name").value.trim(),
@@ -6242,6 +6796,9 @@
           fabric: $("#edit-prod-fabric") ? $("#edit-prod-fabric").value.trim() : "",
           sizes: inStockSizes,
           all_sizes: allSizes,
+          has_variants: vPayload.has_variants ? 1 : 0,
+          options: vPayload.options,
+          variants: vPayload.variants,
           is_ready_stock: $("#edit-prod-stock").value === "1" ? 1 : 0,
           has_custom_print: $("#edit-prod-custom-print")?.checked ? 1 : 0,
           short_desc: $("#edit-prod-desc").value.trim(),
@@ -6275,6 +6832,9 @@
               p.fabric = payload.fabric;
               p.allSizes = payload.all_sizes;
               p.sizes = payload.sizes;
+              p.hasVariants = !!vPayload.has_variants;
+              p.options = vPayload.options;
+              p.variants = vPayload.variants;
               p.isReadyStock = !!payload.is_ready_stock;
               p.hasCustomPrint = !!payload.has_custom_print;
               p.shortDesc = payload.short_desc;
@@ -7637,6 +8197,7 @@
         const newSizeEls = $$("#adm-new-sizes .js-new-size");
         const newAllSizes = newSizeEls.map((el) => el.dataset.size).filter(Boolean);
         const newInStockSizes = newSizeEls.filter((el) => !el.classList.contains("is-out")).map((el) => el.dataset.size).filter(Boolean);
+        const vPayload = addVariantsManager ? addVariantsManager.getPayload() : { has_variants: false, options: [], variants: [] };
 
         const payload = {
           name: name,
@@ -7646,6 +8207,9 @@
           fabric: ($("#adm-fabric")?.value.trim()) || "",
           sizes: newInStockSizes,
           all_sizes: newAllSizes,
+          has_variants: vPayload.has_variants ? 1 : 0,
+          options: vPayload.options,
+          variants: vPayload.variants,
           price: price,
           regular_price: regPrice,
           image: addFeaturedImage,
@@ -7670,6 +8234,7 @@
           if (data.success) {
             toast("Product published to database", data.product.name);
             e.target.reset();
+            if (addVariantsManager) addVariantsManager.reset();
             renderNewSizes($("#adm-cat")?.value || "winter-hoodie");
             await syncProductsFromDB();
             showTab("products");
@@ -7679,6 +8244,54 @@
         } catch (err) {
           console.error(err);
           toast("Error adding product", err.message);
+        }
+      });
+
+      // Initialize Shopify Variants Managers for Add & Edit forms
+      addVariantsManager = createShopifyVariantsManager({
+        rootId: "adm-add-variants-wrapper",
+        getBasePrice: () => $("#adm-price")?.value || 1150,
+        getBaseRegPrice: () => $("#adm-reg-price")?.value || 1350,
+        getBaseSku: () => $("#adm-sku")?.value || "RBZ"
+      });
+
+      editVariantsManager = createShopifyVariantsManager({
+        rootId: "edit-prod-variants-wrapper",
+        getBasePrice: () => $("#edit-prod-price")?.value || 1150,
+        getBaseRegPrice: () => $("#edit-prod-reg-price")?.value || 1350,
+        getBaseSku: () => $("#edit-prod-sku")?.value || "RBZ"
+      });
+
+      // Simple mode custom size addition buttons
+      $("#adm-add-custom-size-btn")?.addEventListener("click", () => {
+        const input = $("#adm-add-custom-size-input");
+        const val = input ? input.value.trim().toUpperCase() : "";
+        if (!val) return;
+        const container = $("#adm-new-sizes");
+        if (container && !container.querySelector(`[data-size="${val}"]`)) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "adm-size js-new-size";
+          btn.dataset.size = val;
+          btn.textContent = val;
+          container.appendChild(btn);
+          input.value = "";
+        }
+      });
+
+      $("#edit-prod-custom-size-btn")?.addEventListener("click", () => {
+        const input = $("#edit-prod-custom-size-input");
+        const val = input ? input.value.trim().toUpperCase() : "";
+        if (!val) return;
+        const container = $("#edit-prod-sizes");
+        if (container && !container.querySelector(`[data-size="${val}"]`)) {
+          const btn = document.createElement("button");
+          btn.type = "button";
+          btn.className = "adm-size js-edit-size";
+          btn.dataset.size = val;
+          btn.textContent = val;
+          container.appendChild(btn);
+          input.value = "";
         }
       });
 

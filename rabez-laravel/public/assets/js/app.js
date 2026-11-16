@@ -392,6 +392,8 @@
               id: c.id,
               name: c.name,
               size: c.size,
+              variant_id: c.variantId || null,
+              variant_title: c.variantTitle || c.size || "",
               qty: c.qty,
               price: c.price,
               custom_name: c.customName || "",

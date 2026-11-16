@@ -197,6 +197,9 @@ class AdminController extends Controller
             'image' => 'nullable|string',
             'gallery' => 'nullable',
             'has_custom_print' => 'nullable|boolean',
+            'has_variants' => 'nullable|boolean',
+            'options' => 'nullable',
+            'variants' => 'nullable',
             'sizes' => 'nullable|array',
             'all_sizes' => 'nullable|array',
         ]);
@@ -252,10 +255,21 @@ class AdminController extends Controller
             'gallery' => $galleryUrls,
             'is_ready_stock' => true,
             'has_custom_print' => $request->boolean('has_custom_print', false),
+            'has_variants' => $request->boolean('has_variants', false),
         ]);
 
-        $inStockSizes = $request->exists('sizes') ? ($request->input('sizes', []) ?? []) : null;
-        $this->syncProductVariants($product, $sleeve, $inStockSizes, $request->input('all_sizes'));
+        $hasVariants = $request->boolean('has_variants', false);
+        $rawOptions = $request->input('options');
+        if (is_string($rawOptions)) $rawOptions = json_decode($rawOptions, true) ?: [];
+        $rawVariants = $request->input('variants');
+        if (is_string($rawVariants)) $rawVariants = json_decode($rawVariants, true) ?: [];
+
+        if ($hasVariants && !empty($rawVariants) && is_array($rawVariants)) {
+            $this->syncShopifyVariants($product, is_array($rawOptions) ? $rawOptions : [], $rawVariants);
+        } else {
+            $inStockSizes = $request->exists('sizes') ? ($request->input('sizes', []) ?? []) : null;
+            $this->syncProductVariants($product, $sleeve, $inStockSizes, $request->input('all_sizes'));
+        }
 
         if ($request->wantsJson()) {
             return response()->json(['success' => true, 'product' => $product->load('variants')]);
@@ -282,6 +296,9 @@ class AdminController extends Controller
             'image' => 'nullable|string',
             'gallery' => 'nullable',
             'has_custom_print' => 'nullable|boolean',
+            'has_variants' => 'nullable|boolean',
+            'options' => 'nullable',
+            'variants' => 'nullable',
             'sizes' => 'nullable|array',
             'all_sizes' => 'nullable|array',
         ]);
@@ -337,9 +354,21 @@ class AdminController extends Controller
             $product->gallery = $currentGallery;
         }
 
+        if ($request->has('has_variants')) {
+            $product->has_variants = $request->boolean('has_variants');
+        }
         $product->save();
 
-        if ($request->exists('sizes')) {
+        $hasVariants = $request->boolean('has_variants', false);
+        $rawOptions = $request->input('options');
+        if (is_string($rawOptions)) $rawOptions = json_decode($rawOptions, true) ?: [];
+        $rawVariants = $request->input('variants');
+        if (is_string($rawVariants)) $rawVariants = json_decode($rawVariants, true) ?: [];
+
+        if ($hasVariants && !empty($rawVariants) && is_array($rawVariants)) {
+            $this->syncShopifyVariants($product, is_array($rawOptions) ? $rawOptions : [], $rawVariants);
+        } elseif ($request->exists('sizes')) {
+            $product->update(['has_variants' => false, 'options' => null]);
             $this->syncProductVariants(
                 $product,
                 $product->sleeve ?? 'half-sleeve',
@@ -349,6 +378,91 @@ class AdminController extends Controller
         }
 
         return response()->json(['success' => true, 'product' => $product->load('variants')]);
+    }
+
+    /**
+     * Synchronize Shopify-style multi-option variants for a product.
+     */
+    private function syncShopifyVariants(Product $product, array $options, array $variantsList): void
+    {
+        $product->update([
+            'has_variants' => true,
+            'options' => $options,
+        ]);
+
+        $incomingIds = [];
+
+        foreach ($variantsList as $vData) {
+            if (!is_array($vData)) continue;
+
+            $title = trim((string) ($vData['title'] ?? ''));
+            $opt1 = isset($vData['option1']) ? trim((string) $vData['option1']) : null;
+            $opt2 = isset($vData['option2']) ? trim((string) $vData['option2']) : null;
+            $opt3 = isset($vData['option3']) ? trim((string) $vData['option3']) : null;
+
+            if (empty($title)) {
+                $title = collect([$opt1, $opt2, $opt3])->filter()->implode(' / ');
+            }
+            if (empty($title)) continue;
+
+            $size = $opt2 ?: ($opt1 ?: $title);
+            $price = isset($vData['price']) && is_numeric($vData['price']) ? (float) $vData['price'] : (float) $product->price;
+            $regularPrice = isset($vData['regular_price']) && is_numeric($vData['regular_price'])
+                ? (float) $vData['regular_price']
+                : ($product->regular_price ? (float) $product->regular_price : ($price + 200.00));
+            $sku = !empty($vData['sku']) ? strtoupper(trim((string) $vData['sku'])) : ($product->sku . '-' . Str::slug($title));
+            $stockQty = isset($vData['stock_qty']) ? (int) $vData['stock_qty'] : 25;
+            $inStock = isset($vData['is_in_stock']) ? (bool) $vData['is_in_stock'] : ($stockQty > 0);
+            $image = !empty($vData['image']) ? (string) $vData['image'] : null;
+
+            $variantId = !empty($vData['id']) ? (int) $vData['id'] : null;
+            $variant = null;
+
+            if ($variantId) {
+                $variant = $product->variants()->where('id', $variantId)->first();
+            }
+
+            if (!$variant) {
+                $variant = $product->variants()->where('title', $title)->first();
+            }
+
+            if ($variant) {
+                $variant->update([
+                    'title' => $title,
+                    'option1' => $opt1,
+                    'option2' => $opt2,
+                    'option3' => $opt3,
+                    'size' => $size,
+                    'price' => $price,
+                    'regular_price' => $regularPrice,
+                    'sku' => $sku,
+                    'stock_qty' => $stockQty,
+                    'is_in_stock' => $inStock,
+                    'image' => $image,
+                ]);
+            } else {
+                $variant = $product->variants()->create([
+                    'title' => $title,
+                    'option1' => $opt1,
+                    'option2' => $opt2,
+                    'option3' => $opt3,
+                    'size' => $size,
+                    'price' => $price,
+                    'regular_price' => $regularPrice,
+                    'sku' => $sku,
+                    'stock_qty' => $stockQty,
+                    'is_in_stock' => $inStock,
+                    'image' => $image,
+                ]);
+            }
+
+            $incomingIds[] = $variant->id;
+        }
+
+        // Delete variants that were removed
+        if (!empty($incomingIds)) {
+            $product->variants()->whereNotIn('id', $incomingIds)->delete();
+        }
     }
 
     /**
@@ -390,6 +504,11 @@ class AdminController extends Controller
             ProductVariant::updateOrCreate(
                 ['product_id' => $product->id, 'size' => $size],
                 [
+                    'title' => $size,
+                    'option1' => $size,
+                    'price' => $existing->price ?? $product->price,
+                    'regular_price' => $existing->regular_price ?? $product->regular_price,
+                    'sku' => $existing->sku ?? ($product->sku . '-' . $size),
                     'is_in_stock' => $inStock,
                     'stock_qty' => $inStock ? max(1, (int) ($existing->stock_qty ?? 25)) : 0,
                 ]
