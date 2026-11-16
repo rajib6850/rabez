@@ -361,6 +361,8 @@
   /* --- Add to Cart Logic --- */
   function addToCart(arg1, arg2, arg3, arg4) {
     let id, size, qty = 1, customName = "", customNumber = "";
+    let silentToast = false;
+    let customToast = null;
 
     if (typeof arg1 === "object" && arg1 !== null) {
       id = Number(arg1.id);
@@ -368,6 +370,8 @@
       qty = arg1.qty !== undefined ? Number(arg1.qty) : 1;
       customName = arg1.customName || "";
       customNumber = arg1.customNumber || "";
+      silentToast = Boolean(arg1.silentToast);
+      if (arg1.customToast) customToast = arg1.customToast;
     } else {
       id = Number(arg1);
       size = arg2;
@@ -375,6 +379,8 @@
       if (typeof arg4 === "object" && arg4 !== null) {
         customName = arg4.customName || "";
         customNumber = arg4.customNumber || "";
+        silentToast = Boolean(arg4.silentToast);
+        if (arg4.customToast) customToast = arg4.customToast;
       }
     }
 
@@ -422,7 +428,13 @@
     if (window.RABEZ_ANALYTICS && typeof window.RABEZ_ANALYTICS.trackAddToCart === "function") {
       window.RABEZ_ANALYTICS.trackAddToCart(product, size);
     }
-    showToast(`${product.name} (Size ${size})`, hasCustom ? `With Custom Print: ${cleanName} #${cleanNum}` : `Added to your bag — ${formatBDT(unitPrice)}`);
+    if (!silentToast) {
+      if (customToast && customToast.title) {
+        showToast(customToast.title, customToast.message || "Added to your shopping bag.", customToast.action || null);
+      } else {
+        showToast(`${product.name} (Size ${size})`, hasCustom ? `With Custom Print: ${cleanName} #${cleanNum}` : `Added to your bag — ${formatBDT(unitPrice)}`);
+      }
+    }
   }
 
   function removeFromCart(key) {
@@ -1687,7 +1699,11 @@
         if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
         return;
       }
-      addToCart({ id, size, qty: 1 });
+      addToCart({ id, size, qty: 1, silentToast: true });
+      showToast("Added to Bag", "Added to your shopping bag.", {
+        label: "View Bag",
+        onClick: () => openCartDrawer()
+      });
       return;
     }
 
@@ -1702,10 +1718,14 @@
         if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
         return;
       }
-      addToCart({ id, size, qty: 1 });
+      addToCart({ id, size, qty: 1, silentToast: true });
       if (wishlist.includes(id)) {
         toggleWishlist(id, { silent: true });
       }
+      showToast("Moved to Bag", "Added to your shopping bag.", {
+        label: "View Bag",
+        onClick: () => openCartDrawer()
+      });
       return;
     }
 
@@ -1752,12 +1772,16 @@
       list.forEach((p) => {
         const size = getPreferredWishlistSize(p) || p.sizes[0];
         if (size) {
-          addToCart({ id: p.id, size, qty: 1 });
+          addToCart({ id: p.id, size, qty: 1, silentToast: true });
           wishlist = wishlist.filter((x) => x !== Number(p.id));
           persistWishlistToggleToServer(p.id, null, "toggle");
         }
       });
       saveWishlist();
+      showToast("Moved to Bag", "All in-stock jerseys moved to your bag.", {
+        label: "View Bag",
+        onClick: () => openCartDrawer()
+      });
       openCartDrawer();
       return;
     }
