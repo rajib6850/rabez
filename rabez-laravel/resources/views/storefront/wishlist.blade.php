@@ -363,48 +363,103 @@
 
     @media (max-width: 960px) {
       .rabez-wl-row {
-        grid-template-columns: 80px minmax(0, 1.4fr) auto auto;
-        gap: 12px 16px;
+        grid-template-columns: 84px minmax(0, 1fr) auto;
+        gap: 10px 16px;
+        align-items: center;
+      }
+      .rabez-wl-row__thumb {
+        width: 84px;
+        height: 102px;
+        grid-column: 1;
+        grid-row: 1 / span 2;
+      }
+      .rabez-wl-row__info {
+        grid-column: 2;
+        grid-row: 1;
+      }
+      .rabez-wl-row__price {
+        grid-column: 3;
+        grid-row: 1;
+        align-self: center;
       }
       .rabez-wl-row__size {
-        grid-column: 2 / -1;
+        grid-column: 2;
+        grid-row: 2;
+      }
+      .rabez-wl-row__actions {
+        grid-column: 3;
+        grid-row: 2;
+        justify-self: end;
       }
     }
 
-    @media (max-width: 768px) {
+    @media (max-width: 640px) {
       .rabez-wl-page {
         padding: 20px 0 48px;
       }
       .rabez-wl-head {
         padding: 16px;
       }
-      .rabez-wl-row {
-        grid-template-columns: 80px minmax(0, 1fr);
-        gap: 8px 12px;
-        padding: 12px;
-        align-items: start;
-      }
-      .rabez-wl-row__thumb {
-        width: 80px;
-        height: 98px;
-        grid-column: 1;
-        grid-row: 1 / span 4;
-      }
-      .rabez-wl-row__info,
-      .rabez-wl-row__price,
-      .rabez-wl-row__size,
-      .rabez-wl-row__actions {
-        grid-column: 2;
-        min-width: 0;
-      }
-      .rabez-wl-row__price {
-        flex-direction: row;
-        align-items: baseline;
+      .rabez-wl-head__actions {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
         gap: 8px;
       }
-      .rabez-wl-row__actions {
+      .rabez-wl-toolbar {
         width: 100%;
-        padding-top: 4px;
+        gap: 8px;
+      }
+      .rabez-wl-toolbar .js-wl-move-all {
+        flex: 1;
+      }
+      .rabez-wl-head__actions > .rabez-wl-action-btn--outline {
+        width: 100%;
+      }
+      .rabez-wl-action-btn {
+        height: 36px;
+        padding: 0 11px;
+        font-size: 0.78rem;
+      }
+      .rabez-wl-row {
+        grid-template-columns: 76px minmax(0, 1fr);
+        gap: 8px 12px;
+        padding: 12px;
+        align-items: center;
+      }
+      .rabez-wl-row__thumb {
+        width: 76px;
+        height: 94px;
+        grid-column: 1;
+        grid-row: 1 / span 2;
+        align-self: start;
+      }
+      .rabez-wl-row__info {
+        grid-column: 2;
+        grid-row: 1;
+        align-self: start;
+      }
+      .rabez-wl-row__price {
+        grid-column: 2;
+        grid-row: 2;
+        flex-direction: row;
+        align-items: baseline;
+        justify-content: flex-start;
+        gap: 8px;
+        align-self: end;
+      }
+      .rabez-wl-row__size {
+        grid-column: 1 / -1;
+        grid-row: 3;
+        justify-content: space-between;
+        padding-top: 8px;
+        border-top: 1px solid #F1F5F3;
+      }
+      .rabez-wl-row__actions {
+        grid-column: 1 / -1;
+        grid-row: 4;
+        width: 100%;
+        justify-self: stretch;
       }
       .rabez-wl-row__actions .js-wl-move-item {
         flex: 1;
