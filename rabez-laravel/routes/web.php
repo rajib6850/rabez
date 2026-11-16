@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CustomerAccountController;
 use App\Http\Controllers\SocialAuthController;
 use App\Http\Controllers\StorefrontController;
+use App\Http\Controllers\WishlistController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -31,6 +32,12 @@ Route::post('/checkout', [StorefrontController::class, 'processCheckout'])->name
 Route::post('/api/apply-coupon', [StorefrontController::class, 'applyCoupon'])->name('storefront.apply_coupon');
 Route::get('/api/coupons/active-status', [StorefrontController::class, 'activeCouponsStatus'])->name('storefront.coupons_status');
 Route::get('/track-order', [StorefrontController::class, 'trackOrder'])->name('track-order');
+
+// Wishlist (Hybrid LocalStorage + Authenticated DB Sync)
+Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
+Route::post('/api/wishlist/sync', [WishlistController::class, 'sync'])->name('wishlist.sync');
+Route::post('/api/wishlist/toggle', [WishlistController::class, 'toggle'])->name('wishlist.toggle');
+Route::post('/api/wishlist/clear', [WishlistController::class, 'clear'])->name('wishlist.clear');
 
 /*
 |--------------------------------------------------------------------------
@@ -145,5 +152,5 @@ Route::get('/page/{slug}', [StorefrontController::class, 'page'])
     ->name('storefront.page.prefixed');
 
 Route::get('/{slug}', [StorefrontController::class, 'page'])
-    ->where('slug', '^(?!account$|auth$)[A-Za-z0-9\-]+')
+    ->where('slug', '^(?!account$|auth$|wishlist$)[A-Za-z0-9\-]+')
     ->name('storefront.page');

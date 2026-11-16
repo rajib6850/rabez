@@ -37,6 +37,11 @@ class User extends Authenticatable
         return $this->hasMany(Order::class);
     }
 
+    public function wishlistItems(): HasMany
+    {
+        return $this->hasMany(WishlistItem::class);
+    }
+
     /**
      * Normalize Bangladeshi phone numbers (e.g. +8801712345678 -> 01712345678).
      */

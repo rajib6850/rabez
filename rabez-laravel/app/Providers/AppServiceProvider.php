@@ -7,6 +7,8 @@ use App\Models\MenuItem;
 use App\Models\Page;
 use App\Models\Product;
 use App\Models\Setting;
+use App\Models\WishlistItem;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -39,8 +41,20 @@ class AppServiceProvider extends ServiceProvider
                 $headerMenuTree = [];
                 $footerCareMenu = [];
                 $publishedPages = collect();
+                $authWishlistIds = null;
+                $authWishlistSizes = [];
 
                 try {
+                    if (Auth::check() && Schema::hasTable('wishlist_items')) {
+                        $wlItems = WishlistItem::where('user_id', Auth::id())
+                            ->orderByDesc('updated_at')
+                            ->get();
+                        $authWishlistIds = $wlItems->pluck('product_id')->map(fn ($id): int => (int) $id)->values()->all();
+                        $authWishlistSizes = $wlItems
+                            ->filter(fn (WishlistItem $i): bool => !empty($i->preferred_size))
+                            ->mapWithKeys(fn (WishlistItem $i): array => [(int) $i->product_id => (string) $i->preferred_size])
+                            ->all();
+                    }
                     if (Schema::hasTable('coupons')) {
                         $hasActiveCoupons = Coupon::where('is_active', true)->exists();
                     }
@@ -130,6 +144,8 @@ class AppServiceProvider extends ServiceProvider
                     'headerMenuTree' => $headerMenuTree,
                     'footerCareMenu' => $footerCareMenu,
                     'publishedPages' => $publishedPages,
+                    'authWishlistIds' => $authWishlistIds,
+                    'authWishlistSizes' => $authWishlistSizes,
                 ];
                 if ($req) {
                     $req->attributes->set('rabez_storefront_shared', $cached);

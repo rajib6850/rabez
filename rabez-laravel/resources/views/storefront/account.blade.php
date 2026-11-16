@@ -456,6 +456,12 @@
 
       <div class="rabez-acc-actions">
         <a href="{{ route('shop') }}" class="rabez-btn rabez-btn--primary" style="padding:10px 18px; font-size:0.86rem;">Shop Jerseys</a>
+        <a href="{{ route('wishlist') }}" class="rabez-acc-btn-outline" style="display:inline-flex; align-items:center; gap:6px;">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+          </svg>
+          <span>My Wishlist (<span class="js-wishlist-count">0</span>)</span>
+        </a>
         <a href="{{ route('track-order') }}" class="rabez-acc-btn-outline">Track Order</a>
         @if($user->isAdmin())
           <a href="{{ route('admin.dashboard') }}" class="rabez-acc-btn-outline" style="border-color:#04F404; color:#04F404;">Admin Panel</a>

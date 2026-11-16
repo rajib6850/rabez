@@ -636,9 +636,14 @@
   transition: all 0.18s ease;
 }
 
-.rabez-icon-btn:hover {
+.rabez-icon-btn:hover,
+.rabez-icon-btn.is-active {
   border-color: var(--rabez-neon);
   color: var(--rabez-neon);
+}
+
+.rabez-icon-btn.is-active svg {
+  fill: var(--rabez-neon);
 }
 
 .rabez-icon-btn svg {

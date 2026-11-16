@@ -7,6 +7,7 @@
 
   const STORAGE_CART_KEY = "rabez_wc_cart_v1";
   const STORAGE_WISHLIST_KEY = "rabez_wc_wishlist_v1";
+  const STORAGE_WISHLIST_SIZES_KEY = "rabez_wc_wishlist_sizes_v1";
   const WHATSAPP_NUMBER = "8801612359652";
   function getCustomPrintFee() {
     const fee = Number(window.RABEZ_CUSTOM_PRINT_FEE);
@@ -41,7 +42,11 @@
     ...item,
     image: resolveImageURL(item.image)
   }));
-  let wishlist = loadJSON(STORAGE_WISHLIST_KEY, []);
+  let wishlist = loadJSON(STORAGE_WISHLIST_KEY, []).map((id) => Number(id)).filter((id) => Number.isFinite(id) && id > 0);
+  let wishlistSizes = loadJSON(STORAGE_WISHLIST_SIZES_KEY, {});
+  if (!wishlistSizes || typeof wishlistSizes !== "object" || Array.isArray(wishlistSizes)) {
+    wishlistSizes = {};
+  }
 
   function loadJSON(key, fallback) {
     try {
@@ -59,10 +64,18 @@
     updateCartUI();
   }
 
+  function saveWishlistSizes() {
+    try {
+      localStorage.setItem(STORAGE_WISHLIST_SIZES_KEY, JSON.stringify(wishlistSizes));
+    } catch (e) {}
+  }
+
   function saveWishlist() {
+    wishlist = Array.from(new Set(wishlist.map((id) => Number(id)).filter((id) => Number.isFinite(id) && id > 0)));
     try {
       localStorage.setItem(STORAGE_WISHLIST_KEY, JSON.stringify(wishlist));
     } catch (e) {}
+    saveWishlistSizes();
     updateWishlistUI();
   }
 
@@ -515,15 +528,437 @@
     renderCheckoutOrderSummary();
   }
 
+  function getPreferredWishlistSize(product) {
+    if (!product) return "";
+    const inStock = Array.isArray(product.sizes) ? product.sizes : [];
+    const saved = wishlistSizes[String(product.id)] || wishlistSizes[product.id];
+    if (saved && (inStock.length === 0 || inStock.includes(saved))) {
+      return saved;
+    }
+    return product.defaultSize || inStock[0] || (Array.isArray(product.allSizes) ? product.allSizes[0] : "") || "";
+  }
+
+  function syncWishlistButtonsState() {
+    document.querySelectorAll(".js-wishlist-toggle").forEach((btn) => {
+      const id = Number(btn.dataset.productId);
+      const isWished = wishlist.includes(id);
+      btn.classList.toggle("is-active", isWished);
+      btn.setAttribute("aria-pressed", isWished ? "true" : "false");
+      if (!btn.classList.contains("rabez-wl-icon-act--remove")) {
+        btn.setAttribute("title", isWished ? "Saved in Wishlist" : "Save to Wishlist");
+        const svg = btn.querySelector("svg");
+        if (svg) {
+          svg.setAttribute("fill", isWished ? "currentColor" : "none");
+        }
+      }
+      const spLabel = btn.querySelector(".js-sp-wishlist-label");
+      if (spLabel) {
+        spLabel.textContent = isWished ? "Saved in Wishlist" : "Save to Wishlist";
+      }
+      if (btn.classList.contains("js-qv-wishlist-btn")) {
+        btn.style.background = isWished ? "#ECFDF3" : "";
+        btn.style.borderColor = isWished ? "#16A34A" : "";
+        btn.style.color = isWished ? "#15803D" : "";
+      }
+    });
+  }
+
   function updateWishlistUI() {
     document.querySelectorAll(".js-wishlist-count").forEach((el) => {
       el.textContent = wishlist.length;
     });
+    syncWishlistButtonsState();
+    if (typeof renderWishlistPage === "function") {
+      renderWishlistPage();
+    }
+  }
+
+  /* --- Pro Wishlist Engine & Server Sync --- */
+  let activeWishlistFilter = "all";
+  let activeWishlistSort = "recent";
+
+  function getCsrfToken() {
+    return document.querySelector('meta[name="csrf-token"]')?.content || "";
+  }
+
+  function persistWishlistToggleToServer(productId, size, mode = "toggle") {
+    const endpoint = window.RABEZ_ROUTES?.wishlistToggle;
+    if (!endpoint || !Array.isArray(window.RABEZ_AUTH_WISHLIST)) return;
+    fetch(endpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRF-TOKEN": getCsrfToken()
+      },
+      body: JSON.stringify({
+        product_id: Number(productId),
+        size: size || null,
+        mode: mode
+      })
+    }).catch(() => {});
+  }
+
+  function syncWishlistWithServer() {
+    const endpoint = window.RABEZ_ROUTES?.wishlistSync;
+    if (!endpoint || !Array.isArray(window.RABEZ_AUTH_WISHLIST)) return Promise.resolve();
+    return fetch(endpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRF-TOKEN": getCsrfToken()
+      },
+      body: JSON.stringify({
+        product_ids: wishlist,
+        sizes: wishlistSizes
+      })
+    })
+      .then((res) => (res.ok ? res.json() : null))
+      .then((data) => {
+        if (data && data.success && Array.isArray(data.product_ids)) {
+          wishlist = data.product_ids.map((id) => Number(id)).filter((id) => Number.isFinite(id) && id > 0);
+          if (data.sizes && typeof data.sizes === "object" && !Array.isArray(data.sizes)) {
+            wishlistSizes = Object.assign({}, wishlistSizes, data.sizes);
+          }
+          saveWishlist();
+        }
+      })
+      .catch(() => {});
+  }
+
+  function persistWishlistClearToServer() {
+    const endpoint = window.RABEZ_ROUTES?.wishlistClear;
+    if (!endpoint || !Array.isArray(window.RABEZ_AUTH_WISHLIST)) return;
+    fetch(endpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json",
+        "X-CSRF-TOKEN": getCsrfToken()
+      }
+    }).catch(() => {});
+  }
+
+  function toggleWishlist(id, opts = {}) {
+    const numId = Number(id);
+    if (!numId) return false;
+    const prod = getProductById(numId);
+    const wasWished = wishlist.includes(numId);
+
+    if (wasWished) {
+      wishlist = wishlist.filter((x) => x !== numId);
+    } else {
+      wishlist.unshift(numId);
+      if (opts.size) {
+        wishlistSizes[String(numId)] = String(opts.size);
+      }
+    }
+
+    saveWishlist();
+    persistWishlistToggleToServer(numId, wishlistSizes[String(numId)] || null, "toggle");
+
+    if (!opts.silent) {
+      const onWishlistPage = Boolean(document.querySelector(".js-wishlist-page-grid"));
+      if (!wasWished) {
+        showToast(
+          prod ? prod.name : "Jersey Saved",
+          "Added to your saved wishlist collection.",
+          !onWishlistPage && window.RABEZ_ROUTES?.wishlist
+            ? { label: "View Wishlist", href: window.RABEZ_ROUTES.wishlist }
+            : null
+        );
+      } else {
+        showToast(
+          prod ? prod.name : "Removed from Wishlist",
+          "Removed from your wishlist.",
+          null
+        );
+      }
+    }
+    return !wasWished;
+  }
+
+  function getWishlistProductsList() {
+    return wishlist
+      .map((id) => getProductById(id))
+      .filter((prod) => Boolean(prod));
+  }
+
+  function buildWishlistCardHTML(product) {
+    const frontImg = resolveImageURL(product.image);
+    let backImg = null;
+    if (product.gallery && Array.isArray(product.gallery) && product.gallery.length > 0) {
+      const candidate =
+        product.gallery.find((g) => g && resolveImageURL(g) !== frontImg) ||
+        (product.gallery.length > 1 ? product.gallery[1] : null);
+      if (candidate) backImg = resolveImageURL(candidate);
+    }
+
+    const inStock = Array.isArray(product.sizes) ? product.sizes : [];
+    const allSizes =
+      Array.isArray(product.allSizes) && product.allSizes.length ? product.allSizes : inStock;
+    const hasStock = inStock.length > 0 && product.isReadyStock !== false;
+    const selectedSize = getPreferredWishlistSize(product);
+
+    const curPrice = Number(product.price || 0);
+    const regPrice = Number(product.regularPrice || 0);
+    const hasDiscount = regPrice > curPrice;
+    const saveAmount = hasDiscount ? regPrice - curPrice : 0;
+    const discountPct = hasDiscount ? Math.round((saveAmount / regPrice) * 100) : 0;
+
+    const wlCfg = window.RABEZ_WISHLIST_SETTINGS || {};
+    const printFee = Number.isFinite(Number(wlCfg.printFee)) ? Number(wlCfg.printFee) : getCustomPrintFee();
+    const freeMin = Number.isFinite(Number(wlCfg.freeShippingMin)) ? Number(wlCfg.freeShippingMin) : 3500;
+    const flatFee = Number.isFinite(Number(wlCfg.flatFee)) ? Number(wlCfg.flatFee) : 130;
+
+    const sizeSwatchesHTML = allSizes
+      .map((s) => {
+        const avail = inStock.includes(s);
+        const isSel = avail && s === selectedSize;
+        const escSize = escapeHTML(s);
+        return `<button type="button" class="rabez-size-swatch ${isSel ? "is-selected" : ""} ${!avail ? "is-out-of-stock" : ""}" data-size="${escSize}" aria-pressed="${isSel}" ${!avail ? 'disabled title="Out of stock"' : ""}>${escSize}</button>`;
+      })
+      .join("");
+
+    const productUrl = `/product/${escapeHTML(product.slug || product.id)}`;
+    const safeName = escapeHTML(product.name);
+    const safeClub = escapeHTML(product.clubLabel || "Club Kit");
+    const safeSleeve = escapeHTML(product.sleeveLabel || "Jersey");
+    const safeSku = escapeHTML(product.sku || `RBZ-${product.id}`);
+    const safeDesc = escapeHTML(product.shortDesc || product.name);
+    const safeFabric = escapeHTML(product.fabric || "190-210 GSM Breathable Mesh");
+    const stockSummary = hasStock
+      ? `${inStock.length} of ${allSizes.length || inStock.length} Sizes`
+      : "Currently Sold Out";
+    const deliverySummary =
+      curPrice >= freeMin ? "Qualifies for Free Delivery" : `৳ ${flatFee} All Bangladesh`;
+    const printSummary =
+      product.hasCustomPrint === true ? `+৳ ${printFee} Custom Name/No.` : "Standard Official Edition";
+
+    return `
+      <article class="rabez-wl-card ${backImg ? "has-back-view" : ""}" data-product-id="${product.id}">
+        <div class="rabez-wl-card__media">
+          <a href="${productUrl}">
+            <img src="${frontImg}" class="rabez-wl-card__img rabez-wl-card__img--front" alt="${safeName}" loading="lazy" width="500" height="625">
+            ${backImg ? `<img src="${backImg}" class="rabez-wl-card__img rabez-wl-card__img--back" alt="${safeName} Back View" loading="lazy" width="500" height="625">` : ""}
+          </a>
+          <div class="rabez-wl-card__badges">
+            <span class="rabez-wl-tag ${hasStock ? "rabez-wl-tag--stock" : "rabez-wl-tag--out"}">
+              ${hasStock ? "&#10003; Ready Stock" : "Out of Stock"}
+            </span>
+            ${hasDiscount ? `<span class="rabez-wl-tag rabez-wl-tag--off">-${discountPct}% OFF</span>` : ""}
+            ${product.hasCustomPrint === true ? `<span class="rabez-wl-tag rabez-wl-tag--print">Custom Print Ready</span>` : ""}
+          </div>
+          <div class="rabez-wl-card__top-btns">
+            <button type="button" class="rabez-wl-icon-act js-quick-view" data-product-id="${product.id}" aria-label="Quick View ${safeName}" title="Quick View">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7z"/>
+                <circle cx="12" cy="12" r="3"/>
+              </svg>
+            </button>
+            <button type="button" class="rabez-wl-icon-act rabez-wl-icon-act--remove js-wishlist-toggle" data-product-id="${product.id}" aria-label="Remove ${safeName} from Wishlist" title="Remove from Wishlist">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+              </svg>
+            </button>
+          </div>
+        </div>
+
+        <div class="rabez-wl-card__body">
+          <div class="rabez-wl-card__meta">
+            <span>${safeClub} &bull; ${safeSleeve}</span>
+            <span class="rabez-wl-card__sku">${safeSku}</span>
+          </div>
+
+          <h3 class="rabez-wl-card__title">
+            <a href="${productUrl}">${safeName}</a>
+          </h3>
+
+          <p class="rabez-wl-card__desc">${safeDesc}</p>
+
+          <div class="rabez-wl-specs">
+            <div class="rabez-wl-spec">
+              <span class="rabez-wl-spec__k">Fabric</span>
+              <span class="rabez-wl-spec__v" title="${safeFabric}">${safeFabric}</span>
+            </div>
+            <div class="rabez-wl-spec">
+              <span class="rabez-wl-spec__k">Availability</span>
+              <span class="rabez-wl-spec__v">${escapeHTML(stockSummary)}</span>
+            </div>
+            <div class="rabez-wl-spec">
+              <span class="rabez-wl-spec__k">Personalization</span>
+              <span class="rabez-wl-spec__v">${escapeHTML(printSummary)}</span>
+            </div>
+            <div class="rabez-wl-spec">
+              <span class="rabez-wl-spec__k">Delivery</span>
+              <span class="rabez-wl-spec__v">${escapeHTML(deliverySummary)}</span>
+            </div>
+          </div>
+
+          <div class="rabez-wl-price-row">
+            <div class="rabez-wl-price-main">
+              <span class="rabez-wl-price-now num">${formatBDT(curPrice)}</span>
+              ${hasDiscount ? `<del class="rabez-wl-price-was num">${formatBDT(regPrice)}</del>` : ""}
+            </div>
+            ${hasDiscount ? `<span class="rabez-wl-save-pill">Save ${formatBDT(saveAmount)}</span>` : ""}
+          </div>
+
+          <div class="rabez-wl-sizes-wrap">
+            <div class="rabez-wl-sizes-head">
+              <span>Preferred Size: <strong class="js-wl-selected-size">${escapeHTML(selectedSize || "N/A")}</strong></span>
+              <a href="${productUrl}#size-guide" style="font-size:0.72rem; color:#008A00; text-decoration:underline;">Size Guide</a>
+            </div>
+            <div class="rabez-size-swatches js-wl-size-group">
+              ${sizeSwatchesHTML}
+            </div>
+          </div>
+
+          <div class="rabez-wl-card__actions">
+            <button type="button" class="rabez-btn rabez-btn--primary rabez-btn--sm js-wl-move-item" data-product-id="${product.id}" ${!hasStock ? 'disabled style="opacity:0.55; cursor:not-allowed;"' : 'style="font-weight:800;"'}>
+              ${hasStock ? "Move to Bag" : "Out of Stock"}
+            </button>
+            <button type="button" class="rabez-btn rabez-btn--outline rabez-btn--sm js-wl-add-item" data-product-id="${product.id}" ${!hasStock ? 'disabled style="opacity:0.55; cursor:not-allowed;"' : 'style="font-weight:700;"'}>
+              Add to Bag
+            </button>
+            <button type="button" class="rabez-btn rabez-btn--dark rabez-btn--sm rabez-wl-act-wa js-wl-whatsapp-item" data-product-id="${product.id}" style="display:flex; align-items:center; justify-content:center; gap:6px; font-weight:700;">
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              <span>Order on WhatsApp</span>
+            </button>
+          </div>
+        </div>
+      </article>
+    `;
+  }
+
+  function renderWishlistPage() {
+    const grid = document.querySelector(".js-wishlist-page-grid");
+    if (!grid) return;
+
+    const toolbar = document.querySelector(".js-wl-toolbar");
+    const emptyBox = document.querySelector(".js-wl-empty");
+    const filterEmptyBox = document.querySelector(".js-wl-filter-empty");
+    const moveAllBtn = document.querySelector(".js-wl-move-all");
+
+    const allSaved = getWishlistProductsList();
+    const inStockItems = allSaved.filter((p) => Array.isArray(p.sizes) && p.sizes.length > 0 && p.isReadyStock !== false);
+    const customItems = allSaved.filter((p) => p.hasCustomPrint === true);
+    const saleItems = allSaved.filter((p) => Number(p.regularPrice || 0) > Number(p.price || 0));
+
+    const totalValue = allSaved.reduce((s, p) => s + Number(p.price || 0), 0);
+    const totalSavings = allSaved.reduce(
+      (s, p) => s + Math.max(0, Number(p.regularPrice || 0) - Number(p.price || 0)),
+      0
+    );
+
+    const setStat = (sel, text) => {
+      document.querySelectorAll(sel).forEach((el) => (el.textContent = text));
+    };
+    setStat(".js-wl-stat-total", String(allSaved.length));
+    setStat(".js-wl-stat-stock", String(inStockItems.length));
+    setStat(".js-wl-stat-value", formatBDT(totalValue));
+    setStat(".js-wl-stat-savings", formatBDT(totalSavings));
+    setStat(".js-wl-count-all", String(allSaved.length));
+    setStat(".js-wl-count-instock", String(inStockItems.length));
+    setStat(".js-wl-count-custom", String(customItems.length));
+    setStat(".js-wl-count-sale", String(saleItems.length));
+
+    if (moveAllBtn) {
+      moveAllBtn.disabled = inStockItems.length === 0;
+      moveAllBtn.style.opacity = inStockItems.length === 0 ? "0.5" : "1";
+    }
+
+    if (!allSaved.length) {
+      grid.style.display = "none";
+      grid.innerHTML = "";
+      if (toolbar) toolbar.style.display = "none";
+      if (filterEmptyBox) filterEmptyBox.style.display = "none";
+      if (emptyBox) emptyBox.style.display = "block";
+      return;
+    }
+
+    if (emptyBox) emptyBox.style.display = "none";
+    if (toolbar) toolbar.style.display = "flex";
+
+    let filtered = [...allSaved];
+    if (activeWishlistFilter === "in-stock") {
+      filtered = inStockItems;
+    } else if (activeWishlistFilter === "custom-print") {
+      filtered = customItems;
+    } else if (activeWishlistFilter === "on-sale") {
+      filtered = saleItems;
+    }
+
+    if (activeWishlistSort === "price-asc") {
+      filtered.sort((a, b) => Number(a.price) - Number(b.price));
+    } else if (activeWishlistSort === "price-desc") {
+      filtered.sort((a, b) => Number(b.price) - Number(a.price));
+    } else if (activeWishlistSort === "discount-desc") {
+      filtered.sort((a, b) => {
+        const dA = Math.max(0, Number(a.regularPrice || 0) - Number(a.price || 0));
+        const dB = Math.max(0, Number(b.regularPrice || 0) - Number(b.price || 0));
+        return dB - dA;
+      });
+    }
+
+    if (!filtered.length) {
+      grid.style.display = "none";
+      grid.innerHTML = "";
+      if (filterEmptyBox) filterEmptyBox.style.display = "block";
+      return;
+    }
+
+    if (filterEmptyBox) filterEmptyBox.style.display = "none";
+    grid.style.display = "grid";
+    grid.innerHTML = filtered.map(buildWishlistCardHTML).join("");
+  }
+
+  function initWishlistSyncAndRender() {
+    let importedShared = false;
+    if (Array.isArray(window.RABEZ_SHARED_WISHLIST) && window.RABEZ_SHARED_WISHLIST.length) {
+      window.RABEZ_SHARED_WISHLIST.forEach((rawId) => {
+        const pid = Number(rawId);
+        if (pid > 0 && !wishlist.includes(pid)) {
+          wishlist.unshift(pid);
+          importedShared = true;
+        }
+      });
+      const sharedBanner = document.querySelector(".js-wl-shared-banner");
+      if (sharedBanner) {
+        sharedBanner.style.display = "flex";
+      }
+    }
+
+    if (Array.isArray(window.RABEZ_AUTH_WISHLIST)) {
+      window.RABEZ_AUTH_WISHLIST.forEach((rawId) => {
+        const pid = Number(rawId);
+        if (pid > 0 && !wishlist.includes(pid)) {
+          wishlist.push(pid);
+        }
+      });
+      if (
+        window.RABEZ_AUTH_WISHLIST_SIZES &&
+        typeof window.RABEZ_AUTH_WISHLIST_SIZES === "object" &&
+        !Array.isArray(window.RABEZ_AUTH_WISHLIST_SIZES)
+      ) {
+        wishlistSizes = Object.assign({}, window.RABEZ_AUTH_WISHLIST_SIZES, wishlistSizes);
+      }
+      saveWishlist();
+      syncWishlistWithServer();
+    } else {
+      if (importedShared) saveWishlist();
+      else updateWishlistUI();
+    }
   }
 
   /* --- Toast Notification --- */
   let toastTimer = null;
-  function showToast(title, sub) {
+  function showToast(title, sub, cta) {
     let toast = document.querySelector(".rabez-wc-notice");
     if (!toast) {
       toast = document.createElement("div");
@@ -531,12 +966,18 @@
       toast.setAttribute("role", "status");
       document.body.appendChild(toast);
     }
+    let actionHTML = `<button type="button" class="rabez-btn rabez-btn--primary rabez-btn--sm js-open-cart-drawer">View Bag</button>`;
+    if (cta && cta.href && cta.label) {
+      actionHTML = `<a href="${escapeHTML(cta.href)}" class="rabez-btn rabez-btn--primary rabez-btn--sm">${escapeHTML(cta.label)}</a>`;
+    } else if (cta === null) {
+      actionHTML = "";
+    }
     toast.innerHTML = `
       <div style="flex:1;">
-        <div class="rabez-wc-notice__title">${title}</div>
-        <div class="rabez-wc-notice__sub">${sub}</div>
+        <div class="rabez-wc-notice__title">${escapeHTML(title)}</div>
+        <div class="rabez-wc-notice__sub">${escapeHTML(sub)}</div>
       </div>
-      <button type="button" class="rabez-btn rabez-btn--primary rabez-btn--sm js-open-cart-drawer">View Bag</button>
+      ${actionHTML}
     `;
     requestAnimationFrame(() => toast.classList.add("is-visible"));
     clearTimeout(toastTimer);
@@ -569,6 +1010,7 @@
     }
 
     const isAdded = isProductInCart(product.id);
+    const isWished = wishlist.includes(Number(product.id));
     const swatches = buildSizeSwatchesHTML(product);
 
     const frontImg = product.image || "assets/images/products/real-madrid-home-hs.jpg";
@@ -693,9 +1135,15 @@
               <span>Order via WhatsApp</span>
             </button>
 
-            <a href="/product/${product.slug || product.id}" class="rabez-btn rabez-btn--outline rabez-btn--full" style="padding:9px 16px; font-size:0.84rem; text-align:center;">
-              ${product.hasCustomPrint === true ? 'View Full Details &amp; Custom Print &rarr;' : 'View Full Details &rarr;'}
-            </a>
+            <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px;">
+              <button type="button" class="rabez-btn rabez-btn--outline rabez-btn--full js-wishlist-toggle js-qv-wishlist-btn ${isWished ? "is-active" : ""}" data-product-id="${product.id}" style="padding:9px 10px; font-size:0.82rem; display:flex; align-items:center; justify-content:center; gap:6px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="${isWished ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+                <span class="js-sp-wishlist-label">${isWished ? "Saved in Wishlist" : "Save to Wishlist"}</span>
+              </button>
+              <a href="/product/${product.slug || product.id}" class="rabez-btn rabez-btn--outline rabez-btn--full" style="padding:9px 10px; font-size:0.82rem; text-align:center;">
+                ${product.hasCustomPrint === true ? 'Custom Print &amp; Specs &rarr;' : 'View Full Details &rarr;'}
+              </a>
+            </div>
           </div>
 
           <!-- Trust Perks Row -->
@@ -1093,6 +1541,18 @@
       });
       swatch.classList.add("is-selected");
       swatch.setAttribute("aria-pressed", "true");
+      const wlCard = swatch.closest(".rabez-wl-card");
+      if (wlCard) {
+        const pid = Number(wlCard.dataset.productId);
+        const chosenSize = swatch.dataset.size || "";
+        if (pid && chosenSize) {
+          wishlistSizes[String(pid)] = chosenSize;
+          saveWishlistSizes();
+          const sizeLabelEl = wlCard.querySelector(".js-wl-selected-size");
+          if (sizeLabelEl) sizeLabelEl.textContent = chosenSize;
+          persistWishlistToggleToServer(pid, chosenSize, "save_size");
+        }
+      }
       return;
     }
 
@@ -1332,18 +1792,160 @@
       return;
     }
 
-    // Wishlist Toggle
+    // Wishlist Toggle (Cards, Quick View, Single Product, Wishlist Page)
     const wishBtn = e.target.closest(".js-wishlist-toggle");
     if (wishBtn) {
       const id = Number(wishBtn.dataset.productId);
-      if (wishlist.includes(id)) {
-        wishlist = wishlist.filter((x) => x !== id);
-        wishBtn.classList.remove("is-active");
-      } else {
-        wishlist.push(id);
-        wishBtn.classList.add("is-active");
+      const container = wishBtn.closest(".rabez-product-card, .rabez-single-product, .rabez-qv-layout, .rabez-wl-card");
+      const selectedSize = container?.querySelector(".rabez-size-swatch.is-selected")?.dataset.size || "";
+      toggleWishlist(id, { size: selectedSize });
+      return;
+    }
+
+    // Wishlist Page: Add Item to Bag (keep in wishlist)
+    const wlAddBtn = e.target.closest(".js-wl-add-item");
+    if (wlAddBtn) {
+      const id = Number(wlAddBtn.dataset.productId);
+      const prod = getProductById(id);
+      const card = wlAddBtn.closest(".rabez-wl-card");
+      const size = card?.querySelector(".rabez-size-swatch.is-selected")?.dataset.size || getPreferredWishlistSize(prod);
+      if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
+        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
+        return;
       }
+      addToCart({ id, size, qty: 1 });
+      return;
+    }
+
+    // Wishlist Page: Move Item to Bag (add + remove from wishlist)
+    const wlMoveBtn = e.target.closest(".js-wl-move-item");
+    if (wlMoveBtn) {
+      const id = Number(wlMoveBtn.dataset.productId);
+      const prod = getProductById(id);
+      const card = wlMoveBtn.closest(".rabez-wl-card");
+      const size = card?.querySelector(".rabez-size-swatch.is-selected")?.dataset.size || getPreferredWishlistSize(prod);
+      if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
+        if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
+        return;
+      }
+      addToCart({ id, size, qty: 1 });
+      if (wishlist.includes(id)) {
+        toggleWishlist(id, { silent: true });
+      }
+      return;
+    }
+
+    // Wishlist Page: Single Item WhatsApp Order
+    const wlWaItemBtn = e.target.closest(".js-wl-whatsapp-item");
+    if (wlWaItemBtn) {
+      const id = Number(wlWaItemBtn.dataset.productId);
+      const prod = getProductById(id);
+      const card = wlWaItemBtn.closest(".rabez-wl-card");
+      const size = card?.querySelector(".rabez-size-swatch.is-selected")?.dataset.size || getPreferredWishlistSize(prod) || "L";
+      const msg = `Hello RABEZ, I would like to order this jersey from my Wishlist:\n\n` +
+        `\u2022 Jersey: ${prod?.name || "Jersey"} (${prod?.sku || "RBZ-" + id})\n` +
+        `\u2022 Preferred Size: ${size}\n` +
+        `\u2022 Price: ${formatBDT(prod?.price || 0)}\n\n` +
+        `My Name & Delivery Address: `;
+      window.open(buildWhatsAppOrderURL(msg), "_blank", "noopener");
+      return;
+    }
+
+    // Wishlist Page: Filter Tabs
+    const wlFilterBtn = e.target.closest(".js-wl-filter");
+    if (wlFilterBtn) {
+      document.querySelectorAll(".js-wl-filter").forEach((b) => b.classList.remove("is-active"));
+      wlFilterBtn.classList.add("is-active");
+      activeWishlistFilter = wlFilterBtn.dataset.filter || "all";
+      renderWishlistPage();
+      return;
+    }
+
+    if (e.target.closest(".js-wl-reset-filter")) {
+      activeWishlistFilter = "all";
+      document.querySelectorAll(".js-wl-filter").forEach((b) => b.classList.toggle("is-active", b.dataset.filter === "all"));
+      renderWishlistPage();
+      return;
+    }
+
+    // Wishlist Page: Move All In-Stock Items to Bag
+    if (e.target.closest(".js-wl-move-all")) {
+      const list = getWishlistProductsList().filter((p) => Array.isArray(p.sizes) && p.sizes.length > 0 && p.isReadyStock !== false);
+      if (!list.length) {
+        showToast("No Ready-Stock Jerseys", "None of your saved items are currently in stock.", null);
+        return;
+      }
+      list.forEach((p) => {
+        const size = getPreferredWishlistSize(p) || p.sizes[0];
+        if (size) {
+          addToCart({ id: p.id, size, qty: 1 });
+          wishlist = wishlist.filter((x) => x !== Number(p.id));
+          persistWishlistToggleToServer(p.id, null, "toggle");
+        }
+      });
       saveWishlist();
+      openCartDrawer();
+      return;
+    }
+
+    // Wishlist Page: Clear Entire Wishlist
+    if (e.target.closest(".js-wl-clear")) {
+      if (!wishlist.length) return;
+      const performClear = () => {
+        wishlist = [];
+        wishlistSizes = {};
+        saveWishlist();
+        persistWishlistClearToServer();
+        showToast("Wishlist Cleared", "All saved jerseys have been removed.", null);
+      };
+      if (window.RABEZ_POPUP && typeof window.RABEZ_POPUP.confirm === "function") {
+        window.RABEZ_POPUP.confirm("Remove all saved jerseys from your wishlist?", {
+          type: "warning",
+          title: "Clear Wishlist",
+          confirmText: "Clear All",
+          cancelText: "Keep Items"
+        }).then((confirmed) => {
+          if (confirmed) performClear();
+        });
+      } else {
+        performClear();
+      }
+      return;
+    }
+
+    // Wishlist Page: Share Wishlist Link
+    if (e.target.closest(".js-wl-share")) {
+      const ids = getWishlistProductsList().map((p) => p.id);
+      if (!ids.length) {
+        showToast("Wishlist is Empty", "Save at least one jersey first to generate a share link.", null);
+        return;
+      }
+      const shareUrl = `${window.location.origin}/wishlist?items=${ids.join(",")}`;
+      if (navigator.clipboard && typeof navigator.clipboard.writeText === "function") {
+        navigator.clipboard.writeText(shareUrl).then(() => {
+          showToast("Share Link Copied!", "Anyone with this link can view your saved jerseys.", null);
+        }).catch(() => {
+          window.prompt("Copy your shareable Wishlist URL:", shareUrl);
+        });
+      } else {
+        window.prompt("Copy your shareable Wishlist URL:", shareUrl);
+      }
+      return;
+    }
+
+    // Wishlist Page: Order All Saved Items via WhatsApp
+    if (e.target.closest(".js-wl-whatsapp-all")) {
+      const items = getWishlistProductsList();
+      if (!items.length) {
+        showToast("Wishlist is Empty", "Save at least one jersey first to order via WhatsApp.", null);
+        return;
+      }
+      const total = items.reduce((s, p) => s + Number(p.price || 0), 0);
+      const lines = items.map(
+        (p, idx) => `${idx + 1}. ${p.name} | Size: ${getPreferredWishlistSize(p) || "L"} = ${formatBDT(p.price)}`
+      );
+      const msg = `Hello RABEZ, I would like to order these jerseys from my Wishlist:\n\n${lines.join("\n")}\n\nEstimated Total: ${formatBDT(total)}\nMy Name & Delivery Address: `;
+      window.open(buildWhatsAppOrderURL(msg), "_blank", "noopener");
       return;
     }
 
@@ -1432,6 +2034,11 @@
   });
 
   document.addEventListener("change", function (e) {
+    if (e.target.matches(".js-wl-sort")) {
+      activeWishlistSort = e.target.value || "recent";
+      renderWishlistPage();
+      return;
+    }
     if (e.target.matches(".js-sort-select")) {
       activeFilter.sort = e.target.value;
       renderProductGrids();
@@ -1477,6 +2084,8 @@
   // Expose API globally for RABEZ UI components and Livewire/SPA integrations
   window.RABEZ_STORE = {
     addToCart,
+    toggleWishlist,
+    renderWishlistPage,
     openCartDrawer,
     openQuickView,
     formatBDT,
@@ -1537,7 +2146,7 @@
     renderProductGrids();
     initSingleProductPage();
     updateCartUI();
-    updateWishlistUI();
+    initWishlistSyncAndRender();
     syncActiveCouponsStatus();
   });
 })();

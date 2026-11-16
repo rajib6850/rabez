@@ -120,12 +120,21 @@
             </button>
           </div>
 
-          <button type="button" id="js-sp-whatsapp-order-btn" class="rabez-btn rabez-btn--dark rabez-btn--full" style="margin-top:10px; display:flex; align-items:center; justify-content:center; gap:8px;">
-            <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
-              <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
-            </svg>
-            <span>Order via WhatsApp</span>
-          </button>
+          <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(190px, 1fr)); gap:10px; margin-top:10px;">
+            <button type="button" id="js-sp-whatsapp-order-btn" class="rabez-btn rabez-btn--dark rabez-btn--full" style="display:flex; align-items:center; justify-content:center; gap:8px;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
+              <span>Order via WhatsApp</span>
+            </button>
+
+            <button type="button" class="rabez-btn rabez-btn--outline rabez-btn--full js-wishlist-toggle js-sp-wishlist-btn" data-product-id="{{ $product->id }}" style="background:#121614; border-color:#2B332E; color:#FFFFFF; display:flex; align-items:center; justify-content:center; gap:8px;">
+              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#04F404" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              <span class="js-sp-wishlist-label">Save to Wishlist</span>
+            </button>
+          </div>
 
           <ul class="rabez-delivery-list" style="margin-top:20px;">
             @if(($settings['shipping_mode'] ?? 'flat') === 'flat')
@@ -183,6 +192,14 @@
 
   <!-- Scoped Styles for Dark Description & Size Modal -->
   <style>
+    .js-sp-wishlist-btn.is-active {
+      background: rgba(4, 244, 4, 0.14) !important;
+      border-color: #04F404 !important;
+      color: #04F404 !important;
+    }
+    .js-sp-wishlist-btn.is-active svg {
+      fill: #04F404;
+    }
     .rabez-product-specs-section {
       background: #0B0F0D !important;
       border-top: 1px solid #1C2420 !important;
@@ -935,14 +952,22 @@
         id: {{ $product->id }},
         sku: @json($product->sku ?: ('RBZ-' . $product->id)),
         name: @json($product->name),
+        slug: @json($product->slug ?: (string) $product->id),
+        club: @json($product->club ?: 'all'),
+        clubLabel: @json($product->club_label ?: ucwords(str_replace('-', ' ', $product->club ?: 'Club'))),
+        sleeve: @json($product->sleeve ?: 'half-sleeve'),
+        sleeveLabel: @json($product->sleeve_label ?: ucwords(str_replace('-', ' ', $product->sleeve ?: 'Jersey'))),
         fabric: @json($product->fabric),
+        shortDesc: @json($product->short_desc ?: $product->name),
         price: Number({{ $product->price }}),
         regularPrice: Number({{ $product->regular_price ?? ($product->price + 200) }}),
         image: @json(asset($product->image ?: 'assets/images/products/real-madrid-home-hs.jpg')),
+        gallery: @json(array_values(array_map(fn($g) => asset($g), $gallery))),
         sizes: @json($sizes),
         allSizes: @json($allSizes),
         defaultSize: currentSize,
-        hasCustomPrint: allowCustomPrint
+        hasCustomPrint: allowCustomPrint,
+        isReadyStock: {{ $product->is_ready_stock ? 'true' : 'false' }}
       };
       window.RABEZ_CURRENT_PRODUCT = currentProductData;
       if (window.RABEZ_ANALYTICS && typeof window.RABEZ_ANALYTICS.trackViewContent === "function") {
@@ -951,7 +976,7 @@
       window.RABEZ_PRODUCTS = window.RABEZ_PRODUCTS || [];
       const existingIdx = window.RABEZ_PRODUCTS.findIndex(p => Number(p.id) === Number(currentProductData.id));
       if (existingIdx >= 0) {
-        window.RABEZ_PRODUCTS[existingIdx] = currentProductData;
+        window.RABEZ_PRODUCTS[existingIdx] = Object.assign({}, window.RABEZ_PRODUCTS[existingIdx], currentProductData);
       } else {
         window.RABEZ_PRODUCTS.push(currentProductData);
       }
