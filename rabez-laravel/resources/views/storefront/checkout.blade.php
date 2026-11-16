@@ -19,7 +19,7 @@
 
           @auth
             <div style="background:rgba(4,244,4,0.08); border:1px solid rgba(22,163,74,0.3); color:#15803D; padding:10px 13px; border-radius:8px; font-size:12.5px; font-weight:600; margin-bottom:16px; display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap;">
-              <span>&#10003; Your saved name, phone number, and delivery address have been auto-filled (you can edit if needed)</span>
+              <span>&#10003; Saved delivery details auto-filled.</span>
               <a href="{{ route('account.dashboard') }}" style="color:#0A0C0B; text-decoration:underline; font-weight:700; white-space:nowrap;">My Account &rarr;</a>
             </div>
           @else
