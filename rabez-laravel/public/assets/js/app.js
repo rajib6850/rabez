@@ -136,15 +136,35 @@
     const stage = document.querySelector(".js-hero-stage");
     if (!stage) return;
 
+    const deck = stage.querySelector(".rabez-hero-deck");
     const cards = Array.from(stage.querySelectorAll(".js-hero-deck-card"));
     const dockBtns = Array.from(stage.querySelectorAll(".js-hero-dock-btn"));
+    const prevBtn = stage.querySelector(".js-hero-prev");
+    const nextBtn = stage.querySelector(".js-hero-next");
     const total = cards.length;
     if (!total) return;
 
     let currentIndex = 0;
     let autoTimer = null;
+    let isDragging = false;
+    let hasDragged = false;
+    let justDragged = false;
+    let startX = 0;
+    let startY = 0;
+    let lastDx = 0;
+
+    stage.querySelectorAll("img").forEach((img) => {
+      img.setAttribute("draggable", "false");
+    });
+
+    function clearInlineTransforms() {
+      cards.forEach((c) => {
+        c.style.transform = "";
+      });
+    }
 
     function setActiveSlide(index) {
+      clearInlineTransforms();
       currentIndex = ((index % total) + total) % total;
       const prevIndex = (currentIndex - 1 + total) % total;
       const nextIndex = (currentIndex + 1) % total;
@@ -181,6 +201,7 @@
 
     cards.forEach((card, idx) => {
       card.addEventListener("click", () => {
+        if (justDragged) return;
         if (idx !== currentIndex) {
           setActiveSlide(idx);
           startAutoPlay();
@@ -196,6 +217,18 @@
       });
     });
 
+    prevBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setActiveSlide(currentIndex - 1);
+      startAutoPlay();
+    });
+
+    nextBtn?.addEventListener("click", (e) => {
+      e.stopPropagation();
+      setActiveSlide(currentIndex + 1);
+      startAutoPlay();
+    });
+
     dockBtns.forEach((btn) => {
       btn.addEventListener("click", () => {
         const targetIdx = Number(btn.dataset.index || 0);
@@ -204,9 +237,97 @@
       });
     });
 
+    if (deck) {
+      const startDrag = (clientX, clientY) => {
+        isDragging = true;
+        hasDragged = false;
+        startX = clientX;
+        startY = clientY;
+        lastDx = 0;
+        stopAutoPlay();
+      };
+
+      const moveDrag = (clientX, clientY) => {
+        if (!isDragging) return;
+        const dx = clientX - startX;
+        const dy = clientY - startY;
+
+        if (!hasDragged && Math.abs(dy) > Math.abs(dx) && Math.abs(dy) > 10) {
+          isDragging = false;
+          deck.classList.remove("is-dragging");
+          clearInlineTransforms();
+          startAutoPlay();
+          return;
+        }
+
+        if (Math.abs(dx) > 6) {
+          hasDragged = true;
+          lastDx = dx;
+          deck.classList.add("is-dragging");
+          const clamped = Math.max(-145, Math.min(145, dx));
+          const activeCard = cards[currentIndex];
+          if (activeCard) {
+            activeCard.style.transform = `translateX(${clamped}px) translateY(-6px) rotate(${(clamped * 0.055).toFixed(2)}deg) scale(1)`;
+          }
+        }
+      };
+
+      const endDrag = () => {
+        if (!isDragging) return;
+        isDragging = false;
+        deck.classList.remove("is-dragging");
+        clearInlineTransforms();
+
+        if (hasDragged) {
+          justDragged = true;
+          window.setTimeout(() => { justDragged = false; }, 140);
+          if (lastDx < -42) {
+            setActiveSlide(currentIndex + 1);
+          } else if (lastDx > 42) {
+            setActiveSlide(currentIndex - 1);
+          }
+        }
+        startAutoPlay();
+      };
+
+      if (window.PointerEvent) {
+        deck.addEventListener("pointerdown", (e) => {
+          if (e.target.closest(".js-hero-prev, .js-hero-next")) return;
+          if (e.pointerType === "mouse" && e.button !== 0) return;
+          startDrag(e.clientX, e.clientY);
+        });
+        window.addEventListener("pointermove", (e) => moveDrag(e.clientX, e.clientY));
+        window.addEventListener("pointerup", endDrag);
+        window.addEventListener("pointercancel", endDrag);
+      } else {
+        deck.addEventListener("touchstart", (e) => {
+          if (e.target.closest(".js-hero-prev, .js-hero-next") || !e.touches.length) return;
+          startDrag(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        deck.addEventListener("touchmove", (e) => {
+          if (!e.touches.length) return;
+          moveDrag(e.touches[0].clientX, e.touches[0].clientY);
+        }, { passive: true });
+        deck.addEventListener("touchend", endDrag);
+        deck.addEventListener("touchcancel", endDrag);
+      }
+    }
+
+    stage.setAttribute("tabindex", "0");
+    stage.addEventListener("keydown", (e) => {
+      if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        setActiveSlide(currentIndex - 1);
+        startAutoPlay();
+      } else if (e.key === "ArrowRight") {
+        e.preventDefault();
+        setActiveSlide(currentIndex + 1);
+        startAutoPlay();
+      }
+    });
+
     stage.addEventListener("mouseenter", stopAutoPlay);
     stage.addEventListener("mouseleave", startAutoPlay);
-    stage.addEventListener("touchstart", stopAutoPlay, { passive: true });
 
     setActiveSlide(0);
     startAutoPlay();

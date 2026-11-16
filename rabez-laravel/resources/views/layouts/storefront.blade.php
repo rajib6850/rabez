@@ -24,7 +24,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/03-components.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/header-navigation.css') }}?v=2.6">
   <link rel="stylesheet" href="{{ asset('assets/css/components/nav-dropdown.css') }}?v=1.3">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/hero-banner.css') }}?v=2.4">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/hero-banner.css') }}?v=2.5">
   <link rel="stylesheet" href="{{ asset('assets/css/components/club-filter-bar.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/product-grid.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}?v=2.1">
@@ -698,7 +698,7 @@
   </script>
   @endif
   <script src="{{ asset('assets/js/cart.js') }}?v=4.7"></script>
-  <script src="{{ asset('assets/js/app.js') }}?v=3.6"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=3.7"></script>
 
   @stack('scripts')
 </body>
