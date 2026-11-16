@@ -131,6 +131,133 @@ class ImageOptimizerService
     }
 
     /**
+     * Store an optimized square-bounded user avatar (max 400px, WebP when GD supports it)
+     * and remove any previous local avatar file belonging to the user.
+     */
+    public function storeOptimizedAvatar(UploadedFile $file, int $userId, ?string $oldAvatarUrl = null): string
+    {
+        $publicDir = public_path('uploads/avatars');
+        if (!is_dir($publicDir)) {
+            @mkdir($publicDir, 0755, true);
+        }
+
+        $baseName = 'avatar-' . $userId . '-' . time() . '-' . bin2hex(random_bytes(4));
+        $fileName = null;
+        $destPath = null;
+
+        $realPath = $file->getRealPath();
+        $source = $realPath ? $this->loadImage($realPath) : null;
+
+        if ($source) {
+            $source = $this->autoOrientExif($source, $realPath);
+            $origW = imagesx($source);
+            $origH = imagesy($source);
+
+            $maxDim = 400;
+            $scale = min(1.0, $maxDim / max(1, $origW), $maxDim / max(1, $origH));
+            $targetW = max(1, (int) round($origW * $scale));
+            $targetH = max(1, (int) round($origH * $scale));
+
+            $dest = imagecreatetruecolor($targetW, $targetH);
+            imagealphablending($dest, false);
+            imagesavealpha($dest, true);
+            $transparent = imagecolorallocatealpha($dest, 0, 0, 0, 127);
+            imagefilledrectangle($dest, 0, 0, $targetW, $targetH, $transparent);
+            imagecopyresampled($dest, $source, 0, 0, 0, 0, $targetW, $targetH, $origW, $origH);
+
+            if (function_exists('imagewebp')) {
+                $candidateName = $baseName . '.webp';
+                $candidatePath = $publicDir . DIRECTORY_SEPARATOR . $candidateName;
+                if (@imagewebp($dest, $candidatePath, 86)) {
+                    $fileName = $candidateName;
+                    $destPath = $candidatePath;
+                }
+            }
+
+            imagedestroy($dest);
+            imagedestroy($source);
+        }
+
+        if (!$destPath || !is_file($destPath)) {
+            $ext = strtolower($file->getClientOriginalExtension() ?: 'jpg');
+            if (!in_array($ext, ['jpg', 'jpeg', 'png', 'webp', 'gif'], true)) {
+                $ext = 'jpg';
+            }
+            $fileName = $baseName . '.' . $ext;
+            $file->move($publicDir, $fileName);
+            $destPath = $publicDir . DIRECTORY_SEPARATOR . $fileName;
+        }
+
+        $mirrorDir = $this->resolveMirrorAvatarDir();
+        if ($mirrorDir && is_file($destPath)) {
+            @copy($destPath, $mirrorDir . DIRECTORY_SEPARATOR . $fileName);
+        }
+
+        $this->deleteAvatarFile($oldAvatarUrl);
+
+        return '/uploads/avatars/' . $fileName;
+    }
+
+    /**
+     * Delete a previously uploaded local avatar file (including cPanel document-root mirror).
+     * External OAuth avatar URLs are intentionally untouched.
+     */
+    public function deleteAvatarFile(?string $avatarUrl): void
+    {
+        if (empty($avatarUrl)) {
+            return;
+        }
+
+        $path = parse_url(trim($avatarUrl), PHP_URL_PATH) ?? '';
+        $normalized = '/' . ltrim(str_replace('\\', '/', $path), '/');
+        if (!str_starts_with($normalized, '/uploads/avatars/')) {
+            return;
+        }
+
+        $fileName = basename($normalized);
+        if ($fileName === '' || $fileName === '.' || $fileName === '..') {
+            return;
+        }
+
+        $publicFile = public_path('uploads/avatars/' . $fileName);
+        if (is_file($publicFile)) {
+            @unlink($publicFile);
+        }
+
+        $mirrorDir = $this->resolveMirrorAvatarDir(false);
+        if ($mirrorDir) {
+            $mirrorFile = $mirrorDir . DIRECTORY_SEPARATOR . $fileName;
+            if (is_file($mirrorFile)) {
+                @unlink($mirrorFile);
+            }
+        }
+    }
+
+    /**
+     * Resolve cPanel document-root uploads/avatars path when distinct from Laravel public_path().
+     */
+    protected function resolveMirrorAvatarDir(bool $createIfMissing = true): ?string
+    {
+        $docRoot = !empty($_SERVER['DOCUMENT_ROOT']) ? rtrim((string) $_SERVER['DOCUMENT_ROOT'], '/\\') : null;
+        if (!$docRoot || !is_dir($docRoot)) {
+            return null;
+        }
+
+        $publicReal = realpath(public_path());
+        $docReal = realpath($docRoot);
+        if ($publicReal && $docReal && $publicReal === $docReal) {
+            return null;
+        }
+
+        $mirrorDir = $docRoot . DIRECTORY_SEPARATOR . 'uploads' . DIRECTORY_SEPARATOR . 'avatars';
+        if (!is_dir($mirrorDir) && $createIfMissing) {
+            @mkdir($mirrorDir, 0755, true);
+        }
+
+        return is_dir($mirrorDir) ? $mirrorDir : null;
+    }
+
+    /**
      * Load image resource from path using appropriate GD function
      */
     protected function loadImage(string $path)

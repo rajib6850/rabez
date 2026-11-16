@@ -116,6 +116,16 @@
   flex-shrink: 0;
 }
 
+.rabez-topbar-avatar {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 1px solid rgba(4, 244, 4, 0.55);
+  display: inline-block;
+  flex-shrink: 0;
+}
+
 .rabez-role-badge {
   font-size: 9px;
   font-weight: 800;

@@ -235,6 +235,14 @@
       display: grid;
       place-items: center;
       margin-left: 4px;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .adm-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
     }
 
     /* ---------- Live Order Notifications & Sound ---------- */
@@ -1247,6 +1255,7 @@
     body.is-cust-drawer-open .adm-backdrop,
     body.is-user-drawer-open .adm-backdrop,
     body.is-page-drawer-open .adm-backdrop,
+    body.is-admin-profile-drawer-open .adm-backdrop,
     body.is-nav-open .adm-backdrop { opacity: 1; pointer-events: auto; }
     body.is-drawer-open .adm-drawer.js-order-drawer { transform: translateX(0); }
     body.is-prod-drawer-open .adm-drawer.js-prod-drawer { transform: translateX(0); }
@@ -1254,6 +1263,88 @@
     body.is-cust-drawer-open .adm-drawer.js-cust-drawer { transform: translateX(0); }
     body.is-user-drawer-open .adm-drawer.js-user-drawer { transform: translateX(0); }
     body.is-page-drawer-open .adm-drawer.js-page-drawer { transform: translateX(0); }
+    body.is-admin-profile-drawer-open .adm-drawer.js-admin-profile-drawer { transform: translateX(0); }
+
+    /* Admin Profile Setup & Security UI */
+    .adm-prof-banner {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      flex-wrap: wrap;
+      background: linear-gradient(135deg, #0D110E 0%, #141A16 100%);
+      border: 1px solid #1F2922;
+      border-radius: 12px;
+      padding: 16px 20px;
+      margin-bottom: 16px;
+      color: #FFFFFF;
+    }
+    .adm-prof-banner__left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      min-width: 0;
+      flex: 1 1 260px;
+    }
+    .adm-prof-banner__actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .adm-prof-photo-card {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 14px;
+      background: var(--adm-subtle);
+      border: 1px dashed var(--adm-border);
+      border-radius: 10px;
+      flex-wrap: wrap;
+    }
+    .adm-prof-avatar-lg {
+      width: 64px;
+      height: 64px;
+      border-radius: 50%;
+      background: #0D110E;
+      border: 2px solid #04F404;
+      color: #04F404;
+      font-size: 22px;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .adm-prof-avatar-lg img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .adm-prof-divider {
+      border: none;
+      border-top: 1px solid var(--adm-border);
+      margin: 20px 0;
+    }
+    .adm-prof-sec-box {
+      display: grid;
+      gap: 8px;
+      padding: 12px 14px;
+      border: 1px solid var(--adm-border);
+      border-radius: 10px;
+      background: var(--adm-subtle);
+      margin-bottom: 14px;
+    }
+    .adm-prof-sec-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 12.5px;
+      font-weight: 600;
+      color: var(--adm-text);
+    }
 
     /* Bulk Action Bar */
     .adm-bulk-bar {
@@ -2872,23 +2963,40 @@
         </button>
       </div>
 
+      @php
+        $admUser = Auth::user();
+        $admAvatarUrl = !empty($admUser?->avatar)
+          ? (str_starts_with($admUser->avatar, 'http') ? $admUser->avatar : asset(ltrim($admUser->avatar, '/')))
+          : null;
+        $admInitials = strtoupper(substr($admUser->name ?? 'RZ', 0, 2));
+      @endphp
       <div class="adm-sidebar__foot" style="background:#111412; border:1px solid #1F2421; border-radius:10px; padding:12px;">
         <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
-          <span class="adm-avatar" style="width:32px; height:32px; font-size:11px; background:#16A34A; color:#fff; border:none;">
-            {{ strtoupper(substr(Auth::user()->name ?? 'RZ', 0, 2)) }}
+          <span class="adm-avatar js-adm-avatar-box" data-initials="{{ $admInitials }}" style="width:32px; height:32px; font-size:11px; background:#16A34A; color:#fff; border:none;">
+            @if($admAvatarUrl)
+              <img src="{{ $admAvatarUrl }}" alt="{{ $admUser->name ?? 'RABEZ Admin' }}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='grid';">
+              <span style="display:none; width:100%; height:100%; place-items:center;">{{ $admInitials }}</span>
+            @else
+              {{ $admInitials }}
+            @endif
           </span>
           <div style="min-width:0; flex:1;">
-            <div class="adm-sidebar__foot-title" style="font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ Auth::user()->name ?? 'RABEZ Admin' }}</div>
-            <div style="font-size:11px; color:#9CA3AF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ Auth::user()->email ?? 'admin@rabez.shop' }}</div>
+            <div class="adm-sidebar__foot-title js-adm-profile-name" style="font-size:12.5px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $admUser->name ?? 'RABEZ Admin' }}</div>
+            <div class="js-adm-profile-email" style="font-size:11px; color:#9CA3AF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $admUser->email ?? 'admin@rabez.shop' }}</div>
           </div>
         </div>
 
         <div style="display:flex; align-items:center; justify-content:space-between; margin-bottom:10px;">
           <span class="adm-chip adm-chip--delivered" style="font-size:10px; padding:1px 6px;">
-            {{ strtoupper(Auth::user()->role ?? 'Admin') }}
+            {{ strtoupper($admUser->role ?? 'Admin') }}
           </span>
           <span style="font-size:11px; color:#7D8581;">Verified Session</span>
         </div>
+
+        <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-open-admin-profile" style="width:100%; justify-content:center; gap:6px; margin-bottom:8px; background:#1A201C; border-color:#2D3630; color:#FFFFFF; font-size:12px; padding:6px 10px;">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="13" height="13" stroke-linecap="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+          Profile &amp; Avatar
+        </button>
 
         <a href="{{ route('home') }}" target="_blank" class="adm-sidebar__link" style="display:flex; align-items:center; justify-content:space-between; padding:6px 0; color:#D1D5DB; text-decoration:none; font-size:12px; border-top:1px solid #1C211E;">
           <span>View Storefront</span>
@@ -3008,8 +3116,15 @@
 
           <!-- Admin Profile Dropdown -->
           <div class="adm-profile-wrap">
-            <button type="button" class="adm-profile-btn js-adm-profile-btn" title="{{ Auth::user()->name ?? 'RABEZ Admin' }}" aria-label="Account menu" aria-expanded="false">
-              <span class="adm-avatar">{{ strtoupper(substr(Auth::user()->name ?? 'RZ', 0, 2)) }}</span>
+            <button type="button" class="adm-profile-btn js-adm-profile-btn" title="{{ $admUser->name ?? 'RABEZ Admin' }}" aria-label="Account menu" aria-expanded="false">
+              <span class="adm-avatar js-adm-avatar-box" data-initials="{{ $admInitials }}">
+                @if($admAvatarUrl)
+                  <img src="{{ $admAvatarUrl }}" alt="{{ $admUser->name ?? 'RABEZ Admin' }}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='grid';">
+                  <span style="display:none; width:100%; height:100%; place-items:center;">{{ $admInitials }}</span>
+                @else
+                  {{ $admInitials }}
+                @endif
+              </span>
               <svg class="adm-profile-chevron" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
                 <polyline points="6 9 12 15 18 9"></polyline>
               </svg>
@@ -3017,14 +3132,25 @@
 
             <div class="adm-profile-dropdown js-adm-profile-dropdown" role="menu">
               <div class="adm-profile-dropdown__head">
-                <span class="adm-avatar" style="width:36px; height:36px; margin:0; flex-shrink:0;">{{ strtoupper(substr(Auth::user()->name ?? 'RZ', 0, 2)) }}</span>
+                <span class="adm-avatar js-adm-avatar-box" data-initials="{{ $admInitials }}" style="width:36px; height:36px; margin:0; flex-shrink:0;">
+                  @if($admAvatarUrl)
+                    <img src="{{ $admAvatarUrl }}" alt="{{ $admUser->name ?? 'RABEZ Admin' }}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='grid';">
+                    <span style="display:none; width:100%; height:100%; place-items:center;">{{ $admInitials }}</span>
+                  @else
+                    {{ $admInitials }}
+                  @endif
+                </span>
                 <div style="min-width:0; flex:1;">
-                  <div style="font-size:13px; font-weight:700; color:#FFFFFF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ Auth::user()->name ?? 'RABEZ Admin' }}</div>
-                  <div style="font-size:11.5px; color:#9CA3AF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ Auth::user()->email ?? 'admin@rabez.shop' }}</div>
+                  <div class="js-adm-profile-name" style="font-size:13px; font-weight:700; color:#FFFFFF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $admUser->name ?? 'RABEZ Admin' }}</div>
+                  <div class="js-adm-profile-email" style="font-size:11.5px; color:#9CA3AF; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;">{{ $admUser->email ?? 'admin@rabez.shop' }}</div>
                 </div>
               </div>
 
               <div class="adm-profile-dropdown__links">
+                <button type="button" class="adm-profile-item js-open-admin-profile js-adm-profile-close">
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+                  <span>Profile &amp; Avatar Setup</span>
+                </button>
                 <a href="{{ route('home') }}" target="_blank" class="adm-profile-item">
                   <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
                   <span>View Storefront</span>
@@ -4148,6 +4274,34 @@
             $fbReady = !empty($settings['facebook_client_id']) && !empty($settings['facebook_client_secret']);
           @endphp
 
+          <!-- Admin Profile Setup Card (Always accessible from Settings tab too) -->
+          <div class="adm-prof-banner">
+            <div class="adm-prof-banner__left">
+              <div class="adm-prof-avatar-lg js-adm-avatar-box" data-initials="{{ $admInitials }}" style="width:52px; height:52px; font-size:18px;">
+                @if($admAvatarUrl)
+                  <img src="{{ $admAvatarUrl }}" alt="{{ $admUser->name ?? 'RABEZ Admin' }}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+                  <span style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">{{ $admInitials }}</span>
+                @else
+                  {{ $admInitials }}
+                @endif
+              </div>
+              <div style="min-width:0;">
+                <div style="display:flex; align-items:center; gap:8px; flex-wrap:wrap;">
+                  <span class="js-adm-profile-name" style="font-size:15px; font-weight:800; color:#FFFFFF;">{{ $admUser->name ?? 'RABEZ Admin' }}</span>
+                  <span class="adm-chip adm-chip--delivered" style="font-size:10px; padding:1px 7px;">{{ strtoupper($admUser->role ?? 'Admin') }}</span>
+                </div>
+                <div style="font-size:12px; color:#9CA3AF; margin-top:2px; word-break:break-word;">
+                  <span class="js-adm-profile-email">{{ $admUser->email ?? 'admin@rabez.shop' }}</span>
+                  &middot; <span class="js-adm-profile-phone">{{ $admUser->phone ?: 'No phone saved' }}</span>
+                </div>
+              </div>
+            </div>
+            <div class="adm-prof-banner__actions">
+              <button type="button" class="adm-btn adm-btn--primary adm-btn--sm js-open-admin-profile">Edit Profile &amp; Avatar</button>
+              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-open-admin-profile-sec" style="background:#1A201C; border-color:#2D3630; color:#E5E7EB;">Change Password</button>
+            </div>
+          </div>
+
           <!-- Settings Status Overview -->
           <div class="adm-settings-kpis">
             <div class="adm-settings-kpi">
@@ -5203,6 +5357,113 @@
           <button type="submit" class="adm-btn adm-btn--primary js-save-page-btn" style="flex:1; font-weight:700;">Save Page</button>
           <button type="button" class="adm-btn adm-btn--danger js-delete-page-drawer-btn" style="display:none; background:#fee2e2; color:#b91c1c; border-color:#fca5a5;">Delete Page</button>
         </div>
+      </form>
+    </div>
+  </aside>
+
+  <!-- ADMIN PROFILE & SECURITY SETUP DRAWER -->
+  <aside class="adm-drawer js-admin-profile-drawer" aria-label="Admin Profile & Security Setup">
+    <div class="adm-drawer__head">
+      <div>
+        <div class="adm-cell-sub">Account &amp; Security</div>
+        <h2 style="font-size:18px; margin-top:2px;">Profile &amp; Avatar Setup</h2>
+      </div>
+      <button type="button" class="adm-icon-btn js-drawer-close" aria-label="Close">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+
+    <div class="adm-drawer__body">
+      <form id="js-admin-profile-form" enctype="multipart/form-data" style="display:grid; gap:14px;">
+        <div class="adm-prof-photo-card">
+          <div class="adm-prof-avatar-lg js-adm-prof-drawer-preview" data-initials="{{ $admInitials }}">
+            @if($admAvatarUrl)
+              <img src="{{ $admAvatarUrl }}" alt="{{ $admUser->name ?? 'RABEZ Admin' }}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+              <span style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">{{ $admInitials }}</span>
+            @else
+              {{ $admInitials }}
+            @endif
+          </div>
+          <div style="flex:1; min-width:170px;">
+            <div style="font-weight:700; font-size:13.5px; color:var(--adm-text); margin-bottom:6px;">Admin Profile Picture</div>
+            <div style="display:flex; flex-wrap:wrap; gap:6px; align-items:center;">
+              <label for="adm-prof-avatar-input" class="adm-btn adm-btn--secondary adm-btn--sm" style="cursor:pointer;">{{ $admAvatarUrl ? 'Change Photo' : 'Upload Photo' }}</label>
+              <input type="file" id="adm-prof-avatar-input" name="avatar" accept="image/jpeg,image/png,image/webp,image/gif" hidden>
+              <input type="hidden" id="adm-prof-remove-avatar" name="remove_avatar" value="0">
+              <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-adm-prof-remove-btn" style="color:#DC2626; border-color:#FECACA; background:#FEF2F2; {{ $admAvatarUrl ? '' : 'display:none;' }}">Remove</button>
+            </div>
+            <div class="adm-hint js-adm-prof-photo-hint" style="margin-top:6px;">JPG, PNG or WebP (max 4MB). Optimized automatically.</div>
+          </div>
+        </div>
+
+        <div class="adm-field">
+          <label class="adm-label" for="adm-prof-name">Display Name *</label>
+          <input type="text" id="adm-prof-name" name="name" class="adm-input" value="{{ $admUser->name ?? '' }}" required maxlength="100" placeholder="Your full name">
+        </div>
+
+        <div class="adm-field">
+          <label class="adm-label" for="adm-prof-email">Admin Email *</label>
+          <input type="email" id="adm-prof-email" name="email" class="adm-input" value="{{ $admUser->email ?? '' }}" required maxlength="150" placeholder="admin@rabez.shop">
+        </div>
+
+        <div class="adm-field">
+          <label class="adm-label" for="adm-prof-phone">Mobile Number (11 Digits)</label>
+          <input type="tel" id="adm-prof-phone" name="phone" class="adm-input" value="{{ $admUser->phone ?? '' }}" placeholder="01XXXXXXXXX">
+        </div>
+
+        <div class="adm-field">
+          <label class="adm-label" for="adm-prof-address">Office / Delivery Address</label>
+          <textarea id="adm-prof-address" name="address" rows="2" class="adm-textarea" maxlength="255" placeholder="Address for dispatch or personal orders">{{ $admUser->address ?? '' }}</textarea>
+        </div>
+
+        <button type="submit" class="adm-btn adm-btn--primary js-save-adm-profile-btn" style="width:100%; justify-content:center; font-weight:700;">
+          Save Profile &amp; Photo
+        </button>
+      </form>
+
+      <hr class="adm-prof-divider" id="adm-prof-sec-anchor">
+
+      <div style="margin-bottom:10px;">
+        <div style="font-size:14px; font-weight:800; color:var(--adm-text);">Password &amp; Connected Sign-In</div>
+        <div class="adm-hint">Manage your admin sign-in credentials.</div>
+      </div>
+
+      <div class="adm-prof-sec-box">
+        <div class="adm-prof-sec-row">
+          <span>Password Login</span>
+          <span class="adm-chip {{ !empty($admUser?->password) ? 'adm-chip--delivered' : 'adm-chip--neutral' }}">{{ !empty($admUser?->password) ? 'Configured' : 'Not Set' }}</span>
+        </div>
+        <div class="adm-prof-sec-row">
+          <span>Google OAuth</span>
+          <span class="adm-chip {{ !empty($admUser?->google_id) ? 'adm-chip--delivered' : 'adm-chip--neutral' }}">{{ !empty($admUser?->google_id) ? 'Connected' : 'Not Linked' }}</span>
+        </div>
+        <div class="adm-prof-sec-row">
+          <span>Facebook OAuth</span>
+          <span class="adm-chip {{ !empty($admUser?->facebook_id) ? 'adm-chip--delivered' : 'adm-chip--neutral' }}">{{ !empty($admUser?->facebook_id) ? 'Connected' : 'Not Linked' }}</span>
+        </div>
+      </div>
+
+      <form id="js-admin-password-form" style="display:grid; gap:12px;">
+        @if(!empty($admUser?->password))
+          <div class="adm-field">
+            <label class="adm-label" for="adm-prof-curr-pw">Current Password *</label>
+            <input type="password" id="adm-prof-curr-pw" name="current_password" class="adm-input" required autocomplete="current-password" placeholder="Enter current password">
+          </div>
+        @endif
+
+        <div class="adm-field">
+          <label class="adm-label" for="adm-prof-new-pw">New Password *</label>
+          <input type="password" id="adm-prof-new-pw" name="password" class="adm-input" required minlength="8" autocomplete="new-password" placeholder="Minimum 8 characters">
+        </div>
+
+        <div class="adm-field">
+          <label class="adm-label" for="adm-prof-confirm-pw">Confirm New Password *</label>
+          <input type="password" id="adm-prof-confirm-pw" name="password_confirmation" class="adm-input" required minlength="8" autocomplete="new-password" placeholder="Repeat new password">
+        </div>
+
+        <button type="submit" class="adm-btn adm-btn--secondary js-save-adm-password-btn" style="width:100%; justify-content:center; font-weight:700;">
+          Update Admin Password
+        </button>
       </form>
     </div>
   </aside>
@@ -6469,6 +6730,7 @@
           "is-cust-drawer-open",
           "is-user-drawer-open",
           "is-page-drawer-open",
+          "is-admin-profile-drawer-open",
           "is-nav-open"
         );
         openOrderId = null;
@@ -10637,6 +10899,181 @@
             btn.setAttribute("aria-expanded", "false");
             $(".js-adm-notif-dropdown")?.classList.remove("is-open");
             $(".js-adm-notif-btn")?.setAttribute("aria-expanded", "false");
+            closeOverlays();
+          }
+        });
+      }
+
+      function syncAdminProfileUI(user) {
+        if (!user) return;
+        const initials = user.initials || "RZ";
+        const avatarBoxes = $$(".js-adm-avatar-box, .js-adm-prof-drawer-preview");
+        avatarBoxes.forEach((box) => {
+          box.dataset.initials = initials;
+          box.innerHTML = "";
+          if (user.avatar_url) {
+            const img = document.createElement("img");
+            img.src = user.avatar_url + (user.avatar_url.includes("?") ? "&" : "?") + "t=" + Date.now();
+            img.alt = user.name || "RABEZ Admin";
+            img.onerror = () => { box.textContent = initials; };
+            box.appendChild(img);
+          } else {
+            box.textContent = initials;
+          }
+        });
+        $$(".js-adm-profile-name").forEach((el) => { el.textContent = user.name || "RABEZ Admin"; });
+        $$(".js-adm-profile-email").forEach((el) => { el.textContent = user.email || ""; });
+        $$(".js-adm-profile-phone").forEach((el) => { el.textContent = user.phone || "No phone saved"; });
+        const profileBtn = $(".js-adm-profile-btn");
+        if (profileBtn && user.name) profileBtn.title = user.name;
+      }
+
+      function initAdminProfileDrawer() {
+        const avatarInput = $("#adm-prof-avatar-input");
+        const removeFlag = $("#adm-prof-remove-avatar");
+        const removeBtn = $(".js-adm-prof-remove-btn");
+        const previewBox = $(".js-adm-prof-drawer-preview");
+        const photoHint = $(".js-adm-prof-photo-hint");
+        const profileForm = $("#js-admin-profile-form");
+        const passwordForm = $("#js-admin-password-form");
+        const csrfToken = document.querySelector('meta[name="csrf-token"]')?.getAttribute("content") || "{{ csrf_token() }}";
+
+        const openDrawer = (focusSecurity = false) => {
+          closeOverlays();
+          document.body.classList.add("is-admin-profile-drawer-open");
+          if (focusSecurity) {
+            setTimeout(() => {
+              $("#adm-prof-sec-anchor")?.scrollIntoView({ behavior: "smooth", block: "start" });
+            }, 160);
+          }
+        };
+
+        document.addEventListener("click", (e) => {
+          if (e.target.closest(".js-open-admin-profile")) {
+            e.preventDefault();
+            openDrawer(false);
+          } else if (e.target.closest(".js-open-admin-profile-sec")) {
+            e.preventDefault();
+            openDrawer(true);
+          }
+        });
+
+        avatarInput?.addEventListener("change", () => {
+          const file = avatarInput.files && avatarInput.files[0];
+          if (!file || !previewBox) return;
+          if (removeFlag) removeFlag.value = "0";
+          if (removeBtn) removeBtn.style.display = "inline-flex";
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            previewBox.innerHTML = "";
+            const img = document.createElement("img");
+            img.src = ev.target.result;
+            img.alt = "Selected avatar preview";
+            previewBox.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+          if (photoHint) {
+            photoHint.textContent = "New photo selected — click Save Profile & Photo below.";
+            photoHint.style.color = "#15803D";
+          }
+        });
+
+        removeBtn?.addEventListener("click", () => {
+          if (avatarInput) avatarInput.value = "";
+          if (removeFlag) removeFlag.value = "1";
+          removeBtn.style.display = "none";
+          if (previewBox) {
+            previewBox.innerHTML = "";
+            previewBox.textContent = previewBox.dataset.initials || "RZ";
+          }
+          if (photoHint) {
+            photoHint.textContent = "Photo marked for removal — click Save Profile & Photo to confirm.";
+            photoHint.style.color = "#DC2626";
+          }
+        });
+
+        profileForm?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const saveBtn = $(".js-save-adm-profile-btn");
+          const origText = saveBtn ? saveBtn.textContent : "Save Profile & Photo";
+          if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Saving...";
+          }
+          try {
+            const fd = new FormData(profileForm);
+            const res = await fetch("{{ route('admin.profile.update') }}", {
+              method: "POST",
+              headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                "Accept": "application/json",
+              },
+              body: fd,
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
+              syncAdminProfileUI(data.user);
+              if (avatarInput) avatarInput.value = "";
+              if (removeFlag) removeFlag.value = "0";
+              if (removeBtn) {
+                removeBtn.style.display = data.user?.avatar_url ? "inline-flex" : "none";
+              }
+              const lbl = $('label[for="adm-prof-avatar-input"]');
+              if (lbl) lbl.textContent = data.user?.avatar_url ? "Change Photo" : "Upload Photo";
+              if (photoHint) {
+                photoHint.textContent = "JPG, PNG or WebP (max 4MB). Optimized automatically.";
+                photoHint.style.color = "";
+              }
+              toast("Profile Updated", data.message || "Admin profile saved");
+            } else {
+              const firstErr = data.errors ? Object.values(data.errors).flat()[0] : null;
+              admAlert(firstErr || data.message || "Could not update admin profile.", { title: "Validation Error" });
+            }
+          } catch (err) {
+            console.error(err);
+            admAlert("Network error while saving profile.", { title: "Save Failed" });
+          } finally {
+            if (saveBtn) {
+              saveBtn.disabled = false;
+              saveBtn.textContent = origText;
+            }
+          }
+        });
+
+        passwordForm?.addEventListener("submit", async (e) => {
+          e.preventDefault();
+          const saveBtn = $(".js-save-adm-password-btn");
+          const origText = saveBtn ? saveBtn.textContent : "Update Admin Password";
+          if (saveBtn) {
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Updating...";
+          }
+          try {
+            const fd = new FormData(passwordForm);
+            const res = await fetch("{{ route('admin.profile.password') }}", {
+              method: "POST",
+              headers: {
+                "X-CSRF-TOKEN": csrfToken,
+                "Accept": "application/json",
+              },
+              body: fd,
+            });
+            const data = await res.json().catch(() => ({}));
+            if (res.ok && data.success) {
+              passwordForm.reset();
+              toast("Password Updated", data.message || "Admin password updated!");
+            } else {
+              const firstErr = data.errors ? Object.values(data.errors).flat()[0] : null;
+              admAlert(firstErr || data.message || "Could not update password.", { title: "Password Error" });
+            }
+          } catch (err) {
+            console.error(err);
+            admAlert("Network error while updating password.", { title: "Save Failed" });
+          } finally {
+            if (saveBtn) {
+              saveBtn.disabled = false;
+              saveBtn.textContent = origText;
+            }
           }
         });
       }
@@ -10647,6 +11084,7 @@
       renderOrders();
       initOrderNotifications();
       initAdminProfileDropdown();
+      initAdminProfileDrawer();
       renderProducts();
       renderCategories();
       renderCustomers();

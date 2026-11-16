@@ -62,26 +62,40 @@ class CustomerAccountController extends Controller
     }
 
     /**
-     * Update customer's name, BD phone number, and default delivery address.
+     * Update customer's name, BD phone number, default delivery address, and optional avatar.
      */
-    public function updateProfile(Request $request)
+    public function updateProfile(Request $request, \App\Services\ImageOptimizerService $optimizer)
     {
         $validated = $request->validate([
             'name' => ['required', 'string', 'max:100'],
             'phone' => ['required', 'string', 'regex:/^(?:\+?88)?(01[3-9]\d{8})$/'],
             'address' => ['nullable', 'string', 'max:255'],
+            'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:4096'],
+            'remove_avatar' => ['nullable', 'boolean'],
         ], [
             'phone.regex' => 'Please enter a valid 11-digit Bangladesh mobile number (e.g. 01712345678).',
+            'avatar.image' => 'Profile picture must be a valid image file.',
+            'avatar.max' => 'Profile picture must not exceed 4MB.',
         ]);
 
         $phone = User::normalizeBdPhone($validated['phone']);
         /** @var User $user */
         $user = Auth::user();
 
+        $avatarUrl = $user->avatar;
+        if ($request->boolean('remove_avatar')) {
+            $optimizer->deleteAvatarFile($avatarUrl);
+            $avatarUrl = null;
+        }
+        if ($request->hasFile('avatar')) {
+            $avatarUrl = $optimizer->storeOptimizedAvatar($request->file('avatar'), (int) $user->id, $avatarUrl);
+        }
+
         $user->update([
             'name' => strip_tags(trim($validated['name'])),
             'phone' => $phone,
             'address' => !empty($validated['address']) ? strip_tags(trim($validated['address'])) : null,
+            'avatar' => $avatarUrl,
         ]);
 
         if ($phone) {

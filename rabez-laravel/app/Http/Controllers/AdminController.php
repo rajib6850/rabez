@@ -1504,4 +1504,101 @@ class AdminController extends Controller
             'footer_care_tree' => \App\Models\MenuItem::buildTree('footer_care', false),
         ]);
     }
+
+    /**
+     * Update the authenticated admin's profile info and optional avatar image.
+     */
+    public function updateAdminProfile(Request $request, ImageOptimizerService $optimizer)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        $validated = $request->validate([
+            'name' => ['required', 'string', 'max:100'],
+            'email' => ['required', 'email', 'max:150', \Illuminate\Validation\Rule::unique('users', 'email')->ignore($user->id)],
+            'phone' => ['nullable', 'string', 'regex:/^(?:\+?88)?(01[3-9]\d{8})$/'],
+            'address' => ['nullable', 'string', 'max:255'],
+            'avatar' => ['nullable', 'image', 'mimes:jpg,jpeg,png,webp,gif', 'max:4096'],
+            'remove_avatar' => ['nullable', 'boolean'],
+        ], [
+            'phone.regex' => 'Please enter a valid 11-digit Bangladesh mobile number (e.g. 01712345678).',
+            'avatar.image' => 'Profile picture must be a valid image file.',
+            'avatar.max' => 'Profile picture must not exceed 4MB.',
+        ]);
+
+        $phone = !empty($validated['phone']) ? User::normalizeBdPhone($validated['phone']) : null;
+        $avatarUrl = $user->avatar;
+
+        if ($request->boolean('remove_avatar')) {
+            $optimizer->deleteAvatarFile($avatarUrl);
+            $avatarUrl = null;
+        }
+
+        if ($request->hasFile('avatar')) {
+            $avatarUrl = $optimizer->storeOptimizedAvatar($request->file('avatar'), (int) $user->id, $avatarUrl);
+        }
+
+        $user->update([
+            'name' => strip_tags(trim($validated['name'])),
+            'email' => strtolower(trim($validated['email'])),
+            'phone' => $phone,
+            'address' => !empty($validated['address']) ? strip_tags(trim($validated['address'])) : null,
+            'avatar' => $avatarUrl,
+        ]);
+
+        $resolvedAvatar = $user->avatar
+            ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset(ltrim($user->avatar, '/')))
+            : null;
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Admin profile updated successfully!',
+            'user' => [
+                'id' => $user->id,
+                'name' => $user->name,
+                'email' => $user->email,
+                'phone' => $user->phone,
+                'address' => $user->address,
+                'avatar_url' => $resolvedAvatar,
+                'avatar_path' => $user->avatar,
+                'initials' => strtoupper(substr($user->name ?: 'A', 0, 1)),
+            ],
+        ]);
+    }
+
+    /**
+     * Update the authenticated admin's password.
+     */
+    public function updateAdminPassword(Request $request)
+    {
+        /** @var User $user */
+        $user = Auth::user();
+
+        if (!empty($user->password)) {
+            $request->validate([
+                'current_password' => ['required', 'string'],
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ]);
+
+            if (!Hash::check($request->current_password, $user->password)) {
+                return response()->json([
+                    'message' => 'The current password does not match.',
+                    'errors' => ['current_password' => ['The current password you entered does not match our records.']],
+                ], 422);
+            }
+        } else {
+            $request->validate([
+                'password' => ['required', 'string', 'min:8', 'confirmed'],
+            ]);
+        }
+
+        $user->update([
+            'password' => Hash::make($request->password),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Admin password updated successfully!',
+        ]);
+    }
 }

@@ -56,8 +56,18 @@
         <span class="rabez-topbar__sep">&bull;</span>
         @auth
           <div class="rabez-topbar-dropdown js-topbar-dropdown">
+            @php
+              $navUserAvatar = !empty(Auth::user()->avatar)
+                ? (str_starts_with(Auth::user()->avatar, 'http') ? Auth::user()->avatar : asset(ltrim(Auth::user()->avatar, '/')))
+                : null;
+            @endphp
             <button type="button" class="rabez-topbar-user js-topbar-dropdown-toggle" aria-haspopup="true" aria-expanded="false" title="Account Menu">
-              <span class="rabez-user-dot"></span>
+              @if($navUserAvatar)
+                <img src="{{ $navUserAvatar }}" alt="{{ Auth::user()->name }}" class="rabez-topbar-avatar" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-block';">
+                <span class="rabez-user-dot" style="display:none;"></span>
+              @else
+                <span class="rabez-user-dot"></span>
+              @endif
               <span>Hi, {{ Auth::user()->name }}</span>
               @if(Auth::user()->isAdmin())
                 <span class="rabez-role-badge">ADMIN</span>
@@ -246,7 +256,12 @@
           @auth
             <div class="rabez-nav-mobile-auth-card">
               <div class="rabez-nav-mobile-auth-user">
-                <span class="rabez-user-dot"></span>
+                @if($navUserAvatar)
+                  <img src="{{ $navUserAvatar }}" alt="{{ Auth::user()->name }}" class="rabez-topbar-avatar" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline-block';">
+                  <span class="rabez-user-dot" style="display:none;"></span>
+                @else
+                  <span class="rabez-user-dot"></span>
+                @endif
                 <span class="rabez-nav-mobile-auth-name">Signed in as <strong>{{ Auth::user()->name }}</strong></span>
                 @if(Auth::user()->isAdmin())
                   <span class="rabez-role-badge">ADMIN</span>

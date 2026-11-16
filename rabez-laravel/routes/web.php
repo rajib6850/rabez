@@ -118,8 +118,10 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::delete('/users/{id}', [AdminController::class, 'deleteUser'])->name('admin.users.delete');
     Route::post('/users/bulk-delete', [AdminController::class, 'bulkDeleteUsers'])->name('admin.users.bulk_delete');
 
-    // Settings
+    // Settings & Admin Profile
     Route::post('/settings', [AdminController::class, 'saveSettings'])->name('admin.settings.save');
+    Route::post('/profile', [AdminController::class, 'updateAdminProfile'])->name('admin.profile.update');
+    Route::post('/profile/password', [AdminController::class, 'updateAdminPassword'])->name('admin.profile.password');
 
     // Coupons Management
     Route::get('/api/coupons', [AdminController::class, 'getCoupons'])->name('admin.coupons.list');

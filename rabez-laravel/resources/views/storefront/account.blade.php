@@ -758,6 +758,118 @@
         flex: 1 0 100%;
       }
     }
+
+    /* Profile Picture Setup & Security Badges */
+    .rabez-acc-avatar-wrap {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      flex-shrink: 0;
+    }
+    .rabez-acc-avatar-cam {
+      position: absolute;
+      right: -4px;
+      bottom: -4px;
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      background: #0A0C0B;
+      color: #04F404;
+      border: 2px solid #04F404;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: transform 0.15s ease, background 0.15s ease;
+      padding: 0;
+    }
+    .rabez-acc-avatar-cam:hover {
+      transform: scale(1.08);
+      background: #04F404;
+      color: #000000;
+    }
+    .rabez-acc-photo-box {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px 14px;
+      background: #F9FAFB;
+      border: 1px dashed #D1D5DB;
+      border-radius: 10px;
+    }
+    .rabez-acc-photo-preview {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: #0A0C0B;
+      border: 2px solid rgba(4, 244, 4, 0.55);
+      color: #04F404;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-family: var(--font-heading, 'Bebas Neue', sans-serif);
+      font-size: 1.5rem;
+      font-weight: 700;
+      overflow: hidden;
+      flex-shrink: 0;
+    }
+    .rabez-acc-photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+    .rabez-acc-photo-actions {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      gap: 6px;
+    }
+    .rabez-acc-connected-box {
+      margin-top: 16px;
+      padding-top: 14px;
+      border-top: 1px solid #E5E7EB;
+    }
+    .rabez-acc-connected-title {
+      font-size: 0.78rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      color: #4B5563;
+      margin-bottom: 8px;
+    }
+    .rabez-acc-connected-list {
+      display: grid;
+      gap: 6px;
+    }
+    .rabez-acc-connected-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      padding: 7px 10px;
+      border-radius: 7px;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      color: #111827;
+      font-weight: 600;
+    }
+    .rabez-acc-conn-badge {
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 999px;
+      text-transform: uppercase;
+      letter-spacing: 0.3px;
+    }
+    .rabez-acc-conn-badge--on {
+      background: #DCFCE7;
+      color: #166534;
+    }
+    .rabez-acc-conn-badge--off {
+      background: #F3F4F6;
+      color: #6B7280;
+    }
   </style>
 @endpush
 
@@ -765,17 +877,27 @@
   @php
     $openSecurityTab = $errors->has('current_password') || $errors->has('password');
     $waNumber = preg_replace('/[^0-9]/', '', $settings['whatsapp_number'] ?? '8801612359652');
+    $resolvedAvatar = !empty($user->avatar)
+      ? (str_starts_with($user->avatar, 'http') ? $user->avatar : asset(ltrim($user->avatar, '/')))
+      : null;
+    $userInitial = strtoupper(mb_substr($user->name ?: 'R', 0, 1));
   @endphp
 
   <section class="rabez-acc-hero">
     <div class="rabez-container rabez-acc-hero__inner" style="max-width:1200px;">
       <div class="rabez-acc-user">
-        <div class="rabez-acc-avatar">
-          @if(!empty($user->avatar))
-            <img src="{{ $user->avatar }}" alt="{{ $user->name }}" onerror="this.remove();">
-          @else
-            {{ strtoupper(mb_substr($user->name ?: 'R', 0, 1)) }}
-          @endif
+        <div class="rabez-acc-avatar-wrap">
+          <div class="rabez-acc-avatar">
+            @if($resolvedAvatar)
+              <img src="{{ $resolvedAvatar }}" alt="{{ $user->name }}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
+              <span style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">{{ $userInitial }}</span>
+            @else
+              {{ $userInitial }}
+            @endif
+          </div>
+          <button type="button" class="rabez-acc-avatar-cam js-acc-hero-avatar-btn" title="Change Profile Picture" aria-label="Change Profile Picture">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"/><circle cx="12" cy="13" r="4"/></svg>
+          </button>
         </div>
         <div class="rabez-acc-meta">
           <div class="rabez-acc-badges">
@@ -1125,8 +1247,29 @@
                 </div>
               </div>
 
-              <form action="{{ route('account.profile.update') }}" method="POST" class="rabez-acc-form">
+              <form action="{{ route('account.profile.update') }}" method="POST" enctype="multipart/form-data" class="rabez-acc-form">
                 @csrf
+                <div class="rabez-acc-photo-box">
+                  <div class="rabez-acc-photo-preview js-acc-photo-preview" data-initial="{{ $userInitial }}">
+                    @if($resolvedAvatar)
+                      <img src="{{ $resolvedAvatar }}" alt="{{ $user->name }}" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='inline';">
+                      <span style="display:none;">{{ $userInitial }}</span>
+                    @else
+                      <span>{{ $userInitial }}</span>
+                    @endif
+                  </div>
+                  <div style="flex:1; min-width:0;">
+                    <div style="font-size:0.84rem; font-weight:800; color:#0A0C0B; margin-bottom:4px;">Profile Picture</div>
+                    <div class="rabez-acc-photo-actions">
+                      <label for="acc-avatar-input" class="rabez-acc-mini-btn" style="cursor:pointer;">{{ $resolvedAvatar ? 'Change Photo' : 'Upload Photo' }}</label>
+                      <input type="file" id="acc-avatar-input" name="avatar" accept="image/jpeg,image/png,image/webp,image/gif" class="js-acc-avatar-input" hidden>
+                      <input type="hidden" name="remove_avatar" value="0" class="js-acc-remove-avatar-flag">
+                      <button type="button" class="rabez-acc-mini-btn js-acc-remove-avatar-btn" style="color:#B91C1C; border-color:#FECACA; background:#FEF2F2; {{ $resolvedAvatar ? '' : 'display:none;' }}">Remove</button>
+                    </div>
+                    <div class="rabez-acc-hint js-acc-photo-status" style="margin-top:4px;">JPG, PNG or WebP (max 4MB). Save below to apply.</div>
+                  </div>
+                </div>
+
                 <div class="rabez-acc-field">
                   <label for="acc-name">Full Name *</label>
                   <input type="text" id="acc-name" name="name" value="{{ old('name', $user->name) }}" required maxlength="100" placeholder="Your Full Name">
@@ -1184,6 +1327,24 @@
                   Update Password
                 </button>
               </form>
+
+              <div class="rabez-acc-connected-box">
+                <div class="rabez-acc-connected-title">Sign-In &amp; Security Overview</div>
+                <div class="rabez-acc-connected-list">
+                  <div class="rabez-acc-connected-row">
+                    <span>Email &amp; Password</span>
+                    <span class="rabez-acc-conn-badge {{ !empty($user->password) ? 'rabez-acc-conn-badge--on' : 'rabez-acc-conn-badge--off' }}">{{ !empty($user->password) ? 'Configured' : 'Not Set' }}</span>
+                  </div>
+                  <div class="rabez-acc-connected-row">
+                    <span>Google Sign-In</span>
+                    <span class="rabez-acc-conn-badge {{ !empty($user->google_id) ? 'rabez-acc-conn-badge--on' : 'rabez-acc-conn-badge--off' }}">{{ !empty($user->google_id) ? 'Connected' : 'Not Linked' }}</span>
+                  </div>
+                  <div class="rabez-acc-connected-row">
+                    <span>Facebook Sign-In</span>
+                    <span class="rabez-acc-conn-badge {{ !empty($user->facebook_id) ? 'rabez-acc-conn-badge--on' : 'rabez-acc-conn-badge--off' }}">{{ !empty($user->facebook_id) ? 'Connected' : 'Not Linked' }}</span>
+                  </div>
+                </div>
+              </div>
             </div>
           </section>
 
@@ -1396,13 +1557,69 @@
       // Right Sidebar Tabs (Delivery Profile / Password & Security)
       const sideTabs = document.querySelectorAll(".js-acc-side-tab");
       const sidePanels = document.querySelectorAll(".js-acc-side-panel");
+      const activateSideTab = (target) => {
+        sideTabs.forEach(t => t.classList.toggle("is-active", t.dataset.tab === target));
+        sidePanels.forEach(p => p.classList.toggle("is-active", p.dataset.panel === target));
+      };
       sideTabs.forEach(tab => {
-        tab.addEventListener("click", () => {
-          const target = tab.dataset.tab;
-          sideTabs.forEach(t => t.classList.toggle("is-active", t.dataset.tab === target));
-          sidePanels.forEach(p => p.classList.toggle("is-active", p.dataset.panel === target));
-        });
+        tab.addEventListener("click", () => activateSideTab(tab.dataset.tab));
       });
+
+      // Profile Picture Upload Preview & Hero Camera Trigger
+      const avatarInput = document.querySelector(".js-acc-avatar-input");
+      const photoPreview = document.querySelector(".js-acc-photo-preview");
+      const removeFlag = document.querySelector(".js-acc-remove-avatar-flag");
+      const removeBtn = document.querySelector(".js-acc-remove-avatar-btn");
+      const photoStatus = document.querySelector(".js-acc-photo-status");
+      const heroCamBtn = document.querySelector(".js-acc-hero-avatar-btn");
+
+      if (heroCamBtn && avatarInput) {
+        heroCamBtn.addEventListener("click", () => {
+          activateSideTab("profile");
+          const box = document.querySelector(".rabez-acc-photo-box");
+          if (box) box.scrollIntoView({ behavior: "smooth", block: "center" });
+          avatarInput.click();
+        });
+      }
+
+      if (avatarInput && photoPreview) {
+        avatarInput.addEventListener("change", () => {
+          const file = avatarInput.files && avatarInput.files[0];
+          if (!file) return;
+          if (removeFlag) removeFlag.value = "0";
+          if (removeBtn) removeBtn.style.display = "inline-flex";
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            photoPreview.innerHTML = "";
+            const img = document.createElement("img");
+            img.src = ev.target.result;
+            img.alt = "Selected profile picture";
+            photoPreview.appendChild(img);
+          };
+          reader.readAsDataURL(file);
+          if (photoStatus) {
+            photoStatus.textContent = "New photo selected — click Save Profile & Address below to apply.";
+            photoStatus.style.color = "#15803D";
+          }
+        });
+      }
+
+      if (removeBtn && photoPreview) {
+        removeBtn.addEventListener("click", () => {
+          if (avatarInput) avatarInput.value = "";
+          if (removeFlag) removeFlag.value = "1";
+          removeBtn.style.display = "none";
+          const initial = photoPreview.dataset.initial || "R";
+          photoPreview.innerHTML = "";
+          const span = document.createElement("span");
+          span.textContent = initial;
+          photoPreview.appendChild(span);
+          if (photoStatus) {
+            photoStatus.textContent = "Photo marked for removal — click Save Profile & Address to confirm.";
+            photoStatus.style.color = "#B91C1C";
+          }
+        });
+      }
     });
   </script>
 @endpush
