@@ -6529,7 +6529,8 @@
         "settings": ["Settings", "Delivery, courier credentials & Meta Pixel"]
       };
 
-      function showTab(key) {
+      function showTab(key, updateUrl = true, shouldScroll = true) {
+        if (!PAGES[key]) key = "dashboard";
         $$(".js-tab").forEach((b) => {
           if (b.classList.contains("adm-nav-item") || b.classList.contains("adm-bottom-btn")) {
             b.classList.toggle("is-active", b.dataset.tab === key);
@@ -6540,7 +6541,23 @@
         $$(".js-page-title").forEach((el) => (el.textContent = page[0]));
         $(".js-page-sub").textContent = page[1];
         document.body.classList.remove("is-nav-open");
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        if (shouldScroll) {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+        }
+
+        if (updateUrl) {
+          try {
+            if (window.location.hash !== "#" + key) {
+              history.replaceState(null, "", "#" + key);
+            }
+          } catch (e) {
+            try { window.location.hash = key; } catch (e2) {}
+          }
+        }
+        try {
+          localStorage.setItem("rabez_admin_active_tab", key);
+        } catch (e) {}
+
         if (key === "dashboard") { renderOrders(); renderOverviewStats(); }
         if (key === "orders") renderOrders();
         if (key === "print-queue") renderPrintQueue();
@@ -12254,6 +12271,53 @@
       loadCmsPages();
       loadCmsMenus();
       syncMenuTypeFields();
+
+      function initActiveTab() {
+        let targetTab = null;
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const qTab = (urlParams.get("tab") || "").trim().toLowerCase();
+          if (qTab && PAGES[qTab]) {
+            targetTab = qTab;
+          }
+        } catch (e) {}
+
+        if (!targetTab) {
+          const hash = (window.location.hash || "").replace(/^#/, "").trim().toLowerCase();
+          if (hash && PAGES[hash]) {
+            targetTab = hash;
+          }
+        }
+
+        if (!targetTab) {
+          try {
+            const saved = localStorage.getItem("rabez_admin_active_tab");
+            if (saved && PAGES[saved]) {
+              targetTab = saved;
+            }
+          } catch (e) {}
+        }
+
+        if (targetTab && targetTab !== "dashboard") {
+          showTab(targetTab, true, false);
+        } else {
+          try {
+            if (window.location.hash === "#dashboard") {
+              history.replaceState(null, "", "#dashboard");
+            }
+          } catch (e) {}
+          renderOverviewStats();
+        }
+      }
+
+      window.addEventListener("hashchange", () => {
+        const hash = (window.location.hash || "").replace(/^#/, "").trim().toLowerCase();
+        if (hash && PAGES[hash]) {
+          showTab(hash, false, false);
+        }
+      });
+
+      initActiveTab();
     })();
   </script>
 </body>
