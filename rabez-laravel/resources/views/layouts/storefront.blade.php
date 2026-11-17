@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.2">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=3.0">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=3.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.8">
   <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}?v=2.6">
 
@@ -703,7 +703,54 @@
     window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;
   </script>
   @endif
-  <script src="{{ asset('assets/js/cart.js') }}?v=4.9"></script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=5.0"></script>
+  <!-- High-Definition Product Image Fullscreen Lightbox & Smart Zoom -->
+  <div id="rabez-image-lightbox" class="rabez-lightbox js-rabez-lightbox" role="dialog" aria-modal="true" aria-label="Product Image Zoom View">
+    <div class="rabez-lightbox__header">
+      <div class="rabez-lightbox__title-wrap">
+        <h3 class="rabez-lightbox__title js-lb-title">Product Image</h3>
+        <span class="rabez-lightbox__counter js-lb-counter">1 / 1</span>
+      </div>
+      <div class="rabez-lightbox__actions">
+        <button type="button" class="rabez-lightbox__btn js-lb-zoom-out" aria-label="Zoom out" title="Zoom Out (−)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </button>
+        <span class="rabez-lightbox__zoom-pill js-lb-zoom-level">100%</span>
+        <button type="button" class="rabez-lightbox__btn js-lb-zoom-in" aria-label="Zoom in" title="Zoom In (+)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/><line x1="11" y1="8" x2="11" y2="14"/><line x1="8" y1="11" x2="14" y2="11"/></svg>
+        </button>
+        <button type="button" class="rabez-lightbox__btn js-lb-zoom-reset" aria-label="Reset zoom" title="Reset Zoom">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
+        </button>
+        <button type="button" class="rabez-lightbox__btn rabez-lightbox__btn--close js-lb-close" aria-label="Close fullscreen view" title="Close (Esc)">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="rabez-lightbox__stage js-lb-stage">
+      <button type="button" class="rabez-lightbox__nav rabez-lightbox__nav--prev js-lb-prev" aria-label="Previous image">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+      </button>
+
+      <div class="rabez-lightbox__img-wrap js-lb-img-wrap">
+        <img src="" alt="Product HD View" class="rabez-lightbox__img js-lb-img" draggable="false">
+      </div>
+
+      <button type="button" class="rabez-lightbox__nav rabez-lightbox__nav--next js-lb-next" aria-label="Next image">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+      </button>
+    </div>
+
+    <div class="rabez-lightbox__footer">
+      <div class="rabez-lightbox__thumbs js-lb-thumbs"></div>
+      <div class="rabez-lightbox__hint js-lb-hint">
+        Double-click or double-tap to zoom • Drag to pan • Esc to close
+      </div>
+    </div>
+  </div>
+
+  <script src="{{ asset('assets/js/image-zoom.js') }}?v=1.0"></script>
   <script src="{{ asset('assets/js/app.js') }}?v=3.8"></script>
 
   @stack('scripts')
