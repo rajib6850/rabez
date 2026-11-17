@@ -94,10 +94,12 @@ class WebPushAndOnlineStatusTest extends TestCase
         $this->assertSame(1, PushSubscription::count());
         $this->assertSame($admin->id, (int) PushSubscription::first()->user_id);
 
-        // Dashboard renders online pill, bottom nav badge, and VAPID public key WITHOUT leaking private key
+        // Dashboard links Admin PWA manifest, app icon badging, bottom nav badge, and VAPID public key WITHOUT topbar online pill or leaking private key
         $dash = $this->actingAs($admin)->get(route('admin.dashboard'));
         $dash->assertOk();
-        $dash->assertSee('js-adm-online-pill', false);
+        $dash->assertDontSee('js-adm-online-pill', false);
+        $dash->assertSee('/admin-manifest.json', false);
+        $dash->assertSee('setAppBadge', false);
         $dash->assertSee('js-adm-bottom-orders-badge', false);
         $dash->assertSee('VAPID_PUBLIC_KEY', false);
         $dash->assertDontSee('BEGIN EC PRIVATE KEY', false);

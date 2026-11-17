@@ -7,8 +7,13 @@
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <meta name="robots" content="noindex, nofollow">
   <meta name="theme-color" content="#0B0D0C">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="RBZ Admin">
+  <link rel="manifest" href="/admin-manifest.json">
   <link rel="icon" type="image/jpeg" href="{{ asset('assets/') }}/images/brand/rabez-emblem.jpg">
-  <link rel="apple-touch-icon" href="{{ asset('assets/') }}/images/brand/rabez-emblem.jpg">
+  <link rel="apple-touch-icon" href="/icon-192.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Barlow+Condensed:wght@700&display=swap" rel="stylesheet">
@@ -306,59 +311,6 @@
       50% { box-shadow: 0 0 0 5px rgba(4, 244, 4, 0); }
     }
 
-    @keyframes admOnlineDotPulse {
-      0%, 100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(4, 244, 4, 0.65); }
-      50% { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(4, 244, 4, 0); }
-    }
-
-    .adm-online-pill {
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-      height: 36px;
-      padding: 0 11px;
-      border-radius: 999px;
-      border: 1px solid #BBF7D0;
-      background: #F0FDF4;
-      color: #166534;
-      font-size: 12px;
-      font-weight: 700;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s ease;
-    }
-
-    .adm-online-pill__dot {
-      width: 8px;
-      height: 8px;
-      border-radius: 50%;
-      background: #16A34A;
-      flex-shrink: 0;
-      animation: admOnlineDotPulse 1.9s infinite;
-    }
-
-    .adm-online-pill.is-alerting {
-      background: #0B0D0C;
-      border-color: #04F404;
-      color: #04F404;
-      box-shadow: 0 0 14px rgba(4, 244, 4, 0.25);
-    }
-
-    .adm-online-pill.is-alerting .adm-online-pill__dot {
-      background: #04F404;
-    }
-
-    .adm-online-pill.is-offline {
-      background: #FEF2F2;
-      border-color: #FCA5A5;
-      color: #991B1B;
-    }
-
-    .adm-online-pill.is-offline .adm-online-pill__dot {
-      background: #EF4444;
-      animation: none;
-    }
-
     .adm-bottom-btn {
       position: relative;
     }
@@ -384,15 +336,6 @@
 
     .adm-bottom-badge.is-visible {
       display: inline-flex;
-    }
-
-    @media (max-width: 640px) {
-      .adm-online-pill {
-        height: 32px;
-        padding: 0 8px;
-        font-size: 11px;
-        gap: 5px;
-      }
     }
 
     .adm-notif-badge {
@@ -1841,7 +1784,6 @@
       .adm-topbar__logo { display: block; height: 22px; width: auto; flex-shrink: 0; }
       .adm-topbar__left { min-width: 0; gap: 8px; }
       .adm-topbar__actions { gap: 5px; flex-shrink: 0; }
-      .adm-online-pill { height: 30px; padding: 0 7px; font-size: 10.5px; gap: 4px; }
       .adm-topbar__heading { display: none; }
       .adm-topbar__actions > .adm-btn--secondary,
       .adm-topbar__actions > .adm-avatar { display: none; }
@@ -3258,11 +3200,6 @@
           </div>
         </div>
         <div class="adm-topbar__actions">
-          <button type="button" class="adm-online-pill js-adm-online-pill js-tab" data-tab="orders" title="Live connection & new orders status">
-            <span class="adm-online-pill__dot"></span>
-            <span class="js-adm-online-text">Online</span>
-          </button>
-
           <button type="button" class="adm-btn adm-btn--secondary js-tab" data-tab="pos-order">
             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
             New order
@@ -11195,28 +11132,11 @@
         const VAPID_PUBLIC_KEY = @json($vapidPublicKey ?? '');
 
         function updateLiveOnlineIndicator() {
-          const pill = $(".js-adm-online-pill");
-          const pillText = $(".js-adm-online-text");
           const bottomBadge = $(".js-adm-bottom-orders-badge");
 
           const unreadCount = notifs.filter((n) => !n.read).length;
           const openOrderCount = orders.filter((o) => ["Pending", "Printing"].includes(o.status)).length;
           const alertTotal = unreadCount > 0 ? unreadCount : openOrderCount;
-          const isOnline = navigator.onLine !== false;
-
-          if (pill && pillText) {
-            pill.classList.toggle("is-offline", !isOnline);
-            pill.classList.toggle("is-alerting", isOnline && alertTotal > 0);
-            if (!isOnline) {
-              pillText.textContent = "Offline";
-            } else if (unreadCount > 0) {
-              pillText.textContent = `${unreadCount} New Order${unreadCount > 1 ? "s" : ""}`;
-            } else if (openOrderCount > 0) {
-              pillText.textContent = `Online · ${openOrderCount} Open`;
-            } else {
-              pillText.textContent = "Online";
-            }
-          }
 
           if (bottomBadge) {
             bottomBadge.textContent = alertTotal > 99 ? "99+" : String(alertTotal);
