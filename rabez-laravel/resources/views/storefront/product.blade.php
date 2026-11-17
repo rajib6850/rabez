@@ -152,18 +152,140 @@
           @endif
 
           @if($product->has_custom_print)
-            <!-- Optional Custom Name & Number Addon -->
-            <div class="rabez-print-addon" style="border:1px solid #2B332E; border-radius:6px; padding:12px 14px; margin:18px 0; background:#121614;">
-              <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; user-select:none;">
-                <span style="font-weight:700; font-size:14px; color:#fff; display:flex; align-items:center; gap:8px; min-width:0;">
-                  <input type="checkbox" id="js-custom-print-toggle" style="accent-color:#04F404; width:16px; height:16px; flex-shrink:0; cursor:pointer;">
-                  <span>Custom Name &amp; Number</span>
-                </span>
-                <span style="color:#04F404; font-weight:800; font-size:13px; white-space:nowrap; flex-shrink:0;">+ ৳ {{ intval($customPrintFee ?? ($settings['custom_print_fee'] ?? 250)) }}</span>
-              </label>
-              <div id="js-custom-print-inputs" style="display:none; margin-top:12px; gap:10px; grid-template-columns:2fr 1fr;">
-                <input type="text" id="js-sp-custom-name" maxlength="12" placeholder="Name on Back (e.g. MESSI)" style="height:38px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px; text-transform:uppercase;">
-                <input type="text" id="js-sp-custom-num" maxlength="2" placeholder="Number (10)" style="height:38px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px;">
+            <!-- UPGRADED SMART CUSTOM NAME & NUMBER PERSONALIZATION STUDIO -->
+            <div class="rabez-custom-studio" id="js-rabez-custom-studio">
+              <div class="rabez-custom-studio__header">
+                <label class="rabez-custom-studio__toggle-label" for="js-custom-print-toggle">
+                  <input type="checkbox" id="js-custom-print-toggle" class="rabez-custom-studio__checkbox">
+                  <div class="rabez-custom-studio__title-wrap">
+                    <div class="rabez-custom-studio__title">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                      </svg>
+                      <span>Custom Name &amp; Number</span>
+                      <span class="rabez-badge-sparkle">OFFICIAL PRINT</span>
+                    </div>
+                    <div class="rabez-custom-studio__subtitle">Heat-pressed authentic player typography</div>
+                  </div>
+                </label>
+                <div class="rabez-custom-studio__fee-tag">+ ৳ {{ intval($customPrintFee ?? ($settings['custom_print_fee'] ?? 250)) }}</div>
+              </div>
+
+              <!-- Collapsible Personalization Studio Body -->
+              <div id="js-custom-print-inputs" class="rabez-custom-studio__body" style="display:none;">
+                <!-- 1-Click Legend Presets -->
+                <div class="rabez-custom-studio__presets">
+                  <div class="rabez-custom-studio__presets-label">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <span>Popular Legends (1-Click Fill):</span>
+                  </div>
+                  <div class="rabez-custom-studio__presets-list js-custom-presets-list">
+                    <button type="button" class="rabez-preset-pill" data-name="MESSI" data-num="10">MESSI 10</button>
+                    <button type="button" class="rabez-preset-pill" data-name="RONALDO" data-num="7">RONALDO 7</button>
+                    <button type="button" class="rabez-preset-pill" data-name="BELLINGHAM" data-num="5">BELLINGHAM 5</button>
+                    <button type="button" class="rabez-preset-pill" data-name="VINICIUS" data-num="7">VINI JR 7</button>
+                    <button type="button" class="rabez-preset-pill" data-name="YAMAL" data-num="19">YAMAL 19</button>
+                    <button type="button" class="rabez-preset-pill" data-name="MODRIC" data-num="10">MODRIĆ 10</button>
+                    <button type="button" class="rabez-preset-pill" data-name="HAALAND" data-num="9">HAALAND 9</button>
+                  </div>
+                </div>
+
+                <!-- Main Studio Grid: Live SVG Preview + Fields -->
+                <div class="rabez-custom-studio__main-grid">
+                  <!-- Live Jersey Back Preview Card -->
+                  <div class="rabez-custom-studio__preview-card">
+                    <div class="rabez-custom-studio__preview-badge">LIVE BACK PREVIEW</div>
+                    <div class="rabez-custom-studio__svg-wrap">
+                      <svg viewBox="0 0 200 230" class="rabez-custom-studio__svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <defs>
+                          <linearGradient id="rbzSpGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#1A211D"/>
+                            <stop offset="100%" stop-color="#0E1210"/>
+                          </linearGradient>
+                          <filter id="rbzSpShadow" x="-10%" y="-10%" width="120%" height="120%">
+                            <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.5"/>
+                          </filter>
+                        </defs>
+                        <!-- Jersey Silhouette -->
+                        <path d="M60 16 L80 20 Q100 26 120 20 L140 16 L186 52 L168 92 L150 80 L150 216 Q100 224 50 216 L50 80 L32 92 L14 52 Z" 
+                              fill="url(#rbzSpGrad)" stroke="#2B3630" stroke-width="1.8" filter="url(#rbzSpShadow)"/>
+                        <!-- Collar & Sleeves Athletic Accent Lines -->
+                        <path d="M76 19 Q100 29 124 19 M28 86 L48 74 M172 86 L152 74" 
+                              fill="none" stroke="var(--rabez-neon)" stroke-width="2.5" stroke-linecap="round"/>
+                        <!-- Subtle Mesh Fabric Lines -->
+                        <line x1="50" y1="120" x2="150" y2="120" stroke="#232C27" stroke-dasharray="3 3" stroke-width="1"/>
+                        <line x1="50" y1="160" x2="150" y2="160" stroke="#232C27" stroke-dasharray="3 3" stroke-width="1"/>
+                      </svg>
+                      <!-- Dynamic Overlay Text -->
+                      <div class="rabez-custom-studio__text-layer">
+                        <div class="rabez-custom-studio__preview-name js-sp-preview-name" style="color:#FFFFFF;">YOUR NAME</div>
+                        <div class="rabez-custom-studio__preview-num js-sp-preview-num" style="color:#FFFFFF;">00</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Input Controls & Swatches -->
+                  <div class="rabez-custom-studio__fields">
+                    <!-- Player Name Field -->
+                    <div class="rabez-studio-field">
+                      <div class="rabez-studio-field__top">
+                        <label for="js-sp-custom-name">NAME ON BACK</label>
+                        <span class="rabez-studio-field__count js-sp-name-count">0/14</span>
+                      </div>
+                      <div class="rabez-studio-input-wrap">
+                        <input type="text" id="js-sp-custom-name" maxlength="14" placeholder="e.g. MESSI" autocomplete="off" spellcheck="false" class="rabez-studio-input">
+                        <button type="button" class="rabez-studio-clear-btn js-sp-clear-name" title="Clear Name" style="display:none;">&times;</button>
+                      </div>
+                    </div>
+
+                    <!-- Number Field -->
+                    <div class="rabez-studio-field">
+                      <div class="rabez-studio-field__top">
+                        <label for="js-sp-custom-num">SQUAD NUMBER</label>
+                        <span class="rabez-studio-field__count js-sp-num-count">0/2</span>
+                      </div>
+                      <div class="rabez-studio-input-wrap">
+                        <input type="text" id="js-sp-custom-num" maxlength="2" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 10" autocomplete="off" class="rabez-studio-input">
+                        <button type="button" class="rabez-studio-clear-btn js-sp-clear-num" title="Clear Number" style="display:none;">&times;</button>
+                      </div>
+                    </div>
+
+                    <!-- Print Font Color Swatches -->
+                    <div class="rabez-studio-field">
+                      <div class="rabez-studio-field__top">
+                        <label>PRINT COLOR</label>
+                        <span class="rabez-studio-color-selected js-sp-color-name">White</span>
+                      </div>
+                      <div class="rabez-studio-color-row js-sp-color-row">
+                        <button type="button" class="rabez-studio-color-btn js-sp-color-btn is-active" data-color="#FFFFFF" data-color-name="White" title="Pure White" aria-label="White">
+                          <span class="rabez-studio-color-swatch" style="background:#FFFFFF;"></span>
+                        </button>
+                        <button type="button" class="rabez-studio-color-btn js-sp-color-btn" data-color="#F5D76E" data-color-name="Gold" title="Champion Gold" aria-label="Gold">
+                          <span class="rabez-studio-color-swatch" style="background:#F5D76E;"></span>
+                        </button>
+                        <button type="button" class="rabez-studio-color-btn js-sp-color-btn" data-color="#111111" data-color-name="Black" title="Pitch Black" aria-label="Black">
+                          <span class="rabez-studio-color-swatch" style="background:#111111; border-color:#555;"></span>
+                        </button>
+                        <button type="button" class="rabez-studio-color-btn js-sp-color-btn" data-color="#00E5FF" data-color-name="Cyan" title="Electric Cyan" aria-label="Cyan">
+                          <span class="rabez-studio-color-swatch" style="background:#00E5FF;"></span>
+                        </button>
+                        <button type="button" class="rabez-studio-color-btn js-sp-color-btn" data-color="#E63946" data-color-name="Red" title="Crimson Red" aria-label="Red">
+                          <span class="rabez-studio-color-swatch" style="background:#E63946;"></span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Quality / Wash Guarantee Micro-note -->
+                    <div class="rabez-custom-studio__guarantee">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                      </svg>
+                      <span>Official Heat-Press Vinyl &bull; 100% Wash &amp; Peel Guaranteed</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           @endif
@@ -902,8 +1024,20 @@
       const priceDisplay = document.querySelector(".js-sp-price-display");
       const customPrintToggle = document.querySelector("#js-custom-print-toggle");
       const customPrintInputs = document.querySelector("#js-custom-print-inputs");
+      const customStudio = document.querySelector("#js-rabez-custom-studio");
       const customNameInput = document.querySelector("#js-sp-custom-name");
       const customNumInput = document.querySelector("#js-sp-custom-num");
+      const previewName = document.querySelector(".js-sp-preview-name");
+      const previewNum = document.querySelector(".js-sp-preview-num");
+      const nameCount = document.querySelector(".js-sp-name-count");
+      const numCount = document.querySelector(".js-sp-num-count");
+      const clearNameBtn = document.querySelector(".js-sp-clear-name");
+      const clearNumBtn = document.querySelector(".js-sp-clear-num");
+      const colorBtns = document.querySelectorAll(".js-sp-color-btn");
+      const colorNameLabel = document.querySelector(".js-sp-color-name");
+      const presetBtns = document.querySelectorAll(".rabez-preset-pill");
+      let selectedColor = "#FFFFFF";
+      let selectedColorName = "White";
       const addBtn = document.querySelector("#js-sp-add-to-cart-btn");
       const waBtn = document.querySelector("#js-sp-whatsapp-order-btn");
       const sizeBtns = document.querySelectorAll(".js-sp-swatches .rabez-size-swatch");
@@ -922,6 +1056,44 @@
         if (btnPrice) {
           btnPrice.textContent = `৳ ${totalPrice.toLocaleString("en-IN")}`;
         }
+      }
+
+      function syncCustomPrintPreview() {
+        if (!allowCustomPrint) return;
+        const rawName = (customNameInput ? customNameInput.value : "").toUpperCase();
+        const cleanName = rawName.replace(/[^A-Z0-9 .\-]/g, "").slice(0, 14);
+        if (customNameInput && customNameInput.value !== cleanName) {
+          customNameInput.value = cleanName;
+        }
+
+        const rawNum = (customNumInput ? customNumInput.value : "");
+        const cleanNum = rawNum.replace(/[^0-9]/g, "").slice(0, 2);
+        if (customNumInput && customNumInput.value !== cleanNum) {
+          customNumInput.value = cleanNum;
+        }
+
+        if (nameCount) nameCount.textContent = `${cleanName.length}/14`;
+        if (numCount) numCount.textContent = `${cleanNum.length}/2`;
+
+        if (clearNameBtn) clearNameBtn.style.display = cleanName.length > 0 ? "block" : "none";
+        if (clearNumBtn) clearNumBtn.style.display = cleanNum.length > 0 ? "block" : "none";
+
+        if (previewName) {
+          previewName.textContent = cleanName || "YOUR NAME";
+          previewName.style.opacity = cleanName ? "1" : "0.45";
+          previewName.style.fontSize = cleanName.length > 9 ? "9px" : "11px";
+        }
+        if (previewNum) {
+          previewNum.textContent = cleanNum || "00";
+          previewNum.style.opacity = cleanNum ? "1" : "0.45";
+        }
+
+        presetBtns.forEach(pill => {
+          const pName = (pill.dataset.name || "").toUpperCase();
+          const pNum = String(pill.dataset.num || "");
+          const isMatch = Boolean(cleanName && cleanName === pName && cleanNum === pNum);
+          pill.classList.toggle("is-active", isMatch);
+        });
       }
 
       function resolveSelectedVariant() {
@@ -1139,14 +1311,58 @@
         }
       });
 
-      // 5. Custom Print Checkbox
+      // 5. Custom Print Personalization Studio & Live Preview
       if (allowCustomPrint && customPrintToggle) {
         customPrintToggle.addEventListener("change", (e) => {
           hasCustomPrint = e.target.checked;
           if (customPrintInputs) {
-            customPrintInputs.style.display = hasCustomPrint ? "grid" : "none";
+            customPrintInputs.style.display = hasCustomPrint ? "flex" : "none";
+          }
+          if (customStudio) {
+            customStudio.classList.toggle("is-active", hasCustomPrint);
+          }
+          if (hasCustomPrint) {
+            syncCustomPrintPreview();
           }
           updatePriceDisplay();
+        });
+
+        // Typing listeners for real-time back jersey preview
+        customNameInput?.addEventListener("input", syncCustomPrintPreview);
+        customNumInput?.addEventListener("input", syncCustomPrintPreview);
+
+        // Clear buttons
+        clearNameBtn?.addEventListener("click", () => {
+          if (customNameInput) customNameInput.value = "";
+          syncCustomPrintPreview();
+          customNameInput?.focus();
+        });
+        clearNumBtn?.addEventListener("click", () => {
+          if (customNumInput) customNumInput.value = "";
+          syncCustomPrintPreview();
+          customNumInput?.focus();
+        });
+
+        // Legend preset pills (1-click fill)
+        presetBtns.forEach(pill => {
+          pill.addEventListener("click", () => {
+            if (customNameInput) customNameInput.value = pill.dataset.name || "";
+            if (customNumInput) customNumInput.value = pill.dataset.num || "";
+            syncCustomPrintPreview();
+          });
+        });
+
+        // Vinyl print color swatches
+        colorBtns.forEach(btn => {
+          btn.addEventListener("click", () => {
+            colorBtns.forEach(b => b.classList.remove("is-active"));
+            btn.classList.add("is-active");
+            selectedColor = btn.dataset.color || "#FFFFFF";
+            selectedColorName = btn.dataset.colorName || "White";
+            if (colorNameLabel) colorNameLabel.textContent = selectedColorName;
+            if (previewName) previewName.style.color = selectedColor;
+            if (previewNum) previewNum.style.color = selectedColor;
+          });
         });
       }
 
@@ -1233,6 +1449,7 @@
         const prodId = {{ $product->id }};
         const customName = (allowCustomPrint && hasCustomPrint) ? (customNameInput?.value.trim().toUpperCase() || "") : "";
         const customNum = (allowCustomPrint && hasCustomPrint) ? (customNumInput?.value.trim() || "") : "";
+        const customColor = (allowCustomPrint && hasCustomPrint && (customName || customNum)) ? selectedColorName : "";
 
         const finalVariantTitle = currentVariant ? currentVariant.title : currentSize;
         const finalVariantId = currentVariant ? currentVariant.id : null;
@@ -1252,7 +1469,8 @@
             size: finalVariantTitle,
             qty: qty,
             customName: customName,
-            customNumber: customNum
+            customNumber: customNum,
+            customColor: customColor
           });
           if (typeof window.RABEZ_STORE.openCartDrawer === "function") {
             window.RABEZ_STORE.openCartDrawer();
@@ -1389,7 +1607,8 @@
         msg += `${hasShopifyOptions ? 'Variation' : 'Size'}: ${finalVariantTitle}\n`;
         msg += `Quantity: ${qty}\n`;
         if (allowCustomPrint && hasCustomPrint && (customName || customNum)) {
-          msg += `Custom Print: ${customName} #${customNum} (+৳${customPrintFee})\n`;
+          const colorNote = (selectedColorName && selectedColorName !== 'White') ? ` (${selectedColorName} Print)` : '';
+          msg += `Custom Print: ${customName} #${customNum}${colorNote} (+৳${customPrintFee})\n`;
         }
         const unitPrice = basePrice + ((allowCustomPrint && hasCustomPrint) ? customPrintFee : 0);
         msg += `Total Amount: ৳ ${(unitPrice * qty).toLocaleString("en-IN")}\n`;

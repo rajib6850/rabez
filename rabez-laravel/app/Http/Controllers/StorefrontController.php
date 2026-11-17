@@ -8,6 +8,7 @@ use App\Models\Order;
 use App\Models\OrderItem;
 use App\Models\Page;
 use App\Models\Product;
+use App\Models\ProductVariant;
 use App\Models\Setting;
 use App\Services\MetaCapiService;
 use Illuminate\Http\Request;
@@ -173,10 +174,61 @@ class StorefrontController extends Controller
             $zoneLabel = ($shippingFee == $insideFee) ? 'Inside Dhaka (৳' . intval($insideFee) . ')' : 'Outside Dhaka (৳' . intval($outsideFee) . ')';
         }
 
+        $customPrintFee = floatval(Setting::get('custom_print_fee', 250));
+        $processedItems = [];
         $subtotal = 0;
 
         foreach ($validated['cart_items'] as $item) {
-            $subtotal += ($item['price'] * $item['qty']);
+            $rawPid = isset($item['id']) ? (int) $item['id'] : null;
+            $product = null;
+            if ($rawPid) {
+                $product = Product::find($rawPid);
+            }
+            if (!$product && !empty($item['name'])) {
+                $product = Product::where('name', trim((string) $item['name']))->first();
+            }
+
+            $variant = !empty($item['variant_id']) ? ProductVariant::find($item['variant_id']) : null;
+
+            // Security: Database-verified price (fallback to client price only if product is not in DB, e.g. tests)
+            $dbBasePrice = $variant?->price ?? $product?->price;
+            $basePrice = $dbBasePrice !== null ? floatval($dbBasePrice) : floatval($item['price']);
+
+            // Security: Sanitize & validate custom name & number
+            $rawCustomName = !empty($item['custom_name']) ? strip_tags(strtoupper(trim((string)$item['custom_name']))) : null;
+            $rawCustomNumber = isset($item['custom_number']) && $item['custom_number'] !== '' ? preg_replace('/[^0-9]/', '', (string)$item['custom_number']) : null;
+
+            $cleanCustomName = $rawCustomName ? substr(preg_replace('/[^A-Z0-9 .\-]/', '', $rawCustomName), 0, 14) : null;
+            $cleanCustomNumber = ($rawCustomNumber !== null && $rawCustomNumber !== '') ? substr($rawCustomNumber, 0, 2) : null;
+
+            $hasCustomPrint = (!empty($cleanCustomName) || !empty($cleanCustomNumber));
+
+            // Only allow custom print if the product actually supports it
+            if ($product && !$product->has_custom_print) {
+                $cleanCustomName = null;
+                $cleanCustomNumber = null;
+                $hasCustomPrint = false;
+            }
+
+            $verifiedUnitPrice = $basePrice + ($hasCustomPrint ? $customPrintFee : 0);
+            $qty = max(1, min(50, (int)$item['qty']));
+            $lineTotal = $verifiedUnitPrice * $qty;
+            $subtotal += $lineTotal;
+
+            $processedItems[] = [
+                'id' => $product?->id ?: $rawPid,
+                'product_id' => $product?->id,
+                'variant_id' => $variant?->id,
+                'variant_title' => !empty($item['variant_title']) ? strip_tags((string) $item['variant_title']) : ($item['size'] ?? null),
+                'product_name' => $product?->name ?: strip_tags($item['name']),
+                'size' => !empty($item['variant_title']) ? strip_tags((string) $item['variant_title']) : ($item['size'] ?? 'L'),
+                'qty' => $qty,
+                'unit_price' => $verifiedUnitPrice,
+                'total_price' => $lineTotal,
+                'custom_name' => $cleanCustomName,
+                'custom_number' => $cleanCustomNumber,
+                'image' => $variant?->image ?: ($product?->image ?: ($item['image'] ?? '/assets/images/products/real-madrid-home-hs.jpg')),
+            ];
         }
 
         $couponCode = strtoupper(trim($request->input('coupon_code', '')));
@@ -201,7 +253,8 @@ class StorefrontController extends Controller
             $subtotal,
             $discount,
             $eventId,
-            $authId
+            $authId,
+            $processedItems
         ) {
             $createdOrder = Order::create([
                 'user_id' => $authId,
@@ -220,31 +273,20 @@ class StorefrontController extends Controller
                 'event_id' => $eventId,
             ]);
 
-            foreach ($validated['cart_items'] as $item) {
-                $rawPid = isset($item['id']) ? (int) $item['id'] : null;
-                $resolvedProductId = null;
-                if ($rawPid && Product::whereKey($rawPid)->exists()) {
-                    $resolvedProductId = $rawPid;
-                } elseif (!empty($item['name'])) {
-                    $resolvedProductId = Product::where('name', trim((string) $item['name']))->value('id');
-                }
-
-                $variantId = !empty($item['variant_id']) ? (int) $item['variant_id'] : null;
-                $variantTitle = !empty($item['variant_title']) ? strip_tags((string) $item['variant_title']) : ($item['size'] ?? null);
-
+            foreach ($processedItems as $procItem) {
                 OrderItem::create([
                     'order_id' => $createdOrder->id,
-                    'product_id' => $resolvedProductId,
-                    'variant_id' => $variantId,
-                    'variant_title' => $variantTitle,
-                    'product_name' => strip_tags($item['name']),
-                    'size' => $variantTitle ?: ($item['size'] ?? 'L'),
-                    'qty' => $item['qty'],
-                    'unit_price' => $item['price'],
-                    'total_price' => $item['price'] * $item['qty'],
-                    'custom_name' => !empty($item['custom_name']) ? strip_tags(strtoupper(trim($item['custom_name']))) : null,
-                    'custom_number' => !empty($item['custom_number']) ? strip_tags(trim($item['custom_number'])) : null,
-                    'image' => $item['image'] ?? '/assets/images/products/real-madrid-home-hs.jpg',
+                    'product_id' => $procItem['product_id'],
+                    'variant_id' => $procItem['variant_id'],
+                    'variant_title' => $procItem['variant_title'],
+                    'product_name' => $procItem['product_name'],
+                    'size' => $procItem['size'],
+                    'qty' => $procItem['qty'],
+                    'unit_price' => $procItem['unit_price'],
+                    'total_price' => $procItem['total_price'],
+                    'custom_name' => $procItem['custom_name'],
+                    'custom_number' => $procItem['custom_number'],
+                    'image' => $procItem['image'],
                 ]);
             }
 

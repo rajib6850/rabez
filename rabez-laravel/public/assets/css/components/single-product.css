@@ -946,4 +946,434 @@
   }
 }
 
+/* ==========================================================================
+   UPGRADED SMART CUSTOM NAME & NUMBER PRINT STUDIO
+   ========================================================================== */
+
+.rabez-custom-studio {
+  background: #111613;
+  border: 1px solid #243027;
+  border-radius: 8px;
+  padding: 13px 15px;
+  margin: 18px 0;
+  transition: border-color 0.25s ease, box-shadow 0.25s ease, background 0.25s ease;
+}
+
+.rabez-custom-studio.is-active {
+  background: #131A15;
+  border-color: rgba(4, 244, 4, 0.45);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.35), 0 0 16px rgba(4, 244, 4, 0.08);
+}
+
+.rabez-custom-studio__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.rabez-custom-studio__toggle-label {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  cursor: pointer;
+  user-select: none;
+  min-width: 0;
+  flex: 1;
+}
+
+.rabez-custom-studio__checkbox {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 19px;
+  height: 19px;
+  border: 1.5px solid #3A473E;
+  border-radius: 5px;
+  background: #171E1A;
+  cursor: pointer;
+  position: relative;
+  flex-shrink: 0;
+  transition: all 0.2s ease;
+}
+
+.rabez-custom-studio__checkbox:checked {
+  background: var(--rabez-neon);
+  border-color: var(--rabez-neon);
+}
+
+.rabez-custom-studio__checkbox:checked::after {
+  content: '';
+  position: absolute;
+  left: 6px;
+  top: 2px;
+  width: 5px;
+  height: 10px;
+  border: solid #000;
+  border-width: 0 2.2px 2.2px 0;
+  transform: rotate(45deg);
+}
+
+.rabez-custom-studio__title-wrap {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  min-width: 0;
+}
+
+.rabez-custom-studio__title {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  font-size: 13.5px;
+  font-weight: 700;
+  color: #FFFFFF;
+  line-height: 1.25;
+}
+
+.rabez-custom-studio__title svg {
+  color: var(--rabez-neon);
+  flex-shrink: 0;
+}
+
+.rabez-badge-sparkle {
+  font-size: 9px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: #000;
+  background: var(--rabez-neon);
+  padding: 1px 6px;
+  border-radius: 3px;
+  text-transform: uppercase;
+}
+
+.rabez-custom-studio__subtitle {
+  font-size: 11px;
+  color: #8E9992;
+  line-height: 1.2;
+}
+
+.rabez-custom-studio__fee-tag {
+  color: var(--rabez-neon);
+  background: rgba(4, 244, 4, 0.12);
+  border: 1px solid rgba(4, 244, 4, 0.3);
+  padding: 4px 10px;
+  border-radius: 99px;
+  font-weight: 800;
+  font-size: 12.5px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.rabez-custom-studio__body {
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px dashed #243027;
+  display: flex;
+  flex-direction: column;
+  gap: 13px;
+}
+
+/* 1-Click Legend Presets */
+.rabez-custom-studio__presets {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+}
+
+.rabez-custom-studio__presets-label {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #8E9992;
+}
+
+.rabez-custom-studio__presets-label svg {
+  color: #F5D76E;
+}
+
+.rabez-custom-studio__presets-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+
+.rabez-preset-pill {
+  background: #171E1A;
+  border: 1px solid #2B372F;
+  color: #D2D8D4;
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+  padding: 4px 9px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.16s ease;
+  white-space: nowrap;
+}
+
+.rabez-preset-pill:hover {
+  background: #202B23;
+  color: #FFFFFF;
+  border-color: #3D4F42;
+}
+
+.rabez-preset-pill.is-active {
+  background: var(--rabez-neon);
+  color: #000000;
+  border-color: var(--rabez-neon);
+  box-shadow: 0 0 10px rgba(4, 244, 4, 0.3);
+}
+
+/* Main Studio Grid: Live Preview + Fields */
+.rabez-custom-studio__main-grid {
+  display: grid;
+  grid-template-columns: 130px 1fr;
+  gap: 13px;
+  align-items: start;
+}
+
+/* Live Preview Card */
+.rabez-custom-studio__preview-card {
+  background: #0B0E0C;
+  border: 1px solid #212B24;
+  border-radius: 6px;
+  padding: 9px 6px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.rabez-custom-studio__preview-badge {
+  font-size: 8px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  color: var(--rabez-neon);
+  background: rgba(4, 244, 4, 0.12);
+  padding: 2px 5px;
+  border-radius: 3px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+
+.rabez-custom-studio__svg-wrap {
+  position: relative;
+  width: 114px;
+  height: 132px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rabez-custom-studio__svg {
+  width: 100%;
+  height: 100%;
+  display: block;
+}
+
+.rabez-custom-studio__text-layer {
+  position: absolute;
+  top: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 76px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  pointer-events: none;
+  text-align: center;
+}
+
+.rabez-custom-studio__preview-name {
+  font-family: var(--rabez-font-display);
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  line-height: 1;
+  white-space: nowrap;
+  max-width: 74px;
+  overflow: hidden;
+  text-overflow: clip;
+  transition: color 0.18s ease, font-size 0.15s ease;
+  filter: drop-shadow(0 2px 3px rgba(0, 0, 0, 0.75));
+}
+
+.rabez-custom-studio__preview-num {
+  font-family: var(--rabez-font-display);
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 0.88;
+  letter-spacing: -0.02em;
+  margin-top: 3px;
+  transition: color 0.18s ease;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.85));
+}
+
+/* Fields Right Side */
+.rabez-custom-studio__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+}
+
+.rabez-studio-field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.rabez-studio-field__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.rabez-studio-field__top label {
+  font-size: 10.5px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  color: #B4BFB8;
+  margin: 0;
+}
+
+.rabez-studio-field__count {
+  font-size: 10px;
+  color: #7A8780;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.rabez-studio-input-wrap {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.rabez-studio-input {
+  width: 100%;
+  height: 35px;
+  background: #171E1A;
+  border: 1px solid #2B3830;
+  border-radius: 4px;
+  padding: 0 26px 0 10px;
+  color: #FFFFFF;
+  font-size: 12.5px;
+  font-weight: 700;
+  text-transform: uppercase;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.rabez-studio-input:focus {
+  outline: none;
+  border-color: var(--rabez-neon);
+  background: #1A231E;
+}
+
+.rabez-studio-clear-btn {
+  position: absolute;
+  right: 6px;
+  background: none;
+  border: none;
+  color: #7A8780;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 2px 4px;
+  line-height: 1;
+}
+
+.rabez-studio-clear-btn:hover {
+  color: #FFFFFF;
+}
+
+/* Color Swatches */
+.rabez-studio-color-selected {
+  font-size: 10px;
+  color: var(--rabez-neon);
+  font-weight: 700;
+}
+
+.rabez-studio-color-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rabez-studio-color-btn {
+  background: none;
+  border: 1.5px solid transparent;
+  padding: 2px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.15s ease, border-color 0.15s ease;
+}
+
+.rabez-studio-color-btn:hover {
+  transform: scale(1.1);
+}
+
+.rabez-studio-color-btn.is-active {
+  border-color: var(--rabez-neon);
+  box-shadow: 0 0 8px rgba(4, 244, 4, 0.4);
+}
+
+.rabez-studio-color-swatch {
+  display: block;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.rabez-custom-studio__guarantee {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 10px;
+  color: #7E8C83;
+  margin-top: 2px;
+  line-height: 1.3;
+}
+
+.rabez-custom-studio__guarantee svg {
+  color: var(--rabez-neon);
+  flex-shrink: 0;
+}
+
+@media (max-width: 480px) {
+  .rabez-custom-studio {
+    padding: 12px 12px;
+  }
+  .rabez-custom-studio__main-grid {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .rabez-custom-studio__preview-card {
+    padding: 11px 8px;
+  }
+  .rabez-custom-studio__svg-wrap {
+    width: 126px;
+    height: 145px;
+  }
+  .rabez-custom-studio__preview-num {
+    font-size: 44px;
+  }
+  .rabez-custom-studio__preview-name {
+    font-size: 11.5px;
+    max-width: 82px;
+  }
+}
+
+
 

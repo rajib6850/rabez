@@ -506,7 +506,7 @@
               variant_title: c.variantTitle || c.size || "",
               qty: c.qty,
               price: c.price,
-              custom_name: c.customName || "",
+              custom_name: c.customName ? (c.customColor && c.customColor !== 'White' ? `${c.customName} [${c.customColor}]` : c.customName) : "",
               custom_number: c.customNumber || "",
               image: c.image || ""
             }))

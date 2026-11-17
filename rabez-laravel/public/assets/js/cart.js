@@ -188,6 +188,51 @@
       .join("");
   }
 
+  /* --- Quick View Custom Print Synchronizer --- */
+  function syncQvCustomPrint(modal) {
+    if (!modal) return;
+    const nameInput = modal.querySelector(".js-qv-custom-name");
+    const numInput = modal.querySelector(".js-qv-custom-num");
+    const previewName = modal.querySelector(".js-qv-preview-name");
+    const previewNum = modal.querySelector(".js-qv-preview-num");
+    const nameCount = modal.querySelector(".js-qv-name-count");
+    const numCount = modal.querySelector(".js-qv-num-count");
+    const clearName = modal.querySelector(".js-qv-clear-name");
+    const clearNum = modal.querySelector(".js-qv-clear-num");
+    const presets = modal.querySelectorAll(".js-qv-preset-pill");
+
+    const rawName = (nameInput ? nameInput.value : "").toUpperCase();
+    const cleanName = rawName.replace(/[^A-Z0-9 .\-]/g, "").slice(0, 14);
+    if (nameInput && nameInput.value !== cleanName) nameInput.value = cleanName;
+
+    const rawNum = (numInput ? numInput.value : "");
+    const cleanNum = rawNum.replace(/[^0-9]/g, "").slice(0, 2);
+    if (numInput && numInput.value !== cleanNum) numInput.value = cleanNum;
+
+    if (nameCount) nameCount.textContent = `${cleanName.length}/14`;
+    if (numCount) numCount.textContent = `${cleanNum.length}/2`;
+
+    if (clearName) clearName.style.display = cleanName.length > 0 ? "block" : "none";
+    if (clearNum) clearNum.style.display = cleanNum.length > 0 ? "block" : "none";
+
+    if (previewName) {
+      previewName.textContent = cleanName || "YOUR NAME";
+      previewName.style.opacity = cleanName ? "1" : "0.45";
+      previewName.style.fontSize = cleanName.length > 9 ? "9px" : "11px";
+    }
+    if (previewNum) {
+      previewNum.textContent = cleanNum || "00";
+      previewNum.style.opacity = cleanNum ? "1" : "0.45";
+    }
+
+    presets.forEach(pill => {
+      const pName = (pill.dataset.name || "").toUpperCase();
+      const pNum = String(pill.dataset.num || "");
+      const isMatch = Boolean(cleanName && cleanName === pName && cleanNum === pNum);
+      pill.classList.toggle("is-active", isMatch);
+    });
+  }
+
   /* --- Render Product Card (WooCommerce li.product structure) --- */
   function createProductCardHTML(product) {
     const isWished = wishlist.includes(product.id);
@@ -371,7 +416,7 @@
 
   /* --- Add to Cart Logic --- */
   function addToCart(arg1, arg2, arg3, arg4) {
-    let id, size, qty = 1, customName = "", customNumber = "";
+    let id, size, qty = 1, customName = "", customNumber = "", customColor = "";
     let silentToast = false;
     let customToast = null;
     let variantId = null;
@@ -386,6 +431,7 @@
       qty = arg1.qty !== undefined ? Number(arg1.qty) : 1;
       customName = arg1.customName || "";
       customNumber = arg1.customNumber || "";
+      customColor = arg1.customColor || "";
       silentToast = Boolean(arg1.silentToast);
       if (arg1.customToast) customToast = arg1.customToast;
       if (arg1.variantId) variantId = Number(arg1.variantId);
@@ -402,6 +448,7 @@
       if (typeof arg4 === "object" && arg4 !== null) {
         customName = arg4.customName || "";
         customNumber = arg4.customNumber || "";
+        customColor = arg4.customColor || "";
         silentToast = Boolean(arg4.silentToast);
         if (arg4.customToast) customToast = arg4.customToast;
         if (arg4.variantId) variantId = Number(arg4.variantId);
@@ -434,9 +481,10 @@
     const allowCustomPrint = product.hasCustomPrint === true;
     const cleanName = allowCustomPrint ? (customName || "").trim().toUpperCase() : "";
     const cleanNum = allowCustomPrint ? (customNumber || "").trim() : "";
+    const cleanColor = (allowCustomPrint && (cleanName || cleanNum) && customColor) ? String(customColor).trim() : "White";
     const hasCustom = Boolean(allowCustomPrint && (cleanName || cleanNum));
     const unitPrice = baseItemPrice + (hasCustom ? getCustomPrintFee() : 0);
-    const key = `${product.id}_${variantId || itemSize}_${cleanName}_${cleanNum}`;
+    const key = `${product.id}_${variantId || itemSize}_${cleanName}_${cleanNum}_${cleanColor}`;
 
     const existing = cart.find((item) => item.key === key);
     if (existing) {
@@ -452,6 +500,7 @@
         size: itemSize,
         customName: cleanName,
         customNumber: cleanNum,
+        customColor: cleanColor,
         price: unitPrice,
         qty: Number(qty),
         image: resolveImageURL(customImage || product.image)
@@ -521,7 +570,7 @@
           .map((item) => {
             const customMeta =
               item.customName || item.customNumber
-                ? `<div style="color:#04F404; font-weight:700; font-size:0.73rem; margin-top:2px;">Print: ${item.customName} #${item.customNumber} (+৳250)</div>`
+                ? `<div style="color:#04F404; font-weight:700; font-size:0.73rem; margin-top:2px;">Print: ${item.customName} #${item.customNumber}${item.customColor && item.customColor !== 'White' ? ' (' + item.customColor + ')' : ''} (+৳250)</div>`
                 : "";
             return `
               <div class="rabez-cart-item woocommerce-mini-cart-item mini_cart_item" style="display:flex; align-items:center; gap:12px; padding:12px; background:#131A16; border:1px solid #1F2823; border-radius:8px; margin-bottom:10px;">
@@ -1055,19 +1104,141 @@
             </div>
           </div>
 
-          <!-- Optional Custom Name & Number Addon -->
+          <!-- Optional Custom Name & Number Personalization Studio (1:1 with Single Product Page) -->
           ${product.hasCustomPrint === true ? `
-            <div class="rabez-print-addon" style="border:1px solid #2B332E; border-radius:6px; padding:12px 14px; margin-bottom:12px; background:#121614;">
-              <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; user-select:none; flex-wrap:nowrap;">
-                <span style="font-weight:700; font-size:13.5px; color:#fff; display:flex; align-items:center; gap:8px; min-width:0;">
-                  <input type="checkbox" class="js-qv-custom-toggle" style="accent-color:#04F404; width:16px; height:16px; flex-shrink:0; cursor:pointer;">
-                  <span>Custom Name &amp; Number</span>
-                </span>
-                <span style="color:#04F404; font-weight:800; font-size:13px; white-space:nowrap; flex-shrink:0;">+ ৳ ${getCustomPrintFee()}</span>
-              </label>
-              <div class="rabez-qv-print-inputs js-qv-custom-inputs" style="display:none; margin-top:10px; gap:8px; grid-template-columns:2fr 1fr;">
-                <input type="text" class="js-qv-custom-name" maxlength="12" placeholder="Name on Back (e.g. MESSI)" style="width:100%; height:36px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px; text-transform:uppercase;">
-                <input type="text" class="js-qv-custom-num" maxlength="2" placeholder="Number (10)" style="width:100%; height:36px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px;">
+            <div class="rabez-custom-studio js-qv-custom-studio" style="margin-bottom:14px;">
+              <div class="rabez-custom-studio__header">
+                <label class="rabez-custom-studio__toggle-label">
+                  <input type="checkbox" class="rabez-custom-studio__checkbox js-qv-custom-toggle">
+                  <div class="rabez-custom-studio__title-wrap">
+                    <div class="rabez-custom-studio__title">
+                      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 20h9"/>
+                        <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/>
+                      </svg>
+                      <span>Custom Name &amp; Number</span>
+                      <span class="rabez-badge-sparkle">OFFICIAL PRINT</span>
+                    </div>
+                    <div class="rabez-custom-studio__subtitle">Heat-pressed authentic player typography</div>
+                  </div>
+                </label>
+                <div class="rabez-custom-studio__fee-tag">+ ৳ ${getCustomPrintFee()}</div>
+              </div>
+
+              <!-- Collapsible Personalization Studio Body -->
+              <div class="rabez-custom-studio__body js-qv-custom-inputs" style="display:none;">
+                <!-- 1-Click Legend Presets -->
+                <div class="rabez-custom-studio__presets">
+                  <div class="rabez-custom-studio__presets-label">
+                    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                    <span>Popular Legends (1-Click Fill):</span>
+                  </div>
+                  <div class="rabez-custom-studio__presets-list js-qv-presets-list">
+                    <button type="button" class="rabez-preset-pill js-qv-preset-pill" data-name="MESSI" data-num="10">MESSI 10</button>
+                    <button type="button" class="rabez-preset-pill js-qv-preset-pill" data-name="RONALDO" data-num="7">RONALDO 7</button>
+                    <button type="button" class="rabez-preset-pill js-qv-preset-pill" data-name="BELLINGHAM" data-num="5">BELLINGHAM 5</button>
+                    <button type="button" class="rabez-preset-pill js-qv-preset-pill" data-name="VINICIUS" data-num="7">VINI JR 7</button>
+                    <button type="button" class="rabez-preset-pill js-qv-preset-pill" data-name="YAMAL" data-num="19">YAMAL 19</button>
+                    <button type="button" class="rabez-preset-pill js-qv-preset-pill" data-name="MODRIC" data-num="10">MODRIĆ 10</button>
+                    <button type="button" class="rabez-preset-pill js-qv-preset-pill" data-name="HAALAND" data-num="9">HAALAND 9</button>
+                  </div>
+                </div>
+
+                <!-- Main Studio Grid: Live SVG Preview + Fields -->
+                <div class="rabez-custom-studio__main-grid">
+                  <!-- Live Jersey Back Preview Card -->
+                  <div class="rabez-custom-studio__preview-card">
+                    <div class="rabez-custom-studio__preview-badge">LIVE BACK PREVIEW</div>
+                    <div class="rabez-custom-studio__svg-wrap">
+                      <svg viewBox="0 0 200 230" class="rabez-custom-studio__svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                        <defs>
+                          <linearGradient id="rbzQvGrad" x1="0" y1="0" x2="0" y2="1">
+                            <stop offset="0%" stop-color="#1A211D"/>
+                            <stop offset="100%" stop-color="#0E1210"/>
+                          </linearGradient>
+                          <filter id="rbzQvShadow" x="-10%" y="-10%" width="120%" height="120%">
+                            <feDropShadow dx="0" dy="4" stdDeviation="5" flood-color="#000" flood-opacity="0.5"/>
+                          </filter>
+                        </defs>
+                        <!-- Jersey Silhouette -->
+                        <path d="M60 16 L80 20 Q100 26 120 20 L140 16 L186 52 L168 92 L150 80 L150 216 Q100 224 50 216 L50 80 L32 92 L14 52 Z" 
+                              fill="url(#rbzQvGrad)" stroke="#2B3630" stroke-width="1.8" filter="url(#rbzQvShadow)"/>
+                        <!-- Collar & Sleeves Athletic Accent Lines -->
+                        <path d="M76 19 Q100 29 124 19 M28 86 L48 74 M172 86 L152 74" 
+                              fill="none" stroke="var(--rabez-neon)" stroke-width="2.5" stroke-linecap="round"/>
+                        <!-- Mesh Fabric Lines -->
+                        <line x1="50" y1="120" x2="150" y2="120" stroke="#232C27" stroke-dasharray="3 3" stroke-width="1"/>
+                        <line x1="50" y1="160" x2="150" y2="160" stroke="#232C27" stroke-dasharray="3 3" stroke-width="1"/>
+                      </svg>
+                      <!-- Dynamic Overlay Text -->
+                      <div class="rabez-custom-studio__text-layer">
+                        <div class="rabez-custom-studio__preview-name js-qv-preview-name" style="color:#FFFFFF;">YOUR NAME</div>
+                        <div class="rabez-custom-studio__preview-num js-qv-preview-num" style="color:#FFFFFF;">00</div>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Input Controls & Swatches -->
+                  <div class="rabez-custom-studio__fields">
+                    <!-- Player Name Field -->
+                    <div class="rabez-studio-field">
+                      <div class="rabez-studio-field__top">
+                        <label>NAME ON BACK</label>
+                        <span class="rabez-studio-field__count js-qv-name-count">0/14</span>
+                      </div>
+                      <div class="rabez-studio-input-wrap">
+                        <input type="text" class="rabez-studio-input js-qv-custom-name" maxlength="14" placeholder="e.g. MESSI" autocomplete="off" spellcheck="false">
+                        <button type="button" class="rabez-studio-clear-btn js-qv-clear-name" title="Clear Name" style="display:none;">&times;</button>
+                      </div>
+                    </div>
+
+                    <!-- Number Field -->
+                    <div class="rabez-studio-field">
+                      <div class="rabez-studio-field__top">
+                        <label>SQUAD NUMBER</label>
+                        <span class="rabez-studio-field__count js-qv-num-count">0/2</span>
+                      </div>
+                      <div class="rabez-studio-input-wrap">
+                        <input type="text" class="rabez-studio-input js-qv-custom-num" maxlength="2" inputmode="numeric" pattern="[0-9]*" placeholder="e.g. 10" autocomplete="off">
+                        <button type="button" class="rabez-studio-clear-btn js-qv-clear-num" title="Clear Number" style="display:none;">&times;</button>
+                      </div>
+                    </div>
+
+                    <!-- Print Font Color Swatches -->
+                    <div class="rabez-studio-field">
+                      <div class="rabez-studio-field__top">
+                        <label>PRINT COLOR</label>
+                        <span class="rabez-studio-color-selected js-qv-color-name">White</span>
+                      </div>
+                      <div class="rabez-studio-color-row js-qv-color-row">
+                        <button type="button" class="rabez-studio-color-btn js-qv-color-btn is-active" data-color="#FFFFFF" data-color-name="White" title="Pure White" aria-label="White">
+                          <span class="rabez-studio-color-swatch" style="background:#FFFFFF;"></span>
+                        </button>
+                        <button type="button" class="rabez-studio-color-btn js-qv-color-btn" data-color="#F5D76E" data-color-name="Gold" title="Champion Gold" aria-label="Gold">
+                          <span class="rabez-studio-color-swatch" style="background:#F5D76E;"></span>
+                        </button>
+                        <button type="button" class="rabez-studio-color-btn js-qv-color-btn" data-color="#111111" data-color-name="Black" title="Pitch Black" aria-label="Black">
+                          <span class="rabez-studio-color-swatch" style="background:#111111; border-color:#555;"></span>
+                        </button>
+                        <button type="button" class="rabez-studio-color-btn js-qv-color-btn" data-color="#00E5FF" data-color-name="Cyan" title="Electric Cyan" aria-label="Cyan">
+                          <span class="rabez-studio-color-swatch" style="background:#00E5FF;"></span>
+                        </button>
+                        <button type="button" class="rabez-studio-color-btn js-qv-color-btn" data-color="#E63946" data-color-name="Red" title="Crimson Red" aria-label="Red">
+                          <span class="rabez-studio-color-swatch" style="background:#E63946;"></span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Quality / Wash Guarantee Micro-note -->
+                    <div class="rabez-custom-studio__guarantee">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                        <path d="m9 12 2 2 4-4"/>
+                      </svg>
+                      <span>Official Heat-Press Vinyl &bull; 100% Wash &amp; Peel Guaranteed</span>
+                    </div>
+                  </div>
+                </div>
               </div>
             </div>
           ` : ''}
@@ -1171,7 +1342,7 @@
     const lines = cart.map(
       (item, idx) =>
         `${idx + 1}. ${item.name} | ${item.variantTitle ? item.variantTitle : 'Size: ' + item.size} | Qty: ${item.qty}${
-          item.customName || item.customNumber ? ` | Print: ${item.customName} #${item.customNumber}` : ""
+          item.customName || item.customNumber ? ` | Print: ${item.customName} #${item.customNumber}${item.customColor && item.customColor !== 'White' ? ' (' + item.customColor + ')' : ''}` : ""
         } = ৳${item.price * item.qty}`
     );
     const fullMsg = `Hello RABEZ,\nI would like to order the following jerseys:\n\n${lines.join(
@@ -1424,7 +1595,7 @@
             <div>
               <strong>${item.name}</strong>
               <div style="font-size:0.76rem; color:#6E7672;">${item.variantTitle ? item.variantTitle : 'Size: ' + item.size} &times; ${item.qty} ${
-            item.customName ? `| Print: ${item.customName} #${item.customNumber}` : ""
+            item.customName ? `| Print: ${item.customName} #${item.customNumber}${item.customColor && item.customColor !== 'White' ? ' (' + item.customColor + ')' : ''}` : ""
           }</div>
             </div>
             <strong>${formatBDT(item.price * item.qty)}</strong>
@@ -1662,10 +1833,14 @@
       const allowCustom = prod?.hasCustomPrint === true && Boolean(customToggle?.checked);
       const customName = allowCustom ? (modal?.querySelector(".js-qv-custom-name")?.value.trim().toUpperCase() || "") : "";
       const customNumber = allowCustom ? (modal?.querySelector(".js-qv-custom-num")?.value.trim() || "") : "";
+      const customColor = (allowCustom && (customName || customNumber))
+        ? (modal?.querySelector(".js-qv-color-btn.is-active")?.dataset.colorName || "White")
+        : "";
       const unitPrice = prod ? (prod.price + (allowCustom ? getCustomPrintFee() : 0)) : 0;
       const total = unitPrice * qty;
+      const colorNote = (customColor && customColor !== 'White') ? ` (${customColor} Print)` : '';
       const customLine = allowCustom && (customName || customNumber)
-        ? `\n\u2022 Custom Print: ${customName} #${customNumber} (+৳${getCustomPrintFee()})`
+        ? `\n\u2022 Custom Print: ${customName} #${customNumber}${colorNote} (+৳${getCustomPrintFee()})`
         : "";
       const msg = `Hello RABEZ, I would like to order this jersey from Quick View:\n\n` +
         `\u2022 Jersey: ${prod?.name || 'Jersey'}\n` +
@@ -1695,7 +1870,10 @@
       const allowCustom = prod?.hasCustomPrint === true && Boolean(customToggle?.checked);
       const customName = allowCustom ? (modal?.querySelector(".js-qv-custom-name")?.value.trim().toUpperCase() || "") : "";
       const customNumber = allowCustom ? (modal?.querySelector(".js-qv-custom-num")?.value.trim() || "") : "";
-      addToCart({ id, size, qty, customName, customNumber });
+      const customColor = (allowCustom && (customName || customNumber))
+        ? (modal?.querySelector(".js-qv-color-btn.is-active")?.dataset.colorName || "White")
+        : "";
+      addToCart({ id, size, qty, customName, customNumber, customColor });
       document.querySelector(".js-quickview-backdrop")?.classList.remove("is-open");
       document.body.style.overflow = "";
       return;
@@ -1712,6 +1890,59 @@
       const customNumber = root?.querySelector(".js-sp-custom-num")?.value || "";
       addToCart({ id, size, qty, customName, customNumber });
       openCartDrawer();
+      return;
+    }
+
+    // Quick View Legend Preset Pill Click
+    const qvPreset = e.target.closest(".js-qv-preset-pill");
+    if (qvPreset) {
+      const modal = qvPreset.closest(".rabez-modal") || qvPreset.closest(".rabez-qv-layout");
+      const nameInput = modal?.querySelector(".js-qv-custom-name");
+      const numInput = modal?.querySelector(".js-qv-custom-num");
+      if (nameInput) nameInput.value = qvPreset.dataset.name || "";
+      if (numInput) numInput.value = qvPreset.dataset.num || "";
+      syncQvCustomPrint(modal);
+      return;
+    }
+
+    // Quick View Print Color Swatch Click
+    const qvColorBtn = e.target.closest(".js-qv-color-btn");
+    if (qvColorBtn) {
+      const modal = qvColorBtn.closest(".rabez-modal") || qvColorBtn.closest(".rabez-qv-layout");
+      modal?.querySelectorAll(".js-qv-color-btn").forEach(b => b.classList.remove("is-active"));
+      qvColorBtn.classList.add("is-active");
+      const color = qvColorBtn.dataset.color || "#FFFFFF";
+      const colorName = qvColorBtn.dataset.colorName || "White";
+      const nameLabel = modal?.querySelector(".js-qv-color-name");
+      if (nameLabel) nameLabel.textContent = colorName;
+      const pName = modal?.querySelector(".js-qv-preview-name");
+      const pNum = modal?.querySelector(".js-qv-preview-num");
+      if (pName) pName.style.color = color;
+      if (pNum) pNum.style.color = color;
+      return;
+    }
+
+    // Quick View Clear buttons
+    const qvClearName = e.target.closest(".js-qv-clear-name");
+    if (qvClearName) {
+      const modal = qvClearName.closest(".rabez-modal") || qvClearName.closest(".rabez-qv-layout");
+      const nameInput = modal?.querySelector(".js-qv-custom-name");
+      if (nameInput) {
+        nameInput.value = "";
+        syncQvCustomPrint(modal);
+        nameInput.focus();
+      }
+      return;
+    }
+    const qvClearNum = e.target.closest(".js-qv-clear-num");
+    if (qvClearNum) {
+      const modal = qvClearNum.closest(".rabez-modal") || qvClearNum.closest(".rabez-qv-layout");
+      const numInput = modal?.querySelector(".js-qv-custom-num");
+      if (numInput) {
+        numInput.value = "";
+        syncQvCustomPrint(modal);
+        numInput.focus();
+      }
       return;
     }
 
@@ -2065,8 +2296,15 @@
     if (e.target.matches(".js-qv-custom-toggle")) {
       const modal = e.target.closest(".rabez-modal") || e.target.closest(".rabez-qv-layout");
       const inputs = modal?.querySelector(".js-qv-custom-inputs");
+      const studio = modal?.querySelector(".js-qv-custom-studio");
       if (inputs) {
-        inputs.style.display = e.target.checked ? "grid" : "none";
+        inputs.style.display = e.target.checked ? "flex" : "none";
+      }
+      if (studio) {
+        studio.classList.toggle("is-active", e.target.checked);
+      }
+      if (e.target.checked) {
+        syncQvCustomPrint(modal);
       }
       const addBtn = modal?.querySelector(".js-modal-add-cart");
       const addBtnText = modal?.querySelector(".js-qv-btn-text");
@@ -2079,6 +2317,13 @@
         if (priceDisplay) priceDisplay.textContent = formatBDT(unitPrice * qty);
         if (addBtnText) addBtnText.textContent = `Add to Bag \u2014 ${formatBDT(unitPrice * qty)}`;
       }
+    }
+  });
+
+  document.addEventListener("input", function (e) {
+    if (e.target.matches(".js-qv-custom-name") || e.target.matches(".js-qv-custom-num")) {
+      const modal = e.target.closest(".rabez-modal") || e.target.closest(".rabez-qv-layout");
+      syncQvCustomPrint(modal);
     }
   });
 
