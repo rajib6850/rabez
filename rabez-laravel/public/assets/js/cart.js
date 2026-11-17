@@ -331,6 +331,28 @@
         countEl.textContent = `Showing ${list.length} ${unitLabel}`;
       }
 
+      const fullCatalogBtn = document.querySelector(".js-view-full-catalog-btn");
+      if (fullCatalogBtn) {
+        const total = (window.RABEZ_PRODUCTS && window.RABEZ_PRODUCTS.length) ? window.RABEZ_PRODUCTS.length : list.length;
+        if (activeFilter.sleeve !== "all") {
+          const sleeveLabels = {
+            "half-sleeve": "Half Sleeve",
+            "full-sleeve": "Full Sleeve",
+            "winter-hoodie": "Winter Hoodies"
+          };
+          const lbl = sleeveLabels[activeFilter.sleeve] || "Jerseys";
+          fullCatalogBtn.textContent = `View All ${lbl} (${list.length} Kits) \u2192`;
+          fullCatalogBtn.href = `/shop?sleeve=${activeFilter.sleeve}`;
+        } else if (activeFilter.club !== "all") {
+          const clubName = (list[0] && list[0].clubLabel) || "Club";
+          fullCatalogBtn.textContent = `View All ${clubName} (${list.length} Kits) \u2192`;
+          fullCatalogBtn.href = `/shop?club=${activeFilter.club}`;
+        } else {
+          fullCatalogBtn.textContent = `View Full Jersey Catalog (${total} Kits)`;
+          fullCatalogBtn.href = `/shop`;
+        }
+      }
+
       const sliced = limit > 0 ? list.slice(0, limit) : list;
 
       if (!sliced.length) {

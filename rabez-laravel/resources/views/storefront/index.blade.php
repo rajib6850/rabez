@@ -292,6 +292,9 @@
             $totalCatalogCount = isset($storefrontProducts) && $storefrontProducts->count() > 0
               ? $storefrontProducts->count()
               : \App\Models\Product::count();
+            $halfSleeveCount = isset($storefrontProducts) && $storefrontProducts->count() > 0
+              ? $storefrontProducts->where('sleeve', 'half-sleeve')->count()
+              : \App\Models\Product::where('sleeve', 'half-sleeve')->count();
           @endphp
           <div style="display:flex; align-items:center; flex-wrap:wrap; gap:12px;">
             <span class="js-product-result-count" style="font-size:0.84rem; font-weight:700; color:#6E7672;">Showing {{ $totalCatalogCount }} Items</span>
@@ -407,8 +410,8 @@
         </ul>
 
         <div style="text-align: center; margin-top: 48px;">
-          <a href="{{ route('shop') }}" class="rabez-btn rabez-btn--dark">
-            View Full Jersey Catalog (28 Kits)
+          <a href="{{ route('shop') }}" class="rabez-btn rabez-btn--dark js-view-full-catalog-btn">
+            View Full Jersey Catalog ({{ $totalCatalogCount }} Kits)
           </a>
         </div>
       </div>
@@ -427,7 +430,7 @@
           <article class="rabez-bento-card">
             <img src="assets/images/products/barcelona-home-hs.jpg" alt="Half Sleeve Club Football Jerseys" class="rabez-bento-card__bg" loading="lazy">
             <div class="rabez-bento-card__top">
-              <span class="rabez-badge rabez-badge--neon">21 Kits</span>
+              <span class="rabez-badge rabez-badge--neon">{{ $halfSleeveCount ? $halfSleeveCount . ' Kits' : 'Half Sleeve' }}</span>
               <span class="rabez-bento-card__price-pill">৳ 1,150</span>
             </div>
             <div class="rabez-bento-card__bottom">
