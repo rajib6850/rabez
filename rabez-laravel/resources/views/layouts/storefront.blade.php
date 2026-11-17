@@ -30,7 +30,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.2">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=2.9">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=3.0">
   <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.8">
   <link rel="stylesheet" href="{{ asset('assets/css/components/footer.css') }}?v=2.6">
 
@@ -677,6 +677,12 @@
     window.RABEZ_PIXEL_ID = @json($metaPixelId ?? '');
     window.RABEZ_HAS_COUPONS = @json($hasActiveCoupons ?? false);
     window.RABEZ_CUSTOM_PRINT_FEE = {{ intval($customPrintFee ?? 250) }};
+    window.RABEZ_SHIPPING = {
+      mode: @json($settings['shipping_mode'] ?? 'flat'),
+      flatFee: {{ intval($settings['shipping_flat_fee'] ?? 130) }},
+      insideDhaka: {{ intval($settings['shipping_inside_dhaka'] ?? 70) }},
+      outsideDhaka: {{ intval($settings['shipping_outside_dhaka'] ?? 130) }}
+    };
     window.RABEZ_AUTH_WISHLIST = @json($authWishlistIds ?? null);
     window.RABEZ_AUTH_WISHLIST_SIZES = @json($authWishlistSizes ?? (object)[]);
     window.RABEZ_ROUTES = Object.assign(window.RABEZ_ROUTES || {}, {
@@ -697,7 +703,7 @@
     window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;
   </script>
   @endif
-  <script src="{{ asset('assets/js/cart.js') }}?v=4.7"></script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=4.8"></script>
   <script src="{{ asset('assets/js/app.js') }}?v=3.8"></script>
 
   @stack('scripts')

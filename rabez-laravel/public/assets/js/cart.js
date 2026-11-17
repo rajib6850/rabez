@@ -918,6 +918,7 @@
     const isAdded = isProductInCart(product.id);
     const isWished = wishlist.includes(Number(product.id));
     const swatches = buildSizeSwatchesHTML(product);
+    const defaultSize = (product.sizes && product.sizes.find(s => s === 'L')) || (product.sizes && product.sizes[0]) || product.defaultSize || 'L';
 
     const frontImg = product.image || "assets/images/products/real-madrid-home-hs.jpg";
     let allImages = [{ src: frontImg, label: "Front View", isBack: false }];
@@ -953,27 +954,45 @@
           </div>
         </div>
 
-        <!-- Right: Summary & Interactive Buying Form -->
+        <!-- Right: Summary & Interactive Buying Form (1:1 with Single Product Page) -->
         <div class="rabez-qv-summary">
-          <div class="rabez-summary__breadcrumb">${product.clubLabel} &bull; ${product.sleeveLabel} &bull; SKU: ${product.sku}</div>
-          <h2 class="rabez-summary__title" style="font-size:1.6rem; margin-bottom:6px; line-height:1.2;">${product.name}</h2>
+          <div class="rabez-summary__breadcrumb" style="font-size:0.75rem; line-height:1.35; color:var(--rabez-text-muted); margin-bottom:6px;">
+            <a href="/" style="color:var(--rabez-text-muted); text-decoration:none;">Home</a> / 
+            <a href="/shop" style="color:var(--rabez-text-muted); text-decoration:none;">Jerseys</a> / 
+            <span>${escapeHTML(product.clubLabel || 'Club')} &bull; ${escapeHTML(product.sleeveLabel || 'Jersey')}</span> 
+            &bull; SKU: <strong style="color:var(--rabez-text-main);">${escapeHTML(product.sku)}</strong>
+          </div>
+
+          <h2 class="rabez-summary__title" style="font-family:var(--rabez-font-display); font-size:clamp(1.6rem, 2.3vw, 2.05rem); line-height:1.15; margin-bottom:10px; text-transform:uppercase; font-weight:800; letter-spacing:-0.01em;">
+            ${escapeHTML(product.name)}
+          </h2>
           
-          <div class="rabez-summary__price-row" style="margin-bottom:10px; padding-bottom:10px;">
-            <span class="rabez-summary__price js-qv-price-display">${formatBDT(product.price)}</span>
-            <span class="rabez-summary__stock" style="background:#EBFDF2; color:#047857; font-weight:700; font-size:0.75rem; padding:3px 9px; border-radius:12px; border:1px solid #A7F3D0; display:inline-flex; align-items:center; gap:5px;">
-              <span style="display:inline-block; width:6px; height:6px; background:#10B981; border-radius:50%;"></span> Ready Stock (BD)
+          <div class="rabez-summary__price-row" style="margin-bottom:12px; padding-bottom:12px; display:flex; align-items:baseline; gap:10px; border-bottom:1px solid var(--rabez-border);">
+            <span class="rabez-summary__price js-qv-price-display" style="font-size:1.65rem; font-weight:800; color:var(--rabez-text-main);">${formatBDT(product.price)}</span>
+            ${(product.regularPrice && product.regularPrice > product.price) ? `
+              <del class="js-qv-regular-price" style="color:#7D8782; font-size:1.05rem; font-weight:600; margin-left:4px;">${formatBDT(product.regularPrice)}</del>
+            ` : ''}
+            <span class="rabez-summary__stock" style="background:#EBFDF2; color:#047857; font-weight:700; font-size:0.75rem; padding:4px 10px; border-radius:99px; border:1px solid #A7F3D0; display:inline-flex; align-items:center; gap:5px; margin-left:auto;">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Ready Stock</span>
             </span>
           </div>
 
-          <p class="rabez-summary__desc" style="font-size:0.84rem; line-height:1.45; color:var(--rabez-text-body); margin-bottom:10px;">${product.shortDesc}</p>
-          ${product.fabric ? `<div style="font-size:0.78rem; color:var(--rabez-text-body); background:#F6F7F5; border:1px solid var(--rabez-border); border-radius:6px; padding:5px 10px; margin-bottom:10px; display:inline-block;"><strong>Fabric:</strong> ${escapeHTML(product.fabric)}</div>` : ""}
+          <p class="rabez-summary__desc" style="font-size:0.86rem; line-height:1.55; color:var(--rabez-text-body); margin-bottom:12px;">${escapeHTML(product.shortDesc || product.name)}</p>
+          ${product.fabric ? `<div style="display:inline-flex; align-items:center; gap:7px; margin-bottom:12px; padding:5px 10px; border-radius:6px; background:#121614; border:1px solid #2B332E; font-size:0.82rem; color:#D1D5DB;"><span style="color:#9BA59F;">Fabric:</span> <strong style="color:#FFFFFF;">${escapeHTML(product.fabric)}</strong></div>` : ''}
 
           <!-- Size Selection & Size Chart Toggle -->
-          <div class="rabez-variation-block" style="margin-bottom:10px;">
-            <div class="rabez-variation-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:6px;">
-              <span style="font-weight:700; font-size:0.88rem; color:var(--rabez-text-main);">Select Size:</span>
-              <button type="button" class="rabez-qv-size-chart-toggle js-qv-size-toggle" style="background:none; border:none; color:#008A00; font-size:0.82rem; font-weight:700; text-decoration:underline; cursor:pointer;">
-                📐 Size Chart
+          <div class="rabez-variation-block" style="margin-bottom:12px;">
+            <div class="rabez-variation-header" style="display:flex; justify-content:space-between; align-items:center; margin-bottom:8px;">
+              <span style="font-weight:700; font-size:0.86rem; color:var(--rabez-text-main);">
+                Select Jersey Size: <strong class="js-qv-selected-size-label" style="color:var(--rabez-neon);">${escapeHTML(defaultSize)}</strong>
+              </span>
+              <button type="button" class="rabez-size-chart-link js-qv-size-toggle" style="background:none; border:none; color:#008A00; text-decoration:underline; font-weight:700; font-size:0.82rem; cursor:pointer; display:inline-flex; align-items:center; gap:5px; padding:0;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M21.3 15.3l-6.6-6.6a2 2 0 0 0-2.8 0L2.7 17.9a2 2 0 0 0 0 2.8l1.4 1.4a2 2 0 0 0 2.8 0l9.2-9.2a2 2 0 0 0 0-2.8l-1.4-1.4a2 2 0 0 0-2.8 0L3.7 18.9"></path>
+                  <path d="M14.5 4.5l5 5"></path>
+                </svg>
+                <span>Size Chart</span>
               </button>
             </div>
             <div class="rabez-size-swatches js-modal-swatches">
@@ -981,105 +1000,127 @@
             </div>
 
             <!-- Collapsible Size Chart -->
-            <div class="rabez-qv-size-chart js-qv-size-chart" style="display:none; margin-top:8px; background:#F8FAF9; border:1px solid var(--rabez-border); border-radius:var(--rabez-radius-sm); padding:8px 10px; font-size:0.8rem;">
-              <div style="font-weight:700; margin-bottom:4px; color:var(--rabez-text-main); font-size:0.8rem;">Official Size Chart (Inches):</div>
+            <div class="rabez-qv-size-chart js-qv-size-chart" style="display:none; margin-top:10px; background:#F8FAF9; border:1px solid var(--rabez-border); border-radius:var(--rabez-radius-sm); padding:10px 12px; font-size:0.8rem;">
+              <div style="font-weight:700; margin-bottom:6px; color:var(--rabez-text-main); font-size:0.82rem; display:flex; justify-content:space-between; align-items:center;">
+                <span>Official Size Chart (Inches)</span>
+                <span style="font-size:0.75rem; color:var(--rabez-text-muted); font-weight:500;">Player Edition Fit</span>
+              </div>
               <table style="width:100%; border-collapse:collapse; font-size:0.78rem; text-align:center;">
                 <thead>
-                  <tr style="background:#E9ECEF; color:#111;">
-                    <th style="padding:3px 5px;">Size</th>
-                    <th style="padding:3px 5px;">Chest</th>
-                    <th style="padding:3px 5px;">Length</th>
+                  <tr style="background:#E9ECEF; color:#111; font-weight:700;">
+                    <th style="padding:4px 6px; border-radius:4px 0 0 4px;">Size</th>
+                    <th style="padding:4px 6px;">Chest (Inches)</th>
+                    <th style="padding:4px 6px; border-radius:0 4px 4px 0;">Length (Inches)</th>
                   </tr>
                 </thead>
                 <tbody>
-                  <tr style="border-bottom:1px solid #DEE2E6;"><td><strong>S</strong></td><td>36" - 38"</td><td>27"</td></tr>
-                  <tr style="border-bottom:1px solid #DEE2E6;"><td><strong>M</strong></td><td>38" - 40"</td><td>28"</td></tr>
-                  <tr style="border-bottom:1px solid #DEE2E6;"><td><strong>L</strong></td><td>40" - 42"</td><td>29"</td></tr>
-                  <tr style="border-bottom:1px solid #DEE2E6;"><td><strong>XL</strong></td><td>42" - 44"</td><td>30"</td></tr>
-                  <tr><td><strong>XXL</strong></td><td>44" - 46"</td><td>31"</td></tr>
+                  <tr style="border-bottom:1px solid #E5E7EB;"><td style="padding:4px 6px;"><strong>S</strong></td><td style="padding:4px 6px;">36" - 38"</td><td style="padding:4px 6px;">27"</td></tr>
+                  <tr style="border-bottom:1px solid #E5E7EB;"><td style="padding:4px 6px;"><strong>M</strong></td><td style="padding:4px 6px;">38" - 40"</td><td style="padding:4px 6px;">28"</td></tr>
+                  <tr style="border-bottom:1px solid #E5E7EB;"><td style="padding:4px 6px;"><strong>L</strong></td><td style="padding:4px 6px;">40" - 42"</td><td style="padding:4px 6px;">29"</td></tr>
+                  <tr style="border-bottom:1px solid #E5E7EB;"><td style="padding:4px 6px;"><strong>XL</strong></td><td style="padding:4px 6px;">42" - 44"</td><td style="padding:4px 6px;">30"</td></tr>
+                  <tr><td style="padding:4px 6px;"><strong>XXL</strong></td><td style="padding:4px 6px;">44" - 46"</td><td style="padding:4px 6px;">31"</td></tr>
                 </tbody>
               </table>
             </div>
           </div>
 
-          <!-- Optional Custom Name & Number Addon (Only when enabled on this product) -->
+          <!-- Optional Custom Name & Number Addon -->
           ${product.hasCustomPrint === true ? `
-            <div class="rabez-qv-print-box" style="border:1px solid var(--rabez-border); border-radius:6px; padding:10px 12px; margin-bottom:12px; background:#F8FAF9;">
+            <div class="rabez-print-addon" style="border:1px solid #2B332E; border-radius:6px; padding:12px 14px; margin-bottom:12px; background:#121614;">
               <label style="display:flex; align-items:center; justify-content:space-between; gap:8px; cursor:pointer; user-select:none; flex-wrap:nowrap;">
-                <span style="font-weight:700; font-size:0.84rem; color:var(--rabez-text-main); display:flex; align-items:center; gap:7px; min-width:0;">
-                  <input type="checkbox" class="js-qv-custom-toggle" style="accent-color:#04F404; width:15px; height:15px; flex-shrink:0; cursor:pointer;">
+                <span style="font-weight:700; font-size:13.5px; color:#fff; display:flex; align-items:center; gap:8px; min-width:0;">
+                  <input type="checkbox" class="js-qv-custom-toggle" style="accent-color:#04F404; width:16px; height:16px; flex-shrink:0; cursor:pointer;">
                   <span>Custom Name &amp; Number</span>
                 </span>
-                <span style="color:#008A00; font-weight:800; font-size:0.8rem; white-space:nowrap; flex-shrink:0;">+ ৳ ${getCustomPrintFee()}</span>
+                <span style="color:#04F404; font-weight:800; font-size:13px; white-space:nowrap; flex-shrink:0;">+ ৳ ${getCustomPrintFee()}</span>
               </label>
               <div class="rabez-qv-print-inputs js-qv-custom-inputs" style="display:none; margin-top:10px; gap:8px; grid-template-columns:2fr 1fr;">
-                <input type="text" class="js-qv-custom-name" maxlength="12" placeholder="Name (e.g. MESSI)" style="width:100%; height:36px; background:#FFFFFF; border:1px solid var(--rabez-border-strong); border-radius:4px; padding:0 10px; color:#111; font-size:12.5px; text-transform:uppercase;">
-                <input type="text" class="js-qv-custom-num" maxlength="2" placeholder="No. (10)" style="width:100%; height:36px; background:#FFFFFF; border:1px solid var(--rabez-border-strong); border-radius:4px; padding:0 10px; color:#111; font-size:12.5px;">
+                <input type="text" class="js-qv-custom-name" maxlength="12" placeholder="Name on Back (e.g. MESSI)" style="width:100%; height:36px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px; text-transform:uppercase;">
+                <input type="text" class="js-qv-custom-num" maxlength="2" placeholder="Number (10)" style="width:100%; height:36px; background:#191E1B; border:1px solid #2D3631; border-radius:4px; padding:0 10px; color:#fff; font-size:12.5px;">
               </div>
             </div>
           ` : ''}
 
-          <!-- Quantity Selector Row -->
-          <div class="rabez-qv-qty-row" style="display:flex; align-items:center; gap:12px; margin-bottom:12px;">
-            <span style="font-weight:700; font-size:0.88rem; color:var(--rabez-text-main);">Quantity:</span>
-            <div class="rabez-qty-control" style="display:inline-flex; align-items:center; border:1.5px solid var(--rabez-border); border-radius:6px; background:#F8FAF9; overflow:hidden;">
-              <button type="button" class="rabez-qty-btn js-qv-qty-minus" style="width:32px; height:32px; background:none; border:none; font-size:15px; font-weight:700; cursor:pointer; color:var(--rabez-text-main); display:flex; align-items:center; justify-content:center;" aria-label="Decrease quantity">&minus;</button>
-              <span class="js-qv-qty-val" style="width:34px; text-align:center; font-weight:800; font-size:0.92rem; color:var(--rabez-text-main);">1</span>
-              <button type="button" class="rabez-qty-btn js-qv-qty-plus" style="width:32px; height:32px; background:none; border:none; font-size:15px; font-weight:700; cursor:pointer; color:var(--rabez-text-main); display:flex; align-items:center; justify-content:center;" aria-label="Increase quantity">&plus;</button>
+          <!-- Purchase Row (Side-by-side Quantity + Add to Bag, 1:1 with Single Product Page) -->
+          <div class="rabez-purchase-row" style="display:grid; grid-template-columns:110px 1fr; gap:10px; margin-bottom:10px;">
+            <div class="rabez-qty-box" style="display:flex; align-items:center; border:1px solid var(--rabez-border-strong); border-radius:var(--rabez-radius-sm); height:46px; background-color:#FFFFFF;">
+              <button type="button" class="rabez-qty-btn js-qv-qty-minus" aria-label="Decrease quantity" style="width:34px; height:100%; font-size:1.1rem; font-weight:700; color:var(--rabez-text-main); background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;">&minus;</button>
+              <input type="number" class="rabez-qty-input js-qv-qty-val" value="1" min="1" max="10" aria-label="Quantity" readonly style="width:40px; text-align:center; font-weight:800; font-size:0.95rem; border:none; background:transparent; color:var(--rabez-text-main); padding:0;">
+              <button type="button" class="rabez-qty-btn js-qv-qty-plus" aria-label="Increase quantity" style="width:34px; height:100%; font-size:1.1rem; font-weight:700; color:var(--rabez-text-main); background:none; border:none; cursor:pointer; display:flex; align-items:center; justify-content:center;">+</button>
             </div>
-          </div>
-
-          <!-- Action Buttons -->
-          <div style="display:grid; gap:7px;">
-            <button type="button" class="rabez-btn rabez-btn--primary rabez-btn--full js-modal-add-cart ${isAdded ? "is-added added" : ""}" data-product-id="${product.id}" style="padding:11px 18px; font-weight:800; font-size:0.92rem; display:flex; align-items:center; justify-content:center; gap:8px;">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 21l1-12.5z"/></svg>
+            <button type="button" class="rabez-btn rabez-btn--primary rabez-btn--full js-modal-add-cart ${isAdded ? "is-added added" : ""}" data-product-id="${product.id}" style="height:46px; font-size:0.95rem; font-weight:800; display:inline-flex; align-items:center; justify-content:center; gap:8px;">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 21l1-12.5z"/>
+              </svg>
               <span class="js-qv-btn-text">Add to Bag &mdash; ${formatBDT(product.price)}</span>
             </button>
+          </div>
 
-            <button type="button" class="rabez-btn js-qv-whatsapp-order" data-product-id="${product.id}" style="background:#25D366; color:#FFFFFF; border:none; border-radius:var(--rabez-radius-sm); padding:10px 16px; font-weight:800; font-size:0.9rem; display:flex; align-items:center; justify-content:center; gap:8px; cursor:pointer; transition:background 0.18s ease;">
-              <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
+          <!-- Secondary Actions: WhatsApp & Wishlist Buttons (1:1 with Single Product Page) -->
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-bottom:12px;">
+            <button type="button" class="rabez-btn rabez-btn--dark rabez-btn--full js-qv-whatsapp-order" data-product-id="${product.id}" style="display:flex; align-items:center; justify-content:center; gap:8px; height:42px; font-size:0.86rem; font-weight:700; background:#121614; border:1px solid #2B332E; color:#FFFFFF;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+              </svg>
               <span>Order via WhatsApp</span>
             </button>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px;">
-              <button type="button" class="rabez-btn rabez-btn--outline rabez-btn--full js-wishlist-toggle js-qv-wishlist-btn ${isWished ? "is-active" : ""}" data-product-id="${product.id}" style="padding:9px 10px; font-size:0.82rem; display:flex; align-items:center; justify-content:center; gap:6px;">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="${isWished ? "currentColor" : "none"}" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
-                <span class="js-sp-wishlist-label">${isWished ? "Saved in Wishlist" : "Save to Wishlist"}</span>
-              </button>
-              <a href="/product/${product.slug || product.id}" class="rabez-btn rabez-btn--outline rabez-btn--full" style="padding:9px 10px; font-size:0.82rem; text-align:center;">
-                ${product.hasCustomPrint === true ? 'Custom Print &amp; Specs &rarr;' : 'View Full Details &rarr;'}
-              </a>
-            </div>
+            <button type="button" class="rabez-btn rabez-btn--outline rabez-btn--full js-wishlist-toggle js-qv-wishlist-btn ${isWished ? "is-active" : ""}" data-product-id="${product.id}" style="display:flex; align-items:center; justify-content:center; gap:8px; height:42px; font-size:0.86rem; font-weight:700; background:#121614; border:1px solid #2B332E; color:#FFFFFF;">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="${isWished ? "#04F404" : "none"}" stroke="#04F404" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/>
+              </svg>
+              <span class="js-sp-wishlist-label">${isWished ? "Saved in Wishlist" : "Save to Wishlist"}</span>
+            </button>
           </div>
 
-          <!-- Trust Perks Row -->
-          <div class="rabez-qv-perks" style="display:grid; grid-template-columns: repeat(3, 1fr); gap:6px; margin-top:12px; padding-top:10px; border-top:1px solid var(--rabez-border); font-size:0.72rem; text-align:center; color:var(--rabez-text-body);">
-            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
-                <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
-                <circle cx="7" cy="18" r="2"/>
-                <circle cx="17" cy="18" r="2"/>
+          <!-- Direct Link to Single Product Page -->
+          <div style="text-align:center; margin-bottom:12px;">
+            <a href="/product/${product.slug || product.id}" style="color:var(--rabez-text-muted); font-size:0.82rem; font-weight:600; text-decoration:underline; display:inline-flex; align-items:center; gap:4px; transition:color 0.15s ease;">
+              <span>View Full Details, Fabric &amp; Sizing Specs &rarr;</span>
+            </a>
+          </div>
+
+          <!-- Delivery & Guarantee List (1:1 with Single Product Page) -->
+          <ul class="rabez-delivery-list" style="margin-top:12px; padding-top:12px; border-top:1px solid var(--rabez-border); display:grid; gap:8px; font-size:0.82rem; color:var(--rabez-text-body); list-style:none; padding-left:0;">
+            ${(window.RABEZ_SHIPPING && window.RABEZ_SHIPPING.mode === 'district') ? `
+              <li style="display:flex; align-items:center; gap:8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                  <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+                  <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+                  <circle cx="7" cy="18" r="2"/>
+                  <circle cx="17" cy="18" r="2"/>
+                </svg>
+                <span><strong>Inside Dhaka:</strong> ৳ ${window.RABEZ_SHIPPING.insideDhaka || 70} (24&ndash;48h) &bull; <strong>Outside:</strong> ৳ ${window.RABEZ_SHIPPING.outsideDhaka || 130}</span>
+              </li>
+            ` : `
+              <li style="display:flex; align-items:center; gap:8px;">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                  <path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/>
+                  <path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/>
+                  <circle cx="7" cy="18" r="2"/>
+                  <circle cx="17" cy="18" r="2"/>
+                </svg>
+                <span><strong>Home Delivery (All BD):</strong> ৳ ${(window.RABEZ_SHIPPING && window.RABEZ_SHIPPING.flatFee) || 130} (Flat Rate)</span>
+              </li>
+            `}
+            <li style="display:flex; align-items:center; gap:8px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
+                <rect x="2" y="6" width="20" height="12" rx="2"/>
+                <circle cx="12" cy="12" r="2"/>
+                <path d="M6 12h.01M18 12h.01"/>
               </svg>
-              <span style="font-weight:700; line-height:1.2;">Cash on Delivery<br><small style="color:var(--rabez-text-muted); font-size:0.68rem;">All Over BD</small></span>
-            </div>
-            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+              <span><strong>Payment:</strong> Cash on Delivery, bKash, Nagad &bull; Open &amp; check jersey</span>
+            </li>
+            <li style="display:flex; align-items:center; gap:8px;">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" style="flex-shrink:0;">
                 <path d="M3 12a9 9 0 0 1 15-6.7L21 8"/>
                 <path d="M21 3v5h-5"/>
                 <path d="M21 12a9 9 0 0 1-15 6.7L3 16"/>
                 <path d="M3 21v-5h5"/>
               </svg>
-              <span style="font-weight:700; line-height:1.2;">3-Day Exchange<br><small style="color:var(--rabez-text-muted); font-size:0.68rem;">Easy size swap</small></span>
-            </div>
-            <div style="display:flex; flex-direction:column; align-items:center; gap:2px;">
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#008A00" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
-                <path d="m9 12 2 2 4-4"/>
-              </svg>
-              <span style="font-weight:700; line-height:1.2;">100% Quality<br><small style="color:var(--rabez-text-muted); font-size:0.68rem;">Breathable Fabric</small></span>
-            </div>
-          </div>
+              <span><strong>Exchange Policy:</strong> 3-day easy size exchange guarantee</span>
+            </li>
+          </ul>
         </div>
       </div>
     `;
@@ -1447,6 +1488,25 @@
       });
       swatch.classList.add("is-selected");
       swatch.setAttribute("aria-pressed", "true");
+
+      // Update selected size label in Quick View modal
+      const qvModal = swatch.closest(".rabez-modal") || swatch.closest(".rabez-qv-layout");
+      if (qvModal) {
+        const qvSizeLabel = qvModal.querySelector(".js-qv-selected-size-label");
+        if (qvSizeLabel && swatch.dataset.size) {
+          qvSizeLabel.textContent = swatch.dataset.size;
+        }
+      }
+
+      // Update selected size label in Single Product page
+      const spRoot = swatch.closest(".js-single-product-root");
+      if (spRoot) {
+        const spSizeLabel = spRoot.querySelector("#js-selected-size-label");
+        if (spSizeLabel && swatch.dataset.size) {
+          spSizeLabel.textContent = swatch.dataset.size;
+        }
+      }
+
       const wlCard = swatch.closest(".rabez-wl-card");
       if (wlCard) {
         const pid = Number(wlCard.dataset.productId);
@@ -1512,7 +1572,7 @@
       const productId = Number(addBtn?.dataset.productId);
       const prod = getProductById(productId);
       if (!prod) return;
-      const qty = parseInt(qtyValEl?.textContent.trim(), 10) || 1;
+      const qty = parseInt(qtyValEl?.value || qtyValEl?.textContent.trim(), 10) || 1;
       const hasCustom = prod.hasCustomPrint === true && Boolean(customToggle?.checked);
       const unitPrice = prod.price + (hasCustom ? getCustomPrintFee() : 0);
       if (priceDisplay) priceDisplay.textContent = formatBDT(unitPrice * qty);
@@ -1521,16 +1581,20 @@
 
     const qtyBtn = e.target.closest(".js-qv-qty-plus, .js-qv-qty-minus");
     if (qtyBtn) {
-      const modal = qtyBtn.closest(".rabez-modal");
+      const modal = qtyBtn.closest(".rabez-modal") || qtyBtn.closest(".rabez-qv-layout");
       const qtyValEl = modal?.querySelector(".js-qv-qty-val");
       if (modal && qtyValEl) {
-        let qty = parseInt(qtyValEl.textContent.trim(), 10) || 1;
+        let qty = parseInt(qtyValEl.value || qtyValEl.textContent.trim(), 10) || 1;
         if (qtyBtn.classList.contains("js-qv-qty-plus")) {
           qty = Math.min(10, qty + 1);
         } else {
           qty = Math.max(1, qty - 1);
         }
-        qtyValEl.textContent = qty;
+        if (qtyValEl.tagName === "INPUT") {
+          qtyValEl.value = qty;
+        } else {
+          qtyValEl.textContent = qty;
+        }
         updateQuickViewModalPrice(modal);
       }
       return;
@@ -1539,12 +1603,13 @@
     // Quick View Size Chart Toggle
     const sizeToggle = e.target.closest(".js-qv-size-toggle");
     if (sizeToggle) {
-      const modal = sizeToggle.closest(".rabez-modal");
+      const modal = sizeToggle.closest(".rabez-modal") || sizeToggle.closest(".rabez-qv-layout");
       const chart = modal?.querySelector(".js-qv-size-chart");
       if (chart) {
         const isHidden = chart.style.display === "none" || !chart.style.display;
         chart.style.display = isHidden ? "block" : "none";
-        sizeToggle.textContent = isHidden ? "\u2715 Close Size Chart" : "\ud83d\udcd0 Size Chart";
+        const labelSpan = sizeToggle.querySelector("span") || sizeToggle;
+        labelSpan.textContent = isHidden ? "Close Size Chart" : "Size Chart";
       }
       return;
     }
@@ -1554,14 +1619,14 @@
     if (qvWaBtn) {
       const id = Number(qvWaBtn.dataset.productId);
       const prod = getProductById(id);
-      const modal = qvWaBtn.closest(".rabez-modal");
+      const modal = qvWaBtn.closest(".rabez-modal") || qvWaBtn.closest(".rabez-qv-layout");
       const selectedSwatch = modal?.querySelector(".rabez-size-swatch.is-selected");
       const size = selectedSwatch ? selectedSwatch.dataset.size : (prod?.defaultSize || "");
       if (!size || (prod && Array.isArray(prod.sizes) && !prod.sizes.length)) {
         if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
         return;
       }
-      const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
+      const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.value || modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
       const customToggle = modal?.querySelector(".js-qv-custom-toggle");
       const allowCustom = prod?.hasCustomPrint === true && Boolean(customToggle?.checked);
       const customName = allowCustom ? (modal?.querySelector(".js-qv-custom-name")?.value.trim().toUpperCase() || "") : "";
@@ -1594,7 +1659,7 @@
         if (window.RABEZ_POPUP) window.RABEZ_POPUP.alert("Sorry, this jersey is currently out of stock in all sizes.", { type: "warning", title: "Out of Stock" });
         return;
       }
-      const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
+      const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.value || modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
       const customToggle = modal?.querySelector(".js-qv-custom-toggle");
       const allowCustom = prod?.hasCustomPrint === true && Boolean(customToggle?.checked);
       const customName = allowCustom ? (modal?.querySelector(".js-qv-custom-name")?.value.trim().toUpperCase() || "") : "";
@@ -1967,7 +2032,7 @@
       renderCheckoutOrderSummary();
     }
     if (e.target.matches(".js-qv-custom-toggle")) {
-      const modal = e.target.closest(".rabez-modal");
+      const modal = e.target.closest(".rabez-modal") || e.target.closest(".rabez-qv-layout");
       const inputs = modal?.querySelector(".js-qv-custom-inputs");
       if (inputs) {
         inputs.style.display = e.target.checked ? "grid" : "none";
@@ -1975,7 +2040,7 @@
       const addBtn = modal?.querySelector(".js-modal-add-cart");
       const addBtnText = modal?.querySelector(".js-qv-btn-text");
       const priceDisplay = modal?.querySelector(".js-qv-price-display");
-      const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
+      const qty = parseInt(modal?.querySelector(".js-qv-qty-val")?.value || modal?.querySelector(".js-qv-qty-val")?.textContent.trim(), 10) || 1;
       const prod = getProductById(Number(addBtn?.dataset.productId));
       if (prod) {
         const hasCustom = prod.hasCustomPrint === true && e.target.checked;

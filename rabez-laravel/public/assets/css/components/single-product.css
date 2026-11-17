@@ -240,14 +240,14 @@
 .rabez-modal {
   position: relative;
   width: 100%;
-  max-width: 860px;
+  max-width: 900px;
   max-height: 90vh;
   overflow-y: auto;
   overflow-x: hidden;
   background-color: #FFFFFF;
-  border-radius: var(--rabez-radius-md);
-  padding: 22px 24px 18px 24px;
-  box-shadow: 0 20px 45px rgba(0, 0, 0, 0.35);
+  border-radius: 16px;
+  padding: 26px 28px 24px 28px;
+  box-shadow: 0 24px 50px rgba(0, 0, 0, 0.28);
   border: 1px solid var(--rabez-border);
 }
 
@@ -448,8 +448,10 @@
   .rabez-qv-main-media {
     width: 100% !important;
     max-width: 100% !important;
+    max-height: 280px !important;
+    aspect-ratio: 1 / 1 !important;
     box-sizing: border-box !important;
-    border-radius: 8px !important;
+    border-radius: 10px !important;
   }
 
   .rabez-qv-summary {
