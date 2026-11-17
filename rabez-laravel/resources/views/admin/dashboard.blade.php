@@ -4747,7 +4747,7 @@
                   </span>
                 </div>
                 <h2 class="adm-settings-hdr__title">Store Settings</h2>
-                <p class="adm-settings-hdr__subtitle">ডেলিভারি চার্জ, মেটা পিক্সেল ও কাস্টমার লগইন সিস্টেম কনফিগার করুন।</p>
+                <p class="adm-settings-hdr__subtitle">Configure storefront delivery charges, Meta tracking pixels, and customer login credentials.</p>
               </div>
 
               <!-- Quick Profile Card (1-tap to open Profile & Password Drawer) -->
@@ -4818,7 +4818,7 @@
                       </div>
                       <div>
                         <h3 class="adm-card__title" style="font-size:16px;">Delivery &amp; Courier Settings</h3>
-                        <p class="adm-card__desc">গ্রাহকের ডেলিভারি চার্জের নিয়ম ও কুরিয়ার API ইন্টিগ্রেশন</p>
+                        <p class="adm-card__desc">Storefront delivery charge logic and automated courier API integrations</p>
                       </div>
                     </div>
                     <span class="adm-chip adm-chip--delivered js-ship-header-chip">{{ $shipMode === 'zone' ? 'Zone Mode' : 'Flat Mode' }}</span>
@@ -4827,7 +4827,7 @@
                   <div class="adm-settings-card__body">
                     <form class="adm-form js-settings-form">
                       <!-- Mode Selector Cards -->
-                      <label class="adm-label" style="font-weight:700; margin-bottom:8px;">ডেলিভারি চার্জ সিস্টেম সিলেক্ট করুন:</label>
+                      <label class="adm-label" style="font-weight:700; margin-bottom:8px;">Select Delivery Pricing Model:</label>
                       
                       <!-- Hidden fallback select for form serialization -->
                       <select name="shipping_mode" id="setting-shipping-mode" class="adm-select" style="display:none;">
@@ -4839,80 +4839,80 @@
                         <label class="adm-settings-mode-card js-mode-card {{ $shipMode === 'flat' ? 'is-active' : '' }}" data-mode="flat">
                           <input type="radio" name="shipping_mode_radio" value="flat" {{ $shipMode === 'flat' ? 'checked' : '' }}>
                           <div>
-                            <span class="adm-settings-mode-title">Flat Rate (সারা বাংলাদেশ এক রেট)</span>
-                            <span class="adm-settings-mode-desc">পুরো বাংলাদেশে যেকোনো অর্ডারে একটি নির্দিষ্ট ডেলিভারি ফি প্রযোজ্য হবে (যেমন: ৳{{ $flatFee }})।</span>
+                            <span class="adm-settings-mode-title">Flat Rate (Nationwide Uniform Fee)</span>
+                            <span class="adm-settings-mode-desc">One standard delivery fee applied to every order nationwide (e.g. ৳{{ $flatFee }}).</span>
                           </div>
                         </label>
 
                         <label class="adm-settings-mode-card js-mode-card {{ $shipMode === 'zone' ? 'is-active' : '' }}" data-mode="zone">
                           <input type="radio" name="shipping_mode_radio" value="zone" {{ $shipMode === 'zone' ? 'checked' : '' }}>
                           <div>
-                            <span class="adm-settings-mode-title">Zone-Based (ঢাকা ভেতরে ও বাইরে)</span>
-                            <span class="adm-settings-mode-desc">চেকআউট পেজে কাস্টমার ঢাকার ভেতরে (৳{{ $insideFee }}) বা ঢাকার বাইরে (৳{{ $outsideFee }}) সিলেক্ট করবে।</span>
+                            <span class="adm-settings-mode-title">Zone-Based (Inside vs Outside Dhaka)</span>
+                            <span class="adm-settings-mode-desc">Customers select Inside Dhaka (৳{{ $insideFee }}) or Outside Dhaka (৳{{ $outsideFee }}) at checkout.</span>
                           </div>
                         </label>
                       </div>
 
                       <!-- Flat Fee Input -->
                       <div class="adm-field js-shipping-flat-field" style="{{ $shipMode === 'zone' ? 'display:none;' : '' }}">
-                        <label class="adm-label" for="setting-shipping-flat-fee" style="font-weight:600;">সারা বাংলাদেশের ফ্ল্যাট ডেলিভারি চার্জ (৳)</label>
+                        <label class="adm-label" for="setting-shipping-flat-fee" style="font-weight:600;">Flat Delivery Fee — All Bangladesh (৳)</label>
                         <div class="adm-input-currency">
                           <span class="adm-input-currency__sym">৳</span>
                           <input type="number" id="setting-shipping-flat-fee" name="shipping_flat_fee" class="adm-input num" value="{{ $flatFee }}" placeholder="130">
                         </div>
-                        <span class="adm-hint">কাস্টমারের জন্য স্ট্যান্ডার্ড রাউন্ড ফিগার ডেলিভারি চার্জ (যেমন: ৳130)।</span>
+                        <span class="adm-hint">Default delivery charge applied to every order nationwide (e.g. ৳130).</span>
                       </div>
 
                       <!-- Zone-based Inputs -->
                       <div class="js-shipping-zone-fields" style="display:{{ $shipMode === 'zone' ? 'grid' : 'none' }}; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
                         <div class="adm-field">
-                          <label class="adm-label" for="setting-shipping-inside" style="font-weight:600;">ঢাকার ভেতরে ডেলিভারি চার্জ (৳)</label>
+                          <label class="adm-label" for="setting-shipping-inside" style="font-weight:600;">Inside Dhaka Delivery Fee (৳)</label>
                           <div class="adm-input-currency">
                             <span class="adm-input-currency__sym">৳</span>
                             <input type="number" id="setting-shipping-inside" name="shipping_inside_dhaka" class="adm-input num" value="{{ $insideFee }}" placeholder="70">
                           </div>
-                          <span class="adm-hint">ঢাকা সিটির ভেতরের হোম ডেলিভারি (২৪-৪৮ ঘণ্টা)।</span>
+                          <span class="adm-hint">Home delivery within Dhaka metro area (24–48 hours).</span>
                         </div>
                         <div class="adm-field">
-                          <label class="adm-label" for="setting-shipping-outside" style="font-weight:600;">ঢাকার বাইরে ডেলিভারি চার্জ (৳)</label>
+                          <label class="adm-label" for="setting-shipping-outside" style="font-weight:600;">Outside Dhaka Delivery Fee (৳)</label>
                           <div class="adm-input-currency">
                             <span class="adm-input-currency__sym">৳</span>
                             <input type="number" id="setting-shipping-outside" name="shipping_outside_dhaka" class="adm-input num" value="{{ $outsideFee }}" placeholder="130">
                           </div>
-                          <span class="adm-hint">ঢাকার বাইরের সকল জেলা ও থানা (২-৩ দিন)।</span>
+                          <span class="adm-hint">All districts and upazilas outside Dhaka (2–3 days).</span>
                         </div>
                       </div>
 
                       <!-- Additional Storefront Rules -->
                       <div class="adm-settings-section-divider">
-                        <div class="adm-settings-section-title">স্টোরফ্রন্ট ডেলিভারি অফার ও কাস্টমাইজেশন</div>
-                        <div class="adm-settings-section-desc">ফ্রি ডেলিভারি অফার ও জার্সির পেছনের নাম-নাম্বার প্রিন্ট চার্জ</div>
+                        <div class="adm-settings-section-title">Storefront Delivery Rules &amp; Customization</div>
+                        <div class="adm-settings-section-desc">Free shipping threshold and custom name &amp; number print fee</div>
                       </div>
 
                       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
                         <div class="adm-field">
-                          <label class="adm-label" for="setting-free-shipping-min" style="font-weight:600;">ফ্রি ডেলিভারি ন্যূনতম অর্ডার ভ্যালু (৳)</label>
+                          <label class="adm-label" for="setting-free-shipping-min" style="font-weight:600;">Free Shipping Minimum Subtotal (৳)</label>
                           <div class="adm-input-currency">
                             <span class="adm-input-currency__sym">৳</span>
                             <input type="number" id="setting-free-shipping-min" name="free_shipping_min" class="adm-input num" value="{{ $freeMin }}" placeholder="3500">
                           </div>
-                          <span class="adm-hint">এই টাকার সমান বা বেশি অর্ডার করলে ডেলিভারি ফ্রি হয়ে যাবে।</span>
+                          <span class="adm-hint">Orders meeting or exceeding this subtotal qualify for free delivery.</span>
                         </div>
 
                         <div class="adm-field">
-                          <label class="adm-label" for="setting-custom-print-fee" style="font-weight:600;">জার্সি কাস্টম প্রিন্ট ফি (৳)</label>
+                          <label class="adm-label" for="setting-custom-print-fee" style="font-weight:600;">Custom Print Fee (৳)</label>
                           <div class="adm-input-currency">
                             <span class="adm-input-currency__sym">৳</span>
                             <input type="number" id="setting-custom-print-fee" name="custom_print_fee" class="adm-input num" value="{{ $printFee }}" placeholder="250">
                           </div>
-                          <span class="adm-hint">কাস্টমার নাম ও নাম্বার প্রিন্ট সিলেক্ট করলে এই ফি যুক্ত হবে।</span>
+                          <span class="adm-hint">Added automatically when customer selects custom name &amp; number.</span>
                         </div>
                       </div>
 
                       <!-- Courier API Integrations -->
                       <div class="adm-settings-section-divider">
-                        <div class="adm-settings-section-title">কুরিয়ার API ইন্টিগ্রেশন (Steadfast &amp; Pathao)</div>
-                        <div class="adm-settings-section-desc">অর্ডার বুকিং ও লাইভ ট্র্যাকিংয়ের জন্য অটোমেটেড কুরিয়ার কি</div>
+                        <div class="adm-settings-section-title">Courier API Integrations (Steadfast &amp; Pathao)</div>
+                        <div class="adm-settings-section-desc">Automated consignment booking and real-time parcel tracking credentials</div>
                       </div>
 
                       <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
@@ -4924,18 +4924,18 @@
                               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                             </button>
                           </div>
-                          <span class="adm-hint">Steadfast কুরিয়ার প্যানেল থেকে প্রাপ্ত API Key।</span>
+                          <span class="adm-hint">API Key from your Steadfast Courier merchant dashboard.</span>
                         </div>
 
                         <div class="adm-field">
                           <label class="adm-label" for="setting-pathao-store" style="font-weight:600;">Pathao Store ID</label>
                           <input type="text" id="setting-pathao-store" name="pathao_store_id" class="adm-input" value="{{ $settings['pathao_store_id'] ?? 'PTH-BARISHAL-1042' }}">
-                          <span class="adm-hint">Pathao Merchant প্যানেলের স্টোর আইডি।</span>
+                          <span class="adm-hint">Store ID registered in your Pathao Merchant panel.</span>
                         </div>
                       </div>
 
                       <div class="adm-card__foot">
-                        <span class="adm-card__foot-note">সেভ করার সাথে সাথেই স্টোরফ্রন্ট চেকআউটে পরিবর্তন কার্যকর হবে।</span>
+                        <span class="adm-card__foot-note">Changes apply immediately across storefront product pages and checkout.</span>
                         <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 22px; font-weight:700;">Save Delivery Settings</button>
                       </div>
                     </form>
@@ -4953,7 +4953,7 @@
                       </div>
                       <div>
                         <h3 class="adm-card__title" style="font-size:16px;">Meta / Facebook Pixel &amp; Conversions API</h3>
-                        <p class="adm-card__desc">ব্রাউজার পিক্সেল ট্র্যাকিং ও সার্ভার-সাইড CAPI ইভেন্ট ডুপ্লিকেশন</p>
+                        <p class="adm-card__desc">Browser Pixel event tracking and Server-Side Conversions API (CAPI) deduplication</p>
                       </div>
                     </div>
                     <span class="adm-chip {{ $pixelActive ? 'adm-chip--delivered' : 'adm-chip--neutral' }} js-pixel-status-chip">{{ $pixelActive ? 'Connected' : 'Not Configured' }}</span>
@@ -4964,12 +4964,12 @@
                       <div class="adm-field">
                         <label class="adm-label" for="setting-meta-pixel-id" style="font-weight:600;">Meta Pixel ID (Dataset ID)</label>
                         <input type="text" id="setting-meta-pixel-id" name="meta_pixel_id" class="adm-input num js-pixel-id-input" placeholder="e.g. 1693763272380977" value="{{ $settings['meta_pixel_id'] ?? '' }}">
-                        <span class="adm-hint">PageView, ViewContent, AddToCart, InitiateCheckout ও Purchase ট্র্যাক করবে। বন্ধ রাখতে খালি রাখুন।</span>
+                        <span class="adm-hint">Fires PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase on storefront. Leave empty to disable.</span>
                       </div>
 
                       <div class="adm-settings-section-divider">
                         <div class="adm-settings-section-title">Server-Side Conversions API (CAPI)</div>
-                        <div class="adm-settings-section-desc">iOS 14+ ও অ্যাড-ব্লকার সত্ত্বেও ১০০% নির্ভুল ট্র্যাকিংয়ের জন্য ফেসবুক সার্ভার টোকেন</div>
+                        <div class="adm-settings-section-desc">Direct server-to-server tracking for 100% conversion accuracy against iOS 14+ and ad-blockers</div>
                       </div>
 
                       <div class="adm-field">
@@ -4980,13 +4980,13 @@
                             <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                           </button>
                         </div>
-                        <span class="adm-hint">Meta Business Manager / Events Manager থেকে তৈরি করা লং-লিভড অ্যাক্সেস টোকেন।</span>
+                        <span class="adm-hint">Long-lived access token generated from Meta Events Manager.</span>
                       </div>
 
                       <div class="adm-field">
-                        <label class="adm-label" for="setting-meta-capi-test-code" style="font-weight:600;">CAPI Test Event Code <span class="adm-hint" style="display:inline;">(ঐচ্ছিক / ভেরিফিকেশনের জন্য)</span></label>
+                        <label class="adm-label" for="setting-meta-capi-test-code" style="font-weight:600;">CAPI Test Event Code <span class="adm-hint" style="display:inline;">(optional / verification)</span></label>
                         <input type="text" id="setting-meta-capi-test-code" name="meta_capi_test_code" class="adm-input js-capi-test-code-input" placeholder="e.g. TEST86756" value="{{ $settings['meta_capi_test_code'] ?? '' }}">
-                        <span class="adm-hint">Events Manager-এর Test Events ট্যাব টেস্ট করার সময় এই কোডটি দিন। টেস্ট শেষ হলে মুছে ফেলুন।</span>
+                        <span class="adm-hint">Only needed while testing inside Events Manager Test Events tab. Clear after testing.</span>
                       </div>
 
                       <div class="adm-settings-specs">
@@ -5002,7 +5002,7 @@
                       </div>
 
                       <div class="adm-card__foot">
-                        <span class="adm-card__foot-note">Pixel ID সংখ্যা সেভ করার সময় স্বয়ংক্রিয়ভাবে স্যানিটাইজ করা হয়।</span>
+                        <span class="adm-card__foot-note">Numeric Pixel ID is sanitized automatically on save.</span>
                         <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 22px; font-weight:700;">Save Tracking Settings</button>
                       </div>
                     </form>
@@ -5020,7 +5020,7 @@
                       </div>
                       <div>
                         <h3 class="adm-card__title" style="font-size:16px;">Google &amp; Facebook Social Login (OAuth 2.0)</h3>
-                        <p class="adm-card__desc">কাস্টমারদের জন্য ১-ক্লিকে দ্রুত গুগল ও ফেসবুক লগইন ব্যবস্থা</p>
+                        <p class="adm-card__desc">Configure 1-click customer authentication with Google Cloud and Facebook App</p>
                       </div>
                     </div>
                     <span class="adm-chip {{ ($googleReady || $fbReady) ? 'adm-chip--delivered' : 'adm-chip--neutral' }} js-oauth-header-chip">{{ ($googleReady || $fbReady) ? 'Enabled' : 'Inactive' }}</span>
@@ -5116,7 +5116,7 @@
                       </div>
 
                       <div class="adm-card__foot">
-                        <span class="adm-card__foot-note">যে প্রোভাইডারের তথ্য খালি থাকবে, সেটি কাস্টমার লগইন পেজে স্বয়ংক্রিয়ভাবে হাইড থাকবে।</span>
+                        <span class="adm-card__foot-note">Unconfigured providers remain automatically hidden on customer Sign In &amp; Register.</span>
                         <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 22px; font-weight:700;">Save Social Login Settings</button>
                       </div>
                     </form>
