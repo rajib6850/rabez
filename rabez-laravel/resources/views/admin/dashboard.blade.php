@@ -2669,203 +2669,140 @@
       }
     }
 
-    /* ==========================================================================
-       MODERN CLEAN SETTINGS PANEL
+        /* ==========================================================================
+       ULTRA-MODERN SAAS SETTINGS PANEL (SHOPIFY / STRIPE STYLE)
        ========================================================================== */
     .adm-settings-container {
-      max-width: 980px;
+      max-width: 920px;
       margin: 0 auto;
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 20px;
     }
 
-    .adm-settings-hdr {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 16px;
-      padding: 18px 22px;
-      background: var(--adm-surface);
-      border: 1px solid var(--adm-border);
-      border-radius: 14px;
-      flex-wrap: wrap;
+    /* Page Header */
+    .adm-settings-page-head {
+      margin-bottom: 2px;
     }
 
-    .adm-settings-hdr__main {
-      min-width: 0;
-      flex: 1;
-    }
-
-    .adm-settings-hdr__badge-row {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      margin-bottom: 5px;
-    }
-
-    .adm-settings-hdr__pill {
-      font-size: 11px;
-      font-weight: 700;
-      text-transform: uppercase;
-      letter-spacing: 0.04em;
-      color: #008A00;
-      background: rgba(0, 138, 0, 0.08);
-      padding: 2px 8px;
-      border-radius: 6px;
-    }
-
-    .adm-settings-hdr__status-pill {
+    .adm-settings-page-head__tag {
       display: inline-flex;
       align-items: center;
       gap: 6px;
-      font-size: 11.5px;
-      color: var(--adm-muted);
-      font-weight: 500;
-    }
-
-    .adm-settings-hdr__title {
-      font-size: 20px;
-      font-weight: 800;
-      letter-spacing: -0.02em;
-      color: var(--adm-text);
-      margin: 0 0 3px 0;
-    }
-
-    .adm-settings-hdr__subtitle {
-      font-size: 13px;
-      color: var(--adm-muted);
-      margin: 0;
-      line-height: 1.4;
-    }
-
-    .adm-settings-hdr__profile-card {
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      padding: 8px 14px 8px 10px;
-      background: var(--adm-subtle);
-      border: 1px solid var(--adm-border);
-      border-radius: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      min-width: 0;
-    }
-
-    .adm-settings-hdr__profile-card:hover {
-      background: var(--adm-surface);
-      border-color: #008A00;
-      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-    }
-
-    .adm-settings-hdr__profile-info {
-      min-width: 0;
-    }
-
-    .adm-settings-hdr__profile-name {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      font-size: 13px;
+      font-size: 11px;
       font-weight: 700;
-      color: var(--adm-text);
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      color: #008A00;
+      background: rgba(0, 138, 0, 0.08);
+      padding: 3px 9px;
+      border-radius: 6px;
+      margin-bottom: 8px;
     }
 
-    .adm-settings-hdr__profile-meta {
-      font-size: 11.5px;
-      color: var(--adm-muted);
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 170px;
+    .adm-settings-page-head__tag .adm-pulse-dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: #008A00;
+      display: inline-block;
+      box-shadow: 0 0 6px rgba(0, 138, 0, 0.6);
     }
 
-    .adm-settings-hdr__profile-action {
-      color: var(--adm-muted);
-      display: grid;
-      place-items: center;
+    .adm-settings-page-title {
+      font-size: 24px;
+      font-weight: 800;
+      letter-spacing: -0.025em;
+      color: #111827;
+      margin: 0 0 4px 0;
+      line-height: 1.25;
     }
 
-    /* Segmented Tab Navigation Bar */
-    .adm-settings-nav {
+    .adm-settings-page-desc {
+      font-size: 13.5px;
+      color: #6B7280;
+      margin: 0;
+      line-height: 1.45;
+    }
+
+    /* Segmented Capsule Tabs Bar */
+    .adm-settings-tabs-bar {
       display: flex;
       align-items: center;
       gap: 6px;
       padding: 6px;
-      background: var(--adm-subtle);
-      border: 1px solid var(--adm-border);
+      background: #F3F4F6;
+      border: 1px solid #E5E7EB;
       border-radius: 12px;
       overflow-x: auto;
       scrollbar-width: none;
       -webkit-overflow-scrolling: touch;
     }
 
-    .adm-settings-nav::-webkit-scrollbar {
+    .adm-settings-tabs-bar::-webkit-scrollbar {
       display: none;
     }
 
-    .adm-settings-nav__tab {
+    .adm-settings-tab {
       display: inline-flex;
       align-items: center;
       gap: 8px;
-      padding: 8px 16px;
+      padding: 9px 16px;
       border-radius: 8px;
       border: none;
       background: transparent;
-      color: var(--adm-muted);
+      color: #4B5563;
       font-size: 13px;
       font-weight: 600;
       cursor: pointer;
       white-space: nowrap;
-      transition: all 0.18s ease;
+      transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
+      user-select: none;
     }
 
-    .adm-settings-nav__tab:hover {
-      color: var(--adm-text);
-      background: rgba(0, 0, 0, 0.03);
+    .adm-settings-tab:hover {
+      color: #111827;
+      background: rgba(255, 255, 255, 0.6);
     }
 
-    .adm-settings-nav__tab.is-active {
-      background: var(--adm-surface);
-      color: var(--adm-text);
+    .adm-settings-tab.is-active {
+      background: #FFFFFF;
+      color: #111827;
       font-weight: 700;
       box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08), 0 1px 2px rgba(0, 0, 0, 0.04);
     }
 
-    .adm-settings-nav__icon {
-      display: grid;
-      place-items: center;
-      width: 18px;
-      height: 18px;
+    .adm-settings-tab__svg {
+      width: 17px;
+      height: 17px;
       flex-shrink: 0;
+      stroke-width: 2;
     }
 
-    .adm-settings-nav__tag {
+    .adm-settings-tab-badge {
       font-size: 11px;
       font-weight: 700;
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-radius: 10px;
-      background: var(--adm-surface);
-      color: var(--adm-muted);
-      border: 1px solid var(--adm-border);
+      background: #E5E7EB;
+      color: #4B5563;
       transition: all 0.18s ease;
     }
 
-    .adm-settings-nav__tab.is-active .adm-settings-nav__tag {
+    .adm-settings-tab.is-active .adm-settings-tab-badge {
       background: rgba(0, 138, 0, 0.1);
       color: #008A00;
-      border-color: rgba(0, 138, 0, 0.2);
     }
 
-    .adm-settings-nav__dot {
-      width: 8px;
-      height: 8px;
+    .adm-settings-tab-dot {
+      width: 7px;
+      height: 7px;
       border-radius: 50%;
       background: #9CA3AF;
       flex-shrink: 0;
     }
 
-    .adm-settings-nav__dot.is-active {
+    .adm-settings-tab-dot.is-active {
       background: #22C55E;
       box-shadow: 0 0 6px rgba(34, 197, 94, 0.6);
     }
@@ -2874,7 +2811,7 @@
     .adm-settings-stack {
       display: flex;
       flex-direction: column;
-      gap: 18px;
+      gap: 20px;
       width: 100%;
     }
 
@@ -2891,13 +2828,19 @@
       display: block !important;
     }
 
-    /* Clean Card Layout */
+    /* Modern Card Layout */
     .adm-settings-card {
-      background: var(--adm-surface);
-      border: 1px solid var(--adm-border);
-      border-radius: 14px;
+      background: #FFFFFF;
+      border: 1px solid #E5E7EB;
+      border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.02);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    }
+
+    .adm-settings-card form,
+    .adm-settings-card .adm-form {
+      display: block;
+      margin: 0;
     }
 
     .adm-settings-card__head {
@@ -2906,8 +2849,8 @@
       justify-content: space-between;
       gap: 16px;
       padding: 20px 24px;
-      border-bottom: 1px solid var(--adm-border);
-      background: linear-gradient(180deg, var(--adm-surface) 0%, var(--adm-subtle) 100%);
+      border-bottom: 1px solid #F3F4F6;
+      background: #FAFAFA;
       flex-wrap: wrap;
     }
 
@@ -2920,15 +2863,15 @@
     }
 
     .adm-settings-card__icon {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 10px;
       display: grid;
       place-items: center;
       flex-shrink: 0;
-      border: 1px solid var(--adm-border);
-      background: var(--adm-subtle);
-      color: var(--adm-ink);
+      border: 1px solid #E5E7EB;
+      background: #FFFFFF;
+      color: #111827;
     }
 
     .adm-settings-card__icon svg {
@@ -2936,55 +2879,158 @@
       height: 18px;
     }
 
+    .adm-settings-card__title {
+      font-size: 16px;
+      font-weight: 750;
+      letter-spacing: -0.01em;
+      color: #111827;
+      margin: 0 0 2px 0;
+    }
+
+    .adm-settings-card__desc {
+      font-size: 12.5px;
+      color: #6B7280;
+      margin: 0;
+    }
+
     .adm-settings-card__body {
       padding: 24px;
     }
 
-    .adm-settings-section-divider {
-      margin: 22px 0 18px 0;
-      padding-top: 20px;
-      border-top: 1px solid var(--adm-border);
+    /* Structured Section Blocks */
+    .adm-settings-section {
+      margin-bottom: 24px;
     }
 
-    .adm-settings-section-title {
-      font-size: 13.5px;
+    .adm-settings-section:last-of-type {
+      margin-bottom: 0;
+    }
+
+    .adm-settings-section__head {
+      margin-bottom: 12px;
+    }
+
+    .adm-settings-section__title {
+      font-size: 14px;
       font-weight: 700;
-      color: var(--adm-text);
+      color: #111827;
       margin: 0 0 3px 0;
       display: flex;
       align-items: center;
       gap: 8px;
     }
 
-    .adm-settings-section-desc {
+    .adm-settings-section__desc {
       font-size: 12px;
-      color: var(--adm-muted);
-      margin: 0 0 14px 0;
+      color: #6B7280;
+      margin: 0;
+      line-height: 1.4;
     }
 
-    /* Mode Picker (Flat vs Zone) */
+    .adm-settings-divider {
+      margin: 24px 0;
+      border-top: 1px solid #F3F4F6;
+    }
+
+    /* Grid Row for 2-column inputs */
+    .adm-settings-row {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .adm-settings-row--1col {
+      grid-template-columns: 1fr;
+    }
+
+    /* Clean Field */
+    .adm-field {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      min-width: 0;
+    }
+
+    .adm-field .adm-label {
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin: 0;
+    }
+
+    .adm-field .adm-hint {
+      font-size: 12px;
+      color: #6B7280;
+      margin: 2px 0 0 0;
+      line-height: 1.35;
+    }
+
+    .adm-field .adm-input,
+    .adm-field .adm-select {
+      background: #FFFFFF;
+      border: 1px solid #D1D5DB;
+      border-radius: 8px;
+      height: 42px;
+      padding: 0 12px;
+      font-size: 14px;
+      color: #111827;
+      transition: border-color 0.15s ease, box-shadow 0.15s ease;
+      width: 100%;
+      box-sizing: border-box;
+    }
+
+    .adm-field .adm-input:focus,
+    .adm-field .adm-select:focus {
+      outline: none;
+      border-color: #008A00;
+      box-shadow: 0 0 0 3px rgba(0, 138, 0, 0.12);
+    }
+
+    /* Currency Inputs */
+    .adm-input-currency {
+      position: relative;
+      display: flex;
+      align-items: center;
+      width: 100%;
+    }
+
+    .adm-input-currency__sym {
+      position: absolute;
+      left: 12px;
+      font-size: 14px;
+      font-weight: 700;
+      color: #9CA3AF;
+      pointer-events: none;
+      user-select: none;
+    }
+
+    .adm-input-currency .adm-input {
+      padding-left: 28px !important;
+      font-weight: 700;
+    }
+
+    /* Interactive Radio Cards for Delivery Mode */
     .adm-settings-mode-picker {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 12px;
-      margin-bottom: 16px;
+      gap: 14px;
     }
 
     .adm-settings-mode-card {
       display: flex;
       align-items: flex-start;
       gap: 12px;
-      padding: 14px 16px;
-      border-radius: 10px;
-      border: 1.5px solid var(--adm-border);
-      background: var(--adm-subtle);
+      padding: 16px;
+      border-radius: 12px;
+      border: 1.5px solid #E5E7EB;
+      background: #FAFAFA;
       cursor: pointer;
-      transition: all 0.15s ease;
+      transition: all 0.18s ease;
     }
 
     .adm-settings-mode-card:hover {
       border-color: #008A00;
-      background: var(--adm-surface);
+      background: #FFFFFF;
     }
 
     .adm-settings-mode-card.is-active {
@@ -2994,58 +3040,39 @@
     }
 
     .adm-settings-mode-card input[type="radio"] {
-      margin-top: 2px;
+      margin-top: 3px;
       accent-color: #008A00;
+      width: 16px;
+      height: 16px;
       cursor: pointer;
     }
 
     .adm-settings-mode-title {
       font-size: 13.5px;
       font-weight: 700;
-      color: var(--adm-text);
+      color: #111827;
       display: block;
       margin-bottom: 2px;
     }
 
     .adm-settings-mode-desc {
       font-size: 12px;
-      color: var(--adm-muted);
+      color: #6B7280;
       display: block;
       line-height: 1.35;
     }
 
-    /* Clean Currency Input */
-    .adm-input-currency {
-      position: relative;
-      display: flex;
-      align-items: center;
-    }
-
-    .adm-input-currency__sym {
-      position: absolute;
-      left: 12px;
-      font-size: 14px;
-      font-weight: 700;
-      color: var(--adm-muted);
-      pointer-events: none;
-    }
-
-    .adm-input-currency input {
-      padding-left: 28px !important;
-      font-weight: 700;
-    }
-
-    /* Specs Row */
+    /* Specs Badges Row */
     .adm-settings-specs {
       display: flex;
       align-items: center;
       flex-wrap: wrap;
       gap: 10px;
-      margin-top: 14px;
-      padding: 10px 14px;
-      background: var(--adm-subtle);
-      border: 1px solid var(--adm-border);
-      border-radius: 8px;
+      padding: 12px 16px;
+      background: #F9FAFB;
+      border: 1px solid #E5E7EB;
+      border-radius: 10px;
+      margin-top: 18px;
     }
 
     .adm-settings-spec-item {
@@ -3053,15 +3080,15 @@
       align-items: center;
       gap: 6px;
       font-size: 12px;
-      color: var(--adm-muted);
+      color: #6B7280;
     }
 
     .adm-settings-spec-item strong {
-      color: var(--adm-text);
+      color: #111827;
       font-weight: 600;
     }
 
-    /* Provider Grid */
+    /* Provider Grid for OAuth */
     .adm-settings-provider-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -3069,13 +3096,13 @@
     }
 
     .adm-provider-card {
-      background: var(--adm-subtle);
-      border: 1px solid var(--adm-border);
+      background: #FAFAFA;
+      border: 1px solid #E5E7EB;
       border-radius: 12px;
-      padding: 18px;
+      padding: 20px;
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 16px;
       min-width: 0;
     }
 
@@ -3084,8 +3111,8 @@
       align-items: center;
       justify-content: space-between;
       gap: 10px;
-      padding-bottom: 12px;
-      border-bottom: 1px solid var(--adm-border);
+      padding-bottom: 14px;
+      border-bottom: 1px solid #E5E7EB;
     }
 
     .adm-provider-card__brand {
@@ -3096,11 +3123,11 @@
     }
 
     .adm-provider-card__logo {
-      width: 34px;
-      height: 34px;
-      border-radius: 9px;
+      width: 36px;
+      height: 36px;
+      border-radius: 10px;
       background: #FFFFFF;
-      border: 1px solid var(--adm-border);
+      border: 1px solid #E5E7EB;
       display: grid;
       place-items: center;
       flex-shrink: 0;
@@ -3112,7 +3139,7 @@
       justify-content: space-between;
       gap: 8px;
       background: #FFFFFF;
-      border: 1px solid var(--adm-border-strong);
+      border: 1px solid #D1D5DB;
       border-radius: 8px;
       padding: 7px 10px;
       font-size: 12px;
@@ -3137,6 +3164,7 @@
       position: relative;
       display: flex;
       align-items: center;
+      width: 100%;
     }
 
     .adm-pw-wrap .adm-input {
@@ -3153,7 +3181,7 @@
       border-radius: 6px;
       border: none;
       background: transparent;
-      color: var(--adm-muted);
+      color: #9CA3AF;
       display: grid;
       place-items: center;
       cursor: pointer;
@@ -3161,8 +3189,8 @@
     }
 
     .adm-pw-toggle:hover {
-      background: #EEF1EF;
-      color: var(--adm-ink);
+      background: #F3F4F6;
+      color: #111827;
     }
 
     .adm-pw-toggle svg {
@@ -3170,20 +3198,21 @@
       height: 15px;
     }
 
+    /* Card Action Footer */
     .adm-card__foot {
       display: flex;
       align-items: center;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 12px;
-      padding-top: 18px;
-      margin-top: 18px;
-      border-top: 1px solid var(--adm-border);
+      padding: 18px 24px;
+      background: #FAFAFA;
+      border-top: 1px solid #F3F4F6;
     }
 
     .adm-card__foot-note {
       font-size: 12.5px;
-      color: var(--adm-muted);
+      color: #6B7280;
     }
 
     /* Backward compatibility classes so existing JS continues working without errors */
@@ -3193,24 +3222,14 @@
     }
 
     @media (max-width: 860px) {
-      .adm-settings-hdr {
-        flex-direction: column;
-        align-items: stretch;
-        gap: 14px;
-        padding: 16px;
-      }
-      .adm-settings-hdr__profile-card {
-        width: 100%;
-        justify-content: space-between;
-      }
+      .adm-settings-row,
       .adm-settings-provider-grid,
       .adm-settings-mode-picker {
         grid-template-columns: 1fr;
       }
-      .adm-settings-card__head {
-        padding: 16px;
-      }
-      .adm-settings-card__body {
+      .adm-settings-card__head,
+      .adm-settings-card__body,
+      .adm-card__foot {
         padding: 16px;
       }
     }
@@ -4736,73 +4755,38 @@
           </div>
 
           <div class="adm-settings-container">
-            <!-- Settings Clean Header -->
-            <div class="adm-settings-hdr">
-              <div class="adm-settings-hdr__main">
-                <div class="adm-settings-hdr__badge-row">
-                  <span class="adm-settings-hdr__pill">Store Settings</span>
-                  <span class="adm-settings-hdr__status-pill">
-                    <span class="adm-pulse-dot" style="background:#22C55E;"></span>
-                    Live Configuration
-                  </span>
-                </div>
-                <h2 class="adm-settings-hdr__title">Store Settings</h2>
-                <p class="adm-settings-hdr__subtitle">Configure storefront delivery charges, Meta tracking pixels, and customer login credentials.</p>
+            <!-- Sleek Page Header -->
+            <div class="adm-settings-page-head">
+              <div class="adm-settings-page-head__tag">
+                <span class="adm-pulse-dot"></span>
+                <span>Live Store Configuration</span>
               </div>
-
-              <!-- Quick Profile Card (1-tap to open Profile & Password Drawer) -->
-              <div class="adm-settings-hdr__profile-card js-open-admin-profile" role="button" tabindex="0" title="Manage Profile & Security">
-                <div class="adm-prof-avatar-md js-adm-avatar-box" data-initials="{{ $admInitials }}" style="width:40px; height:40px; font-size:14px; border-radius:10px; background:#1A201C; border:1px solid #2D3630; color:#FFFFFF; display:grid; place-items:center; font-weight:700;">
-                  @if($admAvatarUrl)
-                    <img src="{{ $admAvatarUrl }}" alt="{{ $admUser->name ?? 'Admin' }}" style="width:100%; height:100%; object-fit:cover; border-radius:10px;" onerror="this.style.display='none'; if(this.nextElementSibling) this.nextElementSibling.style.display='flex';">
-                    <span style="display:none; width:100%; height:100%; align-items:center; justify-content:center;">{{ $admInitials }}</span>
-                  @else
-                    {{ $admInitials }}
-                  @endif
-                </div>
-                <div class="adm-settings-hdr__profile-info">
-                  <div class="adm-settings-hdr__profile-name">
-                    <span class="js-adm-profile-name">{{ $admUser->name ?? 'Admin' }}</span>
-                    <span class="adm-chip adm-chip--delivered" style="font-size:9.5px; padding:0 6px;">{{ strtoupper($admUser->role ?? 'Admin') }}</span>
-                  </div>
-                  <div class="adm-settings-hdr__profile-meta js-adm-profile-email">{{ $admUser->email ?? 'admin@rabez.shop' }}</div>
-                </div>
-                <div class="adm-settings-hdr__profile-action">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
-                </div>
-              </div>
+              <h1 class="adm-settings-page-title">Store Settings</h1>
+              <p class="adm-settings-page-desc">Configure storefront delivery charges, Meta tracking pixels, and customer login credentials.</p>
             </div>
 
-            <!-- Segmented Category Navigation Tabs -->
-            <div class="adm-settings-nav" role="tablist" aria-label="Settings Categories">
-              <button type="button" class="adm-settings-nav__tab is-active js-settings-tab" data-tab="delivery">
-                <span class="adm-settings-nav__icon">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
-                </span>
+            <!-- Segmented Category Tabs Bar -->
+            <div class="adm-settings-tabs-bar" role="tablist" aria-label="Settings Categories">
+              <button type="button" class="adm-settings-tab is-active js-settings-tab" data-tab="delivery">
+                <svg class="adm-settings-tab__svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                 <span>Delivery &amp; Courier</span>
-                <span class="adm-settings-nav__tag js-kpi-ship-chip">{{ $shipMode === 'zone' ? 'Zone Mode' : '৳'.$flatFee.' Flat' }}</span>
+                <span class="adm-settings-tab-badge js-kpi-ship-chip">{{ $shipMode === 'zone' ? 'Zone Mode' : '৳'.$flatFee.' Flat' }}</span>
               </button>
 
-              <button type="button" class="adm-settings-nav__tab js-settings-tab" data-tab="pixel">
-                <span class="adm-settings-nav__icon">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-                </span>
+              <button type="button" class="adm-settings-tab js-settings-tab" data-tab="pixel">
+                <svg class="adm-settings-tab__svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                 <span>Meta Pixel &amp; CAPI</span>
-                <span class="adm-settings-nav__dot {{ $pixelActive ? 'is-active' : '' }} js-pixel-status-chip"></span>
+                <span class="adm-settings-tab-dot {{ $pixelActive ? 'is-active' : '' }} js-pixel-status-chip"></span>
               </button>
 
-              <button type="button" class="adm-settings-nav__tab js-settings-tab" data-tab="oauth">
-                <span class="adm-settings-nav__icon">
-                  <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
-                </span>
+              <button type="button" class="adm-settings-tab js-settings-tab" data-tab="oauth">
+                <svg class="adm-settings-tab__svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                 <span>Social Login</span>
-                <span class="adm-settings-nav__tag js-oauth-summary-chip {{ ($googleReady || $fbReady) ? 'adm-chip--delivered' : 'adm-chip--neutral' }}">{{ ($googleReady && $fbReady) ? '2 Active' : (($googleReady || $fbReady) ? '1 Active' : 'Off') }}</span>
+                <span class="adm-settings-tab-badge js-oauth-summary-chip {{ ($googleReady || $fbReady) ? 'is-active' : '' }}">{{ ($googleReady && $fbReady) ? '2 Active' : (($googleReady || $fbReady) ? '1 Active' : 'Off') }}</span>
               </button>
 
-              <button type="button" class="adm-settings-nav__tab js-settings-tab" data-tab="all" style="margin-left:auto;">
-                <span class="adm-settings-nav__icon">
-                  <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                </span>
+              <button type="button" class="adm-settings-tab js-settings-tab" data-tab="all" style="margin-left:auto;">
+                <svg class="adm-settings-tab__svg" viewBox="0 0 24 24" fill="none" stroke="currentColor"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                 <span>View All</span>
               </button>
             </div>
@@ -4814,132 +4798,148 @@
                   <div class="adm-settings-card__head">
                     <div class="adm-settings-card__title-row">
                       <div class="adm-settings-card__icon" style="background:#F0FDF4; border-color:#DCFCE7; color:#16A34A;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
                       </div>
                       <div>
-                        <h3 class="adm-card__title" style="font-size:16px;">Delivery &amp; Courier Settings</h3>
-                        <p class="adm-card__desc">Storefront delivery charge logic and automated courier API integrations</p>
+                        <h3 class="adm-settings-card__title">Delivery &amp; Courier Settings</h3>
+                        <p class="adm-settings-card__desc">Storefront delivery charge logic and automated courier API integrations</p>
                       </div>
                     </div>
                     <span class="adm-chip adm-chip--delivered js-ship-header-chip">{{ $shipMode === 'zone' ? 'Zone Mode' : 'Flat Mode' }}</span>
                   </div>
 
-                  <div class="adm-settings-card__body">
-                    <form class="adm-form js-settings-form">
-                      <!-- Mode Selector Cards -->
-                      <label class="adm-label" style="font-weight:700; margin-bottom:8px;">Select Delivery Pricing Model:</label>
-                      
-                      <!-- Hidden fallback select for form serialization -->
-                      <select name="shipping_mode" id="setting-shipping-mode" class="adm-select" style="display:none;">
-                        <option value="flat" {{ $shipMode === 'flat' ? 'selected' : '' }}>Flat Rate</option>
-                        <option value="zone" {{ $shipMode === 'zone' ? 'selected' : '' }}>Zone-Based</option>
-                      </select>
-
-                      <div class="adm-settings-mode-picker">
-                        <label class="adm-settings-mode-card js-mode-card {{ $shipMode === 'flat' ? 'is-active' : '' }}" data-mode="flat">
-                          <input type="radio" name="shipping_mode_radio" value="flat" {{ $shipMode === 'flat' ? 'checked' : '' }}>
-                          <div>
-                            <span class="adm-settings-mode-title">Flat Rate (Nationwide Uniform Fee)</span>
-                            <span class="adm-settings-mode-desc">One standard delivery fee applied to every order nationwide (e.g. ৳{{ $flatFee }}).</span>
-                          </div>
-                        </label>
-
-                        <label class="adm-settings-mode-card js-mode-card {{ $shipMode === 'zone' ? 'is-active' : '' }}" data-mode="zone">
-                          <input type="radio" name="shipping_mode_radio" value="zone" {{ $shipMode === 'zone' ? 'checked' : '' }}>
-                          <div>
-                            <span class="adm-settings-mode-title">Zone-Based (Inside vs Outside Dhaka)</span>
-                            <span class="adm-settings-mode-desc">Customers select Inside Dhaka (৳{{ $insideFee }}) or Outside Dhaka (৳{{ $outsideFee }}) at checkout.</span>
-                          </div>
-                        </label>
-                      </div>
-
-                      <!-- Flat Fee Input -->
-                      <div class="adm-field js-shipping-flat-field" style="{{ $shipMode === 'zone' ? 'display:none;' : '' }}">
-                        <label class="adm-label" for="setting-shipping-flat-fee" style="font-weight:600;">Flat Delivery Fee — All Bangladesh (৳)</label>
-                        <div class="adm-input-currency">
-                          <span class="adm-input-currency__sym">৳</span>
-                          <input type="number" id="setting-shipping-flat-fee" name="shipping_flat_fee" class="adm-input num" value="{{ $flatFee }}" placeholder="130">
+                  <form class="adm-form js-settings-form">
+                    <div class="adm-settings-card__body">
+                      <!-- Section 1: Pricing Model -->
+                      <div class="adm-settings-section">
+                        <div class="adm-settings-section__head">
+                          <div class="adm-settings-section__title">Delivery Pricing Model</div>
+                          <div class="adm-settings-section__desc">Select how delivery charges are applied to customer orders at checkout.</div>
                         </div>
-                        <span class="adm-hint">Default delivery charge applied to every order nationwide (e.g. ৳130).</span>
+
+                        <!-- Hidden fallback select for form submission -->
+                        <select name="shipping_mode" id="setting-shipping-mode" style="display:none;">
+                          <option value="flat" {{ $shipMode === 'flat' ? 'selected' : '' }}>Flat Rate</option>
+                          <option value="zone" {{ $shipMode === 'zone' ? 'selected' : '' }}>Zone-Based</option>
+                        </select>
+
+                        <div class="adm-settings-mode-picker">
+                          <label class="adm-settings-mode-card js-mode-card {{ $shipMode === 'flat' ? 'is-active' : '' }}" data-mode="flat">
+                            <input type="radio" name="shipping_mode_radio" value="flat" {{ $shipMode === 'flat' ? 'checked' : '' }}>
+                            <div>
+                              <span class="adm-settings-mode-title">Flat Rate (Nationwide Uniform Fee)</span>
+                              <span class="adm-settings-mode-desc">One standard delivery fee applied to every order nationwide (e.g. ৳{{ $flatFee }}).</span>
+                            </div>
+                          </label>
+
+                          <label class="adm-settings-mode-card js-mode-card {{ $shipMode === 'zone' ? 'is-active' : '' }}" data-mode="zone">
+                            <input type="radio" name="shipping_mode_radio" value="zone" {{ $shipMode === 'zone' ? 'checked' : '' }}>
+                            <div>
+                              <span class="adm-settings-mode-title">Zone-Based (Inside vs Outside Dhaka)</span>
+                              <span class="adm-settings-mode-desc">Customers select Inside Dhaka (৳{{ $insideFee }}) or Outside Dhaka (৳{{ $outsideFee }}) at checkout.</span>
+                            </div>
+                          </label>
+                        </div>
                       </div>
 
-                      <!-- Zone-based Inputs -->
-                      <div class="js-shipping-zone-fields" style="display:{{ $shipMode === 'zone' ? 'grid' : 'none' }}; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
-                        <div class="adm-field">
-                          <label class="adm-label" for="setting-shipping-inside" style="font-weight:600;">Inside Dhaka Delivery Fee (৳)</label>
+                      <!-- Section 2: Rate Inputs -->
+                      <div class="adm-settings-section">
+                        <!-- Flat Fee -->
+                        <div class="adm-field js-shipping-flat-field" style="{{ $shipMode === 'zone' ? 'display:none;' : '' }}">
+                          <label class="adm-label" for="setting-shipping-flat-fee">Flat Delivery Fee — All Bangladesh (৳)</label>
                           <div class="adm-input-currency">
                             <span class="adm-input-currency__sym">৳</span>
-                            <input type="number" id="setting-shipping-inside" name="shipping_inside_dhaka" class="adm-input num" value="{{ $insideFee }}" placeholder="70">
+                            <input type="number" id="setting-shipping-flat-fee" name="shipping_flat_fee" class="adm-input num" value="{{ $flatFee }}" placeholder="130">
                           </div>
-                          <span class="adm-hint">Home delivery within Dhaka metro area (24–48 hours).</span>
+                          <span class="adm-hint">Default delivery charge applied to every order nationwide (e.g. ৳130).</span>
                         </div>
-                        <div class="adm-field">
-                          <label class="adm-label" for="setting-shipping-outside" style="font-weight:600;">Outside Dhaka Delivery Fee (৳)</label>
-                          <div class="adm-input-currency">
-                            <span class="adm-input-currency__sym">৳</span>
-                            <input type="number" id="setting-shipping-outside" name="shipping_outside_dhaka" class="adm-input num" value="{{ $outsideFee }}" placeholder="130">
+
+                        <!-- Zone Fees -->
+                        <div class="adm-settings-row js-shipping-zone-fields" style="display:{{ $shipMode === 'zone' ? 'grid' : 'none' }};">
+                          <div class="adm-field">
+                            <label class="adm-label" for="setting-shipping-inside">Inside Dhaka Delivery Fee (৳)</label>
+                            <div class="adm-input-currency">
+                              <span class="adm-input-currency__sym">৳</span>
+                              <input type="number" id="setting-shipping-inside" name="shipping_inside_dhaka" class="adm-input num" value="{{ $insideFee }}" placeholder="70">
+                            </div>
+                            <span class="adm-hint">Home delivery within Dhaka metro area (24–48 hours).</span>
                           </div>
-                          <span class="adm-hint">All districts and upazilas outside Dhaka (2–3 days).</span>
-                        </div>
-                      </div>
-
-                      <!-- Additional Storefront Rules -->
-                      <div class="adm-settings-section-divider">
-                        <div class="adm-settings-section-title">Storefront Delivery Rules &amp; Customization</div>
-                        <div class="adm-settings-section-desc">Free shipping threshold and custom name &amp; number print fee</div>
-                      </div>
-
-                      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
-                        <div class="adm-field">
-                          <label class="adm-label" for="setting-free-shipping-min" style="font-weight:600;">Free Shipping Minimum Subtotal (৳)</label>
-                          <div class="adm-input-currency">
-                            <span class="adm-input-currency__sym">৳</span>
-                            <input type="number" id="setting-free-shipping-min" name="free_shipping_min" class="adm-input num" value="{{ $freeMin }}" placeholder="3500">
+                          <div class="adm-field">
+                            <label class="adm-label" for="setting-shipping-outside">Outside Dhaka Delivery Fee (৳)</label>
+                            <div class="adm-input-currency">
+                              <span class="adm-input-currency__sym">৳</span>
+                              <input type="number" id="setting-shipping-outside" name="shipping_outside_dhaka" class="adm-input num" value="{{ $outsideFee }}" placeholder="130">
+                            </div>
+                            <span class="adm-hint">All districts and upazilas outside Dhaka (2–3 days).</span>
                           </div>
-                          <span class="adm-hint">Orders meeting or exceeding this subtotal qualify for free delivery.</span>
+                        </div>
+                      </div>
+
+                      <div class="adm-settings-divider"></div>
+
+                      <!-- Section 3: Thresholds & Customization -->
+                      <div class="adm-settings-section">
+                        <div class="adm-settings-section__head">
+                          <div class="adm-settings-section__title">Storefront Rules &amp; Customization</div>
+                          <div class="adm-settings-section__desc">Free shipping threshold and custom name &amp; number print fee</div>
                         </div>
 
-                        <div class="adm-field">
-                          <label class="adm-label" for="setting-custom-print-fee" style="font-weight:600;">Custom Print Fee (৳)</label>
-                          <div class="adm-input-currency">
-                            <span class="adm-input-currency__sym">৳</span>
-                            <input type="number" id="setting-custom-print-fee" name="custom_print_fee" class="adm-input num" value="{{ $printFee }}" placeholder="250">
+                        <div class="adm-settings-row">
+                          <div class="adm-field">
+                            <label class="adm-label" for="setting-free-shipping-min">Free Shipping Minimum Subtotal (৳)</label>
+                            <div class="adm-input-currency">
+                              <span class="adm-input-currency__sym">৳</span>
+                              <input type="number" id="setting-free-shipping-min" name="free_shipping_min" class="adm-input num" value="{{ $freeMin }}" placeholder="3500">
+                            </div>
+                            <span class="adm-hint">Orders meeting or exceeding this subtotal qualify for free delivery.</span>
                           </div>
-                          <span class="adm-hint">Added automatically when customer selects custom name &amp; number.</span>
-                        </div>
-                      </div>
 
-                      <!-- Courier API Integrations -->
-                      <div class="adm-settings-section-divider">
-                        <div class="adm-settings-section-title">Courier API Integrations (Steadfast &amp; Pathao)</div>
-                        <div class="adm-settings-section-desc">Automated consignment booking and real-time parcel tracking credentials</div>
-                      </div>
-
-                      <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(220px, 1fr)); gap:16px;">
-                        <div class="adm-field">
-                          <label class="adm-label" for="setting-steadfast-key" style="font-weight:600;">Steadfast Courier API Key</label>
-                          <div class="adm-pw-wrap">
-                            <input type="password" id="setting-steadfast-key" name="steadfast_api_key" class="adm-input" value="{{ $settings['steadfast_api_key'] ?? 'sf_live_rabez_9928174x' }}" autocomplete="off">
-                            <button type="button" class="adm-pw-toggle js-toggle-secret-vis" aria-label="Show or hide key" title="Show/Hide">
-                              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                            </button>
+                          <div class="adm-field">
+                            <label class="adm-label" for="setting-custom-print-fee">Custom Print Fee (৳)</label>
+                            <div class="adm-input-currency">
+                              <span class="adm-input-currency__sym">৳</span>
+                              <input type="number" id="setting-custom-print-fee" name="custom_print_fee" class="adm-input num" value="{{ $printFee }}" placeholder="250">
+                            </div>
+                            <span class="adm-hint">Added automatically when customer selects custom name &amp; number.</span>
                           </div>
-                          <span class="adm-hint">API Key from your Steadfast Courier merchant dashboard.</span>
-                        </div>
-
-                        <div class="adm-field">
-                          <label class="adm-label" for="setting-pathao-store" style="font-weight:600;">Pathao Store ID</label>
-                          <input type="text" id="setting-pathao-store" name="pathao_store_id" class="adm-input" value="{{ $settings['pathao_store_id'] ?? 'PTH-BARISHAL-1042' }}">
-                          <span class="adm-hint">Store ID registered in your Pathao Merchant panel.</span>
                         </div>
                       </div>
 
-                      <div class="adm-card__foot">
-                        <span class="adm-card__foot-note">Changes apply immediately across storefront product pages and checkout.</span>
-                        <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 22px; font-weight:700;">Save Delivery Settings</button>
+                      <div class="adm-settings-divider"></div>
+
+                      <!-- Section 4: Courier API -->
+                      <div class="adm-settings-section">
+                        <div class="adm-settings-section__head">
+                          <div class="adm-settings-section__title">Courier API Integrations (Steadfast &amp; Pathao)</div>
+                          <div class="adm-settings-section__desc">Automated consignment booking and real-time parcel tracking credentials</div>
+                        </div>
+
+                        <div class="adm-settings-row">
+                          <div class="adm-field">
+                            <label class="adm-label" for="setting-steadfast-key">Steadfast Courier API Key</label>
+                            <div class="adm-pw-wrap">
+                              <input type="password" id="setting-steadfast-key" name="steadfast_api_key" class="adm-input" value="{{ $settings['steadfast_api_key'] ?? 'sf_live_rabez_9928174x' }}" autocomplete="off">
+                              <button type="button" class="adm-pw-toggle js-toggle-secret-vis" aria-label="Show or hide key" title="Show/Hide">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                              </button>
+                            </div>
+                            <span class="adm-hint">API Key from your Steadfast Courier merchant dashboard.</span>
+                          </div>
+
+                          <div class="adm-field">
+                            <label class="adm-label" for="setting-pathao-store">Pathao Store ID</label>
+                            <input type="text" id="setting-pathao-store" name="pathao_store_id" class="adm-input" value="{{ $settings['pathao_store_id'] ?? 'PTH-BARISHAL-1042' }}">
+                            <span class="adm-hint">Store ID registered in your Pathao Merchant panel.</span>
+                          </div>
+                        </div>
                       </div>
-                    </form>
-                  </div>
+                    </div>
+
+                    <div class="adm-card__foot">
+                      <span class="adm-card__foot-note">Changes apply immediately across storefront product pages and checkout.</span>
+                      <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 24px; font-weight:700; height:42px;">Save Delivery Settings</button>
+                    </div>
+                  </form>
                 </div>
               </div>
 
@@ -4949,64 +4949,79 @@
                   <div class="adm-settings-card__head">
                     <div class="adm-settings-card__title-row">
                       <div class="adm-settings-card__icon" style="background:#EFF4FF; border-color:#DBEAFE; color:#1D4ED8;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
                       </div>
                       <div>
-                        <h3 class="adm-card__title" style="font-size:16px;">Meta / Facebook Pixel &amp; Conversions API</h3>
-                        <p class="adm-card__desc">Browser Pixel event tracking and Server-Side Conversions API (CAPI) deduplication</p>
+                        <h3 class="adm-settings-card__title">Meta / Facebook Tracking</h3>
+                        <p class="adm-settings-card__desc">Browser Pixel event tracking and Server-Side Conversions API (CAPI) deduplication</p>
                       </div>
                     </div>
                     <span class="adm-chip {{ $pixelActive ? 'adm-chip--delivered' : 'adm-chip--neutral' }} js-pixel-status-chip">{{ $pixelActive ? 'Connected' : 'Not Configured' }}</span>
                   </div>
 
-                  <div class="adm-settings-card__body">
-                    <form class="adm-form js-pixel-settings-form">
-                      <div class="adm-field">
-                        <label class="adm-label" for="setting-meta-pixel-id" style="font-weight:600;">Meta Pixel ID (Dataset ID)</label>
-                        <input type="text" id="setting-meta-pixel-id" name="meta_pixel_id" class="adm-input num js-pixel-id-input" placeholder="e.g. 1693763272380977" value="{{ $settings['meta_pixel_id'] ?? '' }}">
-                        <span class="adm-hint">Fires PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase on storefront. Leave empty to disable.</span>
-                      </div>
-
-                      <div class="adm-settings-section-divider">
-                        <div class="adm-settings-section-title">Server-Side Conversions API (CAPI)</div>
-                        <div class="adm-settings-section-desc">Direct server-to-server tracking for 100% conversion accuracy against iOS 14+ and ad-blockers</div>
-                      </div>
-
-                      <div class="adm-field">
-                        <label class="adm-label" for="setting-meta-capi-token" style="font-weight:600;">Meta CAPI Access Token</label>
-                        <div class="adm-pw-wrap">
-                          <input type="password" id="setting-meta-capi-token" name="meta_capi_token" class="adm-input js-capi-token-input" placeholder="EAABw..." value="{{ $settings['meta_capi_token'] ?? '' }}" autocomplete="off">
-                          <button type="button" class="adm-pw-toggle js-toggle-secret-vis" aria-label="Show or hide token" title="Show/Hide">
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
-                          </button>
+                  <form class="adm-form js-pixel-settings-form">
+                    <div class="adm-settings-card__body">
+                      <!-- Section 1: Pixel ID -->
+                      <div class="adm-settings-section">
+                        <div class="adm-settings-section__head">
+                          <div class="adm-settings-section__title">Browser Pixel Configuration</div>
+                          <div class="adm-settings-section__desc">Fires standard e-commerce events across your live storefront.</div>
                         </div>
-                        <span class="adm-hint">Long-lived access token generated from Meta Events Manager.</span>
-                      </div>
 
-                      <div class="adm-field">
-                        <label class="adm-label" for="setting-meta-capi-test-code" style="font-weight:600;">CAPI Test Event Code <span class="adm-hint" style="display:inline;">(optional / verification)</span></label>
-                        <input type="text" id="setting-meta-capi-test-code" name="meta_capi_test_code" class="adm-input js-capi-test-code-input" placeholder="e.g. TEST86756" value="{{ $settings['meta_capi_test_code'] ?? '' }}">
-                        <span class="adm-hint">Only needed while testing inside Events Manager Test Events tab. Clear after testing.</span>
-                      </div>
-
-                      <div class="adm-settings-specs">
-                        <div class="adm-settings-spec-item">
-                          <span>Deduplication:</span> <strong>1:1 event_id (Browser + CAPI)</strong>
-                        </div>
-                        <div class="adm-settings-spec-item">
-                          <span>Event Source:</span> <strong>{{ url('/') }}</strong>
-                        </div>
-                        <div class="adm-settings-spec-item">
-                          <span>Attribution:</span> <strong>7-day click / 1-day view</strong>
+                        <div class="adm-field">
+                          <label class="adm-label" for="setting-meta-pixel-id">Meta Pixel ID (Dataset ID)</label>
+                          <input type="text" id="setting-meta-pixel-id" name="meta_pixel_id" class="adm-input num js-pixel-id-input" placeholder="e.g. 1693763272380977" value="{{ $settings['meta_pixel_id'] ?? '' }}">
+                          <span class="adm-hint">Fires PageView, ViewContent, AddToCart, InitiateCheckout &amp; Purchase on storefront. Leave empty to disable.</span>
                         </div>
                       </div>
 
-                      <div class="adm-card__foot">
-                        <span class="adm-card__foot-note">Numeric Pixel ID is sanitized automatically on save.</span>
-                        <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 22px; font-weight:700;">Save Tracking Settings</button>
+                      <div class="adm-settings-divider"></div>
+
+                      <!-- Section 2: CAPI Token -->
+                      <div class="adm-settings-section">
+                        <div class="adm-settings-section__head">
+                          <div class="adm-settings-section__title">Server-Side Conversions API (CAPI)</div>
+                          <div class="adm-settings-section__desc">Direct server-to-server tracking for 100% conversion accuracy against iOS 14+ and ad-blockers.</div>
+                        </div>
+
+                        <div class="adm-settings-row adm-settings-row--1col">
+                          <div class="adm-field">
+                            <label class="adm-label" for="setting-meta-capi-token">Meta CAPI Access Token</label>
+                            <div class="adm-pw-wrap">
+                              <input type="password" id="setting-meta-capi-token" name="meta_capi_token" class="adm-input js-capi-token-input" placeholder="EAABw..." value="{{ $settings['meta_capi_token'] ?? '' }}" autocomplete="off">
+                              <button type="button" class="adm-pw-toggle js-toggle-secret-vis" aria-label="Show or hide token" title="Show/Hide">
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                              </button>
+                            </div>
+                            <span class="adm-hint">Long-lived access token generated from Meta Events Manager.</span>
+                          </div>
+
+                          <div class="adm-field">
+                            <label class="adm-label" for="setting-meta-capi-test-code">CAPI Test Event Code <span class="adm-hint" style="display:inline;">(optional / verification)</span></label>
+                            <input type="text" id="setting-meta-capi-test-code" name="meta_capi_test_code" class="adm-input js-capi-test-code-input" placeholder="e.g. TEST86756" value="{{ $settings['meta_capi_test_code'] ?? '' }}">
+                            <span class="adm-hint">Only needed while testing inside Events Manager Test Events tab. Clear after testing.</span>
+                          </div>
+                        </div>
+
+                        <div class="adm-settings-specs">
+                          <div class="adm-settings-spec-item">
+                            <span>Deduplication:</span> <strong>1:1 event_id (Browser + CAPI)</strong>
+                          </div>
+                          <div class="adm-settings-spec-item">
+                            <span>Event Source:</span> <strong>{{ url('/') }}</strong>
+                          </div>
+                          <div class="adm-settings-spec-item">
+                            <span>Attribution:</span> <strong>7-day click / 1-day view</strong>
+                          </div>
+                        </div>
                       </div>
-                    </form>
-                  </div>
+                    </div>
+
+                    <div class="adm-card__foot">
+                      <span class="adm-card__foot-note">Numeric Pixel ID is sanitized automatically on save.</span>
+                      <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 24px; font-weight:700; height:42px;">Save Tracking Settings</button>
+                    </div>
+                  </form>
                 </div>
               </div>
 
@@ -5016,18 +5031,18 @@
                   <div class="adm-settings-card__head">
                     <div class="adm-settings-card__title-row">
                       <div class="adm-settings-card__icon" style="background:#ECFDF3; border-color:#BBF7D0; color:#15803D;">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
                       </div>
                       <div>
-                        <h3 class="adm-card__title" style="font-size:16px;">Google &amp; Facebook Social Login (OAuth 2.0)</h3>
-                        <p class="adm-card__desc">Configure 1-click customer authentication with Google Cloud and Facebook App</p>
+                        <h3 class="adm-settings-card__title">Social Authentication (OAuth 2.0)</h3>
+                        <p class="adm-settings-card__desc">Configure 1-click customer authentication with Google Cloud and Facebook App</p>
                       </div>
                     </div>
                     <span class="adm-chip {{ ($googleReady || $fbReady) ? 'adm-chip--delivered' : 'adm-chip--neutral' }} js-oauth-header-chip">{{ ($googleReady || $fbReady) ? 'Enabled' : 'Inactive' }}</span>
                   </div>
 
-                  <div class="adm-settings-card__body">
-                    <form class="adm-form js-oauth-settings-form">
+                  <form class="adm-form js-oauth-settings-form">
+                    <div class="adm-settings-card__body">
                       <div class="adm-settings-provider-grid">
                         <!-- Google Provider Card -->
                         <div class="adm-provider-card">
@@ -5042,30 +5057,30 @@
                                 </svg>
                               </span>
                               <div>
-                                <div style="font-weight:700; font-size:14px; color:var(--adm-text);">Google Sign-In</div>
-                                <div style="font-size:11.5px; color:var(--adm-muted);">Google Cloud Console</div>
+                                <div style="font-weight:700; font-size:14px; color:#111827;">Google Sign-In</div>
+                                <div style="font-size:11.5px; color:#6B7280;">Google Cloud Console</div>
                               </div>
                             </div>
                             <span class="adm-chip {{ $googleReady ? 'adm-chip--delivered' : 'adm-chip--neutral' }} js-google-oauth-chip">{{ $googleReady ? 'Active' : 'Hidden' }}</span>
                           </div>
 
                           <div class="adm-field">
-                            <label class="adm-label" for="setting-google-client-id" style="font-weight:600;">Google Client ID</label>
+                            <label class="adm-label" for="setting-google-client-id">Google Client ID</label>
                             <input type="text" id="setting-google-client-id" name="google_client_id" class="adm-input" placeholder="xxxxx.apps.googleusercontent.com" value="{{ $settings['google_client_id'] ?? '' }}">
                           </div>
 
                           <div class="adm-field">
-                            <label class="adm-label" for="setting-google-client-secret" style="font-weight:600;">Google Client Secret</label>
+                            <label class="adm-label" for="setting-google-client-secret">Google Client Secret</label>
                             <div class="adm-pw-wrap">
                               <input type="password" id="setting-google-client-secret" name="google_client_secret" class="adm-input" placeholder="GOCSPX-..." value="{{ $settings['google_client_secret'] ?? '' }}" autocomplete="off">
                               <button type="button" class="adm-pw-toggle js-toggle-secret-vis" aria-label="Show or hide Google secret" title="Show/Hide">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                               </button>
                             </div>
                           </div>
 
                           <div class="adm-field">
-                            <span class="adm-label" style="font-size:12px; color:var(--adm-muted);">Authorized Redirect URI</span>
+                            <span class="adm-label" style="font-size:12px; color:#6B7280;">Authorized Redirect URI</span>
                             <div class="adm-uri-box">
                               <code class="js-copy-oauth-uri" title="Click to copy">{{ url('/auth/google/callback') }}</code>
                               <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-copy-uri-btn" data-uri="{{ url('/auth/google/callback') }}" style="height:26px; font-size:11.5px; padding:0 9px;">Copy</button>
@@ -5083,30 +5098,30 @@
                                 </svg>
                               </span>
                               <div>
-                                <div style="font-weight:700; font-size:14px; color:var(--adm-text);">Facebook Login</div>
-                                <div style="font-size:11.5px; color:var(--adm-muted);">Meta for Developers</div>
+                                <div style="font-weight:700; font-size:14px; color:#111827;">Facebook Login</div>
+                                <div style="font-size:11.5px; color:#6B7280;">Meta for Developers</div>
                               </div>
                             </div>
                             <span class="adm-chip {{ $fbReady ? 'adm-chip--delivered' : 'adm-chip--neutral' }} js-fb-oauth-chip">{{ $fbReady ? 'Active' : 'Hidden' }}</span>
                           </div>
 
                           <div class="adm-field">
-                            <label class="adm-label" for="setting-facebook-client-id" style="font-weight:600;">Facebook App ID</label>
+                            <label class="adm-label" for="setting-facebook-client-id">Facebook App ID</label>
                             <input type="text" id="setting-facebook-client-id" name="facebook_client_id" class="adm-input" placeholder="e.g. 123456789012345" value="{{ $settings['facebook_client_id'] ?? '' }}">
                           </div>
 
                           <div class="adm-field">
-                            <label class="adm-label" for="setting-facebook-client-secret" style="font-weight:600;">Facebook App Secret</label>
+                            <label class="adm-label" for="setting-facebook-client-secret">Facebook App Secret</label>
                             <div class="adm-pw-wrap">
                               <input type="password" id="setting-facebook-client-secret" name="facebook_client_secret" class="adm-input" placeholder="Facebook App Secret" value="{{ $settings['facebook_client_secret'] ?? '' }}" autocomplete="off">
                               <button type="button" class="adm-pw-toggle js-toggle-secret-vis" aria-label="Show or hide Facebook secret" title="Show/Hide">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
+                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/></svg>
                               </button>
                             </div>
                           </div>
 
                           <div class="adm-field">
-                            <span class="adm-label" style="font-size:12px; color:var(--adm-muted);">Valid OAuth Redirect URI</span>
+                            <span class="adm-label" style="font-size:12px; color:#6B7280;">Valid OAuth Redirect URI</span>
                             <div class="adm-uri-box">
                               <code class="js-copy-oauth-uri" title="Click to copy">{{ url('/auth/facebook/callback') }}</code>
                               <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-copy-uri-btn" data-uri="{{ url('/auth/facebook/callback') }}" style="height:26px; font-size:11.5px; padding:0 9px;">Copy</button>
@@ -5114,13 +5129,13 @@
                           </div>
                         </div>
                       </div>
+                    </div>
 
-                      <div class="adm-card__foot">
-                        <span class="adm-card__foot-note">Unconfigured providers remain automatically hidden on customer Sign In &amp; Register.</span>
-                        <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 22px; font-weight:700;">Save Social Login Settings</button>
-                      </div>
-                    </form>
-                  </div>
+                    <div class="adm-card__foot">
+                      <span class="adm-card__foot-note">Unconfigured providers remain automatically hidden on customer Sign In &amp; Register.</span>
+                      <button type="submit" class="adm-btn adm-btn--primary" style="padding:0 24px; font-weight:700; height:42px;">Save Social Login Settings</button>
+                    </div>
+                  </form>
                 </div>
               </div>
             </div>

@@ -227,4 +227,31 @@ class CmsPagesAndMenusTest extends TestCase
         $this->assertDatabaseMissing('menu_items', ['id' => $l2['id']]);
         $this->assertDatabaseMissing('menu_items', ['id' => $l3['id']]);
     }
+
+    public function test_legacy_html_urls_redirect_to_clean_routes(): void
+    {
+        $this->get('/shop.html')
+            ->assertStatus(301)
+            ->assertRedirect(route('shop'));
+
+        $this->get('/shop.html?sleeve=half-sleeve')
+            ->assertStatus(301)
+            ->assertRedirect(route('shop', ['sleeve' => 'half-sleeve']));
+
+        $this->get('/index.html')
+            ->assertStatus(301)
+            ->assertRedirect(route('home'));
+
+        $this->get('/checkout.html')
+            ->assertStatus(301)
+            ->assertRedirect(route('checkout'));
+
+        $this->get('/track-order.html')
+            ->assertStatus(301)
+            ->assertRedirect(route('track-order'));
+
+        $this->get('/admin.html')
+            ->assertStatus(301)
+            ->assertRedirect(route('admin.dashboard'));
+    }
 }

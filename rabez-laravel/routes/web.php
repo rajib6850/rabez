@@ -15,24 +15,36 @@ use Illuminate\Support\Facades\Route;
 */
 Route::get('/', [StorefrontController::class, 'index'])->name('home');
 Route::get('/shop', [StorefrontController::class, 'shop'])->name('shop');
+Route::get('/shop.html', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('shop', $request->query(), 301);
+});
+Route::get('/index.html', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('home', $request->query(), 301);
+});
 Route::get('/product/{slug}', [StorefrontController::class, 'product'])->name('product.detail');
 Route::get('/product.html', function (\Illuminate\Http\Request $request) {
     $id = $request->query('id');
     if ($id) {
         $product = \App\Models\Product::where('id', $id)->orWhere('sku', $id)->orWhere('slug', $id)->first();
         if ($product) {
-            return redirect()->route('product.detail', $product->slug ?: $product->id);
+            return redirect()->route('product.detail', $product->slug ?: $product->id, 301);
         }
-        return redirect('/product/' . $id);
+        return redirect('/product/' . $id, 301);
     }
-    return redirect()->route('shop');
+    return redirect()->route('shop', [], 301);
 });
 Route::get('/checkout', [StorefrontController::class, 'checkout'])->name('checkout');
+Route::get('/checkout.html', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('checkout', $request->query(), 301);
+});
 Route::post('/checkout', [StorefrontController::class, 'processCheckout'])->name('checkout.process');
 Route::get('/order-confirmed/{orderNumber}', [StorefrontController::class, 'orderConfirmed'])->name('order.confirmed');
 Route::post('/api/apply-coupon', [StorefrontController::class, 'applyCoupon'])->name('storefront.apply_coupon');
 Route::get('/api/coupons/active-status', [StorefrontController::class, 'activeCouponsStatus'])->name('storefront.coupons_status');
 Route::get('/track-order', [StorefrontController::class, 'trackOrder'])->name('track-order');
+Route::get('/track-order.html', function (\Illuminate\Http\Request $request) {
+    return redirect()->route('track-order', $request->query(), 301);
+});
 
 // Wishlist (Hybrid LocalStorage + Authenticated DB Sync)
 Route::get('/wishlist', [WishlistController::class, 'index'])->name('wishlist');
@@ -48,6 +60,7 @@ Route::post('/api/wishlist/clear', [WishlistController::class, 'clear'])->name('
 Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
 Route::post('/login', [AuthController::class, 'login']);
 Route::get('/admin/login', fn () => redirect()->route('login'));
+Route::get('/admin.html', fn () => redirect()->route('admin.dashboard', [], 301));
 
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
