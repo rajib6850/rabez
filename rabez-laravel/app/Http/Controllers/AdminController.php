@@ -23,6 +23,15 @@ class AdminController extends Controller
     {
         $revenueToday = Order::whereDate('created_at', today())->sum('total');
         $openOrdersCount = Order::whereIn('status', ['Pending', 'Printing'])->count();
+        $printQueueCount = OrderItem::whereHas('order', function ($q) {
+            $q->whereIn('status', ['Pending', 'Printing']);
+        })->where(function ($q) {
+            $q->where(function ($sub) {
+                $sub->whereNotNull('custom_name')->where('custom_name', '!=', '');
+            })->orWhere(function ($sub) {
+                $sub->whereNotNull('custom_number')->where('custom_number', '!=', '');
+            });
+        })->count();
         $codWithCourier = Order::where('status', 'Shipped')->sum('total');
         $productsCount = Product::count();
 
@@ -81,6 +90,7 @@ class AdminController extends Controller
         return view('admin.dashboard', compact(
             'revenueToday',
             'openOrdersCount',
+            'printQueueCount',
             'codWithCourier',
             'productsCount',
             'recentOrders',

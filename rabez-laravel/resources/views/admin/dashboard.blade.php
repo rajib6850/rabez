@@ -3349,7 +3349,7 @@
         <button type="button" class="adm-nav-item js-tab" data-tab="print-queue">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></svg>
           <span>Print queue</span>
-          <span class="adm-nav-count js-print-count">2</span>
+          <span class="adm-nav-count js-print-count">{{ $printQueueCount ?? 0 }}</span>
         </button>
         <button type="button" class="adm-nav-item js-tab" data-tab="pos-order">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>
@@ -4356,7 +4356,7 @@
                 <h2 class="adm-card__title">Print queue</h2>
                 <p class="adm-card__desc">Check spelling and number before heat-pressing.</p>
               </div>
-              <span class="adm-chip adm-chip--printing js-print-chip">0 waiting</span>
+              <span class="adm-chip adm-chip--printing js-print-chip">{{ $printQueueCount ?? 0 }} waiting</span>
             </div>
             <div id="adm-print-queue-list">
               <div style="text-align:center; padding:44px 20px; color:var(--adm-muted); font-size:13.5px;">
@@ -6384,8 +6384,10 @@
             size: i.size,
             qty: i.qty,
             price: Number(i.unit_price),
-            print: (i.custom_name ? (i.custom_name + (i.custom_number ? ' ' + i.custom_number : '')) : ''),
-            img: i.image || '/assets/images/products/real-madrid-home-hs.jpg'
+            custom_name: i.custom_name || "",
+            custom_number: i.custom_number || "",
+            print: (i.custom_name ? (i.custom_name + (i.custom_number ? ' ' + i.custom_number : '')) : (i.print || '')),
+            img: i.image || i.img || '/assets/images/products/real-madrid-home-hs.jpg'
           }))
         };
       }
@@ -6980,7 +6982,10 @@
         orders.forEach(o => {
           if (['Pending', 'Printing'].includes(o.status) && Array.isArray(o.items)) {
             o.items.forEach(it => {
-              if (it.custom_name || it.custom_number) {
+              const hasName = it.custom_name && String(it.custom_name).trim() !== '';
+              const hasNum = it.custom_number && String(it.custom_number).trim() !== '';
+              const hasPrint = it.print && String(it.print).trim() !== '';
+              if (hasName || hasNum || hasPrint) {
                 printItems.push({ order: o, item: it });
               }
             });
@@ -6988,6 +6993,9 @@
         });
 
         if (chip) chip.textContent = `${printItems.length} waiting`;
+        $$(".js-print-count").forEach(el => {
+          el.textContent = printItems.length;
+        });
 
         if (!printItems.length) {
           container.innerHTML = `
@@ -7000,20 +7008,25 @@
           return;
         }
 
-        container.innerHTML = printItems.map(p => `
-          <div class="adm-print-row">
-            <img src="${p.item.image || '/assets/images/products/real-madrid-home-hs.jpg'}" alt="${p.item.name}">
+        container.innerHTML = printItems.map(p => {
+          const rawName = p.item.custom_name || (p.item.print ? p.item.print.split('#')[0].trim() : '');
+          const rawNum = p.item.custom_number || (p.item.print && p.item.print.includes('#') ? p.item.print.split('#')[1].trim() : '');
+          const imgUrl = p.item.img || p.item.image || '/assets/images/products/real-madrid-home-hs.jpg';
+          return `
+          <div class="adm-print-row" data-order-id="${p.order.id}">
+            <img src="${imgUrl}" alt="${p.item.name}">
             <div>
               <div class="adm-cell-main">${p.item.name} &middot; ${p.item.size || 'L'}</div>
               <div class="adm-cell-sub">#${p.order.id} &middot; ${p.order.customer}, ${city(p.order.address)}</div>
             </div>
             <div class="adm-print-label">
               <div class="adm-print-label__cap">Back print</div>
-              <div class="adm-print-label__text">${(p.item.custom_name || '').toUpperCase()} &middot; ${p.item.custom_number || ''}</div>
+              <div class="adm-print-label__text">${(rawName || '').toUpperCase()} ${rawNum ? '&middot; #' + rawNum : ''}</div>
             </div>
-            <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-mark-printed" data-id="${p.order.id}">Mark as printed</button>
+            <button type="button" class="adm-btn adm-btn--secondary adm-btn--sm js-mark-printed" data-id="${p.order.id}" data-db-id="${p.order.dbId || ''}">Mark as printed</button>
           </div>
-        `).join("");
+        `;
+        }).join("");
       }
 
       let lastKnownOrderDbId = orders.reduce((m, o) => Math.max(m, Number(o.dbId) || 0), 0);
@@ -9742,10 +9755,24 @@
 
         const printed = t.closest(".js-mark-printed");
         if (printed) {
+          const orderId = printed.dataset.id;
+          const orderDbId = printed.dataset.dbId;
+          const order = orders.find(o => o.id === orderId || (orderDbId && Number(o.dbId) === Number(orderDbId)));
+          if (order) {
+            order.status = "Shipped";
+            const csrfToken = document.querySelector('meta[name="csrf-token"]')?.content;
+            fetch(`/admin/api/orders/${order.dbId || order.id}/status`, {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+                'X-CSRF-TOKEN': csrfToken || ''
+              },
+              body: JSON.stringify({ status: 'Shipped' })
+            }).catch(console.error);
+          }
           printed.outerHTML = `<span class="adm-chip adm-chip--delivered">Printed</span>`;
-          const left = $$(".js-mark-printed").length;
-          $(".js-print-chip").textContent = left ? `${left} waiting` : "All done";
-          $(".js-print-count").textContent = left;
+          renderPrintQueue();
+          renderOrders();
           toast("Marked as printed", "Ready for packing");
           return;
         }

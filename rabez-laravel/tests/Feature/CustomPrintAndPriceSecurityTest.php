@@ -164,4 +164,81 @@ class CustomPrintAndPriceSecurityTest extends TestCase
         $this->assertNull($item->custom_name);
         $this->assertNull($item->custom_number);
     }
+
+    public function test_admin_dashboard_calculates_and_displays_print_queue_accurately()
+    {
+        $admin = \App\Models\User::factory()->create(['role' => 'admin']);
+
+        // Order 1: Pending with custom print (MUST be in print queue)
+        $order1 = Order::create([
+            'order_number' => 'RBZ-10001',
+            'customer_name' => 'John Doe',
+            'customer_phone' => '01711223344',
+            'customer_address' => 'Dhaka',
+            'status' => 'Pending',
+            'subtotal' => 1400,
+            'total' => 1470,
+            'shipping_fee' => 70,
+        ]);
+        OrderItem::create([
+            'order_id' => $order1->id,
+            'product_name' => 'Real Madrid Home',
+            'size' => 'L',
+            'qty' => 1,
+            'unit_price' => 1400,
+            'total_price' => 1400,
+            'custom_name' => 'MESSI',
+            'custom_number' => '10',
+        ]);
+
+        // Order 2: Shipped with custom print (Already shipped, MUST NOT be in queue)
+        $order2 = Order::create([
+            'order_number' => 'RBZ-10002',
+            'customer_name' => 'Jane Doe',
+            'customer_phone' => '01811223344',
+            'customer_address' => 'Chittagong',
+            'status' => 'Shipped',
+            'subtotal' => 1400,
+            'total' => 1530,
+            'shipping_fee' => 130,
+        ]);
+        OrderItem::create([
+            'order_id' => $order2->id,
+            'product_name' => 'Barcelona Home',
+            'size' => 'M',
+            'qty' => 1,
+            'unit_price' => 1400,
+            'total_price' => 1400,
+            'custom_name' => 'RONALDO',
+            'custom_number' => '7',
+        ]);
+
+        // Order 3: Printing with custom print (In progress, MUST be in print queue)
+        $order3 = Order::create([
+            'order_number' => 'RBZ-10003',
+            'customer_name' => 'David Warner',
+            'customer_phone' => '01911223344',
+            'customer_address' => 'Sylhet',
+            'status' => 'Printing',
+            'subtotal' => 1400,
+            'total' => 1530,
+            'shipping_fee' => 130,
+        ]);
+        OrderItem::create([
+            'order_id' => $order3->id,
+            'product_name' => 'Arsenal Home',
+            'size' => 'XL',
+            'qty' => 1,
+            'unit_price' => 1400,
+            'total_price' => 1400,
+            'custom_name' => 'BELLINGHAM',
+            'custom_number' => '5',
+        ]);
+
+        $response = $this->actingAs($admin)->get('/admin');
+        $response->assertStatus(200);
+        $response->assertViewHas('printQueueCount', 2);
+        $response->assertSee('<span class="adm-nav-count js-print-count">2</span>', false);
+        $response->assertSee('<span class="adm-chip adm-chip--printing js-print-chip">2 waiting</span>', false);
+    }
 }
