@@ -3316,6 +3316,307 @@
       border-color: #22C55E;
       outline: none;
     }
+
+    /* ---------- Business Report & Profit Analytics (.adm-fin-*) ---------- */
+    .adm-fin-toolbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: var(--adm-radius);
+      padding: 12px 14px;
+      margin-bottom: 14px;
+    }
+    .adm-fin-toolbar__left,
+    .adm-fin-toolbar__right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .adm-fin-seg {
+      display: inline-flex;
+      flex-wrap: wrap;
+      gap: 4px;
+      background: var(--adm-subtle);
+      border: 1px solid var(--adm-border);
+      padding: 3px;
+      border-radius: 9px;
+    }
+    .adm-fin-range-btn {
+      border: none;
+      background: transparent;
+      color: var(--adm-text-2);
+      font-size: 12px;
+      font-weight: 600;
+      padding: 5px 10px;
+      border-radius: 7px;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: all 0.15s ease;
+    }
+    .adm-fin-range-btn:hover { color: var(--adm-text); background: #EFEFEF; }
+    .adm-fin-range-btn.is-active {
+      background: var(--adm-ink);
+      color: #FFFFFF;
+      box-shadow: 0 2px 6px rgba(0, 0, 0, 0.14);
+    }
+    .adm-fin-custom-dates {
+      display: none;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+    }
+    .adm-fin-custom-dates.is-visible { display: inline-flex; }
+    .adm-fin-date-input {
+      height: 32px;
+      padding: 0 8px;
+      border: 1px solid var(--adm-border-strong);
+      border-radius: 7px;
+      font-size: 12px;
+      background: var(--adm-surface);
+      color: var(--adm-text);
+    }
+
+    .adm-fin-alert {
+      display: none;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      flex-wrap: wrap;
+      background: #FFFBEB;
+      border: 1px solid #FDE68A;
+      color: #92400E;
+      border-radius: var(--adm-radius);
+      padding: 11px 15px;
+      margin-bottom: 14px;
+      font-size: 13px;
+    }
+    .adm-fin-alert.is-visible { display: flex; }
+
+    .adm-fin-kpis {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+      margin-bottom: 12px;
+    }
+    .adm-fin-kpi {
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: var(--adm-radius);
+      padding: 16px 18px;
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+    .adm-fin-kpi--hero {
+      background: var(--adm-ink);
+      border-color: #1B231E;
+      color: #FFFFFF;
+      box-shadow: 0 10px 24px rgba(11, 13, 12, 0.12);
+    }
+    .adm-fin-kpi__top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+    }
+    .adm-fin-kpi__label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--adm-muted);
+    }
+    .adm-fin-kpi--hero .adm-fin-kpi__label { color: #A6B2AB; }
+    .adm-fin-kpi__value {
+      font-size: 24px;
+      font-weight: 800;
+      line-height: 1.15;
+      letter-spacing: -0.02em;
+      color: var(--adm-text);
+    }
+    .adm-fin-kpi--hero .adm-fin-kpi__value { color: var(--adm-brand); }
+    .adm-fin-kpi__sub {
+      font-size: 11.5px;
+      color: var(--adm-muted);
+      line-height: 1.35;
+    }
+    .adm-fin-kpi--hero .adm-fin-kpi__sub { color: #9BA8A0; }
+
+    .adm-fin-margin-pill {
+      display: inline-flex;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 99px;
+      background: rgba(22, 163, 74, 0.12);
+      color: #15803D;
+      white-space: nowrap;
+    }
+    .adm-fin-kpi--hero .adm-fin-margin-pill {
+      background: rgba(4, 244, 4, 0.16);
+      color: #04F404;
+    }
+    .adm-fin-margin-pill.is-neg {
+      background: rgba(220, 38, 38, 0.12);
+      color: #DC2626;
+    }
+
+    .adm-fin-strip {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+    .adm-fin-mini {
+      background: var(--adm-surface);
+      border: 1px solid var(--adm-border);
+      border-radius: 10px;
+      padding: 12px 14px;
+      min-width: 0;
+    }
+    .adm-fin-mini__label {
+      font-size: 11.5px;
+      font-weight: 600;
+      color: var(--adm-muted);
+    }
+    .adm-fin-mini__val {
+      font-size: 16px;
+      font-weight: 700;
+      color: var(--adm-text);
+      margin-top: 3px;
+    }
+    .adm-fin-mini__sub {
+      font-size: 11px;
+      color: var(--adm-muted);
+      margin-top: 2px;
+    }
+
+    .adm-fin-subtabs {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      margin-bottom: 14px;
+      scrollbar-width: none;
+    }
+    .adm-fin-subtabs::-webkit-scrollbar { display: none; }
+    .adm-fin-subtab {
+      border: 1px solid var(--adm-border);
+      background: var(--adm-surface);
+      color: var(--adm-text-2);
+      font-size: 12.5px;
+      font-weight: 600;
+      padding: 8px 14px;
+      border-radius: 9px;
+      cursor: pointer;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.15s ease;
+    }
+    .adm-fin-subtab:hover { border-color: var(--adm-border-strong); color: var(--adm-text); }
+    .adm-fin-subtab.is-active {
+      background: var(--adm-ink);
+      border-color: var(--adm-ink);
+      color: #FFFFFF;
+    }
+    .adm-fin-subpanel { display: none; }
+    .adm-fin-subpanel.is-active { display: block; }
+
+    .adm-fin-chart-wrap {
+      position: relative;
+      width: 100%;
+      overflow-x: auto;
+    }
+    .adm-fin-tooltip {
+      position: fixed;
+      z-index: 9999;
+      pointer-events: none;
+      display: none;
+      background: #0B0D0C;
+      color: #FFFFFF;
+      border: 1px solid #26312A;
+      border-radius: 8px;
+      padding: 8px 11px;
+      font-size: 11.5px;
+      box-shadow: 0 10px 24px rgba(0, 0, 0, 0.28);
+      line-height: 1.45;
+    }
+    .adm-fin-legend {
+      display: inline-flex;
+      align-items: center;
+      gap: 14px;
+      font-size: 11.5px;
+      color: var(--adm-text-2);
+      font-weight: 600;
+    }
+    .adm-fin-legend__dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 2px;
+      margin-right: 5px;
+    }
+
+    .adm-fin-2col {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 14px;
+      margin-top: 14px;
+      margin-bottom: 14px;
+    }
+    .adm-fin-bar-row {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      padding: 8px 0;
+      border-bottom: 1px solid var(--adm-border);
+    }
+    .adm-fin-bar-row:last-child { border-bottom: none; }
+    .adm-fin-bar-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12.5px;
+      gap: 8px;
+    }
+    .adm-fin-bar-track {
+      height: 7px;
+      border-radius: 99px;
+      background: #EEF1EF;
+      overflow: hidden;
+    }
+    .adm-fin-bar-fill {
+      height: 100%;
+      border-radius: 99px;
+      background: #16A34A;
+      transition: width 0.3s ease;
+    }
+
+    .adm-fin-pos { color: #15803D; font-weight: 700; }
+    .adm-fin-neg { color: #DC2626; font-weight: 700; }
+
+    @media (max-width: 1100px) {
+      .adm-fin-kpis,
+      .adm-fin-strip {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      .adm-fin-2col {
+        grid-template-columns: 1fr;
+      }
+    }
+    @media (max-width: 600px) {
+      .adm-fin-kpis,
+      .adm-fin-strip {
+        grid-template-columns: 1fr;
+      }
+      .adm-fin-kpi__value { font-size: 21px; }
+    }
   </style>
 </head>
 <body class="adm">
@@ -3337,6 +3638,13 @@
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>
           <span>Dashboard</span>
         </button>
+        @if(Auth::user()?->isMainAdmin())
+        <button type="button" class="adm-nav-item js-tab" data-tab="analytics">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+          <span>Business Report</span>
+          <span class="adm-nav-count" style="background:rgba(4,244,4,0.16); color:#04F404;">P&amp;L</span>
+        </button>
+        @endif
       </div>
 
       <div class="adm-nav-group">
@@ -4051,6 +4359,11 @@
                   <div class="adm-field">
                     <label class="adm-label" for="adm-reg-price">Regular price (৳) <span class="adm-hint">optional</span></label>
                     <input type="number" id="adm-reg-price" class="adm-input num" value="1690">
+                  </div>
+
+                  <div class="adm-field">
+                    <label class="adm-label" for="adm-cost-price">Buying / Cost price (৳) <span class="adm-hint js-add-profit-hint" style="color:#15803D;"></span></label>
+                    <input type="number" step="0.01" min="0" id="adm-cost-price" class="adm-input num" value="" placeholder="e.g. 680">
                   </div>
 
                   <div class="adm-field">
@@ -5351,6 +5664,386 @@
             </div>
           </div>
         </section>
+
+        @if(Auth::user()?->isMainAdmin())
+        <!-- ==================================================================
+             BUSINESS REPORT & PROFIT ANALYTICS (MAIN ADMIN ONLY)
+             ================================================================== -->
+        <section class="adm-panel" data-panel="analytics">
+          <!-- Top Controls Bar -->
+          <div class="adm-fin-toolbar">
+            <div class="adm-fin-toolbar__left">
+              <div class="adm-fin-seg" role="group" aria-label="Report date range">
+                <button type="button" class="adm-fin-range-btn js-fin-range" data-range="today">Today</button>
+                <button type="button" class="adm-fin-range-btn js-fin-range" data-range="7d">7D</button>
+                <button type="button" class="adm-fin-range-btn is-active js-fin-range" data-range="30d">30D</button>
+                <button type="button" class="adm-fin-range-btn js-fin-range" data-range="month">This Month</button>
+                <button type="button" class="adm-fin-range-btn js-fin-range" data-range="year">This Year</button>
+                <button type="button" class="adm-fin-range-btn js-fin-range" data-range="all">All Time</button>
+                <button type="button" class="adm-fin-range-btn js-fin-range" data-range="custom">Custom</button>
+              </div>
+              <div class="adm-fin-custom-dates" id="fin-custom-dates">
+                <input type="date" id="fin-from" class="adm-fin-date-input" aria-label="Start date">
+                <span style="color:var(--adm-muted); font-size:12px;">to</span>
+                <input type="date" id="fin-to" class="adm-fin-date-input" aria-label="End date">
+                <button type="button" id="fin-apply-custom" class="adm-btn adm-btn--primary adm-btn--sm">Apply</button>
+              </div>
+            </div>
+
+            <div class="adm-fin-toolbar__right">
+              <select id="fin-basis" class="adm-select" style="height:34px; font-size:12.5px; min-width:210px;" aria-label="Accounting basis">
+                <option value="active" selected>All Active Sales (Excl. Cancelled)</option>
+                <option value="delivered">Delivered Only (Cash Realized)</option>
+              </select>
+              <button type="button" id="fin-export-btn" class="adm-btn adm-btn--secondary adm-btn--sm" style="display:inline-flex; align-items:center; gap:6px;">
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                <span>Export CSV</span>
+              </button>
+              <button type="button" id="fin-refresh-btn" class="adm-btn adm-btn--secondary adm-btn--sm" title="Refresh report data">
+                Refresh
+              </button>
+            </div>
+          </div>
+
+          <!-- Missing Cost Setup Alert -->
+          <div class="adm-fin-alert" id="fin-missing-cost-banner">
+            <div>
+              <strong>Action Recommended:</strong>
+              <span id="fin-missing-cost-count">0</span> catalog products still have <code>৳ 0</code> buying cost. Set your buying costs to calculate true net profit &amp; margins accurately.
+            </div>
+            <button type="button" id="fin-goto-costs" class="adm-btn adm-btn--primary adm-btn--sm">Set Buying Costs &rarr;</button>
+          </div>
+
+          <!-- Hero 4 KPIs -->
+          <div class="adm-fin-kpis">
+            <div class="adm-fin-kpi adm-fin-kpi--hero">
+              <div class="adm-fin-kpi__top">
+                <span class="adm-fin-kpi__label">Net Profit (After All Costs)</span>
+                <span class="adm-fin-margin-pill" id="fin-kpi-net-margin">0% Margin</span>
+              </div>
+              <div class="adm-fin-kpi__value num" id="fin-kpi-net-profit">৳ 0</div>
+              <div class="adm-fin-kpi__sub" id="fin-kpi-net-sub">Gross Profit minus Operating Expenses</div>
+            </div>
+
+            <div class="adm-fin-kpi">
+              <div class="adm-fin-kpi__top">
+                <span class="adm-fin-kpi__label">Products Sold (Units)</span>
+                <span class="adm-chip adm-chip--delivered" id="fin-kpi-orders-chip">0 orders</span>
+              </div>
+              <div class="adm-fin-kpi__value num" id="fin-kpi-units-sold">0</div>
+              <div class="adm-fin-kpi__sub" id="fin-kpi-units-sub">0 delivered &bull; 0 cancelled excluded</div>
+            </div>
+
+            <div class="adm-fin-kpi">
+              <div class="adm-fin-kpi__top">
+                <span class="adm-fin-kpi__label">Net Product Sales</span>
+                <span class="adm-fin-margin-pill" id="fin-kpi-gross-margin">0% Gross</span>
+              </div>
+              <div class="adm-fin-kpi__value num" id="fin-kpi-net-sales">৳ 0</div>
+              <div class="adm-fin-kpi__sub" id="fin-kpi-sales-sub">Incl. ৳ 0 delivery &bull; ৳ 0 discounts</div>
+            </div>
+
+            <div class="adm-fin-kpi">
+              <div class="adm-fin-kpi__top">
+                <span class="adm-fin-kpi__label">Product COGS + Expenses</span>
+              </div>
+              <div class="adm-fin-kpi__value num" id="fin-kpi-total-outflow">৳ 0</div>
+              <div class="adm-fin-kpi__sub" id="fin-kpi-outflow-sub">Buying COGS ৳ 0 + Expenses ৳ 0</div>
+            </div>
+          </div>
+
+          <!-- Secondary 4-Tile Metric Strip -->
+          <div class="adm-fin-strip">
+            <div class="adm-fin-mini">
+              <div class="adm-fin-mini__label">Avg Order Value &amp; Profit</div>
+              <div class="adm-fin-mini__val num" id="fin-mini-aov">৳ 0</div>
+              <div class="adm-fin-mini__sub" id="fin-mini-avg-profit">Avg profit/order: ৳ 0</div>
+            </div>
+            <div class="adm-fin-mini">
+              <div class="adm-fin-mini__label">Delivery Success Rate</div>
+              <div class="adm-fin-mini__val num" id="fin-mini-del-rate">0%</div>
+              <div class="adm-fin-mini__sub" id="fin-mini-del-sub">Of all orders in selected range</div>
+            </div>
+            <div class="adm-fin-mini">
+              <div class="adm-fin-mini__label">Custom Print Studio Profit</div>
+              <div class="adm-fin-mini__val num" id="fin-mini-print-profit">৳ 0</div>
+              <div class="adm-fin-mini__sub" id="fin-mini-print-sub">0 prints sold (Rev ৳ 0 &minus; Cost ৳ 0)</div>
+            </div>
+            <div class="adm-fin-mini">
+              <div class="adm-fin-mini__label">Stock Inventory Valuation</div>
+              <div class="adm-fin-mini__val num" id="fin-mini-stock-cost">৳ 0</div>
+              <div class="adm-fin-mini__sub" id="fin-mini-stock-sub">0 units &bull; Retail value ৳ 0</div>
+            </div>
+          </div>
+
+          <!-- Report Sub-Tabs -->
+          <div class="adm-fin-subtabs" role="tablist">
+            <button type="button" class="adm-fin-subtab is-active js-fin-subtab" data-fin-tab="overview">Overview &amp; Trends</button>
+            <button type="button" class="adm-fin-subtab js-fin-subtab" data-fin-tab="products">Product Sales &amp; Profit</button>
+            <button type="button" class="adm-fin-subtab js-fin-subtab" data-fin-tab="orders">Order Profit Ledger</button>
+            <button type="button" class="adm-fin-subtab js-fin-subtab" data-fin-tab="expenses">Expenses Tracker</button>
+            <button type="button" class="adm-fin-subtab js-fin-subtab" data-fin-tab="costs">Buying Costs (Setup)</button>
+          </div>
+
+          <!-- Sub-Tab 1: Overview & Trends -->
+          <div class="adm-fin-subpanel is-active js-fin-subpanel" data-fin-panel="overview">
+            <div class="adm-card">
+              <div class="adm-card__head" style="flex-wrap:wrap; gap:10px;">
+                <div>
+                  <h2 class="adm-card__title">Daily Product Sales vs. Gross Profit</h2>
+                  <p class="adm-card__desc" id="fin-chart-subtitle">Hover over any day bar to inspect orders, units, sales, and profit.</p>
+                </div>
+                <div class="adm-fin-legend">
+                  <span><i class="adm-fin-legend__dot" style="background:#0B0D0C;"></i>Product Sales</span>
+                  <span><i class="adm-fin-legend__dot" style="background:#16A34A;"></i>Gross Profit</span>
+                </div>
+              </div>
+              <div class="adm-card__body">
+                <div class="adm-fin-chart-wrap" id="fin-chart-container">
+                  <div style="text-align:center; padding:36px 16px; color:var(--adm-muted);">Loading business analytics...</div>
+                </div>
+                <div class="adm-fin-tooltip" id="fin-chart-tooltip"></div>
+              </div>
+            </div>
+
+            <div class="adm-fin-2col">
+              <div class="adm-card">
+                <div class="adm-card__head">
+                  <div>
+                    <h2 class="adm-card__title">Order Status Pipeline</h2>
+                    <p class="adm-card__desc">Distribution of all orders placed in this period.</p>
+                  </div>
+                </div>
+                <div class="adm-card__body" id="fin-status-breakdown"></div>
+              </div>
+
+              <div class="adm-card">
+                <div class="adm-card__head">
+                  <div>
+                    <h2 class="adm-card__title">Category &amp; Expense Breakdown</h2>
+                    <p class="adm-card__desc">Sales mix by jersey sleeve / kit category &amp; operating expenses.</p>
+                  </div>
+                </div>
+                <div class="adm-card__body">
+                  <div id="fin-category-breakdown"></div>
+                  <div style="margin-top:16px; padding-top:12px; border-top:1px dashed var(--adm-border);">
+                    <div style="font-size:12px; font-weight:700; color:var(--adm-text-2); margin-bottom:8px;">Operating Expenses in Period</div>
+                    <div id="fin-expense-mix"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="adm-card">
+              <div class="adm-card__head">
+                <div>
+                  <h2 class="adm-card__title">Top Performing Products (By Profit &amp; Units)</h2>
+                  <p class="adm-card__desc">Quick snapshot of your highest-earning kits.</p>
+                </div>
+              </div>
+              <div class="adm-table-wrap">
+                <table class="adm-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th class="num">Units Sold</th>
+                      <th class="num">Net Revenue</th>
+                      <th class="num">COGS</th>
+                      <th class="num">Gross Profit</th>
+                      <th class="num" style="text-align:right;">Margin</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fin-top-products"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Tab 2: Product Sales & Profit -->
+          <div class="adm-fin-subpanel js-fin-subpanel" data-fin-panel="products">
+            <div class="adm-card">
+              <div class="adm-card__head" style="flex-wrap:wrap; gap:10px;">
+                <div>
+                  <h2 class="adm-card__title">Product-by-Product Sales &amp; Profit Report</h2>
+                  <p class="adm-card__desc">Complete quantity sold, net revenue (after coupons), COGS, and profit margin for each product.</p>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                  <input type="text" id="fin-prod-search" class="adm-input" placeholder="Search product or SKU..." style="width:210px; height:34px; font-size:12.5px;">
+                  <select id="fin-prod-sort" class="adm-select" style="height:34px; font-size:12.5px;">
+                    <option value="profit">Sort: Highest Profit</option>
+                    <option value="units">Sort: Most Units Sold</option>
+                    <option value="revenue">Sort: Highest Revenue</option>
+                    <option value="margin">Sort: Best Margin %</option>
+                  </select>
+                </div>
+              </div>
+              <div class="adm-table-wrap">
+                <table class="adm-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th>Category</th>
+                      <th class="num">Units Sold</th>
+                      <th class="num">Avg Price</th>
+                      <th class="num">Net Revenue</th>
+                      <th class="num">Total COGS</th>
+                      <th class="num">Gross Profit</th>
+                      <th class="num" style="text-align:right;">Margin %</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fin-products-tbody"></tbody>
+                  <tfoot id="fin-products-tfoot"></tfoot>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Tab 3: Order Profit Ledger -->
+          <div class="adm-fin-subpanel js-fin-subpanel" data-fin-panel="orders">
+            <div class="adm-card">
+              <div class="adm-card__head" style="flex-wrap:wrap; gap:10px;">
+                <div>
+                  <h2 class="adm-card__title">Order-by-Order Profit Ledger</h2>
+                  <p class="adm-card__desc">Click any Order ID to inspect full items or courier details.</p>
+                </div>
+                <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+                  <input type="text" id="fin-order-search" class="adm-input" placeholder="Search #Order or customer..." style="width:210px; height:34px; font-size:12.5px;">
+                  <select id="fin-order-status" class="adm-select" style="height:34px; font-size:12.5px;">
+                    <option value="all">All Eligible Statuses</option>
+                    <option value="Pending">Pending</option>
+                    <option value="Printing">Printing</option>
+                    <option value="Shipped">Shipped</option>
+                    <option value="Delivered">Delivered</option>
+                  </select>
+                </div>
+              </div>
+              <div class="adm-table-wrap">
+                <table class="adm-table">
+                  <thead>
+                    <tr>
+                      <th>Order # &amp; Date</th>
+                      <th>Customer</th>
+                      <th>Status</th>
+                      <th class="num">Units</th>
+                      <th class="num">Product Sales</th>
+                      <th class="num">Delivery</th>
+                      <th class="num">COGS</th>
+                      <th class="num">Gross Profit</th>
+                      <th class="num" style="text-align:right;">Margin</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fin-orders-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Tab 4: Expenses Tracker -->
+          <div class="adm-fin-subpanel js-fin-subpanel" data-fin-panel="expenses">
+            <div class="adm-split">
+              <div class="adm-card">
+                <div class="adm-card__head">
+                  <div>
+                    <h2 class="adm-card__title">Record Business Expense</h2>
+                    <p class="adm-card__desc">Log Facebook ads, packaging, heat-press vinyl, courier loss, or operational costs.</p>
+                  </div>
+                </div>
+                <div class="adm-card__body">
+                  <form id="fin-expense-form" class="adm-form" style="grid-template-columns:1fr; gap:14px;">
+                    <div class="adm-field">
+                      <label class="adm-label" for="fin-exp-title">Expense Title *</label>
+                      <input type="text" id="fin-exp-title" class="adm-input" required maxlength="180" placeholder="e.g. Facebook Boost Campaign - RM Home">
+                    </div>
+                    <div class="adm-field">
+                      <label class="adm-label" for="fin-exp-cat">Category *</label>
+                      <select id="fin-exp-cat" class="adm-select">
+                        <option value="ads">Facebook / Boost Ads</option>
+                        <option value="packaging">Packaging, Poly &amp; Tags</option>
+                        <option value="courier">Courier / Return Charge Loss</option>
+                        <option value="print_supply">Heat-Press &amp; Vinyl Supply</option>
+                        <option value="salary_rent">Staff, Rider &amp; Office Rent</option>
+                        <option value="other">Other Business Expense</option>
+                      </select>
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+                      <div class="adm-field">
+                        <label class="adm-label" for="fin-exp-amount">Amount (৳) *</label>
+                        <input type="number" step="0.01" min="1" id="fin-exp-amount" class="adm-input num" required placeholder="500">
+                      </div>
+                      <div class="adm-field">
+                        <label class="adm-label" for="fin-exp-date">Expense Date *</label>
+                        <input type="date" id="fin-exp-date" class="adm-input" required value="{{ now()->format('Y-m-d') }}">
+                      </div>
+                    </div>
+                    <div class="adm-field">
+                      <label class="adm-label" for="fin-exp-notes">Notes (Optional)</label>
+                      <textarea id="fin-exp-notes" class="adm-textarea" rows="2" maxlength="500" placeholder="Campaign reference or invoice note..."></textarea>
+                    </div>
+                    <button type="submit" class="adm-btn adm-btn--primary" id="fin-exp-submit-btn">Save Expense</button>
+                  </form>
+                </div>
+              </div>
+
+              <div class="adm-card">
+                <div class="adm-card__head">
+                  <div>
+                    <h2 class="adm-card__title">Expenses in Selected Period</h2>
+                    <p class="adm-card__desc">Deducted directly from Gross Profit to show your true Net Profit.</p>
+                  </div>
+                </div>
+                <div class="adm-table-wrap">
+                  <table class="adm-table">
+                    <thead>
+                      <tr>
+                        <th>Expense</th>
+                        <th>Category</th>
+                        <th>Date</th>
+                        <th class="num" style="text-align:right;">Amount</th>
+                        <th style="text-align:right;">Action</th>
+                      </tr>
+                    </thead>
+                    <tbody id="fin-expenses-tbody"></tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Sub-Tab 5: Buying Costs (COGS Setup) -->
+          <div class="adm-fin-subpanel js-fin-subpanel" data-fin-panel="costs">
+            <div class="adm-card">
+              <div class="adm-card__head" style="flex-wrap:wrap; gap:12px;">
+                <div>
+                  <h2 class="adm-card__title">Product Buying Costs (COGS) &amp; Print Cost</h2>
+                  <p class="adm-card__desc">Enter your supplier/wholesale buying cost once per product. Used automatically for profit calculation &amp; inventory value.</p>
+                </div>
+                <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+                  <div style="display:inline-flex; align-items:center; gap:8px; background:var(--adm-subtle); border:1px solid var(--adm-border); padding:6px 10px; border-radius:8px;">
+                    <label for="fin-print-cost-input" style="font-size:12px; font-weight:700; color:var(--adm-text-2); white-space:nowrap;">Custom Print Vinyl Cost (৳):</label>
+                    <input type="number" step="0.01" min="0" id="fin-print-cost-input" class="adm-input num" value="80" style="width:82px; height:32px; font-size:12.5px;">
+                    <span class="adm-fin-margin-pill js-fin-print-profit-badge">+৳ 170 profit/print</span>
+                  </div>
+                  <button type="button" id="fin-save-costs-btn" class="adm-btn adm-btn--primary">Save All Buying Costs</button>
+                </div>
+              </div>
+              <div class="adm-table-wrap">
+                <table class="adm-table">
+                  <thead>
+                    <tr>
+                      <th>Product</th>
+                      <th class="num">Sale Price (৳)</th>
+                      <th class="num" style="width:165px;">Buying Cost (৳)</th>
+                      <th class="num">Unit Profit</th>
+                      <th class="num" style="text-align:right;">Margin %</th>
+                    </tr>
+                  </thead>
+                  <tbody id="fin-costs-tbody"></tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        </section>
+        @endif
       </main>
     </div>
   </div>
@@ -5456,7 +6149,7 @@
               <input type="text" id="edit-prod-sku" class="adm-input" required placeholder="e.g. RBZ-RMA-25-HM">
             </div>
 
-            <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;">
+            <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(135px, 1fr)); gap:12px;">
               <div class="adm-field">
                 <label class="adm-label" for="edit-prod-price" style="font-weight:700;">Sale Price (৳)</label>
                 <input type="number" id="edit-prod-price" class="adm-input" required placeholder="1150">
@@ -5464,6 +6157,10 @@
               <div class="adm-field">
                 <label class="adm-label" for="edit-prod-reg-price" style="font-weight:700;">Regular Price (৳)</label>
                 <input type="number" id="edit-prod-reg-price" class="adm-input" placeholder="1350">
+              </div>
+              <div class="adm-field">
+                <label class="adm-label" for="edit-prod-cost-price" style="font-weight:700;">Buying Cost (৳) <span class="adm-hint js-edit-profit-hint" style="color:#15803D;"></span></label>
+                <input type="number" step="0.01" min="0" id="edit-prod-cost-price" class="adm-input" placeholder="e.g. 650">
               </div>
             </div>
 
@@ -6416,6 +7113,7 @@
           fabric: p.fabric || "",
           price: Number(p.price),
           regularPrice: Number(p.regular_price || p.price),
+          costPrice: Number(p.cost_price || 0),
           image: p.image || '/assets/images/products/real-madrid-home-hs.jpg',
           gallery: Array.isArray(p.gallery) ? p.gallery : (typeof p.gallery === 'string' ? (JSON.parse(p.gallery || '[]') || []) : []),
           shortDesc: p.short_desc || p.name,
@@ -6530,6 +7228,9 @@
         "menus": ["Navigation Menu Builder", "Organize multi-level dropdown menus for Desktop Header & Footer"],
         "settings": ["Settings", "Delivery, courier credentials & Meta Pixel"]
       };
+      if (isMainAdmin) {
+        PAGES["analytics"] = ["Business & Profit Report", "Sales volume, product costs, expenses & net profit"];
+      }
 
       function showTab(key, updateUrl = true, shouldScroll = true) {
         if (!PAGES[key]) key = "dashboard";
@@ -6561,6 +7262,7 @@
         } catch (e) {}
 
         if (key === "dashboard") { renderOrders(); renderOverviewStats(); }
+        if (key === "analytics" && isMainAdmin) loadBusinessAnalytics();
         if (key === "orders") renderOrders();
         if (key === "print-queue") renderPrintQueue();
         if (key === "customers") renderCustomers();
@@ -8434,6 +9136,10 @@
         $("#edit-prod-sku").value = p.sku || "";
         $("#edit-prod-price").value = p.price;
         $("#edit-prod-reg-price").value = p.regularPrice || p.price;
+        if ($("#edit-prod-cost-price")) {
+          $("#edit-prod-cost-price").value = p.costPrice > 0 ? p.costPrice : "";
+          updateProductProfitHint("#edit-prod-price", "#edit-prod-cost-price", ".js-edit-profit-hint");
+        }
         $("#edit-prod-cat").value = p.sleeve || "half-sleeve";
         $("#edit-prod-club").value = p.club || "all";
         $("#edit-prod-stock").value = p.isReadyStock ? "1" : "0";
@@ -8480,6 +9186,7 @@
           sku: $("#edit-prod-sku").value.trim(),
           price: Number($("#edit-prod-price").value),
           regular_price: Number($("#edit-prod-reg-price").value),
+          cost_price: $("#edit-prod-cost-price") ? (Number($("#edit-prod-cost-price").value) || 0) : 0,
           sleeve: $("#edit-prod-cat").value,
           club: $("#edit-prod-club").value,
           fabric: $("#edit-prod-fabric") ? $("#edit-prod-fabric").value.trim() : "",
@@ -9939,6 +10646,7 @@
         const clubSel = $("#adm-club");
         const price = Number($("#adm-price").value) || 1450;
         const regPrice = Number($("#adm-reg-price").value) || (price + 200);
+        const costPrice = $("#adm-cost-price") ? (Number($("#adm-cost-price").value) || 0) : 0;
         const name = $("#adm-name").value.trim();
         const sku = $("#adm-sku").value.trim() || ("RBZ-" + Math.floor(100 + Math.random() * 900));
 
@@ -9960,6 +10668,7 @@
           variants: vPayload.variants,
           price: price,
           regular_price: regPrice,
+          cost_price: costPrice,
           image: addFeaturedImage,
           gallery: addGalleryImages,
           short_desc: ($("#adm-short-desc")?.value.trim()) || name,
@@ -12282,6 +12991,667 @@
           }
         });
       }
+
+      /* ---------- Buying Cost Live Profit Hints (Add & Edit Product) ---------- */
+      function updateProductProfitHint(saleSel, costSel, hintSel) {
+        const sale = Number($(saleSel)?.value || 0);
+        const cost = Number($(costSel)?.value || 0);
+        const hint = $(hintSel);
+        if (!hint) return;
+        if (cost > 0 && sale > 0) {
+          const prof = sale - cost;
+          const margin = ((prof / sale) * 100).toFixed(1);
+          hint.textContent = `Profit: ৳${Math.round(prof).toLocaleString("en-IN")} (${margin}%)`;
+          hint.style.color = prof >= 0 ? "#15803D" : "#DC2626";
+        } else {
+          hint.textContent = "";
+        }
+      }
+      ["#adm-price", "#adm-cost-price"].forEach((s) => $(s)?.addEventListener("input", () => updateProductProfitHint("#adm-price", "#adm-cost-price", ".js-add-profit-hint")));
+      ["#edit-prod-price", "#edit-prod-cost-price"].forEach((s) => $(s)?.addEventListener("input", () => updateProductProfitHint("#edit-prod-price", "#edit-prod-cost-price", ".js-edit-profit-hint")));
+
+      /* ---------- Business & Profit Analytics Module (Main Admin) ---------- */
+      let finState = {
+        range: "30d",
+        from: "",
+        to: "",
+        basis: "active",
+        activeSubTab: "overview",
+        data: null,
+        loading: false,
+      };
+
+      function fmtBDT(val) {
+        const num = Number(val) || 0;
+        const abs = Math.abs(Math.round(num)).toLocaleString("en-IN");
+        return (num < 0 ? "-৳ " : "৳ ") + abs;
+      }
+
+      function finStatusChip(status) {
+        const st = String(status || "Pending");
+        const map = {
+          "Pending": "adm-chip--pending",
+          "Printing": "adm-chip--printing",
+          "Shipped": "adm-chip--shipped",
+          "Delivered": "adm-chip--delivered",
+          "Cancelled": "adm-chip--cancelled"
+        };
+        return `<span class="adm-chip ${map[st] || "adm-chip--pending"}">${escText(st)}</span>`;
+      }
+
+      function switchFinSubTab(tabKey) {
+        finState.activeSubTab = tabKey;
+        $$(".js-fin-subtab").forEach((b) => b.classList.toggle("is-active", b.dataset.finTab === tabKey));
+        $$(".js-fin-subpanel").forEach((p) => p.classList.toggle("is-active", p.dataset.finPanel === tabKey));
+      }
+
+      function buildFinQuery() {
+        const params = new URLSearchParams();
+        params.set("range", finState.range);
+        params.set("basis", finState.basis);
+        if (finState.range === "custom") {
+          if (finState.from) params.set("from", finState.from);
+          if (finState.to) params.set("to", finState.to);
+        }
+        return params.toString();
+      }
+
+      async function loadBusinessAnalytics() {
+        if (!isMainAdmin) return;
+        const chartWrap = $("#fin-chart-container");
+        if (!finState.data && chartWrap) {
+          chartWrap.innerHTML = `<div style="text-align:center; padding:36px 16px; color:var(--adm-muted);">Loading business report...</div>`;
+        }
+        finState.loading = true;
+        try {
+          const res = await fetch(`/admin/api/analytics?${buildFinQuery()}`, {
+            headers: { "Accept": "application/json" }
+          });
+          const data = await res.json();
+          if (!res.ok || !data.success) {
+            throw new Error(data.message || "Could not load analytics");
+          }
+          finState.data = data;
+          renderAllBusinessAnalytics();
+        } catch (err) {
+          console.error(err);
+          if (chartWrap) {
+            chartWrap.innerHTML = `<div style="text-align:center; padding:32px; color:#DC2626; font-weight:600;">Failed to load analytics: ${escText(err.message)}</div>`;
+          }
+        } finally {
+          finState.loading = false;
+        }
+      }
+
+      function renderAllBusinessAnalytics() {
+        if (!finState.data) return;
+        renderAnalyticsKPIs();
+        renderAnalyticsChart();
+        renderAnalyticsBreakdowns();
+        renderAnalyticsProductsTable();
+        renderAnalyticsOrdersLedger();
+        renderAnalyticsExpenses();
+        renderAnalyticsCostManager();
+      }
+
+      function renderAnalyticsKPIs() {
+        const k = finState.data.kpis || {};
+        const netEl = $("#fin-kpi-net-profit");
+        if (netEl) {
+          netEl.textContent = fmtBDT(k.net_profit);
+          netEl.style.color = (Number(k.net_profit) || 0) < 0 ? "#F87171" : "var(--adm-brand)";
+        }
+        const netMarginEl = $("#fin-kpi-net-margin");
+        if (netMarginEl) {
+          netMarginEl.textContent = `${Number(k.net_margin_pct || 0)}% Net Margin`;
+          netMarginEl.classList.toggle("is-neg", (Number(k.net_profit) || 0) < 0);
+        }
+        const netSubEl = $("#fin-kpi-net-sub");
+        if (netSubEl) {
+          netSubEl.textContent = `Gross Profit ${fmtBDT(k.gross_profit)} − Expenses ${fmtBDT(k.total_expenses)}`;
+        }
+
+        $("#fin-kpi-units-sold").textContent = `${Number(k.total_units_sold || 0).toLocaleString("en-IN")} pcs`;
+        $("#fin-kpi-orders-chip").textContent = `${Number(k.eligible_orders || 0)} orders`;
+        $("#fin-kpi-units-sub").textContent = `${Number(k.delivered_orders || 0)} delivered • ${Number(k.cancelled_orders || 0)} cancelled excluded`;
+
+        $("#fin-kpi-net-sales").textContent = fmtBDT(k.product_net_sales);
+        const grossMarginEl = $("#fin-kpi-gross-margin");
+        if (grossMarginEl) {
+          grossMarginEl.textContent = `${Number(k.gross_margin_pct || 0)}% Gross`;
+          grossMarginEl.classList.toggle("is-neg", (Number(k.gross_profit) || 0) < 0);
+        }
+        $("#fin-kpi-sales-sub").textContent = `Shipping ${fmtBDT(k.shipping_collected)} • Discounts ${fmtBDT(k.discounts_given)}`;
+
+        const outflow = (Number(k.total_cogs) || 0) + (Number(k.total_expenses) || 0);
+        $("#fin-kpi-total-outflow").textContent = fmtBDT(outflow);
+        $("#fin-kpi-outflow-sub").textContent = `COGS ${fmtBDT(k.total_cogs)} + Expenses ${fmtBDT(k.total_expenses)}`;
+
+        $("#fin-mini-aov").textContent = fmtBDT(k.avg_order_value);
+        $("#fin-mini-avg-profit").textContent = `Avg gross profit/order: ${fmtBDT(k.avg_profit_per_order)}`;
+        $("#fin-mini-del-rate").textContent = `${Number(k.delivery_success_rate || 0)}%`;
+        $("#fin-mini-del-sub").textContent = `${Number(k.delivered_orders || 0)} delivered of ${Number(k.total_orders || 0)} total orders`;
+        $("#fin-mini-print-profit").textContent = fmtBDT(k.custom_print_profit);
+        $("#fin-mini-print-sub").textContent = `${Number(k.custom_prints_sold || 0)} prints (Rev ${fmtBDT(k.custom_print_revenue)} − Cost ${fmtBDT(k.custom_print_cost_total)})`;
+        $("#fin-mini-stock-cost").textContent = fmtBDT(k.stock_cost_value);
+        $("#fin-mini-stock-sub").textContent = `${Number(k.stock_units || 0).toLocaleString("en-IN")} pcs • Retail ${fmtBDT(k.stock_retail_value)}`;
+
+        const missingCnt = Number(k.missing_cost_products_count || 0);
+        const banner = $("#fin-missing-cost-banner");
+        if (banner) {
+          banner.classList.toggle("is-visible", missingCnt > 0);
+          $("#fin-missing-cost-count").textContent = missingCnt;
+        }
+      }
+
+      function renderAnalyticsChart() {
+        const wrap = $("#fin-chart-container");
+        const tooltip = $("#fin-chart-tooltip");
+        if (!wrap) return;
+        const points = finState.data.daily_trend || [];
+        if (!points.length) {
+          wrap.innerHTML = `<div style="text-align:center; padding:36px 16px; color:var(--adm-muted);">No sales data found for ${escText(finState.data.range_label || "this period")}.</div>`;
+          return;
+        }
+
+        const w = Math.max(680, points.length * 36 + 70);
+        const h = 230;
+        const padL = 56, padR = 16, padT = 18, padB = 34;
+        const plotW = w - padL - padR;
+        const plotH = h - padT - padB;
+        const maxVal = Math.max(1000, ...points.map((p) => Math.max(Number(p.revenue) || 0, Math.abs(Number(p.profit) || 0))));
+
+        const gridLines = [0, 0.25, 0.5, 0.75, 1].map((f) => {
+          const y = padT + plotH * (1 - f);
+          const v = Math.round(maxVal * f);
+          const label = v >= 1000 ? `${(v / 1000).toFixed(v % 1000 === 0 ? 0 : 1)}k` : `${v}`;
+          return `
+            <line x1="${padL}" y1="${y}" x2="${w - padR}" y2="${y}" stroke="#EEF1EF" stroke-width="1"/>
+            <text x="${padL - 8}" y="${y + 4}" text-anchor="end" font-size="10.5" fill="#7A827E">৳${label}</text>
+          `;
+        }).join("");
+
+        const groupW = plotW / points.length;
+        const barW = Math.max(5, Math.min(14, groupW * 0.32));
+        const labelStep = points.length > 16 ? 2 : 1;
+
+        const bars = points.map((p, idx) => {
+          const cx = padL + idx * groupW + groupW / 2;
+          const rev = Number(p.revenue) || 0;
+          const prof = Number(p.profit) || 0;
+          const revH = Math.max(rev > 0 ? 3 : 0, (rev / maxVal) * plotH);
+          const profH = Math.max(prof !== 0 ? 3 : 0, (Math.abs(prof) / maxVal) * plotH);
+          const revY = padT + plotH - revH;
+          const profY = padT + plotH - profH;
+          const profColor = prof >= 0 ? "#16A34A" : "#DC2626";
+          const xLabel = (idx % labelStep === 0 || idx === points.length - 1)
+            ? `<text x="${cx}" y="${h - 10}" text-anchor="middle" font-size="10" fill="#7A827E">${escText(p.label)}</text>`
+            : "";
+
+          return `
+            <g class="js-fin-bar-group" data-idx="${idx}" style="cursor:pointer;">
+              <rect x="${cx - groupW / 2}" y="${padT}" width="${groupW}" height="${plotH}" fill="transparent"/>
+              <rect x="${cx - barW - 1}" y="${revY}" width="${barW}" height="${revH}" rx="2.5" fill="#0B0D0C" opacity="0.86"/>
+              <rect x="${cx + 1}" y="${profY}" width="${barW}" height="${profH}" rx="2.5" fill="${profColor}"/>
+              ${xLabel}
+            </g>
+          `;
+        }).join("");
+
+        wrap.innerHTML = `<svg viewBox="0 0 ${w} ${h}" style="width:100%; min-width:${w}px; height:230px; display:block;">${gridLines}${bars}</svg>`;
+
+        wrap.querySelectorAll(".js-fin-bar-group").forEach((g) => {
+          const idx = Number(g.dataset.idx);
+          const pt = points[idx];
+          if (!pt || !tooltip) return;
+          g.addEventListener("mouseenter", (e) => {
+            tooltip.innerHTML = `
+              <div style="font-weight:700; margin-bottom:3px; color:#04F404;">${escText(pt.label)} (${escText(pt.date)})</div>
+              <div>Orders: <strong>${pt.orders}</strong> &bull; Units: <strong>${pt.units} pcs</strong></div>
+              <div>Net Sales: <strong>${fmtBDT(pt.revenue)}</strong></div>
+              <div>Gross Profit: <strong style="color:${pt.profit >= 0 ? '#4ADE80' : '#F87171'};">${fmtBDT(pt.profit)}</strong></div>
+            `;
+            tooltip.style.display = "block";
+            tooltip.style.left = `${Math.min(window.innerWidth - 210, e.clientX + 14)}px`;
+            tooltip.style.top = `${Math.max(12, e.clientY - 70)}px`;
+          });
+          g.addEventListener("mousemove", (e) => {
+            tooltip.style.left = `${Math.min(window.innerWidth - 210, e.clientX + 14)}px`;
+            tooltip.style.top = `${Math.max(12, e.clientY - 70)}px`;
+          });
+          g.addEventListener("mouseleave", () => {
+            tooltip.style.display = "none";
+          });
+        });
+      }
+
+      function renderAnalyticsBreakdowns() {
+        const statusWrap = $("#fin-status-breakdown");
+        const catWrap = $("#fin-category-breakdown");
+        const expMixWrap = $("#fin-expense-mix");
+        const topWrap = $("#fin-top-products");
+
+        const statuses = finState.data.status_breakdown || [];
+        const totalStCount = Math.max(1, statuses.reduce((s, r) => s + (Number(r.count) || 0), 0));
+        const stColors = {
+          "Delivered": "#16A34A",
+          "Shipped": "#2563EB",
+          "Printing": "#9333EA",
+          "Pending": "#F59E0B",
+          "Cancelled": "#DC2626"
+        };
+        if (statusWrap) {
+          statusWrap.innerHTML = statuses.map((s) => {
+            const pct = Math.round(((Number(s.count) || 0) / totalStCount) * 100);
+            return `
+              <div class="adm-fin-bar-row">
+                <div class="adm-fin-bar-head">
+                  <span>${finStatusChip(s.status)} <strong class="num" style="margin-left:6px;">${s.count}</strong> orders (${pct}%)</span>
+                  <strong class="num">${fmtBDT(s.total)}</strong>
+                </div>
+                <div class="adm-fin-bar-track">
+                  <div class="adm-fin-bar-fill" style="width:${pct}%; background:${stColors[s.status] || '#0B0D0C'};"></div>
+                </div>
+              </div>
+            `;
+          }).join("");
+        }
+
+        const cats = finState.data.category_breakdown || [];
+        const maxCatRev = Math.max(1, ...cats.map((c) => Number(c.revenue) || 0));
+        if (catWrap) {
+          catWrap.innerHTML = cats.length
+            ? cats.map((c) => {
+                const wPct = Math.round(((Number(c.revenue) || 0) / maxCatRev) * 100);
+                return `
+                  <div class="adm-fin-bar-row">
+                    <div class="adm-fin-bar-head">
+                      <span><strong>${escText(c.category)}</strong> &bull; <span class="num">${c.units} pcs</span></span>
+                      <span class="num"><strong>${fmtBDT(c.revenue)}</strong> (<span class="${c.profit >= 0 ? 'adm-fin-pos' : 'adm-fin-neg'}">${fmtBDT(c.profit)}</span>)</span>
+                    </div>
+                    <div class="adm-fin-bar-track">
+                      <div class="adm-fin-bar-fill" style="width:${wPct}%;"></div>
+                    </div>
+                  </div>
+                `;
+              }).join("")
+            : `<div style="color:var(--adm-muted); font-size:12.5px;">No category sales in this period.</div>`;
+        }
+
+        const expMix = finState.data.expense_breakdown || [];
+        if (expMixWrap) {
+          expMixWrap.innerHTML = expMix.length
+            ? expMix.map((ex) => `
+                <div style="display:flex; justify-content:space-between; font-size:12.5px; padding:4px 0;">
+                  <span>${escText(ex.label)} (${ex.count})</span>
+                  <strong class="num adm-fin-neg">${fmtBDT(ex.amount)}</strong>
+                </div>
+              `).join("")
+            : `<div style="color:var(--adm-muted); font-size:12px;">No operating expenses logged in this period.</div>`;
+        }
+
+        const topProds = (finState.data.product_breakdown || []).slice(0, 6);
+        if (topWrap) {
+          topWrap.innerHTML = topProds.length
+            ? topProds.map((p) => `
+                <tr>
+                  <td>
+                    <div style="display:flex; align-items:center; gap:9px;">
+                      <img src="${escText(p.image)}" alt="" style="width:34px; height:34px; border-radius:6px; object-fit:cover; background:#F1F2EF; flex-shrink:0;">
+                      <div>
+                        <div class="adm-cell-main">${escText(p.name)}</div>
+                        <div class="adm-cell-sub">${escText(p.sku)} &bull; ${escText(p.category)}</div>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="num"><strong>${p.units_sold}</strong> pcs</td>
+                  <td class="num">${fmtBDT(p.revenue)}</td>
+                  <td class="num">${fmtBDT(p.cogs)}</td>
+                  <td class="num ${p.profit >= 0 ? 'adm-fin-pos' : 'adm-fin-neg'}">${fmtBDT(p.profit)}</td>
+                  <td class="num" style="text-align:right;"><span class="adm-fin-margin-pill ${p.profit < 0 ? 'is-neg' : ''}">${p.margin_pct}%</span></td>
+                </tr>
+              `).join("")
+            : `<tr><td colspan="6" style="text-align:center; padding:24px; color:var(--adm-muted);">No product sales found in this period.</td></tr>`;
+        }
+      }
+
+      function renderAnalyticsProductsTable() {
+        const tbody = $("#fin-products-tbody");
+        const tfoot = $("#fin-products-tfoot");
+        if (!tbody || !finState.data) return;
+
+        const q = ($("#fin-prod-search")?.value || "").trim().toLowerCase();
+        const sortBy = $("#fin-prod-sort")?.value || "profit";
+
+        let rows = (finState.data.product_breakdown || []).filter((p) =>
+          !q || p.name.toLowerCase().includes(q) || p.sku.toLowerCase().includes(q) || p.category.toLowerCase().includes(q)
+        );
+
+        rows = [...rows].sort((a, b) => {
+          if (sortBy === "units") return b.units_sold - a.units_sold;
+          if (sortBy === "revenue") return b.revenue - a.revenue;
+          if (sortBy === "margin") return b.margin_pct - a.margin_pct;
+          return b.profit - a.profit;
+        });
+
+        tbody.innerHTML = rows.length
+          ? rows.map((p) => `
+              <tr>
+                <td>
+                  <div style="display:flex; align-items:center; gap:9px;">
+                    <img src="${escText(p.image)}" alt="" style="width:36px; height:36px; border-radius:6px; object-fit:cover; background:#F1F2EF; flex-shrink:0;">
+                    <div>
+                      <div class="adm-cell-main">${escText(p.name)}</div>
+                      <div class="adm-cell-sub">${escText(p.sku)} &bull; ${p.orders_count} orders</div>
+                    </div>
+                  </div>
+                </td>
+                <td>${escText(p.category)}</td>
+                <td class="num"><strong>${p.units_sold}</strong></td>
+                <td class="num">${fmtBDT(p.avg_selling_price)}</td>
+                <td class="num">${fmtBDT(p.revenue)}</td>
+                <td class="num">${fmtBDT(p.cogs)}</td>
+                <td class="num ${p.profit >= 0 ? 'adm-fin-pos' : 'adm-fin-neg'}">${fmtBDT(p.profit)}</td>
+                <td class="num" style="text-align:right;"><span class="adm-fin-margin-pill ${p.profit < 0 ? 'is-neg' : ''}">${p.margin_pct}%</span></td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="8" style="text-align:center; padding:28px; color:var(--adm-muted);">No matching products sold in this period.</td></tr>`;
+
+        if (tfoot) {
+          const sumUnits = rows.reduce((s, r) => s + r.units_sold, 0);
+          const sumRev = rows.reduce((s, r) => s + r.revenue, 0);
+          const sumCogs = rows.reduce((s, r) => s + r.cogs, 0);
+          const sumProf = rows.reduce((s, r) => s + r.profit, 0);
+          const totalMargin = sumRev > 0 ? ((sumProf / sumRev) * 100).toFixed(1) : "0.0";
+          tfoot.innerHTML = rows.length ? `
+            <tr style="background:var(--adm-subtle); font-weight:700;">
+              <td colspan="2">Total (${rows.length} products)</td>
+              <td class="num">${sumUnits}</td>
+              <td>—</td>
+              <td class="num">${fmtBDT(sumRev)}</td>
+              <td class="num">${fmtBDT(sumCogs)}</td>
+              <td class="num ${sumProf >= 0 ? 'adm-fin-pos' : 'adm-fin-neg'}">${fmtBDT(sumProf)}</td>
+              <td class="num" style="text-align:right;">${totalMargin}%</td>
+            </tr>
+          ` : "";
+        }
+      }
+
+      function renderAnalyticsOrdersLedger() {
+        const tbody = $("#fin-orders-tbody");
+        if (!tbody || !finState.data) return;
+
+        const q = ($("#fin-order-search")?.value || "").trim().toLowerCase();
+        const statusFilter = $("#fin-order-status")?.value || "all";
+
+        const rows = (finState.data.order_ledger || []).filter((o) => {
+          const matchSt = statusFilter === "all" || o.status === statusFilter;
+          const matchQ = !q || o.order_number.toLowerCase().includes(q) || o.customer_name.toLowerCase().includes(q) || o.customer_phone.includes(q);
+          return matchSt && matchQ;
+        });
+
+        tbody.innerHTML = rows.length
+          ? rows.map((o) => `
+              <tr>
+                <td>
+                  <button type="button" class="js-fin-open-order" data-order-id="${escText(o.order_number)}" style="background:none; border:none; padding:0; font-weight:700; color:#15803D; cursor:pointer; text-decoration:underline;">
+                    #${escText(o.order_number)}
+                  </button>
+                  <div class="adm-cell-sub">${escText(o.date)}</div>
+                </td>
+                <td>
+                  <div class="adm-cell-main">${escText(o.customer_name)}</div>
+                  <div class="adm-cell-sub">${escText(o.customer_phone)}</div>
+                </td>
+                <td>${finStatusChip(o.status)}</td>
+                <td class="num">${o.units}</td>
+                <td class="num">${fmtBDT(o.product_sales)}${o.discount > 0 ? `<div class="adm-cell-sub">-${fmtBDT(o.discount)} disc</div>` : ""}</td>
+                <td class="num">${fmtBDT(o.shipping_fee)}</td>
+                <td class="num">${fmtBDT(o.cogs)}${o.has_missing_cost ? `<div class="adm-cell-sub" style="color:#B45309;">cost partial/0</div>` : ""}</td>
+                <td class="num ${o.gross_profit >= 0 ? 'adm-fin-pos' : 'adm-fin-neg'}">${fmtBDT(o.gross_profit)}</td>
+                <td class="num" style="text-align:right;"><span class="adm-fin-margin-pill ${o.gross_profit < 0 ? 'is-neg' : ''}">${o.margin_pct}%</span></td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="9" style="text-align:center; padding:28px; color:var(--adm-muted);">No matching orders in this period.</td></tr>`;
+      }
+
+      function renderAnalyticsExpenses() {
+        const tbody = $("#fin-expenses-tbody");
+        if (!tbody || !finState.data) return;
+        const rows = finState.data.expenses || [];
+        tbody.innerHTML = rows.length
+          ? rows.map((ex) => `
+              <tr>
+                <td>
+                  <div class="adm-cell-main">${escText(ex.title)}</div>
+                  ${ex.notes ? `<div class="adm-cell-sub">${escText(ex.notes)}</div>` : ""}
+                </td>
+                <td><span class="adm-chip adm-chip--pending">${escText(ex.category_label)}</span></td>
+                <td style="white-space:nowrap;">${escText(ex.expense_date_display || ex.expense_date)}</td>
+                <td class="num adm-fin-neg" style="text-align:right;">${fmtBDT(ex.amount)}</td>
+                <td style="text-align:right;">
+                  <button type="button" class="adm-btn adm-btn--danger adm-btn--sm js-fin-del-expense" data-id="${ex.id}">Delete</button>
+                </td>
+              </tr>
+            `).join("")
+          : `<tr><td colspan="5" style="text-align:center; padding:28px; color:var(--adm-muted);">No expenses logged for this period.</td></tr>`;
+      }
+
+      function updatePrintProfitPreviewBadge() {
+        const fee = Number(finState.data?.kpis?.custom_print_fee ?? 250);
+        const cost = Number($("#fin-print-cost-input")?.value || 0);
+        const profit = fee - cost;
+        const badge = $(".js-fin-print-profit-badge");
+        if (badge) {
+          badge.textContent = `+${fmtBDT(profit)} profit/print`;
+          badge.classList.toggle("is-neg", profit < 0);
+        }
+      }
+
+      function renderAnalyticsCostManager() {
+        const tbody = $("#fin-costs-tbody");
+        const printCostInput = $("#fin-print-cost-input");
+        if (!tbody || !finState.data) return;
+        if (printCostInput && finState.data.kpis) {
+          printCostInput.value = Number(finState.data.kpis.custom_print_cost ?? 80);
+          updatePrintProfitPreviewBadge();
+        }
+        const catalog = finState.data.catalog_costs || [];
+        tbody.innerHTML = catalog.map((p) => {
+          const sale = Number(p.price) || 0;
+          const cost = Number(p.cost_price) || 0;
+          const prof = sale - cost;
+          const margin = sale > 0 ? ((prof / sale) * 100).toFixed(1) : "0.0";
+          return `
+            <tr data-cost-row="${p.id}" data-sale="${sale}">
+              <td>
+                <div style="display:flex; align-items:center; gap:9px;">
+                  <img src="${escText(p.image)}" alt="" style="width:34px; height:34px; border-radius:6px; object-fit:cover; background:#F1F2EF; flex-shrink:0;">
+                  <div>
+                    <div class="adm-cell-main">${escText(p.name)}</div>
+                    <div class="adm-cell-sub">${escText(p.sku)} &bull; ${escText(p.sleeve)}</div>
+                  </div>
+                </div>
+              </td>
+              <td class="num">${fmtBDT(sale)}</td>
+              <td class="num">
+                <input type="number" step="0.01" min="0" class="adm-input num js-fin-cost-input" data-id="${p.id}" value="${cost}" style="width:125px; height:34px;">
+              </td>
+              <td class="num js-fin-row-profit ${prof >= 0 ? 'adm-fin-pos' : 'adm-fin-neg'}">${cost > 0 ? fmtBDT(prof) : `<span style="color:#B45309;">Set cost</span>`}</td>
+              <td class="num js-fin-row-margin" style="text-align:right;">${cost > 0 ? `<span class="adm-fin-margin-pill ${prof < 0 ? 'is-neg' : ''}">${margin}%</span>` : "—"}</td>
+            </tr>
+          `;
+        }).join("");
+
+        tbody.querySelectorAll(".js-fin-cost-input").forEach((inp) => {
+          inp.addEventListener("input", () => {
+            const tr = inp.closest("tr");
+            const sale = Number(tr?.dataset.sale || 0);
+            const cost = Number(inp.value || 0);
+            const prof = sale - cost;
+            const margin = sale > 0 ? ((prof / sale) * 100).toFixed(1) : "0.0";
+            const profCell = tr?.querySelector(".js-fin-row-profit");
+            const marginCell = tr?.querySelector(".js-fin-row-margin");
+            if (profCell) {
+              profCell.className = `num js-fin-row-profit ${prof >= 0 ? 'adm-fin-pos' : 'adm-fin-neg'}`;
+              profCell.innerHTML = cost > 0 ? fmtBDT(prof) : `<span style="color:#B45309;">Set cost</span>`;
+            }
+            if (marginCell) {
+              marginCell.innerHTML = cost > 0 ? `<span class="adm-fin-margin-pill ${prof < 0 ? 'is-neg' : ''}">${margin}%</span>` : "—";
+            }
+          });
+        });
+      }
+
+      // Bind Business Report UI Events
+      $$(".js-fin-range").forEach((btn) => {
+        btn.addEventListener("click", () => {
+          const r = btn.dataset.range || "30d";
+          finState.range = r;
+          $$(".js-fin-range").forEach((b) => b.classList.toggle("is-active", b === btn));
+          const customWrap = $("#fin-custom-dates");
+          if (customWrap) customWrap.classList.toggle("is-visible", r === "custom");
+          if (r !== "custom") loadBusinessAnalytics();
+        });
+      });
+
+      $("#fin-apply-custom")?.addEventListener("click", () => {
+        finState.from = $("#fin-from")?.value || "";
+        finState.to = $("#fin-to")?.value || "";
+        loadBusinessAnalytics();
+      });
+
+      $("#fin-basis")?.addEventListener("change", (e) => {
+        finState.basis = e.target.value === "delivered" ? "delivered" : "active";
+        loadBusinessAnalytics();
+      });
+
+      $("#fin-refresh-btn")?.addEventListener("click", () => loadBusinessAnalytics());
+      $("#fin-export-btn")?.addEventListener("click", () => {
+        window.location.href = `/admin/api/analytics/export?${buildFinQuery()}`;
+      });
+      $("#fin-goto-costs")?.addEventListener("click", () => switchFinSubTab("costs"));
+
+      $$(".js-fin-subtab").forEach((btn) => {
+        btn.addEventListener("click", () => switchFinSubTab(btn.dataset.finTab || "overview"));
+      });
+
+      $("#fin-prod-search")?.addEventListener("input", renderAnalyticsProductsTable);
+      $("#fin-prod-sort")?.addEventListener("change", renderAnalyticsProductsTable);
+      $("#fin-order-search")?.addEventListener("input", renderAnalyticsOrdersLedger);
+      $("#fin-order-status")?.addEventListener("change", renderAnalyticsOrdersLedger);
+      $("#fin-print-cost-input")?.addEventListener("input", updatePrintProfitPreviewBadge);
+
+      $("#fin-orders-tbody")?.addEventListener("click", (e) => {
+        const orderBtn = e.target.closest(".js-fin-open-order");
+        if (orderBtn) {
+          const oid = orderBtn.dataset.orderId;
+          if (oid && typeof openFullOrderDrawer === "function") {
+            openFullOrderDrawer(oid);
+          }
+        }
+      });
+
+      $("#fin-expense-form")?.addEventListener("submit", async (e) => {
+        e.preventDefault();
+        const btn = $("#fin-exp-submit-btn");
+        const origText = btn ? btn.textContent : "Save Expense";
+        if (btn) { btn.disabled = true; btn.textContent = "Saving..."; }
+        try {
+          const payload = {
+            title: $("#fin-exp-title")?.value.trim(),
+            category: $("#fin-exp-cat")?.value,
+            amount: Number($("#fin-exp-amount")?.value || 0),
+            expense_date: $("#fin-exp-date")?.value,
+            notes: $("#fin-exp-notes")?.value.trim() || ""
+          };
+          const res = await fetch("/admin/expenses", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify(payload)
+          });
+          const data = await res.json().catch(() => ({}));
+          if (!res.ok || !data.success) {
+            const firstErr = data.errors ? Object.values(data.errors).flat()[0] : null;
+            admAlert(firstErr || data.message || "Could not save expense.", { title: "Expense Error" });
+            return;
+          }
+          $("#fin-exp-title").value = "";
+          $("#fin-exp-amount").value = "";
+          $("#fin-exp-notes").value = "";
+          toast("Expense Saved", "Deducted from Net Profit calculation.");
+          await loadBusinessAnalytics();
+        } catch (err) {
+          console.error(err);
+          admAlert("Network error while saving expense.", { title: "Save Failed" });
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = origText; }
+        }
+      });
+
+      $("#fin-expenses-tbody")?.addEventListener("click", async (e) => {
+        const delBtn = e.target.closest(".js-fin-del-expense");
+        if (!delBtn) return;
+        const id = delBtn.dataset.id;
+        if (!id) return;
+        const ok = await admConfirm("Delete this expense record?", { title: "Delete Expense", danger: true, confirmText: "Delete" });
+        if (!ok) return;
+        try {
+          const res = await fetch(`/admin/expenses/${id}`, {
+            method: "DELETE",
+            headers: { "Accept": "application/json", "X-CSRF-TOKEN": CSRF_TOKEN }
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.success) {
+            toast("Expense Removed", "Profit figures updated.");
+            await loadBusinessAnalytics();
+          }
+        } catch (err) {
+          console.error(err);
+        }
+      });
+
+      $("#fin-save-costs-btn")?.addEventListener("click", async () => {
+        const btn = $("#fin-save-costs-btn");
+        const origText = btn ? btn.textContent : "Save All Buying Costs";
+        if (btn) { btn.disabled = true; btn.textContent = "Saving..."; }
+        try {
+          const costs = $$("#fin-costs-tbody .js-fin-cost-input").map((inp) => ({
+            id: Number(inp.dataset.id),
+            cost_price: Number(inp.value || 0)
+          }));
+          const customPrintCost = Number($("#fin-print-cost-input")?.value || 0);
+          const res = await fetch("/admin/api/product-costs", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Accept": "application/json",
+              "X-CSRF-TOKEN": CSRF_TOKEN
+            },
+            body: JSON.stringify({ custom_print_cost: customPrintCost, costs })
+          });
+          const data = await res.json().catch(() => ({}));
+          if (res.ok && data.success) {
+            if (Array.isArray(data.products)) {
+              products = data.products.map(mapProductFromDB);
+              renderProducts();
+            }
+            toast("Buying Costs Saved", "All profit margins & stock values updated.");
+            await loadBusinessAnalytics();
+          } else {
+            admAlert(data.message || "Could not save buying costs.", { title: "Save Failed" });
+          }
+        } catch (err) {
+          console.error(err);
+          admAlert("Network error while saving costs.", { title: "Save Failed" });
+        } finally {
+          if (btn) { btn.disabled = false; btn.textContent = origText; }
+        }
+      });
 
       /* ---------- Init ---------- */
       initColumnToggles();

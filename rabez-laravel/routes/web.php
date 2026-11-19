@@ -167,6 +167,13 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->group(function () {
     Route::post('/menus/reorder', [AdminController::class, 'reorderMenus'])->name('admin.menus.reorder');
     Route::post('/menus/{id}/update', [AdminController::class, 'updateMenuItem'])->name('admin.menus.update');
     Route::delete('/menus/{id}', [AdminController::class, 'deleteMenuItem'])->name('admin.menus.delete');
+
+    // Business & Profit Analytics (Main Admin Only)
+    Route::get('/api/analytics', [AdminController::class, 'getBusinessAnalytics'])->name('admin.analytics.data');
+    Route::get('/api/analytics/export', [AdminController::class, 'exportBusinessCsv'])->name('admin.analytics.export');
+    Route::post('/api/product-costs', [AdminController::class, 'saveProductCosts'])->name('admin.analytics.save_costs');
+    Route::post('/expenses', [AdminController::class, 'storeExpense'])->name('admin.expenses.store');
+    Route::delete('/expenses/{id}', [AdminController::class, 'deleteExpense'])->name('admin.expenses.delete');
 });
 
 // Dynamic CMS Storefront Pages (must remain at the bottom after all system/store routes)

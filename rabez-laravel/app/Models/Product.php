@@ -20,6 +20,7 @@ class Product extends Model
         'has_custom_print' => 'boolean',
         'regular_price' => 'decimal:2',
         'price' => 'decimal:2',
+        'cost_price' => 'decimal:2',
     ];
 
     public function category(): BelongsTo

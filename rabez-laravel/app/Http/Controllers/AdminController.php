@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\BusinessExpense;
 use App\Models\Category;
 use App\Models\Coupon;
 use App\Models\Media;
@@ -12,6 +13,7 @@ use App\Models\ProductVariant;
 use App\Models\Setting;
 use App\Models\User;
 use App\Services\ImageOptimizerService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
@@ -417,6 +419,7 @@ class AdminController extends Controller
             'sku' => 'required|string|unique:products,sku',
             'price' => 'required|numeric',
             'regular_price' => 'nullable|numeric',
+            'cost_price' => 'nullable|numeric|min:0',
             'club' => 'nullable|string',
             'sleeve' => 'nullable|string',
             'fabric' => 'nullable|string|max:191',
@@ -477,6 +480,7 @@ class AdminController extends Controller
             'fabric' => isset($validated['fabric']) ? (trim($validated['fabric']) ?: null) : null,
             'price' => $validated['price'],
             'regular_price' => $validated['regular_price'] ?? ($validated['price'] + 200),
+            'cost_price' => isset($validated['cost_price']) ? floatval($validated['cost_price']) : 0,
             'short_desc' => $validated['short_desc'] ?? '',
             'description' => $validated['description'] ?? '',
             'image' => $featuredImageUrl ?? '/assets/images/products/real-madrid-home-hs.jpg',
@@ -515,6 +519,7 @@ class AdminController extends Controller
             'sku' => 'nullable|string|unique:products,sku,' . $product->id,
             'price' => 'nullable|numeric',
             'regular_price' => 'nullable|numeric',
+            'cost_price' => 'nullable|numeric|min:0',
             'club' => 'nullable|string',
             'sleeve' => 'nullable|string',
             'fabric' => 'nullable|string|max:191',
@@ -546,6 +551,9 @@ class AdminController extends Controller
         if (isset($validated['sku'])) $product->sku = strtoupper($validated['sku']);
         if (isset($validated['price'])) $product->price = $validated['price'];
         if (isset($validated['regular_price'])) $product->regular_price = $validated['regular_price'];
+        if ($request->has('cost_price')) {
+            $product->cost_price = $validated['cost_price'] !== null ? floatval($validated['cost_price']) : 0;
+        }
         if (isset($validated['club'])) $product->club = $validated['club'];
         if (isset($validated['sleeve'])) $product->sleeve = $validated['sleeve'];
         if ($request->exists('fabric')) {
@@ -816,6 +824,11 @@ class AdminController extends Controller
                 $totalPrice = $qty * $unitPrice;
                 $subtotal += $totalPrice;
 
+                $matchedProd = !empty($item['product_id'])
+                    ? Product::find($item['product_id'])
+                    : (!empty($item['id']) ? Product::find($item['id']) : null);
+                $unitCost = ($matchedProd && (float) $matchedProd->cost_price > 0) ? (float) $matchedProd->cost_price : null;
+
                 OrderItem::create([
                     'order_id' => $order->id,
                     'product_id' => $item['product_id'] ?? $item['id'] ?? null,
@@ -823,6 +836,7 @@ class AdminController extends Controller
                     'size' => $item['size'] ?? 'L',
                     'qty' => $qty,
                     'unit_price' => $unitPrice,
+                    'unit_cost' => $unitCost,
                     'total_price' => $totalPrice,
                     'custom_name' => !empty($item['print']) ? strip_tags(strtoupper($item['print'])) : (!empty($item['custom_name']) ? strip_tags(strtoupper($item['custom_name'])) : null),
                     'custom_number' => !empty($item['custom_number']) ? strip_tags($item['custom_number']) : null,
@@ -1925,6 +1939,604 @@ class AdminController extends Controller
             'sent' => $result['sent'],
             'failed' => $result['failed'],
             'cleaned' => $result['cleaned'],
+        ]);
+    }
+
+    /* ==========================================================================
+       BUSINESS ANALYTICS, BUYING COSTS (COGS) & EXPENSE TRACKER (MAIN ADMIN ONLY)
+       ========================================================================== */
+
+    private function resolveAnalyticsDateWindow(Request $request): array
+    {
+        $range = strtolower(trim((string) $request->query('range', '30d')));
+        $now = Carbon::now();
+
+        switch ($range) {
+            case 'today':
+                return [$now->copy()->startOfDay(), $now->copy()->endOfDay(), 'today', 'Today'];
+            case '7d':
+                return [$now->copy()->subDays(6)->startOfDay(), $now->copy()->endOfDay(), '7d', 'Last 7 Days'];
+            case 'month':
+                return [$now->copy()->startOfMonth()->startOfDay(), $now->copy()->endOfDay(), 'month', 'This Month'];
+            case 'year':
+                return [$now->copy()->startOfYear()->startOfDay(), $now->copy()->endOfDay(), 'year', 'This Year'];
+            case 'all':
+                return [null, null, 'all', 'All Time'];
+            case 'custom':
+                try {
+                    $fromStr = trim((string) $request->query('from', ''));
+                    $toStr = trim((string) $request->query('to', ''));
+                    $from = $fromStr ? Carbon::parse($fromStr)->startOfDay() : $now->copy()->subDays(29)->startOfDay();
+                    $to = $toStr ? Carbon::parse($toStr)->endOfDay() : $now->copy()->endOfDay();
+                    if ($from->gt($to)) {
+                        [$from, $to] = [$to->copy()->startOfDay(), $from->copy()->endOfDay()];
+                    }
+                    return [$from, $to, 'custom', $from->format('d M Y') . ' – ' . $to->format('d M Y')];
+                } catch (\Throwable $e) {
+                    return [$now->copy()->subDays(29)->startOfDay(), $now->copy()->endOfDay(), '30d', 'Last 30 Days'];
+                }
+            case '30d':
+            default:
+                return [$now->copy()->subDays(29)->startOfDay(), $now->copy()->endOfDay(), '30d', 'Last 30 Days'];
+        }
+    }
+
+    private function computeBusinessAnalytics(Request $request): array
+    {
+        [$startDate, $endDate, $range, $rangeLabel] = $this->resolveAnalyticsDateWindow($request);
+        $basis = strtolower(trim((string) $request->query('basis', 'active'))) === 'delivered' ? 'delivered' : 'active';
+
+        $ordersQuery = Order::with('items')->orderByDesc('created_at')->orderByDesc('id');
+        if ($startDate && $endDate) {
+            $ordersQuery->whereBetween('created_at', [$startDate, $endDate]);
+        }
+        $allOrders = $ordersQuery->get();
+
+        $catalogProducts = Product::with('variants')->latest('id')->get();
+        $productsById = [];
+        $productsByLowerName = [];
+        foreach ($catalogProducts as $prod) {
+            $productsById[(int) $prod->id] = $prod;
+            $productsByLowerName[strtolower(trim((string) $prod->name))] = $prod;
+        }
+
+        $customPrintCost = max(0.0, (float) Setting::get('custom_print_cost', 80));
+        $customPrintFee = max(0.0, (float) Setting::get('custom_print_fee', 250));
+
+        $sleeveLabels = [
+            'half-sleeve' => 'Half Sleeve',
+            'full-sleeve' => 'Full Sleeve',
+            'winter-hoodie' => 'Winter Hoodie',
+            'retro' => 'Retro',
+            'footwear' => 'Boots / Footwear',
+            'tracksuit' => 'Tracksuit',
+        ];
+
+        $statusBreakdown = [];
+        foreach (['Pending', 'Printing', 'Shipped', 'Delivered', 'Cancelled'] as $st) {
+            $statusBreakdown[$st] = ['status' => $st, 'count' => 0, 'total' => 0.0];
+        }
+
+        foreach ($allOrders as $o) {
+            $st = $o->status ?: 'Pending';
+            if (!isset($statusBreakdown[$st])) {
+                $statusBreakdown[$st] = ['status' => $st, 'count' => 0, 'total' => 0.0];
+            }
+            $statusBreakdown[$st]['count']++;
+            $statusBreakdown[$st]['total'] += (float) $o->total;
+        }
+
+        $eligibleOrders = $allOrders->filter(function (Order $o) use ($basis) {
+            if ($basis === 'delivered') {
+                return $o->status === 'Delivered';
+            }
+            return $o->status !== 'Cancelled';
+        })->values();
+
+        $totalUnitsSold = 0;
+        $productNetSales = 0.0;
+        $shippingCollected = 0.0;
+        $grossCollected = 0.0;
+        $discountsGiven = 0.0;
+        $totalCogs = 0.0;
+        $customPrintsSold = 0;
+        $customPrintRevenue = 0.0;
+        $customPrintCostTotal = 0.0;
+        $ordersWithMissingCost = 0;
+
+        $productStats = [];
+        $categoryStats = [];
+        $dailyMap = [];
+        $orderLedger = [];
+
+        foreach ($eligibleOrders as $order) {
+            $oTotal = (float) $order->total;
+            $oShipping = (float) $order->shipping_fee;
+            $oNetProductSales = max(0.0, $oTotal - $oShipping);
+            $oSubtotal = (float) $order->subtotal;
+            $oDiscount = max(0.0, $oSubtotal - $oNetProductSales);
+            $discountRatio = $oSubtotal > 0 ? ($oNetProductSales / $oSubtotal) : 1.0;
+
+            $grossCollected += $oTotal;
+            $shippingCollected += $oShipping;
+            $productNetSales += $oNetProductSales;
+            $discountsGiven += $oDiscount;
+
+            $orderUnits = 0;
+            $orderCogs = 0.0;
+            $orderMissingCost = false;
+
+            foreach ($order->items as $item) {
+                $qty = max(1, (int) $item->qty);
+                $orderUnits += $qty;
+                $totalUnitsSold += $qty;
+
+                $matchedProd = ($item->product_id && isset($productsById[(int) $item->product_id]))
+                    ? $productsById[(int) $item->product_id]
+                    : ($productsByLowerName[strtolower(trim((string) $item->product_name))] ?? null);
+
+                $unitProdCost = ($item->unit_cost !== null && (float) $item->unit_cost > 0)
+                    ? (float) $item->unit_cost
+                    : (float) ($matchedProd->cost_price ?? 0);
+
+                if ($unitProdCost <= 0) {
+                    $orderMissingCost = true;
+                }
+
+                $hasPrint = !empty(trim((string) $item->custom_name)) || !empty(trim((string) $item->custom_number));
+                $itemPrintCost = $hasPrint ? $customPrintCost : 0.0;
+                $itemCogs = ($unitProdCost + $itemPrintCost) * $qty;
+                $orderCogs += $itemCogs;
+
+                $itemRawRevenue = (float) $item->total_price;
+                $itemNetRevenue = $oSubtotal > 0 ? ($itemRawRevenue * $discountRatio) : $itemRawRevenue;
+                $itemProfit = $itemNetRevenue - $itemCogs;
+
+                if ($hasPrint) {
+                    $customPrintsSold += $qty;
+                    $customPrintRevenue += ($customPrintFee * $qty);
+                    $customPrintCostTotal += ($customPrintCost * $qty);
+                }
+
+                $pKey = $matchedProd ? ('id:' . $matchedProd->id) : ('name:' . strtolower(trim((string) $item->product_name)));
+                $pName = $matchedProd?->name ?: $item->product_name;
+                $pSku = $matchedProd?->sku ?: 'CUSTOM';
+                $pImg = $matchedProd?->image ?: ($item->image ?: '/assets/images/products/real-madrid-home-hs.jpg');
+                $pCatKey = $matchedProd?->sleeve ?: 'other';
+                $pCatLabel = $matchedProd?->sleeve_label ?: ($sleeveLabels[$pCatKey] ?? ucwords(str_replace('-', ' ', $pCatKey)));
+
+                if (!isset($productStats[$pKey])) {
+                    $productStats[$pKey] = [
+                        'product_id' => $matchedProd?->id,
+                        'sku' => $pSku,
+                        'name' => $pName,
+                        'image' => $pImg,
+                        'category' => $pCatLabel,
+                        'units_sold' => 0,
+                        'orders_count' => 0,
+                        'revenue' => 0.0,
+                        'cogs' => 0.0,
+                        'profit' => 0.0,
+                        'margin_pct' => 0.0,
+                        'avg_selling_price' => 0.0,
+                        'current_cost_price' => (float) ($matchedProd->cost_price ?? 0),
+                        '_order_ids' => [],
+                    ];
+                }
+                $productStats[$pKey]['units_sold'] += $qty;
+                $productStats[$pKey]['_order_ids'][$order->id] = true;
+                $productStats[$pKey]['revenue'] += $itemNetRevenue;
+                $productStats[$pKey]['cogs'] += $itemCogs;
+                $productStats[$pKey]['profit'] += $itemProfit;
+
+                if (!isset($categoryStats[$pCatLabel])) {
+                    $categoryStats[$pCatLabel] = [
+                        'category' => $pCatLabel,
+                        'units' => 0,
+                        'revenue' => 0.0,
+                        'cogs' => 0.0,
+                        'profit' => 0.0,
+                    ];
+                }
+                $categoryStats[$pCatLabel]['units'] += $qty;
+                $categoryStats[$pCatLabel]['revenue'] += $itemNetRevenue;
+                $categoryStats[$pCatLabel]['cogs'] += $itemCogs;
+                $categoryStats[$pCatLabel]['profit'] += $itemProfit;
+            }
+
+            if ($orderMissingCost) {
+                $ordersWithMissingCost++;
+            }
+
+            $totalCogs += $orderCogs;
+            $orderProfit = $oNetProductSales - $orderCogs;
+            $orderMargin = $oNetProductSales > 0 ? round(($orderProfit / $oNetProductSales) * 100, 1) : 0.0;
+
+            $dayKey = $order->created_at ? $order->created_at->format('Y-m-d') : now()->format('Y-m-d');
+            if (!isset($dailyMap[$dayKey])) {
+                $dailyMap[$dayKey] = [
+                    'date' => $dayKey,
+                    'label' => $order->created_at ? $order->created_at->format('d M') : $dayKey,
+                    'orders' => 0,
+                    'units' => 0,
+                    'revenue' => 0.0,
+                    'cogs' => 0.0,
+                    'profit' => 0.0,
+                ];
+            }
+            $dailyMap[$dayKey]['orders']++;
+            $dailyMap[$dayKey]['units'] += $orderUnits;
+            $dailyMap[$dayKey]['revenue'] += $oNetProductSales;
+            $dailyMap[$dayKey]['cogs'] += $orderCogs;
+            $dailyMap[$dayKey]['profit'] += $orderProfit;
+
+            $orderLedger[] = [
+                'id' => $order->id,
+                'order_number' => $order->order_number ?: ('RBZ-' . $order->id),
+                'date' => $order->created_at ? $order->created_at->format('d M Y, h:i A') : '—',
+                'date_iso' => $order->created_at ? $order->created_at->format('Y-m-d') : '',
+                'customer_name' => $order->customer_name,
+                'customer_phone' => $order->customer_phone,
+                'status' => $order->status,
+                'units' => $orderUnits,
+                'product_sales' => round($oNetProductSales, 2),
+                'shipping_fee' => round($oShipping, 2),
+                'discount' => round($oDiscount, 2),
+                'cogs' => round($orderCogs, 2),
+                'gross_profit' => round($orderProfit, 2),
+                'margin_pct' => $orderMargin,
+                'has_missing_cost' => $orderMissingCost,
+            ];
+        }
+
+        // Format product & category breakdown arrays
+        $productBreakdown = [];
+        foreach ($productStats as $row) {
+            $rev = round($row['revenue'], 2);
+            $cogs = round($row['cogs'], 2);
+            $profit = round($row['profit'], 2);
+            $units = (int) $row['units_sold'];
+            $productBreakdown[] = [
+                'product_id' => $row['product_id'],
+                'sku' => $row['sku'],
+                'name' => $row['name'],
+                'image' => $row['image'],
+                'category' => $row['category'],
+                'units_sold' => $units,
+                'orders_count' => count($row['_order_ids']),
+                'revenue' => $rev,
+                'cogs' => $cogs,
+                'profit' => $profit,
+                'margin_pct' => $rev > 0 ? round(($profit / $rev) * 100, 1) : 0.0,
+                'avg_selling_price' => $units > 0 ? round($rev / $units, 2) : 0.0,
+                'current_cost_price' => round($row['current_cost_price'], 2),
+            ];
+        }
+        usort($productBreakdown, fn ($a, $b) => $b['profit'] <=> $a['profit'] ?: ($b['units_sold'] <=> $a['units_sold']));
+
+        $categoryBreakdown = array_values(array_map(function ($c) {
+            $rev = round($c['revenue'], 2);
+            $profit = round($c['profit'], 2);
+            return [
+                'category' => $c['category'],
+                'units' => (int) $c['units'],
+                'revenue' => $rev,
+                'cogs' => round($c['cogs'], 2),
+                'profit' => $profit,
+                'margin_pct' => $rev > 0 ? round(($profit / $rev) * 100, 1) : 0.0,
+            ];
+        }, $categoryStats));
+        usort($categoryBreakdown, fn ($a, $b) => $b['revenue'] <=> $a['revenue']);
+
+        // Expenses in date window
+        $expensesQuery = BusinessExpense::orderByDesc('expense_date')->orderByDesc('id');
+        if ($startDate && $endDate) {
+            $expensesQuery->whereBetween('expense_date', [$startDate->toDateString(), $endDate->toDateString()]);
+        }
+        $expenses = $expensesQuery->get();
+        $totalExpenses = round((float) $expenses->sum('amount'), 2);
+
+        $expenseCategoriesMeta = [
+            'ads' => 'Facebook / Boost Ads',
+            'packaging' => 'Packaging & Tags',
+            'courier' => 'Courier / Return Loss',
+            'print_supply' => 'Heat-Press & Vinyl Stock',
+            'salary_rent' => 'Staff & Operations',
+            'other' => 'Other Expenses',
+        ];
+        $expenseByCat = [];
+        foreach ($expenses as $exp) {
+            $catKey = $exp->category ?: 'other';
+            if (!isset($expenseByCat[$catKey])) {
+                $expenseByCat[$catKey] = [
+                    'category' => $catKey,
+                    'label' => $expenseCategoriesMeta[$catKey] ?? ucfirst($catKey),
+                    'amount' => 0.0,
+                    'count' => 0,
+                ];
+            }
+            $expenseByCat[$catKey]['amount'] += (float) $exp->amount;
+            $expenseByCat[$catKey]['count']++;
+        }
+        $expenseBreakdown = array_values(array_map(function ($row) {
+            $row['amount'] = round($row['amount'], 2);
+            return $row;
+        }, $expenseByCat));
+        usort($expenseBreakdown, fn ($a, $b) => $b['amount'] <=> $a['amount']);
+
+        // Inventory valuation & missing cost detection across all products
+        $stockUnits = 0;
+        $stockCostValue = 0.0;
+        $stockRetailValue = 0.0;
+        $missingCostProductsCount = 0;
+        $catalogCosts = [];
+
+        foreach ($catalogProducts as $prod) {
+            $pUnits = $prod->variants->isNotEmpty()
+                ? (int) $prod->variants->where('is_in_stock', true)->sum('stock_qty')
+                : ($prod->is_ready_stock ? 20 : 0);
+            $costP = (float) ($prod->cost_price ?? 0);
+            $saleP = (float) $prod->price;
+            $stockUnits += $pUnits;
+            $stockCostValue += $pUnits * $costP;
+            $stockRetailValue += $pUnits * $saleP;
+            if ($costP <= 0) {
+                $missingCostProductsCount++;
+            }
+
+            $catalogCosts[] = [
+                'id' => $prod->id,
+                'sku' => $prod->sku ?: ('RBZ-' . $prod->id),
+                'name' => $prod->name,
+                'image' => $prod->image ?: '/assets/images/products/real-madrid-home-hs.jpg',
+                'sleeve' => $prod->sleeve_label ?: ($sleeveLabels[$prod->sleeve] ?? ucwords(str_replace('-', ' ', $prod->sleeve ?: 'Jersey'))),
+                'price' => round($saleP, 2),
+                'cost_price' => round($costP, 2),
+            ];
+        }
+
+        // Daily trend series (continuous for bounded ranges)
+        $dailyTrend = [];
+        if ($startDate && $endDate && $startDate->diffInDays($endDate) <= 31) {
+            $cursor = $startDate->copy()->startOfDay();
+            $endDay = $endDate->copy()->startOfDay();
+            while ($cursor->lte($endDay)) {
+                $k = $cursor->format('Y-m-d');
+                $dailyTrend[] = [
+                    'date' => $k,
+                    'label' => $cursor->format('d M'),
+                    'orders' => (int) ($dailyMap[$k]['orders'] ?? 0),
+                    'units' => (int) ($dailyMap[$k]['units'] ?? 0),
+                    'revenue' => round((float) ($dailyMap[$k]['revenue'] ?? 0), 2),
+                    'cogs' => round((float) ($dailyMap[$k]['cogs'] ?? 0), 2),
+                    'profit' => round((float) ($dailyMap[$k]['profit'] ?? 0), 2),
+                ];
+                $cursor->addDay();
+            }
+        } else {
+            ksort($dailyMap);
+            $sliced = count($dailyMap) > 30 ? array_slice($dailyMap, -30, 30, true) : $dailyMap;
+            foreach ($sliced as $d) {
+                $dailyTrend[] = [
+                    'date' => $d['date'],
+                    'label' => $d['label'],
+                    'orders' => (int) $d['orders'],
+                    'units' => (int) $d['units'],
+                    'revenue' => round((float) $d['revenue'], 2),
+                    'cogs' => round((float) $d['cogs'], 2),
+                    'profit' => round((float) $d['profit'], 2),
+                ];
+            }
+        }
+
+        $grossProfit = round($productNetSales - $totalCogs, 2);
+        $netProfit = round($grossProfit - $totalExpenses, 2);
+        $eligibleCount = $eligibleOrders->count();
+        $allOrdersCount = $allOrders->count();
+        $deliveredCount = (int) ($statusBreakdown['Delivered']['count'] ?? 0);
+        $cancelledCount = (int) ($statusBreakdown['Cancelled']['count'] ?? 0);
+
+        return [
+            'range' => $range,
+            'range_label' => $rangeLabel,
+            'basis' => $basis,
+            'kpis' => [
+                'total_orders' => $allOrdersCount,
+                'eligible_orders' => $eligibleCount,
+                'delivered_orders' => $deliveredCount,
+                'cancelled_orders' => $cancelledCount,
+                'total_units_sold' => $totalUnitsSold,
+                'product_net_sales' => round($productNetSales, 2),
+                'shipping_collected' => round($shippingCollected, 2),
+                'gross_collected' => round($grossCollected, 2),
+                'discounts_given' => round($discountsGiven, 2),
+                'total_cogs' => round($totalCogs, 2),
+                'gross_profit' => $grossProfit,
+                'gross_margin_pct' => $productNetSales > 0 ? round(($grossProfit / $productNetSales) * 100, 1) : 0.0,
+                'total_expenses' => $totalExpenses,
+                'net_profit' => $netProfit,
+                'net_margin_pct' => $productNetSales > 0 ? round(($netProfit / $productNetSales) * 100, 1) : 0.0,
+                'avg_order_value' => $eligibleCount > 0 ? round($productNetSales / $eligibleCount, 2) : 0.0,
+                'avg_profit_per_order' => $eligibleCount > 0 ? round($grossProfit / $eligibleCount, 2) : 0.0,
+                'delivery_success_rate' => $allOrdersCount > 0 ? round(($deliveredCount / $allOrdersCount) * 100, 1) : 0.0,
+                'custom_prints_sold' => $customPrintsSold,
+                'custom_print_fee' => round($customPrintFee, 2),
+                'custom_print_cost' => round($customPrintCost, 2),
+                'custom_print_revenue' => round($customPrintRevenue, 2),
+                'custom_print_cost_total' => round($customPrintCostTotal, 2),
+                'custom_print_profit' => round($customPrintRevenue - $customPrintCostTotal, 2),
+                'stock_units' => $stockUnits,
+                'stock_cost_value' => round($stockCostValue, 2),
+                'stock_retail_value' => round($stockRetailValue, 2),
+                'missing_cost_products_count' => $missingCostProductsCount,
+                'orders_with_missing_cost' => $ordersWithMissingCost,
+            ],
+            'status_breakdown' => array_values($statusBreakdown),
+            'category_breakdown' => $categoryBreakdown,
+            'daily_trend' => $dailyTrend,
+            'product_breakdown' => $productBreakdown,
+            'order_ledger' => array_slice($orderLedger, 0, 150),
+            'all_ledger' => $orderLedger,
+            'expenses' => $expenses->map(function (BusinessExpense $exp) use ($expenseCategoriesMeta) {
+                return [
+                    'id' => $exp->id,
+                    'title' => $exp->title,
+                    'category' => $exp->category,
+                    'category_label' => $expenseCategoriesMeta[$exp->category] ?? ucfirst($exp->category),
+                    'amount' => round((float) $exp->amount, 2),
+                    'expense_date' => $exp->expense_date ? $exp->expense_date->format('Y-m-d') : '',
+                    'expense_date_display' => $exp->expense_date ? $exp->expense_date->format('d M Y') : '',
+                    'notes' => $exp->notes ?: '',
+                ];
+            })->values()->all(),
+            'expense_breakdown' => $expenseBreakdown,
+            'catalog_costs' => $catalogCosts,
+        ];
+    }
+
+    public function getBusinessAnalytics(Request $request)
+    {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
+        $data = $this->computeBusinessAnalytics($request);
+        unset($data['all_ledger']);
+
+        return response()->json(['success' => true] + $data);
+    }
+
+    public function saveProductCosts(Request $request)
+    {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
+        $validated = $request->validate([
+            'custom_print_cost' => 'nullable|numeric|min:0|max:100000',
+            'costs' => 'nullable|array',
+            'costs.*.id' => 'required|integer|exists:products,id',
+            'costs.*.cost_price' => 'nullable|numeric|min:0|max:1000000',
+        ]);
+
+        if (array_key_exists('custom_print_cost', $validated) && $validated['custom_print_cost'] !== null) {
+            Setting::set('custom_print_cost', (string) round((float) $validated['custom_print_cost'], 2));
+        }
+
+        if (!empty($validated['costs'])) {
+            foreach ($validated['costs'] as $row) {
+                Product::where('id', (int) $row['id'])->update([
+                    'cost_price' => round((float) ($row['cost_price'] ?? 0), 2),
+                ]);
+            }
+        }
+
+        return response()->json([
+            'success' => true,
+            'custom_print_cost' => (float) Setting::get('custom_print_cost', 80),
+            'products' => Product::with('variants')->latest('id')->get(),
+        ]);
+    }
+
+    public function storeExpense(Request $request)
+    {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
+        $validated = $request->validate([
+            'title' => 'required|string|max:180',
+            'category' => 'required|in:ads,packaging,courier,print_supply,salary_rent,other',
+            'amount' => 'required|numeric|min:0.01|max:99999999',
+            'expense_date' => 'required|date',
+            'notes' => 'nullable|string|max:500',
+        ]);
+
+        $expense = BusinessExpense::create([
+            'title' => strip_tags(trim($validated['title'])),
+            'category' => $validated['category'],
+            'amount' => round((float) $validated['amount'], 2),
+            'expense_date' => $validated['expense_date'],
+            'notes' => !empty($validated['notes']) ? strip_tags(trim($validated['notes'])) : null,
+            'created_by' => Auth::id(),
+        ]);
+
+        return response()->json([
+            'success' => true,
+            'expense' => [
+                'id' => $expense->id,
+                'title' => $expense->title,
+                'category' => $expense->category,
+                'amount' => round((float) $expense->amount, 2),
+                'expense_date' => $expense->expense_date?->format('Y-m-d'),
+            ],
+        ]);
+    }
+
+    public function deleteExpense($id)
+    {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
+        $expense = BusinessExpense::findOrFail($id);
+        $expense->delete();
+
+        return response()->json(['success' => true]);
+    }
+
+    public function exportBusinessCsv(Request $request)
+    {
+        if ($deny = $this->requireMainAdmin()) {
+            return $deny;
+        }
+
+        $analytics = $this->computeBusinessAnalytics($request);
+        $kpis = $analytics['kpis'];
+        $filename = 'rabez-business-report-' . $analytics['range'] . '-' . now()->format('Y-m-d') . '.csv';
+
+        return response()->streamDownload(function () use ($analytics, $kpis) {
+            $out = fopen('php://output', 'w');
+            // UTF-8 BOM for clean Excel opening
+            fwrite($out, "\xEF\xBB\xBF");
+
+            fputcsv($out, [
+                'Order #', 'Date', 'Customer', 'Phone', 'Status',
+                'Units', 'Product Sales (BDT)', 'Delivery (BDT)', 'Discount (BDT)',
+                'Cost COGS (BDT)', 'Gross Profit (BDT)', 'Margin %'
+            ]);
+
+            foreach ($analytics['all_ledger'] as $row) {
+                fputcsv($out, [
+                    $row['order_number'],
+                    $row['date'],
+                    $row['customer_name'],
+                    $row['customer_phone'],
+                    $row['status'],
+                    $row['units'],
+                    $row['product_sales'],
+                    $row['shipping_fee'],
+                    $row['discount'],
+                    $row['cogs'],
+                    $row['gross_profit'],
+                    $row['margin_pct'] . '%',
+                ]);
+            }
+
+            fputcsv($out, []);
+            fputcsv($out, ['SUMMARY METRIC', 'VALUE']);
+            fputcsv($out, ['Report Range', $analytics['range_label'] . ' (' . strtoupper($analytics['basis']) . ')']);
+            fputcsv($out, ['Total Products Sold (Units)', $kpis['total_units_sold']]);
+            fputcsv($out, ['Total Product Sales (BDT)', $kpis['product_net_sales']]);
+            fputcsv($out, ['Total Cost COGS (BDT)', $kpis['total_cogs']]);
+            fputcsv($out, ['Gross Profit (BDT)', $kpis['gross_profit']]);
+            fputcsv($out, ['Operating Expenses (BDT)', $kpis['total_expenses']]);
+            fputcsv($out, ['Net Profit (BDT)', $kpis['net_profit']]);
+            fputcsv($out, ['Net Margin %', $kpis['net_margin_pct'] . '%']);
+
+            fclose($out);
+        }, $filename, [
+            'Content-Type' => 'text/csv; charset=UTF-8',
         ]);
     }
 }

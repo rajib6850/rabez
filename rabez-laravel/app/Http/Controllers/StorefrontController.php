@@ -229,6 +229,7 @@ class StorefrontController extends Controller
             }
 
             $verifiedUnitPrice = $basePrice + ($hasCustomPrint ? $customPrintFee : 0);
+            $unitCost = ($product && $product->cost_price !== null && floatval($product->cost_price) > 0) ? floatval($product->cost_price) : null;
             $qty = max(1, min(50, (int)$item['qty']));
             $lineTotal = $verifiedUnitPrice * $qty;
             $subtotal += $lineTotal;
@@ -242,6 +243,7 @@ class StorefrontController extends Controller
                 'size' => !empty($item['variant_title']) ? strip_tags((string) $item['variant_title']) : ($item['size'] ?? 'L'),
                 'qty' => $qty,
                 'unit_price' => $verifiedUnitPrice,
+                'unit_cost' => $unitCost,
                 'total_price' => $lineTotal,
                 'custom_name' => $storedCustomName,
                 'custom_number' => $cleanCustomNumber,
@@ -301,6 +303,7 @@ class StorefrontController extends Controller
                     'size' => $procItem['size'],
                     'qty' => $procItem['qty'],
                     'unit_price' => $procItem['unit_price'],
+                    'unit_cost' => $procItem['unit_cost'],
                     'total_price' => $procItem['total_price'],
                     'custom_name' => $procItem['custom_name'],
                     'custom_number' => $procItem['custom_number'],
