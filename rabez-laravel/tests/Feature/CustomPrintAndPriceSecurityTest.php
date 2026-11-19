@@ -241,4 +241,120 @@ class CustomPrintAndPriceSecurityTest extends TestCase
         $response->assertSee('<span class="adm-nav-count js-print-count">2</span>', false);
         $response->assertSee('<span class="adm-chip adm-chip--printing js-print-chip">2 waiting</span>', false);
     }
+
+    public function test_homepage_renders_upgraded_custom_print_studio_with_only_eligible_products()
+    {
+        Setting::set('custom_print_fee', 250);
+
+        $jersey = Product::create([
+            'name' => 'Real Madrid 26/27 Home Jersey',
+            'slug' => 'real-madrid-26-27-home-jersey',
+            'sku' => 'RM-HOME-26',
+            'price' => 1150,
+            'image' => 'assets/images/products/real-madrid-home-hs.jpg',
+            'club' => 'real-madrid',
+            'sleeve' => 'half-sleeve',
+            'has_custom_print' => true,
+        ]);
+
+        $hoodie = Product::create([
+            'name' => 'Winter Heavyweight Test Hoodie',
+            'slug' => 'winter-heavyweight-test-hoodie',
+            'sku' => 'HD-TEST-99',
+            'price' => 1450,
+            'image' => 'assets/images/products/messi-barca-arg-hoodie.jpg',
+            'club' => 'argentina',
+            'sleeve' => 'winter-hoodie',
+            'has_custom_print' => false,
+        ]);
+
+        $response = $this->get('/');
+        $response->assertStatus(200);
+        $response->assertSee('id="custom-print"', false);
+        $response->assertSee('+৳250', false);
+        $response->assertSee('BELLINGHAM 5', false);
+        $response->assertSee('data-color-name="Gold"', false);
+        $response->assertSee($jersey->name, false);
+
+        // Extract only the #custom-print section HTML and assert hoodie is NOT inside the customizer kit rail or select
+        $html = $response->getContent();
+        $startPos = strpos($html, '<section id="custom-print"');
+        $endPos = strpos($html, '</section>', $startPos);
+        $this->assertNotFalse($startPos);
+        $this->assertNotFalse($endPos);
+        $studioHtml = substr($html, $startPos, $endPos - $startPos);
+
+        $this->assertStringContainsString('js-home-kit-rail', $studioHtml);
+        $this->assertStringContainsString($jersey->name, $studioHtml);
+        $this->assertStringNotContainsString($hoodie->name, $studioHtml);
+    }
+
+    public function test_checkout_preserves_full_custom_name_and_allowlisted_vinyl_color()
+    {
+        Setting::set('shipping_mode', 'flat');
+        Setting::set('shipping_flat_fee', 130);
+        Setting::set('custom_print_fee', 250);
+
+        $product = Product::create([
+            'name' => 'Arsenal 26/27 Home Jersey',
+            'slug' => 'arsenal-26-27-home-jersey',
+            'sku' => 'ARS-HOME-26',
+            'price' => 1150,
+            'image' => 'assets/images/products/arsenal-home-hs.jpg',
+            'club' => 'arsenal',
+            'sleeve' => 'half-sleeve',
+            'has_custom_print' => true,
+        ]);
+
+        // Valid color + 10-char name
+        $res1 = $this->postJson('/checkout', [
+            'customer_name' => 'Gunner Fan',
+            'customer_phone' => '01712345678',
+            'customer_address' => 'Banani, Dhaka',
+            'shipping_zone' => 130,
+            'cart_items' => [
+                [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'size' => 'L',
+                    'qty' => 1,
+                    'price' => 1400,
+                    'custom_name' => 'BELLINGHAM',
+                    'custom_number' => '5',
+                    'custom_color' => 'Gold',
+                ]
+            ],
+        ]);
+        $res1->assertStatus(200);
+        $order1 = Order::where('order_number', $res1->json('order_id'))->firstOrFail();
+        $this->assertEquals(1400, $order1->subtotal);
+        $item1 = $order1->items->first();
+        $this->assertEquals('BELLINGHAM [GOLD]', $item1->custom_name);
+        $this->assertEquals('5', $item1->custom_number);
+
+        // Malicious / non-allowlisted custom_color must be ignored
+        $res2 = $this->postJson('/checkout', [
+            'customer_name' => 'Safe Fan',
+            'customer_phone' => '01812345678',
+            'customer_address' => 'Mirpur, Dhaka',
+            'shipping_zone' => 130,
+            'cart_items' => [
+                [
+                    'id' => $product->id,
+                    'name' => $product->name,
+                    'size' => 'M',
+                    'qty' => 1,
+                    'price' => 1400,
+                    'custom_name' => 'SAKA',
+                    'custom_number' => '7',
+                    'custom_color' => '<script>hack</script>',
+                ]
+            ],
+        ]);
+        $res2->assertStatus(200);
+        $order2 = Order::where('order_number', $res2->json('order_id'))->firstOrFail();
+        $item2 = $order2->items->first();
+        $this->assertEquals('SAKA', $item2->custom_name);
+        $this->assertEquals('7', $item2->custom_number);
+    }
 }

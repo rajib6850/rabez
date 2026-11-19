@@ -499,121 +499,439 @@
     </section>
 
     <!-- ======================================================================
-         WIDGET 07: LIVE CUSTOM NAME & NUMBER BACK PRINT PREVIEW
-         (elementor-widget-rabez-customizer)
+         WIDGET 07: LIVE CUSTOM NAME & NUMBER BACK PRINT STUDIO
          ====================================================================== -->
     @if(isset($customPrintProducts) && $customPrintProducts->isNotEmpty())
     @php
-      $findCustId = function (string $sku, ?string $club = null) use ($customPrintProducts) {
-          $found = $customPrintProducts->firstWhere('sku', $sku);
-          if (!$found && $club) {
-              $found = $customPrintProducts->firstWhere('club', $club);
+      $printFee = intval($customPrintFee ?? 250);
+      $defaultCustProduct = $customPrintProducts->firstWhere('sku', 'RM-HOME-26') ?: $customPrintProducts->first();
+
+      $resolveKitTheme = function ($prod) {
+          $sku = strtoupper((string) ($prod->sku ?? ''));
+          $name = strtolower((string) ($prod->name ?? ''));
+          $club = strtolower((string) ($prod->club ?? ''));
+
+          if ($sku === 'RMA-AWAY-FS' || str_contains($name, 'orange') || str_contains($name, 'away orange')) {
+              return ['bgTop' => '#E85D1A', 'bgBot' => '#C2410C', 'trim' => '#18181B', 'text' => '#111111', 'colorName' => 'Black', 'isLight' => false];
           }
-          return $found?->id ?? ($customPrintProducts->first()?->id ?? '');
+          if ($sku === 'RMA-TEAL-TREFOIL' || str_contains($name, 'teal')) {
+              return ['bgTop' => '#0F5C5C', 'bgBot' => '#093B3B', 'trim' => '#E2E8F0', 'text' => '#FFFFFF', 'colorName' => 'White', 'isLight' => false];
+          }
+          if ($sku === 'RMA-3RD-HS' || str_contains($name, 'charcoal') || str_contains($name, '3rd') || str_contains($name, 'dark') || str_contains($name, 'black')) {
+              return ['bgTop' => '#242926', 'bgBot' => '#121614', 'trim' => '#F5D76E', 'text' => '#F5D76E', 'colorName' => 'Gold', 'isLight' => false];
+          }
+          if ($club === 'real-madrid') {
+              return ['bgTop' => '#F8FAF9', 'bgBot' => '#E5ECE8', 'trim' => '#006A4E', 'text' => '#111111', 'colorName' => 'Black', 'isLight' => true];
+          }
+          if ($club === 'barcelona') {
+              return ['bgTop' => '#163A82', 'bgBot' => '#0D2454', 'trim' => '#A61B34', 'text' => '#F5D76E', 'colorName' => 'Gold', 'isLight' => false];
+          }
+          if ($club === 'argentina') {
+              return ['bgTop' => '#74ACDF', 'bgBot' => '#4A8CC7', 'trim' => '#FFFFFF', 'text' => '#111111', 'colorName' => 'Black', 'isLight' => true];
+          }
+          if ($club === 'arsenal') {
+              return ['bgTop' => '#D91E2A', 'bgBot' => '#9E111B', 'trim' => '#FFFFFF', 'text' => '#FFFFFF', 'colorName' => 'White', 'isLight' => false];
+          }
+          if ($club === 'man-utd') {
+              return ['bgTop' => '#C8102E', 'bgBot' => '#8F0A20', 'trim' => '#111111', 'text' => '#FFFFFF', 'colorName' => 'White', 'isLight' => false];
+          }
+          if ($club === 'bangladesh') {
+              return ['bgTop' => '#0B5D3B', 'bgBot' => '#073D26', 'trim' => '#D9232E', 'text' => '#FFFFFF', 'colorName' => 'White', 'isLight' => false];
+          }
+          if ($club === 'bayern') {
+              return ['bgTop' => '#DC052D', 'bgBot' => '#9C031F', 'trim' => '#FFFFFF', 'text' => '#FFFFFF', 'colorName' => 'White', 'isLight' => false];
+          }
+          if ($club === 'liverpool') {
+              return ['bgTop' => '#C8102E', 'bgBot' => '#8B091E', 'trim' => '#F5D76E', 'text' => '#FFFFFF', 'colorName' => 'White', 'isLight' => false];
+          }
+          return ['bgTop' => '#1A221E', 'bgBot' => '#0E1210', 'trim' => '#04F404', 'text' => '#FFFFFF', 'colorName' => 'White', 'isLight' => false];
       };
+
+      $defaultTheme = $resolveKitTheme($defaultCustProduct);
+      $defaultPrice = intval($defaultCustProduct->price ?? 1150);
+      $defaultImg = $defaultCustProduct->image
+          ? (str_starts_with($defaultCustProduct->image, 'http') ? $defaultCustProduct->image : asset(ltrim($defaultCustProduct->image, '/')))
+          : asset('assets/images/products/real-madrid-home-hs.jpg');
+      $defaultSleeve = $defaultCustProduct->sleeve ?: 'half-sleeve';
+      $defaultSleeveLabel = $defaultCustProduct->sleeve_label ?: ucwords(str_replace('-', ' ', $defaultSleeve));
+
+      $defaultVariants = $defaultCustProduct->variants ?? collect();
+      $defaultFallbackSizes = $defaultSleeve === 'footwear' ? ['39', '40', '41', '42', '43', '44'] : ['S', 'M', 'L', 'XL', 'XXL'];
+      $defaultAllSizes = $defaultVariants->isNotEmpty() ? $defaultVariants->pluck('size')->filter()->values()->all() : $defaultFallbackSizes;
+      $defaultInStockSizes = $defaultVariants->isNotEmpty() ? $defaultVariants->where('is_in_stock', true)->pluck('size')->filter()->values()->all() : $defaultFallbackSizes;
+      if (empty($defaultAllSizes)) {
+          $defaultAllSizes = $defaultFallbackSizes;
+          $defaultInStockSizes = $defaultFallbackSizes;
+      }
+      $defaultSelectedSize = in_array('L', $defaultInStockSizes, true) ? 'L' : ($defaultInStockSizes[0] ?? ($defaultAllSizes[0] ?? 'L'));
+
+      $customClubs = $customPrintProducts
+          ->filter(fn ($p) => !empty($p->club) && $p->club !== 'all')
+          ->mapWithKeys(function ($p) {
+              $label = $p->club_label ?: ucwords(str_replace('-', ' ', $p->club));
+              return [$p->club => $label];
+          })
+          ->all();
+
+      $vinylColors = [
+          ['hex' => '#FFFFFF', 'name' => 'White', 'title' => 'Pure White', 'border' => 'rgba(255,255,255,0.28)'],
+          ['hex' => '#F5D76E', 'name' => 'Gold', 'title' => 'Champion Gold', 'border' => 'rgba(255,255,255,0.25)'],
+          ['hex' => '#111111', 'name' => 'Black', 'title' => 'Pitch Black', 'border' => '#555555'],
+          ['hex' => '#00E5FF', 'name' => 'Cyan', 'title' => 'Electric Cyan', 'border' => 'rgba(255,255,255,0.25)'],
+          ['hex' => '#E63946', 'name' => 'Red', 'title' => 'Crimson Red', 'border' => 'rgba(255,255,255,0.25)'],
+      ];
     @endphp
-    <section id="custom-print" class="rabez-section rabez-section--sm rabez-section--dark">
+    <section id="custom-print" class="rabez-section rabez-section--sm rabez-section--dark rabez-home-studio-section">
       <div class="rabez-container">
-        <div class="rabez-section-head">
-          <h2 class="rabez-section-title">Custom Name &amp; Number Print (+৳{{ intval($customPrintFee ?? 250) }})</h2>
+        <div class="rabez-home-studio-head">
+          <div class="rabez-home-studio-head__left">
+            <div class="rabez-home-studio-eyebrow">
+              <span class="rabez-home-studio-dot" aria-hidden="true"></span>
+              <span>OFFICIAL HEAT-PRESS STUDIO</span>
+            </div>
+            <h2 class="rabez-section-title rabez-home-studio-title">
+              Custom Name &amp; Number Print
+              <span class="rabez-home-studio-fee-badge">+৳{{ $printFee }}</span>
+            </h2>
+            <p class="rabez-home-studio-sub">
+              Pick your jersey, preview your back print in real time, choose vinyl finish &amp; size, then add straight to bag.
+            </p>
+          </div>
+          <div class="rabez-home-studio-trust">
+            <span class="rabez-home-trust-chip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+              Authentic Player Vinyl
+            </span>
+            <span class="rabez-home-trust-chip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/></svg>
+              Wash &amp; Peel Guaranteed
+            </span>
+            <span class="rabez-home-trust-chip">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 18H3c-.6 0-1-.4-1-1V7c0-.6.4-1 1-1h10c.6 0 1 .4 1 1v11"/><path d="M14 9h4l3 3v5c0 .6-.4 1-1 1h-2"/><circle cx="7" cy="18" r="2"/><circle cx="17" cy="18" r="2"/></svg>
+              Cash on Delivery
+            </span>
+          </div>
         </div>
 
-        <div class="rabez-customizer js-jersey-customizer">
-          <div class="rabez-customizer__form">
-            <div>
-              <label style="display:block; font-size:0.78rem; font-weight:700; text-transform:uppercase; letter-spacing:0.08em; color:#B4BDB8; margin-bottom:10px;">
-                1. Preview Kit Color:
-              </label>
-              <div class="rabez-kit-color-options">
-                <button type="button" class="rabez-kit-swatch is-active js-kit-theme-swatch"
-                        data-bg="#F7F8F7" data-trim="#006A4E" data-text="#111111" data-product-id="{{ $findCustId('RM-HOME-26', 'real-madrid') }}">
-                  <span class="rabez-kit-swatch__circle" style="background:#FFFFFF;"></span>
-                  Real Madrid Home
-                </button>
-                <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#151817" data-trim="#E5C158" data-text="#F5D76E" data-product-id="{{ $findCustId('RMA-AWAY-FS', 'real-madrid') }}">
-                  <span class="rabez-kit-swatch__circle" style="background:#111111;"></span>
-                  Madrid Dark Kit
-                </button>
-                <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#8C3B4A" data-trim="#F3E5AB" data-text="#F3E5AB" data-product-id="{{ $findCustId('RMA-3RD-HS', 'real-madrid') }}">
-                  <span class="rabez-kit-swatch__circle" style="background:#8C3B4A;"></span>
-                  Madrid 3rd
-                </button>
-                <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#173F8A" data-trim="#9B1B30" data-text="#F5C518" data-product-id="{{ $findCustId('FCB-HOME-HS', 'barcelona') }}">
-                  <span class="rabez-kit-swatch__circle" style="background:#173F8A;"></span>
-                  Barcelona Home
-                </button>
-                <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#0B4F36" data-trim="#C92A2A" data-text="#FFFFFF" data-product-id="{{ $findCustId('BD-HOME-HS', 'bangladesh') }}">
-                  <span class="rabez-kit-swatch__circle" style="background:#0B4F36;"></span>
-                  Bangladesh Green
-                </button>
-                <button type="button" class="rabez-kit-swatch js-kit-theme-swatch"
-                        data-bg="#0A0C0B" data-trim="#04F404" data-text="#FFFFFF" data-product-id="{{ $findCustId('HD-MESSI-BARCA-ARG', 'argentina') }}">
-                  <span class="rabez-kit-swatch__circle" style="background:#0A0C0B; border-color:#04F404;"></span>
-                  Argentina / Dark
-                </button>
+        <div class="rabez-customizer rabez-home-studio js-jersey-customizer" data-print-fee="{{ $printFee }}">
+          <!-- Left Controls Column -->
+          <div class="rabez-customizer__form rabez-home-studio__controls">
+            <!-- Step 1: Club Filter + Visual Kit Rail -->
+            <div class="rabez-home-step-block">
+              <div class="rabez-home-step-top">
+                <span class="rabez-home-step-label">1. Select Jersey Kit</span>
+                <div class="rabez-home-rail-nav">
+                  <button type="button" class="rabez-home-rail-btn js-home-rail-prev" aria-label="Scroll kits left" title="Previous kits">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                  </button>
+                  <button type="button" class="rabez-home-rail-btn js-home-rail-next" aria-label="Scroll kits right" title="Next kits">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+                  </button>
+                </div>
+              </div>
+
+              @if(count($customClubs) > 1)
+                <div class="rabez-home-club-tabs" role="tablist" aria-label="Filter customizable kits by club">
+                  <button type="button" class="rabez-home-club-tab is-active js-home-club-filter" data-club="all">
+                    All ({{ $customPrintProducts->count() }})
+                  </button>
+                  @foreach($customClubs as $clubSlug => $clubLabel)
+                    <button type="button" class="rabez-home-club-tab js-home-club-filter" data-club="{{ $clubSlug }}">
+                      {{ $clubLabel }}
+                    </button>
+                  @endforeach
+                </div>
+              @endif
+
+              <div class="rabez-home-kit-rail js-home-kit-rail" role="listbox" aria-label="Customizable Jersey Kits">
+                @foreach($customPrintProducts as $cp)
+                  @php
+                    $theme = $resolveKitTheme($cp);
+                    $cpImg = $cp->image
+                        ? (str_starts_with($cp->image, 'http') ? $cp->image : asset(ltrim($cp->image, '/')))
+                        : asset('assets/images/products/real-madrid-home-hs.jpg');
+                    $cpSleeve = $cp->sleeve ?: 'half-sleeve';
+                    $cpSleeveLabel = $cp->sleeve_label ?: ucwords(str_replace('-', ' ', $cpSleeve));
+                    $isActiveKit = intval($cp->id) === intval($defaultCustProduct->id);
+                  @endphp
+                  <button type="button"
+                          class="rabez-home-kit-card js-kit-theme-swatch {{ $isActiveKit ? 'is-active' : '' }}"
+                          role="option"
+                          aria-selected="{{ $isActiveKit ? 'true' : 'false' }}"
+                          data-product-id="{{ $cp->id }}"
+                          data-club="{{ $cp->club ?: 'all' }}"
+                          data-bg="{{ $theme['bgTop'] }}"
+                          data-bg-end="{{ $theme['bgBot'] }}"
+                          data-trim="{{ $theme['trim'] }}"
+                          data-text="{{ $theme['text'] }}"
+                          data-color-name="{{ $theme['colorName'] }}"
+                          data-is-light="{{ $theme['isLight'] ? '1' : '0' }}"
+                          data-sleeve="{{ $cpSleeve }}"
+                          data-sleeve-label="{{ $cpSleeveLabel }}"
+                          data-price="{{ floatval($cp->price) }}"
+                          data-name="{{ $cp->name }}"
+                          data-slug="{{ $cp->slug ?: $cp->id }}"
+                          data-sku="{{ $cp->sku ?: ('RBZ-' . $cp->id) }}"
+                          data-image="{{ $cpImg }}">
+                    <img src="{{ $cpImg }}" alt="{{ $cp->name }}" class="rabez-home-kit-card__img" width="42" height="52" loading="lazy">
+                    <div class="rabez-home-kit-card__info">
+                      <div class="rabez-home-kit-card__title">{{ $cp->name }}</div>
+                      <div class="rabez-home-kit-card__meta">
+                        <span class="rabez-home-kit-card__sleeve">{{ $cpSleeveLabel }}</span>
+                        <span class="rabez-home-kit-card__price">৳{{ number_format($cp->price) }}</span>
+                      </div>
+                    </div>
+                    <span class="rabez-home-kit-card__dot" style="background:{{ $theme['bgTop'] }}; border-color:{{ $theme['trim'] }};" aria-hidden="true"></span>
+                  </button>
+                @endforeach
+              </div>
+
+              <!-- Synced Screen-Reader Accessible Select -->
+              <label for="cust-kit-select" class="screen-reader-text">Select Customizable Jersey</label>
+              <select id="cust-kit-select" class="js-cust-kit screen-reader-text">
+                @foreach($customPrintProducts as $cp)
+                  <option value="{{ $cp->id }}" {{ intval($cp->id) === intval($defaultCustProduct->id) ? 'selected' : '' }}>
+                    {{ $cp->name }} (৳{{ number_format($cp->price) }} + ৳{{ $printFee }})
+                  </option>
+                @endforeach
+              </select>
+            </div>
+
+            <!-- Step 2: 1-Click Popular Legends Presets -->
+            <div class="rabez-home-step-block">
+              <div class="rabez-home-presets-label">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+                <span>2. Popular Legends (1-Click Fill):</span>
+              </div>
+              <div class="rabez-home-presets-list">
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="MESSI" data-num="10">MESSI 10</button>
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="RONALDO" data-num="7">RONALDO 7</button>
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="BELLINGHAM" data-num="5">BELLINGHAM 5</button>
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="VINICIUS" data-num="7">VINI JR 7</button>
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="YAMAL" data-num="19">YAMAL 19</button>
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="MBAPPE" data-num="9">MBAPPE 9</button>
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="MODRIC" data-num="10">MODRIC 10</button>
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="HAALAND" data-num="9">HAALAND 9</button>
+                <button type="button" class="rabez-home-preset-pill js-home-preset-pill" data-name="SALAH" data-num="11">SALAH 11</button>
               </div>
             </div>
 
-            <div class="rabez-field-row">
-              <div class="rabez-field">
-                <label for="cust-name">2. Back Name</label>
-                <input type="text" id="cust-name" class="js-cust-name" maxlength="12" value="RABEZ" placeholder="e.g. BELLINGHAM">
+            <!-- Step 3: Back Name & Squad Number -->
+            <div class="rabez-home-step-block">
+              <div class="rabez-field-row rabez-home-field-row">
+                <div class="rabez-field rabez-home-input-group">
+                  <div class="rabez-home-input-top">
+                    <label for="cust-name">3. Back Name</label>
+                    <span class="rabez-home-char-count js-cust-name-count">5/14</span>
+                  </div>
+                  <div class="rabez-home-input-wrap">
+                    <input type="text" id="cust-name" class="js-cust-name" maxlength="14" value="RABEZ" placeholder="e.g. BELLINGHAM" autocomplete="off" spellcheck="false">
+                    <button type="button" class="rabez-home-clear-btn js-cust-clear-name" aria-label="Clear back name" title="Clear Name">&times;</button>
+                  </div>
+                </div>
+
+                <div class="rabez-field rabez-home-input-group">
+                  <div class="rabez-home-input-top">
+                    <label for="cust-number">Number</label>
+                    <span class="rabez-home-char-count js-cust-num-count">2/2</span>
+                  </div>
+                  <div class="rabez-home-input-wrap">
+                    <input type="text" id="cust-number" class="js-cust-number" maxlength="2" inputmode="numeric" pattern="[0-9]*" value="10" placeholder="10" autocomplete="off">
+                    <button type="button" class="rabez-home-clear-btn js-cust-clear-num" aria-label="Clear squad number" title="Clear Number">&times;</button>
+                  </div>
+                </div>
               </div>
-              <div class="rabez-field">
-                <label for="cust-number">3. Number</label>
-                <input type="text" id="cust-number" class="js-cust-number" maxlength="2" value="10" placeholder="10">
-              </div>
+              <div class="rabez-home-error js-cust-error" role="alert" style="display:none;"></div>
             </div>
 
-            <div class="rabez-field-row">
-              <div class="rabez-field">
-                <label for="cust-kit-select">Select Customizable Product</label>
-                <select id="cust-kit-select" class="js-cust-kit">
-                  @foreach($customPrintProducts as $cp)
-                    <option value="{{ $cp->id }}">{{ $cp->name }} (৳{{ number_format($cp->price) }} + ৳{{ intval($customPrintFee ?? 250) }})</option>
+            <!-- Step 4: Vinyl Print Color + Size Pills & Quantity -->
+            <div class="rabez-home-config-grid">
+              <!-- Vinyl Print Color -->
+              <div class="rabez-home-config-box">
+                <div class="rabez-home-config-top">
+                  <span class="rabez-home-step-label">4. Vinyl Color</span>
+                  <span class="rabez-home-color-name js-home-color-name">{{ $defaultTheme['colorName'] }}</span>
+                </div>
+                <div class="rabez-home-color-row">
+                  @foreach($vinylColors as $vc)
+                    <button type="button"
+                            class="rabez-home-color-btn js-home-color-btn {{ $defaultTheme['colorName'] === $vc['name'] ? 'is-active' : '' }}"
+                            data-color="{{ $vc['hex'] }}"
+                            data-color-name="{{ $vc['name'] }}"
+                            title="{{ $vc['title'] }}"
+                            aria-label="{{ $vc['title'] }}">
+                      <span class="rabez-home-color-swatch" style="background:{{ $vc['hex'] }}; border-color:{{ $vc['border'] }};"></span>
+                    </button>
+                  @endforeach
+                </div>
+                <div class="rabez-home-contrast-warn js-home-contrast-warn" style="display:none;">
+                  Low contrast on this kit &mdash; switch color for sharper print visibility.
+                </div>
+              </div>
+
+              <!-- Size & Qty -->
+              <div class="rabez-home-config-box">
+                <div class="rabez-home-config-top">
+                  <span class="rabez-home-step-label">Size &amp; Qty</span>
+                  <a href="#size-guide" class="rabez-home-size-guide-link">Size Chart &darr;</a>
+                </div>
+                <div class="rabez-home-size-qty-row">
+                  <div class="rabez-home-sizes js-home-size-pills" role="radiogroup" aria-label="Select Jersey Size">
+                    @foreach($defaultAllSizes as $sz)
+                      @php $szInStock = in_array($sz, $defaultInStockSizes, true); @endphp
+                      <button type="button"
+                              class="rabez-home-size-pill js-home-size-pill {{ $sz === $defaultSelectedSize ? 'is-active' : '' }}"
+                              data-size="{{ $sz }}"
+                              {{ !$szInStock ? 'disabled' : '' }}>
+                        {{ $sz }}
+                      </button>
+                    @endforeach
+                  </div>
+                  <div class="rabez-home-qty-stepper" aria-label="Quantity">
+                    <button type="button" class="rabez-home-qty-btn js-home-qty-minus" aria-label="Decrease quantity">&minus;</button>
+                    <span class="rabez-home-qty-val js-home-qty-val">1</span>
+                    <button type="button" class="rabez-home-qty-btn js-home-qty-plus" aria-label="Increase quantity">&plus;</button>
+                  </div>
+                </div>
+                <label for="cust-size-select" class="screen-reader-text">Size</label>
+                <select id="cust-size-select" class="js-cust-size screen-reader-text">
+                  @foreach($defaultAllSizes as $sz)
+                    <option value="{{ $sz }}" {{ $sz === $defaultSelectedSize ? 'selected' : '' }}>{{ $sz }}</option>
                   @endforeach
                 </select>
               </div>
-              <div class="rabez-field">
-                <label for="cust-size-select">Size</label>
-                <select id="cust-size-select" class="js-cust-size">
-                  <option value="S">S (Player 36" / Retro 38")</option>
-                  <option value="M">M (Player 38" / Retro 40")</option>
-                  <option value="L" selected>L (Player 40" / Retro 42")</option>
-                  <option value="XL">XL (Player 42" / Retro 44")</option>
-                  <option value="XXL">XXL (Player 44" / Retro 46")</option>
-                </select>
-              </div>
             </div>
 
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap:12px; padding-top:4px;">
-              <button type="button" class="rabez-btn rabez-btn--primary rabez-btn--full js-add-custom-kit">
-                Add Custom Jersey to Bag
-              </button>
-              <a href="https://api.whatsapp.com/send/?phone=8801612359652&text=%E0%A6%86%E0%A6%B8%E0%A6%B8%E0%A6%BE%E0%A6%B2%E0%A6%BE%E0%A6%AE%E0%A7%81+%E0%A6%86%E0%A6%B2%E0%A6%BE%E0%A6%87%E0%A6%95%E0%A7%81%E0%A6%AE+RABEZ%2C+%E0%A6%86%E0%A6%AE%E0%A6%BE%E0%A6%A6%E0%A7%87%E0%A6%B0+%E0%A6%9F%E0%A6%BF%E0%A6%AE%E0%A7%87%E0%A6%B0+%E0%A6%9C%E0%A6%A8%E0%A7%8D%E0%A6%AF+%E0%A6%95%E0%A6%BE%E0%A6%B8%E0%A7%8D%E0%A6%9F%E0%A6%AE+%E0%A6%A8%E0%A6%BE%E0%A6%AE+%E0%A6%93+%E0%A6%A8%E0%A6%BE%E0%A6%AE%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%B0+%E0%A6%B8%E0%A6%B9+%E0%A6%9C%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%B8%E0%A6%BF+%E0%A6%85%E0%A6%B0%E0%A7%8D%E0%A6%A1%E0%A6%BE%E0%A6%B0+%E0%A6%95%E0%A6%B0%E0%A6%A4%E0%A7%87+%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A5%A4"
-                 target="_blank" rel="noopener" class="rabez-btn rabez-btn--outline-light rabez-btn--full">
-                Team Bulk Order (WhatsApp)
-              </a>
+            <!-- Step 5: CTAs & Guarantee Footer -->
+            <div class="rabez-home-cta-group">
+              <div class="rabez-home-cta-row">
+                <button type="button" class="rabez-btn rabez-btn--primary rabez-btn--full rabez-home-cta-add js-add-custom-kit">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M16 11V7a4 4 0 0 0-8 0v4M4.5 8.5h15l1 12.5a1.5 1.5 0 0 1-1.5 1.5h-14A1.5 1.5 0 0 1 3.5 21l1-12.5z"/>
+                  </svg>
+                  <span>Add Custom Jersey to Bag</span>
+                  <span class="rabez-home-cta-price js-home-btn-price">৳ {{ number_format($defaultPrice + $printFee) }}</span>
+                </button>
+                <button type="button" class="rabez-btn rabez-btn--outline-light rabez-btn--full rabez-home-cta-wa js-home-wa-order">
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#22C55E" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/>
+                  </svg>
+                  <span>Order via WhatsApp</span>
+                </button>
+              </div>
+              <div class="rabez-home-studio-footer">
+                <span class="rabez-home-guarantee">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+                    <path d="m9 12 2 2 4-4"/>
+                  </svg>
+                  Official Heat-Press Vinyl &bull; No Peel Guarantee
+                </span>
+                <a href="https://api.whatsapp.com/send/?phone=8801612359652&text=%E0%A6%86%E0%A6%B8%E0%A6%B8%E0%A6%BE%E0%A6%B2%E0%A6%BE%E0%A6%AE%E0%A7%81+%E0%A6%86%E0%A6%B2%E0%A6%BE%E0%A6%87%E0%A6%95%E0%A7%81%E0%A6%AE+RABEZ%2C+%E0%A6%86%E0%A6%AE%E0%A6%BE%E0%A6%A6%E0%A7%87%E0%A6%B0+%E0%A6%9F%E0%A6%BF%E0%A6%AE%E0%A7%87%E0%A6%B0+%E0%A6%9C%E0%A6%A8%E0%A7%8D%E0%A6%AF+%E0%A6%95%E0%A6%BE%E0%A6%B8%E0%A7%8D%E0%A6%9F%E0%A6%AE+%E0%A6%A8%E0%A6%BE%E0%A6%AE+%E0%A6%93+%E0%A6%A8%E0%A6%BE%E0%A6%AE%E0%A7%8D%E0%A6%AC%E0%A6%BE%E0%A6%B0+%E0%A6%B8%E0%A6%B9+%E0%A6%9C%E0%A6%BE%E0%A6%B0%E0%A7%8D%E0%A6%B8%E0%A6%BF+%E0%A6%85%E0%A6%B0%E0%A7%8D%E0%A6%A1%E0%A6%BE%E0%A6%B0+%E0%A6%95%E0%A6%B0%E0%A6%A4%E0%A7%87+%E0%A6%9A%E0%A6%BE%E0%A6%87%E0%A5%A4"
+                   target="_blank" rel="noopener" class="rabez-home-bulk-link">
+                  Team / Turf Bulk Order (10+ Kits)? Chat on WhatsApp &rarr;
+                </a>
+              </div>
             </div>
           </div>
 
-          <div class="rabez-jersey-preview-stage">
-            <div class="rabez-jersey-svg-wrap">
-              <svg viewBox="0 0 260 300" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-                <path class="js-svg-jersey-body"
-                      d="M78 20 L102 26 Q130 34 158 26 L182 20 L242 66 L218 118 L194 102 L194 278 Q130 286 66 278 L66 102 L42 118 L18 66 Z"
-                      fill="#F7F8F7" stroke="#2C3430" stroke-width="2"/>
-                <path class="js-svg-jersey-trim"
-                      d="M98 24 Q130 38 162 24 M38 110 L62 94 M222 110 L198 94"
-                      fill="none" stroke="#006A4E" stroke-width="5" stroke-linecap="round"/>
-              </svg>
-              <div class="rabez-jersey-back-overlay">
-                <div class="rabez-jersey-back-name js-preview-name" style="color:#111111;">RABEZ</div>
-                <div class="rabez-jersey-back-num js-preview-num" style="color:#111111;">10</div>
+          <!-- Right Live Stadium Back Preview Stage -->
+          <div class="rabez-jersey-preview-stage rabez-home-studio__stage" style="--stage-glow: {{ $defaultTheme['trim'] }};">
+            <div class="rabez-stage-topbar">
+              <div class="rabez-stage-live-pill">
+                <span class="rabez-stage-live-dot" aria-hidden="true"></span>
+                <span>LIVE BACK PREVIEW</span>
+              </div>
+              <div class="rabez-stage-topbar__right">
+                <span class="rabez-stage-sleeve-pill js-home-stage-sleeve">{{ $defaultSleeveLabel }}</span>
+                <button type="button" class="rabez-stage-reset-btn js-home-reset-btn" title="Reset print preview">Reset</button>
+              </div>
+            </div>
+
+            <div class="rabez-stage-canvas">
+              <div class="rabez-jersey-svg-wrap">
+                <svg viewBox="0 0 280 320" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                  <defs>
+                    <linearGradient id="rbzHomeJerseyGrad" x1="0" y1="0" x2="0" y2="1">
+                      <stop offset="0%" class="js-svg-grad-top" stop-color="{{ $defaultTheme['bgTop'] }}"/>
+                      <stop offset="100%" class="js-svg-grad-bot" stop-color="{{ $defaultTheme['bgBot'] }}"/>
+                    </linearGradient>
+                    <linearGradient id="rbzHomeShadeGrad" x1="0" y1="0" x2="1" y2="0">
+                      <stop offset="0%" stop-color="#000000" stop-opacity="0.22"/>
+                      <stop offset="22%" stop-color="#FFFFFF" stop-opacity="0.06"/>
+                      <stop offset="50%" stop-color="#FFFFFF" stop-opacity="0.1"/>
+                      <stop offset="78%" stop-color="#000000" stop-opacity="0.06"/>
+                      <stop offset="100%" stop-color="#000000" stop-opacity="0.24"/>
+                    </linearGradient>
+                    <pattern id="rbzHomeMeshPat" width="6" height="6" patternUnits="userSpaceOnUse">
+                      <circle cx="1.5" cy="1.5" r="0.65" fill="#000000" fill-opacity="0.12"/>
+                      <circle cx="4.5" cy="4.5" r="0.65" fill="#FFFFFF" fill-opacity="0.08"/>
+                    </pattern>
+                    <filter id="rbzHomeDropShadow" x="-12%" y="-10%" width="124%" height="124%">
+                      <feDropShadow dx="0" dy="14" stdDeviation="12" flood-color="#000000" flood-opacity="0.55"/>
+                    </filter>
+                  </defs>
+
+                  <!-- Full-Sleeve Extensions (toggled when full-sleeve product selected) -->
+                  <g class="js-svg-long-sleeves" style="{{ $defaultSleeve === 'full-sleeve' ? '' : 'display:none;' }}">
+                    <path d="M42 125 L14 190 L38 200 L70 112 Z" fill="url(#rbzHomeJerseyGrad)" stroke="rgba(44,52,48,0.65)" stroke-width="1.6"/>
+                    <path d="M238 125 L266 190 L242 200 L210 112 Z" fill="url(#rbzHomeJerseyGrad)" stroke="rgba(44,52,48,0.65)" stroke-width="1.6"/>
+                    <path d="M16 187 L38 197 M264 187 L242 197" class="js-svg-jersey-trim" fill="none" stroke="{{ $defaultTheme['trim'] }}" stroke-width="4.5" stroke-linecap="round"/>
+                  </g>
+
+                  <!-- Main Torso Silhouette -->
+                  <path class="js-svg-jersey-body"
+                        d="M84 22 L110 29 Q140 38 170 29 L196 22 L262 72 L236 128 L208 109 L208 292 Q140 302 72 292 L72 109 L44 128 L18 72 Z"
+                        fill="url(#rbzHomeJerseyGrad)" stroke="rgba(44,52,48,0.72)" stroke-width="1.8" filter="url(#rbzHomeDropShadow)"/>
+
+                  <!-- Subtle Mesh Texture & Cylindrical 3D Torso Shading -->
+                  <path d="M84 22 L110 29 Q140 38 170 29 L196 22 L262 72 L236 128 L208 109 L208 292 Q140 302 72 292 L72 109 L44 128 L18 72 Z"
+                        fill="url(#rbzHomeMeshPat)" pointer-events="none"/>
+                  <path d="M84 22 L110 29 Q140 38 170 29 L196 22 L262 72 L236 128 L208 109 L208 292 Q140 302 72 292 L72 109 L44 128 L18 72 Z"
+                        fill="url(#rbzHomeShadeGrad)" pointer-events="none"/>
+
+                  <!-- Collar Rib, Short Sleeve Cuffs & Raglan Seams -->
+                  <path class="js-svg-jersey-trim"
+                        d="M105 26 Q140 42 175 26"
+                        fill="none" stroke="{{ $defaultTheme['trim'] }}" stroke-width="5.5" stroke-linecap="round"/>
+                  <path class="js-svg-jersey-trim js-svg-short-cuffs"
+                        d="M40 120 L67 102 M240 120 L213 102"
+                        fill="none" stroke="{{ $defaultTheme['trim'] }}" stroke-width="5.5" stroke-linecap="round"
+                        style="{{ $defaultSleeve === 'full-sleeve' ? 'display:none;' : '' }}"/>
+                  <path d="M86 28 Q94 74 74 108 M194 28 Q186 74 206 108"
+                        fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.2" stroke-dasharray="3 3"/>
+                  <path d="M80 120 L80 282 M200 120 L200 282"
+                        fill="none" stroke="rgba(0,0,0,0.16)" stroke-width="1.2"/>
+
+                  <!-- Hem Authenticity Jock-Tag -->
+                  <rect x="122" y="274" width="36" height="12" rx="3" fill="rgba(10,12,11,0.72)" stroke="rgba(255,255,255,0.22)" stroke-width="0.8"/>
+                  <text x="140" y="282.5" text-anchor="middle" fill="#04F404" font-family="Barlow Condensed, sans-serif" font-size="6.5" font-weight="800" letter-spacing="0.8">RABEZ 26</text>
+                </svg>
+
+                <div class="rabez-jersey-back-overlay">
+                  <div class="rabez-jersey-back-name js-preview-name" style="color:{{ $defaultTheme['text'] }};">RABEZ</div>
+                  <div class="rabez-jersey-back-num js-preview-num" style="color:{{ $defaultTheme['text'] }};">10</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Selected Kit Live Summary Footer -->
+            <div class="rabez-stage-summary">
+              <div class="rabez-stage-summary__kit">
+                <img src="{{ $defaultImg }}" alt="{{ $defaultCustProduct->name }}" class="rabez-stage-summary__img js-home-summary-img" width="44" height="54">
+                <div class="rabez-stage-summary__text">
+                  <div class="rabez-stage-summary__name js-home-summary-name">{{ $defaultCustProduct->name }}</div>
+                  <div class="rabez-stage-summary__meta js-home-summary-meta">
+                    Size {{ $defaultSelectedSize }} &bull; {{ $defaultTheme['colorName'] }} Vinyl &bull; Qty 1
+                  </div>
+                  <a href="{{ route('product.show', $defaultCustProduct->slug ?: $defaultCustProduct->id) }}" class="rabez-stage-summary__link js-home-summary-link">
+                    View Full Kit &rarr;
+                  </a>
+                </div>
+              </div>
+              <div class="rabez-stage-summary__pricing">
+                <div class="rabez-stage-summary__breakdown js-home-price-breakdown">Kit ৳{{ number_format($defaultPrice) }} + Print ৳{{ $printFee }}</div>
+                <div class="rabez-stage-summary__total js-home-summary-total">৳ {{ number_format($defaultPrice + $printFee) }}</div>
               </div>
             </div>
           </div>

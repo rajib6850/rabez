@@ -150,6 +150,7 @@ class StorefrontController extends Controller
             'cart_items.*.image' => 'nullable|string|max:500',
             'cart_items.*.custom_name' => 'nullable|string|max:50',
             'cart_items.*.custom_number' => 'nullable|string|max:10',
+            'cart_items.*.custom_color' => 'nullable|string|max:40',
         ], [
             'customer_phone.regex' => 'Please enter a valid 11-digit Bangladesh mobile number (e.g. 01712345678).',
         ]);
@@ -194,12 +195,23 @@ class StorefrontController extends Controller
             $dbBasePrice = $variant?->price ?? $product?->price;
             $basePrice = $dbBasePrice !== null ? floatval($dbBasePrice) : floatval($item['price']);
 
-            // Security: Sanitize & validate custom name & number
+            // Security: Sanitize & validate custom name, number, and vinyl print color
             $rawCustomName = !empty($item['custom_name']) ? strip_tags(strtoupper(trim((string)$item['custom_name']))) : null;
             $rawCustomNumber = isset($item['custom_number']) && $item['custom_number'] !== '' ? preg_replace('/[^0-9]/', '', (string)$item['custom_number']) : null;
+            $rawColor = strtoupper(trim((string) ($item['custom_color'] ?? '')));
+
+            if ($rawCustomName && preg_match('/\s*\[(WHITE|GOLD|BLACK|CYAN|RED)\]\s*$/i', $rawCustomName, $colorMatch)) {
+                if ($rawColor === '') {
+                    $rawColor = strtoupper($colorMatch[1]);
+                }
+                $rawCustomName = trim(preg_replace('/\s*\[(WHITE|GOLD|BLACK|CYAN|RED)\]\s*$/i', '', $rawCustomName));
+            }
 
             $cleanCustomName = $rawCustomName ? substr(preg_replace('/[^A-Z0-9 .\-]/', '', $rawCustomName), 0, 14) : null;
             $cleanCustomNumber = ($rawCustomNumber !== null && $rawCustomNumber !== '') ? substr($rawCustomNumber, 0, 2) : null;
+
+            $allowedColors = ['WHITE', 'GOLD', 'BLACK', 'CYAN', 'RED'];
+            $validColor = in_array($rawColor, $allowedColors, true) ? $rawColor : null;
 
             $hasCustomPrint = (!empty($cleanCustomName) || !empty($cleanCustomNumber));
 
@@ -207,7 +219,13 @@ class StorefrontController extends Controller
             if ($product && !$product->has_custom_print) {
                 $cleanCustomName = null;
                 $cleanCustomNumber = null;
+                $validColor = null;
                 $hasCustomPrint = false;
+            }
+
+            $storedCustomName = $cleanCustomName;
+            if ($hasCustomPrint && $validColor && $validColor !== 'WHITE') {
+                $storedCustomName = $cleanCustomName ? ($cleanCustomName . ' [' . $validColor . ']') : ('[' . $validColor . ']');
             }
 
             $verifiedUnitPrice = $basePrice + ($hasCustomPrint ? $customPrintFee : 0);
@@ -225,7 +243,7 @@ class StorefrontController extends Controller
                 'qty' => $qty,
                 'unit_price' => $verifiedUnitPrice,
                 'total_price' => $lineTotal,
-                'custom_name' => $cleanCustomName,
+                'custom_name' => $storedCustomName,
                 'custom_number' => $cleanCustomNumber,
                 'image' => $variant?->image ?: ($product?->image ?: ($item['image'] ?? '/assets/images/products/real-madrid-home-hs.jpg')),
             ];

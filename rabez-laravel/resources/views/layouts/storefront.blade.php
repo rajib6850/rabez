@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/components/club-filter-bar.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/product-grid.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}?v=2.1">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=2.1">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=3.0">
   <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.2">
   <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=3.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.8">
@@ -703,7 +703,7 @@
     window.RABEZ_PRODUCTS = window.RABEZ_DB_PRODUCTS;
   </script>
   @endif
-  <script src="{{ asset('assets/js/cart.js') }}?v=5.0"></script>
+  <script src="{{ asset('assets/js/cart.js') }}?v=5.1"></script>
   <!-- High-Definition Product Image Fullscreen Lightbox & Smart Zoom -->
   <div id="rabez-image-lightbox" class="rabez-lightbox js-rabez-lightbox" role="dialog" aria-modal="true" aria-label="Product Image Zoom View">
     <div class="rabez-lightbox__header">
@@ -751,7 +751,7 @@
   </div>
 
   <script src="{{ asset('assets/js/image-zoom.js') }}?v=1.0"></script>
-  <script src="{{ asset('assets/js/app.js') }}?v=3.8"></script>
+  <script src="{{ asset('assets/js/app.js') }}?v=4.0"></script>
 
   @stack('scripts')
 </body>

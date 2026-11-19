@@ -14,6 +14,26 @@
     return Number.isFinite(fee) && fee >= 0 ? fee : 250;
   }
 
+  function escapeHtml(str) {
+    return String(str ?? "")
+      .replace(/&/g, "&amp;")
+      .replace(/</g, "&lt;")
+      .replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;")
+      .replace(/'/g, "&#39;");
+  }
+
+  function formatCustomPrintLabel(item) {
+    const parts = [];
+    if (item.customName) parts.push(escapeHtml(item.customName));
+    if (item.customNumber) parts.push(`#${escapeHtml(item.customNumber)}`);
+    if (!parts.length) return "";
+    const colorSuffix = item.customColor && item.customColor !== "White"
+      ? ` (${escapeHtml(item.customColor)})`
+      : "";
+    return `${parts.join(" ")}${colorSuffix}`;
+  }
+
   function resolveImageURL(src) {
     if (!src) return "/assets/images/products/real-madrid-home-hs.jpg";
     if (src.startsWith("http://") || src.startsWith("https://") || src.startsWith("//") || src.startsWith("data:")) {
@@ -568,9 +588,9 @@
       } else {
         drawerBody.innerHTML = cart
           .map((item) => {
-            const customMeta =
-              item.customName || item.customNumber
-                ? `<div style="color:#04F404; font-weight:700; font-size:0.73rem; margin-top:2px;">Print: ${item.customName} #${item.customNumber}${item.customColor && item.customColor !== 'White' ? ' (' + item.customColor + ')' : ''} (+৳250)</div>`
+            const customPrintLabel = formatCustomPrintLabel(item);
+            const customMeta = customPrintLabel
+                ? `<div style="color:#04F404; font-weight:700; font-size:0.73rem; margin-top:2px;">Print: ${customPrintLabel} (+৳${getCustomPrintFee()})</div>`
                 : "";
             return `
               <div class="rabez-cart-item woocommerce-mini-cart-item mini_cart_item" style="display:flex; align-items:center; gap:12px; padding:12px; background:#131A16; border:1px solid #1F2823; border-radius:8px; margin-bottom:10px;">
@@ -1594,8 +1614,8 @@
           <div style="display:flex; justify-content:space-between; align-items:center; gap:12px; padding:10px 0; border-bottom:1px solid #E4E7E4; font-size:0.88rem;">
             <div>
               <strong>${item.name}</strong>
-              <div style="font-size:0.76rem; color:#6E7672;">${item.variantTitle ? item.variantTitle : 'Size: ' + item.size} &times; ${item.qty} ${
-            item.customName ? `| Print: ${item.customName} #${item.customNumber}${item.customColor && item.customColor !== 'White' ? ' (' + item.customColor + ')' : ''}` : ""
+              <div style="font-size:0.76rem; color:#6E7672;">${escapeHtml(item.variantTitle ? item.variantTitle : 'Size: ' + item.size)} &times; ${item.qty} ${
+            formatCustomPrintLabel(item) ? `| Print: ${formatCustomPrintLabel(item)}` : ""
           }</div>
             </div>
             <strong>${formatBDT(item.price * item.qty)}</strong>

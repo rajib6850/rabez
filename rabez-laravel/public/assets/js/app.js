@@ -318,63 +318,505 @@
     startAutoPlay();
   }
 
-  /* 3. Interactive Jersey Back Name & Number Customizer Widget */
+  /* 3. Interactive Jersey Back Name & Number Customizer Studio (Homepage) */
   function initJerseyCustomizerWidget() {
     const wrap = document.querySelector(".js-jersey-customizer");
     if (!wrap) return;
+
+    const printFee = Number(wrap.dataset.printFee || window.RABEZ_CUSTOM_PRINT_FEE || 250);
 
     const nameInput = wrap.querySelector(".js-cust-name");
     const numInput = wrap.querySelector(".js-cust-number");
     const kitSelect = wrap.querySelector(".js-cust-kit");
     const sizeSelect = wrap.querySelector(".js-cust-size");
+    const nameCount = wrap.querySelector(".js-cust-name-count");
+    const numCount = wrap.querySelector(".js-cust-num-count");
+    const clearNameBtn = wrap.querySelector(".js-cust-clear-name");
+    const clearNumBtn = wrap.querySelector(".js-cust-clear-num");
+    const errorBox = wrap.querySelector(".js-cust-error");
+
     const previewName = wrap.querySelector(".js-preview-name");
     const previewNum = wrap.querySelector(".js-preview-num");
-    const svgBody = wrap.querySelector(".js-svg-jersey-body");
-    const svgTrim = wrap.querySelector(".js-svg-jersey-trim");
-    const swatches = wrap.querySelectorAll(".js-kit-theme-swatch");
-    const addCustomBtn = wrap.querySelector(".js-add-custom-kit");
+    const svgGradTop = wrap.querySelector(".js-svg-grad-top");
+    const svgGradBot = wrap.querySelector(".js-svg-grad-bot");
+    const svgTrims = wrap.querySelectorAll(".js-svg-jersey-trim");
+    const svgLongSleeves = wrap.querySelector(".js-svg-long-sleeves");
+    const svgShortCuffs = wrap.querySelector(".js-svg-short-cuffs");
+    const stageEl = wrap.querySelector(".rabez-home-studio__stage");
+    const stageSleeveLabel = wrap.querySelector(".js-home-stage-sleeve");
+    const resetBtn = wrap.querySelector(".js-home-reset-btn");
 
-    function syncPreview() {
-      const nameVal = (nameInput?.value || "RABEZ").trim().toUpperCase().slice(0, 12);
-      const numVal = (numInput?.value || "10").trim().slice(0, 2);
-      if (previewName) previewName.textContent = nameVal || "YOUR NAME";
-      if (previewNum) previewNum.textContent = numVal || "10";
+    const kitCards = wrap.querySelectorAll(".js-kit-theme-swatch");
+    const clubFilterBtns = wrap.querySelectorAll(".js-home-club-filter");
+    const kitRail = wrap.querySelector(".js-home-kit-rail");
+    const railPrevBtn = wrap.querySelector(".js-home-rail-prev");
+    const railNextBtn = wrap.querySelector(".js-home-rail-next");
+    const presetBtns = wrap.querySelectorAll(".js-home-preset-pill");
+    const colorBtns = wrap.querySelectorAll(".js-home-color-btn");
+    const colorNameLabel = wrap.querySelector(".js-home-color-name");
+    const contrastWarn = wrap.querySelector(".js-home-contrast-warn");
+    const sizePillsWrap = wrap.querySelector(".js-home-size-pills");
+    const qtyMinusBtn = wrap.querySelector(".js-home-qty-minus");
+    const qtyPlusBtn = wrap.querySelector(".js-home-qty-plus");
+    const qtyValEl = wrap.querySelector(".js-home-qty-val");
+
+    const addCustomBtn = wrap.querySelector(".js-add-custom-kit");
+    const waOrderBtn = wrap.querySelector(".js-home-wa-order");
+
+    const summaryImg = wrap.querySelector(".js-home-summary-img");
+    const summaryName = wrap.querySelector(".js-home-summary-name");
+    const summaryMeta = wrap.querySelector(".js-home-summary-meta");
+    const summaryLink = wrap.querySelector(".js-home-summary-link");
+    const summaryBreakdown = wrap.querySelector(".js-home-price-breakdown");
+    const summaryTotal = wrap.querySelector(".js-home-summary-total");
+
+    const state = {
+      productId: 0,
+      size: "L",
+      qty: 1,
+      colorHex: "#111111",
+      colorName: "Black",
+      defaultColorHex: "#111111",
+      defaultColorName: "Black",
+      bgTop: "#F8FAF9",
+      bgBot: "#E5ECE8",
+      trim: "#006A4E",
+      isLightKit: true,
+      sleeve: "half-sleeve",
+      sleeveLabel: "Half Sleeve",
+      basePrice: 1150,
+      name: "Real Madrid 26/27 Home Jersey",
+      slug: "",
+      sku: "RM-HOME-26",
+      image: "/assets/images/products/real-madrid-home-hs.jpg",
+      product: null,
+      activeVariant: null,
+    };
+
+    function getProductsCatalog() {
+      return Array.isArray(window.RABEZ_PRODUCTS) ? window.RABEZ_PRODUCTS : [];
     }
 
-    nameInput?.addEventListener("input", syncPreview);
-    numInput?.addEventListener("input", syncPreview);
+    function findCatalogProduct(id) {
+      return getProductsCatalog().find((p) => Number(p.id) === Number(id)) || null;
+    }
 
-    swatches.forEach((sw) => {
-      sw.addEventListener("click", () => {
-        swatches.forEach((s) => s.classList.remove("is-active"));
-        sw.classList.add("is-active");
-        const bg = sw.dataset.bg || "#FFFFFF";
-        const trim = sw.dataset.trim || "#04F404";
-        const text = sw.dataset.text || "#111111";
-        const prodId = sw.dataset.productId || "1324";
+    function hexLuminance(hex) {
+      const clean = String(hex || "").replace("#", "");
+      if (clean.length !== 6) return 0.5;
+      const r = parseInt(clean.slice(0, 2), 16) / 255;
+      const g = parseInt(clean.slice(2, 4), 16) / 255;
+      const b = parseInt(clean.slice(4, 6), 16) / 255;
+      return 0.2126 * r + 0.7152 * g + 0.0722 * b;
+    }
 
-        if (svgBody) svgBody.setAttribute("fill", bg);
-        if (svgTrim) svgTrim.setAttribute("stroke", trim);
-        if (previewName) previewName.style.color = text;
-        if (previewNum) previewNum.style.color = text;
-        if (kitSelect && prodId) {
-          const matchingOpt = Array.from(kitSelect.options).find((o) => String(o.value) === String(prodId));
-          if (matchingOpt) kitSelect.value = prodId;
+    function showError(msg) {
+      if (!errorBox) return;
+      if (msg) {
+        errorBox.textContent = msg;
+        errorBox.style.display = "block";
+      } else {
+        errorBox.textContent = "";
+        errorBox.style.display = "none";
+      }
+    }
+
+    function resolveActiveVariant() {
+      const prod = state.product;
+      if (!prod || !Array.isArray(prod.variants) || !prod.variants.length) {
+        state.activeVariant = null;
+        return;
+      }
+      const match = prod.variants.find(
+        (v) =>
+          String(v.size || v.title || "").trim().toLowerCase() === String(state.size || "").trim().toLowerCase() ||
+          String(v.title || "").trim().toLowerCase() === String(state.size || "").trim().toLowerCase()
+      );
+      state.activeVariant = match || null;
+      if (match && match.price) {
+        state.basePrice = Number(match.price);
+      } else if (prod.price) {
+        state.basePrice = Number(prod.price);
+      }
+    }
+
+    function sanitizeFields() {
+      const rawName = (nameInput ? nameInput.value : "").toUpperCase();
+      const cleanName = rawName.replace(/[^A-Z0-9 .\-]/g, "").slice(0, 14);
+      if (nameInput && nameInput.value !== cleanName) nameInput.value = cleanName;
+
+      const rawNum = numInput ? numInput.value : "";
+      const cleanNum = rawNum.replace(/[^0-9]/g, "").slice(0, 2);
+      if (numInput && numInput.value !== cleanNum) numInput.value = cleanNum;
+
+      if (cleanName || cleanNum) showError("");
+
+      if (nameCount) nameCount.textContent = `${cleanName.length}/14`;
+      if (numCount) numCount.textContent = `${cleanNum.length}/2`;
+
+      if (clearNameBtn) clearNameBtn.style.display = cleanName.length > 0 ? "inline-flex" : "none";
+      if (clearNumBtn) clearNumBtn.style.display = cleanNum.length > 0 ? "inline-flex" : "none";
+
+      if (previewName) {
+        previewName.textContent = cleanName || "YOUR NAME";
+        previewName.style.opacity = cleanName ? "1" : "0.45";
+        previewName.classList.remove("is-len-md", "is-len-lg");
+        if (cleanName.length >= 12) {
+          previewName.classList.add("is-len-lg");
+        } else if (cleanName.length >= 9) {
+          previewName.classList.add("is-len-md");
         }
+      }
+      if (previewNum) {
+        previewNum.textContent = cleanNum || "00";
+        previewNum.style.opacity = cleanNum ? "1" : "0.45";
+      }
+
+      presetBtns.forEach((pill) => {
+        const pName = (pill.dataset.name || "").toUpperCase();
+        const pNum = String(pill.dataset.num || "");
+        const isMatch = Boolean(cleanName && cleanName === pName && cleanNum === pNum);
+        pill.classList.toggle("is-active", isMatch);
+      });
+
+      return { cleanName, cleanNum };
+    }
+
+    function syncStageVisuals() {
+      if (svgGradTop) svgGradTop.setAttribute("stop-color", state.bgTop);
+      if (svgGradBot) svgGradBot.setAttribute("stop-color", state.bgBot);
+      svgTrims.forEach((el) => el.setAttribute("stroke", state.trim));
+      if (stageEl) stageEl.style.setProperty("--stage-glow", state.trim);
+
+      if (svgLongSleeves) {
+        svgLongSleeves.style.display = state.sleeve === "full-sleeve" ? "block" : "none";
+      }
+      if (svgShortCuffs) {
+        svgShortCuffs.style.display = state.sleeve === "full-sleeve" ? "none" : "block";
+      }
+      if (stageSleeveLabel) {
+        stageSleeveLabel.textContent = state.sleeveLabel || "Half Sleeve";
+      }
+
+      const textShadow = state.colorHex.toUpperCase() === "#111111"
+        ? "0 1px 2px rgba(255,255,255,0.35)"
+        : "0 2px 6px rgba(0,0,0,0.65)";
+
+      if (previewName) {
+        previewName.style.color = state.colorHex;
+        previewName.style.textShadow = textShadow;
+      }
+      if (previewNum) {
+        previewNum.style.color = state.colorHex;
+        previewNum.style.textShadow = textShadow;
+      }
+
+      if (colorNameLabel) colorNameLabel.textContent = state.colorName;
+      colorBtns.forEach((btn) => {
+        btn.classList.toggle("is-active", btn.dataset.colorName === state.colorName);
+      });
+
+      if (contrastWarn) {
+        const lum = hexLuminance(state.bgTop);
+        const lowContrast = (lum > 0.65 && state.colorName === "White") || (lum < 0.12 && state.colorName === "Black");
+        contrastWarn.style.display = lowContrast ? "block" : "none";
+      }
+    }
+
+    function syncSummaryAndPricing() {
+      resolveActiveVariant();
+      const unitBase = Number(state.basePrice) || 1150;
+      const unitTotal = unitBase + printFee;
+      const grandTotal = unitTotal * state.qty;
+
+      if (qtyValEl) qtyValEl.textContent = String(state.qty);
+      const currentBtnPrice = wrap.querySelector(".js-home-btn-price");
+      if (currentBtnPrice) currentBtnPrice.textContent = `৳ ${grandTotal.toLocaleString("en-IN")}`;
+
+      if (summaryImg) {
+        const imgUrl = (state.activeVariant && state.activeVariant.image) ? state.activeVariant.image : state.image;
+        summaryImg.src = imgUrl;
+        summaryImg.alt = state.name;
+      }
+      if (summaryName) summaryName.textContent = state.name;
+      if (summaryMeta) {
+        summaryMeta.textContent = `Size ${state.size} • ${state.colorName} Vinyl • Qty ${state.qty}`;
+      }
+      if (summaryLink) {
+        summaryLink.href = `/product/${state.slug || state.productId}`;
+      }
+      if (summaryBreakdown) {
+        summaryBreakdown.textContent = state.qty > 1
+          ? `${state.qty} × (৳${unitBase.toLocaleString("en-IN")} + ৳${printFee})`
+          : `Kit ৳${unitBase.toLocaleString("en-IN")} + Print ৳${printFee}`;
+      }
+      if (summaryTotal) {
+        summaryTotal.textContent = `৳ ${grandTotal.toLocaleString("en-IN")}`;
+      }
+    }
+
+    function renderSizePills() {
+      const prod = state.product;
+      const fallbackSizes = state.sleeve === "footwear"
+        ? ["39", "40", "41", "42", "43", "44"]
+        : ["S", "M", "L", "XL", "XXL"];
+
+      const allSizes = (prod && Array.isArray(prod.allSizes) && prod.allSizes.length)
+        ? prod.allSizes
+        : fallbackSizes;
+      const inStockSizes = (prod && Array.isArray(prod.sizes))
+        ? prod.sizes
+        : allSizes;
+
+      if (!inStockSizes.includes(state.size)) {
+        state.size = (prod && prod.defaultSize && inStockSizes.includes(prod.defaultSize))
+          ? prod.defaultSize
+          : (inStockSizes[0] || allSizes[0] || "L");
+      }
+
+      if (sizePillsWrap) {
+        sizePillsWrap.innerHTML = allSizes.map((sz) => {
+          const available = inStockSizes.length === 0 || inStockSizes.includes(sz);
+          const active = sz === state.size && available;
+          return `<button type="button" class="rabez-home-size-pill js-home-size-pill ${active ? "is-active" : ""}" data-size="${sz}" ${!available ? "disabled" : ""}>${sz}</button>`;
+        }).join("");
+
+        sizePillsWrap.querySelectorAll(".js-home-size-pill").forEach((pill) => {
+          pill.addEventListener("click", () => {
+            if (pill.disabled) return;
+            state.size = pill.dataset.size || "L";
+            sizePillsWrap.querySelectorAll(".js-home-size-pill").forEach((p) => {
+              p.classList.toggle("is-active", p === pill);
+            });
+            if (sizeSelect) sizeSelect.value = state.size;
+            syncSummaryAndPricing();
+          });
+        });
+      }
+
+      if (sizeSelect) {
+        sizeSelect.innerHTML = allSizes.map((sz) => `<option value="${sz}">${sz}</option>`).join("");
+        sizeSelect.value = state.size;
+      }
+    }
+
+    function selectKit(card, applyRecommendedColor = true) {
+      if (!card) return;
+      kitCards.forEach((c) => {
+        const isTarget = c === card;
+        c.classList.toggle("is-active", isTarget);
+        c.setAttribute("aria-selected", isTarget ? "true" : "false");
+      });
+
+      const prodId = Number(card.dataset.productId || 0);
+      const catalogProd = findCatalogProduct(prodId);
+
+      state.productId = prodId;
+      state.product = catalogProd;
+      state.bgTop = card.dataset.bg || "#1A221E";
+      state.bgBot = card.dataset.bgEnd || state.bgTop;
+      state.trim = card.dataset.trim || "#04F404";
+      state.isLightKit = card.dataset.isLight === "1";
+      state.sleeve = card.dataset.sleeve || catalogProd?.sleeve || "half-sleeve";
+      state.sleeveLabel = card.dataset.sleeveLabel || catalogProd?.sleeveLabel || "Half Sleeve";
+      state.basePrice = Number(catalogProd?.price ?? card.dataset.price ?? 1150);
+      state.name = catalogProd?.name || card.dataset.name || "Custom Jersey";
+      state.slug = catalogProd?.slug || card.dataset.slug || String(prodId);
+      state.sku = catalogProd?.sku || card.dataset.sku || `RBZ-${prodId}`;
+      state.image = catalogProd?.image || card.dataset.image || "/assets/images/products/real-madrid-home-hs.jpg";
+
+      state.defaultColorHex = card.dataset.text || "#FFFFFF";
+      state.defaultColorName = card.dataset.colorName || "White";
+      if (applyRecommendedColor) {
+        state.colorHex = state.defaultColorHex;
+        state.colorName = state.defaultColorName;
+      }
+
+      if (kitSelect && prodId) {
+        const matchingOpt = Array.from(kitSelect.options).find((o) => String(o.value) === String(prodId));
+        if (matchingOpt) kitSelect.value = String(prodId);
+      }
+
+      renderSizePills();
+      syncStageVisuals();
+      syncSummaryAndPricing();
+    }
+
+    // Bind Kit Cards
+    kitCards.forEach((card) => {
+      card.addEventListener("click", () => selectKit(card, true));
+    });
+
+    // Club Filter Tabs
+    clubFilterBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        const targetClub = btn.dataset.club || "all";
+        clubFilterBtns.forEach((b) => b.classList.toggle("is-active", b === btn));
+        kitCards.forEach((card) => {
+          const matches = targetClub === "all" || card.dataset.club === targetClub;
+          card.style.display = matches ? "flex" : "none";
+        });
+        if (kitRail) kitRail.scrollTo({ left: 0, behavior: "smooth" });
       });
     });
 
+    // Rail Scroll Controls
+    railPrevBtn?.addEventListener("click", () => {
+      kitRail?.scrollBy({ left: -240, behavior: "smooth" });
+    });
+    railNextBtn?.addEventListener("click", () => {
+      kitRail?.scrollBy({ left: 240, behavior: "smooth" });
+    });
+
+    // Legend 1-Click Presets
+    presetBtns.forEach((pill) => {
+      pill.addEventListener("click", () => {
+        if (nameInput) nameInput.value = pill.dataset.name || "";
+        if (numInput) numInput.value = pill.dataset.num || "";
+        sanitizeFields();
+      });
+    });
+
+    // Vinyl Color Swatches
+    colorBtns.forEach((btn) => {
+      btn.addEventListener("click", () => {
+        state.colorHex = btn.dataset.color || "#FFFFFF";
+        state.colorName = btn.dataset.colorName || "White";
+        syncStageVisuals();
+        syncSummaryAndPricing();
+      });
+    });
+
+    // Clear Buttons
+    clearNameBtn?.addEventListener("click", () => {
+      if (nameInput) {
+        nameInput.value = "";
+        nameInput.focus();
+      }
+      sanitizeFields();
+    });
+    clearNumBtn?.addEventListener("click", () => {
+      if (numInput) {
+        numInput.value = "";
+        numInput.focus();
+      }
+      sanitizeFields();
+    });
+
+    // Input Listeners
+    nameInput?.addEventListener("input", sanitizeFields);
+    numInput?.addEventListener("input", sanitizeFields);
+
+    // Qty Stepper (1 - 10)
+    qtyMinusBtn?.addEventListener("click", () => {
+      state.qty = Math.max(1, state.qty - 1);
+      syncSummaryAndPricing();
+    });
+    qtyPlusBtn?.addEventListener("click", () => {
+      state.qty = Math.min(10, state.qty + 1);
+      syncSummaryAndPricing();
+    });
+
+    // Reset Preview
+    resetBtn?.addEventListener("click", () => {
+      if (nameInput) nameInput.value = "RABEZ";
+      if (numInput) numInput.value = "10";
+      state.qty = 1;
+      state.colorHex = state.defaultColorHex;
+      state.colorName = state.defaultColorName;
+      showError("");
+      sanitizeFields();
+      syncStageVisuals();
+      syncSummaryAndPricing();
+    });
+
+    // Add to Bag CTA
     addCustomBtn?.addEventListener("click", () => {
-      const id = Number(kitSelect?.value || 0);
-      if (!id) return;
-      const size = sizeSelect?.value || "L";
-      const customName = nameInput?.value || "RABEZ";
-      const customNumber = numInput?.value || "10";
+      const { cleanName, cleanNum } = sanitizeFields();
+      if (!cleanName && !cleanNum) {
+        showError("Please enter a Back Name or Squad Number to customize.");
+        nameInput?.focus();
+        return;
+      }
+      if (state.product && state.product.hasCustomPrint === false) {
+        showError("This item is not eligible for custom back printing.");
+        return;
+      }
+      if (state.product && Array.isArray(state.product.sizes) && state.product.sizes.length === 0) {
+        showError("Sorry, this jersey is currently out of stock.");
+        return;
+      }
+
+      resolveActiveVariant();
+      const variantId = state.activeVariant ? state.activeVariant.id : null;
+      const variantTitle = state.activeVariant ? state.activeVariant.title : state.size;
+      const finalSku = (state.activeVariant && state.activeVariant.sku) ? state.activeVariant.sku : state.sku;
+      const finalImage = (state.activeVariant && state.activeVariant.image) ? state.activeVariant.image : state.image;
+
       if (window.RABEZ_STORE) {
-        window.RABEZ_STORE.addToCart({ id, size, qty: 1, customName, customNumber });
-        window.RABEZ_STORE.openCartDrawer();
+        window.RABEZ_STORE.addToCart({
+          id: state.productId,
+          sku: finalSku,
+          name: state.name,
+          price: state.basePrice,
+          variantId: variantId,
+          variantTitle: variantTitle,
+          image: finalImage,
+          size: state.size,
+          qty: state.qty,
+          customName: cleanName,
+          customNumber: cleanNum,
+          customColor: state.colorName,
+        });
+        if (typeof window.RABEZ_STORE.openCartDrawer === "function") {
+          window.RABEZ_STORE.openCartDrawer();
+        }
+      }
+
+      if (addCustomBtn && !addCustomBtn.dataset.feedbackActive) {
+        addCustomBtn.dataset.feedbackActive = "1";
+        const origHtml = addCustomBtn.innerHTML;
+        addCustomBtn.innerHTML = `<span>&#10003; Added to Bag!</span>`;
+        setTimeout(() => {
+          addCustomBtn.innerHTML = origHtml;
+          delete addCustomBtn.dataset.feedbackActive;
+          syncSummaryAndPricing();
+        }, 1600);
       }
     });
+
+    // Direct WhatsApp Order CTA
+    waOrderBtn?.addEventListener("click", () => {
+      const { cleanName, cleanNum } = sanitizeFields();
+      if (!cleanName && !cleanNum) {
+        showError("Please enter a Back Name or Squad Number before ordering.");
+        nameInput?.focus();
+        return;
+      }
+      resolveActiveVariant();
+      const finalSku = (state.activeVariant && state.activeVariant.sku) ? state.activeVariant.sku : state.sku;
+      const totalAmount = (state.basePrice + printFee) * state.qty;
+      const printText = [cleanName, cleanNum ? `#${cleanNum}` : ""].filter(Boolean).join(" ");
+
+      let msg = `Hello RABEZ! I want to order a Custom Jersey:\n\n`;
+      msg += `Product: ${state.name}\n`;
+      msg += `SKU: ${finalSku}\n`;
+      msg += `Size: ${state.size}\n`;
+      msg += `Quantity: ${state.qty}\n`;
+      msg += `Custom Print: ${printText} (${state.colorName} Vinyl) (+৳${printFee})\n`;
+      msg += `Total Amount: ৳ ${totalAmount.toLocaleString("en-IN")}\n`;
+      msg += `\nPlease confirm my order!`;
+
+      const waUrl = `https://api.whatsapp.com/send/?phone=8801612359652&text=${encodeURIComponent(msg)}`;
+      window.open(waUrl, "_blank", "noopener");
+    });
+
+    // Initialize with active or first kit card
+    const initialCard = wrap.querySelector(".js-kit-theme-swatch.is-active") || kitCards[0];
+    if (initialCard) {
+      selectKit(initialCard, true);
+    }
+    sanitizeFields();
   }
 
   /* 4. Size Guide Tab Switcher (Fan Version vs Player Version) */
@@ -506,8 +948,9 @@
               variant_title: c.variantTitle || c.size || "",
               qty: c.qty,
               price: c.price,
-              custom_name: c.customName ? (c.customColor && c.customColor !== 'White' ? `${c.customName} [${c.customColor}]` : c.customName) : "",
+              custom_name: c.customName || "",
               custom_number: c.customNumber || "",
+              custom_color: c.customColor || "",
               image: c.image || ""
             }))
           })
