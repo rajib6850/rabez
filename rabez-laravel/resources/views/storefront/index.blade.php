@@ -924,7 +924,7 @@
                   <div class="rabez-stage-summary__meta js-home-summary-meta">
                     Size {{ $defaultSelectedSize }} &bull; {{ $defaultTheme['colorName'] }} Vinyl &bull; Qty 1
                   </div>
-                  <a href="{{ route('product.show', $defaultCustProduct->slug ?: $defaultCustProduct->id) }}" class="rabez-stage-summary__link js-home-summary-link">
+                  <a href="{{ route('product.detail', $defaultCustProduct->slug ?: $defaultCustProduct->id) }}" class="rabez-stage-summary__link js-home-summary-link">
                     View Full Kit &rarr;
                   </a>
                 </div>
