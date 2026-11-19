@@ -28,7 +28,7 @@
   <link rel="stylesheet" href="{{ asset('assets/css/components/club-filter-bar.css') }}?v=2.4">
   <link rel="stylesheet" href="{{ asset('assets/css/components/product-grid.css') }}?v=2.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/bento-collections.css') }}?v=2.1">
-  <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=3.0">
+  <link rel="stylesheet" href="{{ asset('assets/css/components/jersey-customizer.css') }}?v=3.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/size-guide.css') }}?v=2.2">
   <link rel="stylesheet" href="{{ asset('assets/css/components/single-product.css') }}?v=3.1">
   <link rel="stylesheet" href="{{ asset('assets/css/components/cart-checkout.css') }}?v=2.8">

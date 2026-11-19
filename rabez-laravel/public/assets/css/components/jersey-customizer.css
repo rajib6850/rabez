@@ -908,6 +908,7 @@
 }
 
 .rabez-stage-summary__text {
+  flex: 1;
   min-width: 0;
 }
 
@@ -1046,6 +1047,10 @@
   .rabez-stage-summary {
     flex-direction: column;
     align-items: flex-start;
+  }
+
+  .rabez-stage-summary__kit {
+    width: 100%;
   }
 
   .rabez-stage-summary__pricing {

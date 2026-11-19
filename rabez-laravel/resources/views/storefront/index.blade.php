@@ -872,11 +872,11 @@
                     </filter>
                   </defs>
 
-                  <!-- Full-Sleeve Extensions (toggled when full-sleeve product selected) -->
+                  <!-- Full-Sleeve Extensions (flush from short-sleeve cuff edge) -->
                   <g class="js-svg-long-sleeves" style="{{ $defaultSleeve === 'full-sleeve' ? '' : 'display:none;' }}">
-                    <path d="M42 125 L14 190 L38 200 L70 112 Z" fill="url(#rbzHomeJerseyGrad)" stroke="rgba(44,52,48,0.65)" stroke-width="1.6"/>
-                    <path d="M238 125 L266 190 L242 200 L210 112 Z" fill="url(#rbzHomeJerseyGrad)" stroke="rgba(44,52,48,0.65)" stroke-width="1.6"/>
-                    <path d="M16 187 L38 197 M264 187 L242 197" class="js-svg-jersey-trim" fill="none" stroke="{{ $defaultTheme['trim'] }}" stroke-width="4.5" stroke-linecap="round"/>
+                    <path d="M18 72 L44 128 L38 196 L12 184 Z" fill="url(#rbzHomeJerseyGrad)" stroke="rgba(44,52,48,0.65)" stroke-width="1.6"/>
+                    <path d="M262 72 L236 128 L242 196 L268 184 Z" fill="url(#rbzHomeJerseyGrad)" stroke="rgba(44,52,48,0.65)" stroke-width="1.6"/>
+                    <path d="M12 182 L38 194 M268 182 L242 194" class="js-svg-jersey-trim" fill="none" stroke="{{ $defaultTheme['trim'] }}" stroke-width="4.5" stroke-linecap="round"/>
                   </g>
 
                   <!-- Main Torso Silhouette -->
@@ -895,8 +895,8 @@
                         d="M105 26 Q140 42 175 26"
                         fill="none" stroke="{{ $defaultTheme['trim'] }}" stroke-width="5.5" stroke-linecap="round"/>
                   <path class="js-svg-jersey-trim js-svg-short-cuffs"
-                        d="M40 120 L67 102 M240 120 L213 102"
-                        fill="none" stroke="{{ $defaultTheme['trim'] }}" stroke-width="5.5" stroke-linecap="round"
+                        d="M20 74 L44 126 M260 74 L236 126"
+                        fill="none" stroke="{{ $defaultTheme['trim'] }}" stroke-width="5" stroke-linecap="round"
                         style="{{ $defaultSleeve === 'full-sleeve' ? 'display:none;' : '' }}"/>
                   <path d="M86 28 Q94 74 74 108 M194 28 Q186 74 206 108"
                         fill="none" stroke="rgba(255,255,255,0.16)" stroke-width="1.2" stroke-dasharray="3 3"/>
