@@ -20,10 +20,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/real-madrid-home-hs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-polo-white-hs.jpg",
-      "assets/images/products/real-madrid-3rd-hs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Iconic crisp white Real Madrid home kit with deep emerald and maroon shoulder detailing. Breathable honeycomb jacquard player-issue weave."
   },
   {
@@ -43,9 +40,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/messi-celebration-fs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-away-fs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Three-star World Champions Argentina full sleeve collector jersey featuring golden FIFA crest, #10 chest print, and ribbed black cuffs."
   },
   {
@@ -66,10 +61,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/messi-barca-arg-hoodie.jpg",
-    gallery: [
-      "assets/images/products/messi-celebration-fs.jpg",
-      "assets/images/products/barcelona-home-hs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Heavyweight 320 GSM brushed cotton-fleece winter pullover hoodie in pitch black featuring #10 and dual FC Barcelona × 3-Star Argentina AFA 'THE BEST' jersey crest print."
   },
   {
@@ -89,9 +81,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "M",
     image: "assets/images/products/real-madrid-3rd-hs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-teal-trefoil-hs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Statement rose-burgundy Real Madrid third kit with cream three-stripe shoulder trim and moisture-wicking Climacool mesh."
   },
   {
@@ -111,9 +101,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/real-madrid-away-fs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-home-hs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Legendary pitch-black Real Madrid Teka vintage kit with golden three-stripe sleeves and classic polo V-neck collar."
   },
   {
@@ -133,9 +121,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/barcelona-home-hs.jpg",
-    gallery: [
-      "assets/images/products/messi-barca-arg-hoodie.jpg"
-    ],
+    gallery: [],
     shortDesc: "Classic Blaugrana royal blue and deep garnet vertical stripes with woven club crest and breathable Dri-FIT ADV texture."
   },
   {
@@ -155,9 +141,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/arsenal-home-hs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-3rd-hs.jpg"
-    ],
+    gallery: [],
     shortDesc: "North London crimson body with crisp white sleeves and embroidered cannon crest. Built for matchdays and five-a-side turf."
   },
   {
@@ -177,9 +161,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/man-utd-home-hs.jpg",
-    gallery: [
-      "assets/images/products/messi-celebration-fs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Old Trafford heritage red jersey featuring geometric jacquard knit and tri-color ribbed crew collar."
   },
   {
@@ -199,9 +181,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/bangladesh-home-hs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-teal-trefoil-hs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Represent Bengal green and crimson red on the stands and on the turf. Lightweight sweat-wicking fabric tailored for Bangladesh weather."
   },
   {
@@ -221,10 +201,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/real-madrid-teal-trefoil-hs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-away-fs.jpg",
-      "assets/images/products/real-madrid-home-hs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Deep forest-teal monogram patterned jersey featuring the classic Originals Trefoil chest mark and split hem."
   },
   {
@@ -244,9 +221,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/real-madrid-polo-white-hs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-away-fs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Clean buttoned polo collar Real Madrid white jersey with royal navy side stripes and sleeve trim."
   },
   {
@@ -266,9 +241,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/arsenal-home-hs.jpg",
-    gallery: [
-      "assets/images/products/messi-barca-arg-hoodie.jpg"
-    ],
+    gallery: [],
     shortDesc: "Full-sleeve Arsenal match jersey with ribbed wrist cuffs and breathable side mesh panels."
   },
   {
@@ -288,9 +261,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/man-utd-home-hs.jpg",
-    gallery: [
-      "assets/images/products/messi-barca-arg-hoodie.jpg"
-    ],
+    gallery: [],
     shortDesc: "Long-sleeve Manchester United match kit designed for winter turf nights and collector wardrobes."
   },
   {
@@ -310,9 +281,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/real-madrid-away-fs.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-away-fs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Bavarian powerhouse full-sleeve away kit with breathable jacquard weave and ribbed cuffs."
   },
   {
@@ -332,9 +301,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/man-utd-home-hs.jpg",
-    gallery: [
-      "assets/images/products/messi-barca-arg-hoodie.jpg"
-    ],
+    gallery: [],
     shortDesc: "Classic Allianz Arena red home half-sleeve jersey with embroidered Bavarian crest."
   },
   {
@@ -354,9 +321,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/arsenal-home-hs.jpg",
-    gallery: [
-      "assets/images/products/messi-barca-arg-hoodie.jpg"
-    ],
+    gallery: [],
     shortDesc: "Anfield heritage crimson full-sleeve jersey crafted for matchdays and collector wardrobes."
   },
   {
@@ -377,10 +342,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/messi-barca-arg-hoodie.jpg",
-    gallery: [
-      "assets/images/products/real-madrid-home-hs.jpg",
-      "assets/images/products/real-madrid-away-fs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Warm 320 GSM winter fleece pullover hoodie with high-density Real Madrid CF jersey crest and player number chest print."
   },
   {
@@ -401,9 +363,7 @@ window.RABEZ_PRODUCTS = (Array.isArray(window.RABEZ_DB_PRODUCTS) && window.RABEZ
     sizes: ["S", "M", "L", "XL", "XXL"],
     defaultSize: "L",
     image: "assets/images/products/messi-barca-arg-hoodie.jpg",
-    gallery: [
-      "assets/images/products/barcelona-home-hs.jpg"
-    ],
+    gallery: [],
     shortDesc: "Premium black winter fleece hoodie featuring official FC Barcelona jersey crest print, kangaroo pocket, and ribbed cuffs."
   }
 ];

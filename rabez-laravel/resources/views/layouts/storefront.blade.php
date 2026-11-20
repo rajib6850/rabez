@@ -696,7 +696,7 @@
   <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id={{ $metaPixelId }}&ev=PageView&noscript=1" alt=""></noscript>
   @endif
   <script src="{{ asset('assets/js/analytics.js') }}?v=2.0"></script>
-  <script src="{{ asset('assets/js/products-data.js') }}?v=2.0"></script>
+  <script src="{{ asset('assets/js/products-data.js') }}?v=2.1"></script>
   @if(isset($storefrontProductsJs) && count($storefrontProductsJs) > 0)
   <script>
     window.RABEZ_DB_PRODUCTS = @json($storefrontProductsJs);
